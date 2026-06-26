@@ -9,7 +9,11 @@
     "start": "next start",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx",
-    "lint": "eslint"
+    "lint": "eslint",
+    "vercel:link": "vercel link",
+    "vercel:env": "vercel env pull",
+    "deploy:staging": "vercel deploy --target=staging",
+    "deploy:prod": "vercel --prod"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -33,6 +37,7 @@
     "eslint-config-next": "16.2.9",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vercel": "^54.17.3"
   }
 }
