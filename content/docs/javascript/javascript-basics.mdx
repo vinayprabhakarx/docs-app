@@ -1,0 +1,739 @@
+---
+title: "JavaScript Basics - Getting Started"
+description: Documentation for JavaScript Basics - Getting Started.
+---
+
+# JavaScript Basics - Getting Started
+
+
+
+## What is JavaScript?
+
+JavaScript is a **high-level, interpreted programming language** that makes web pages interactive. It's one of the core technologies of the web, alongside HTML and CSS.
+
+### Why Learn JavaScript?
+
+- **Web Development** - Essential for front-end and back-end (Node.js)
+- **Versatile** - Runs in browsers, servers, mobile apps, desktop apps
+- **In-Demand** - One of the most popular programming languages
+- **Interactive** - Create dynamic, responsive user experiences
+- **Large Ecosystem** - Massive library and framework ecosystem
+
+## Core Characteristics of JavaScript
+
+### 1. High-Level Language
+
+JavaScript abstracts away low-level details like memory management. You don't need to manually allocate or deallocate memory - the garbage collector handles it automatically.
+
+```javascript
+// No manual memory management needed
+let user = { name: "John", age: 25 };
+// Memory automatically allocated
+
+user = null;
+// Garbage collector will free memory when no longer referenced
+```
+
+### 2. Interpreted Language
+
+JavaScript code is executed line-by-line by an interpreter (JavaScript engine) rather than being compiled into machine code beforehand.
+
+**Popular JavaScript Engines:**
+
+- **V8** - Chrome, Node.js, Edge
+- **SpiderMonkey** - Firefox
+- **JavaScriptCore** - Safari
+
+### 3. Dynamically Typed
+
+Variables can hold any type of data, and types are checked at runtime, not compile time.
+
+```javascript
+let data = 42; // Number
+data = "Hello"; // Now a String - no error!
+data = true; // Now a Boolean
+data = { x: 10 }; // Now an Object
+```
+
+### 4. Single-Threaded
+
+JavaScript executes code on a single thread, but handles asynchronous operations through the **Event Loop** and **Callback Queue**.
+
+```javascript
+console.log("First");
+
+setTimeout(() => {
+  console.log("Second (after 1 second)");
+}, 1000);
+
+console.log("Third");
+// Output: First, Third, Second (after 1 second)
+```
+
+## Where JavaScript Runs
+
+### 1. Browser (Client-Side)
+
+JavaScript runs directly in web browsers to make pages interactive.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My First JavaScript</title>
+  </head>
+  <body>
+    <h1 id="heading">Hello World</h1>
+
+    <script>
+      // JavaScript code runs here
+      document.getElementById("heading").style.color = "blue";
+    </script>
+  </body>
+</html>
+```
+
+### 2. Node.js (Server-Side)
+
+JavaScript can run on servers using Node.js runtime environment.
+
+```javascript
+// server.js
+console.log("Hello from Node.js!");
+
+// Create a simple server
+const http = require("http");
+const server = http.createServer((req, res) => {
+  res.end("Hello from Server!");
+});
+server.listen(3000);
+```
+
+### 3. Other Environments
+
+- **Mobile Apps** - React Native, Ionic
+- **Desktop Apps** - Electron (VS Code, Slack, Discord)
+- **IoT Devices** - Johnny-Five, Espruino
+- **Game Development** - Phaser, Three.js
+
+## How to Run JavaScript
+
+### Method 1: Browser Console
+
+1. Open any browser (Chrome, Firefox, Edge)
+2. Press `F12` or `Ctrl+Shift+I` (Windows) / `Cmd+Option+I` (Mac)
+3. Click "Console" tab
+4. Type JavaScript code and press Enter
+
+```javascript
+console.log("Hello, World!");
+// Output: Hello, World!
+
+2 + 2;
+// Output: 4
+
+alert("Welcome!");
+// Shows popup alert
+```
+
+### Method 2: HTML File
+
+Create an HTML file with a `<script>` tag:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JavaScript Demo</title>
+  </head>
+  <body>
+    <h1>Check the console!</h1>
+
+    <script>
+      console.log("JavaScript is running!");
+      console.log("2 + 2 =", 2 + 2);
+    </script>
+  </body>
+</html>
+```
+
+### Method 3: External JavaScript File
+
+**index.html:**
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>External JS</title>
+  </head>
+  <body>
+    <h1>External JavaScript</h1>
+
+    <!-- Link external JS file -->
+    <script src="script.js"></script>
+  </body>
+</html>
+```
+
+**script.js:**
+
+```javascript
+console.log("Hello from external file!");
+alert("JavaScript loaded successfully!");
+```
+
+**Best Practice:** Always use external JavaScript files for better code organization and reusability.
+
+### Method 4: Node.js
+
+```bash
+# Create a file: app.js
+# Run with Node.js
+node app.js
+```
+
+## Script Placement in HTML
+
+### Placement Options
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Script Placement</title>
+
+    <!-- 1. In <head> - Loads before body content -->
+    <script src="early.js"></script>
+
+    <!-- 2. In <head> with defer - Loads after HTML parsing -->
+    <script src="deferred.js" defer></script>
+
+    <!-- 3. In <head> with async - Loads asynchronously -->
+    <script src="async.js" async></script>
+  </head>
+  <body>
+    <h1>Content Here</h1>
+
+    <!-- 4. At end of <body> - Recommended for simple scripts -->
+    <script src="script.js"></script>
+  </body>
+</html>
+```
+
+**Recommendations:**
+
+- Place scripts at the **end of `<body>`** for simple websites
+- Use **`defer`** attribute for scripts that need the DOM ready
+- Use **`async`** for independent scripts (analytics, ads)
+
+## The Console Object
+
+The `console` object is used for debugging and logging information.
+
+### Common Console Methods
+
+```javascript
+// Basic logging
+console.log("Hello, World!");
+
+// Multiple values
+console.log("Name:", "John", "Age:", 25);
+
+// Warnings
+console.warn("This is a warning!");
+
+// Errors
+console.error("This is an error!");
+
+// Info
+console.info("Informational message");
+
+// Clear console
+console.clear();
+
+// Tables (for objects/arrays)
+console.table([
+  { name: "John", age: 25 },
+  { name: "Jane", age: 30 },
+]);
+
+// Timing
+console.time("myTimer");
+// ... some code ...
+console.timeEnd("myTimer");
+// Output: myTimer: 0.123ms
+
+// Grouping
+console.group("User Details");
+console.log("Name: John");
+console.log("Age: 25");
+console.groupEnd();
+
+// Count occurrences
+console.count("Counter"); // Counter: 1
+console.count("Counter"); // Counter: 2
+console.count("Counter"); // Counter: 3
+```
+
+## Comments in JavaScript
+
+Comments are ignored by JavaScript and used for documentation.
+
+### Single-Line Comments
+
+```javascript
+// This is a single-line comment
+console.log("Hello"); // Comment after code
+```
+
+### Multi-Line Comments
+
+```javascript
+/*
+This is a multi-line comment
+It can span multiple lines
+Useful for longer explanations
+*/
+console.log("Hello");
+
+/*
+function oldCode() {
+    // You can also use multi-line comments
+    // to temporarily disable code
+}
+*/
+```
+
+### JSDoc Comments (Documentation)
+
+```javascript
+/**
+ * Calculates the sum of two numbers
+ * @param {number} a - First number
+ * @param {number} b - Second number
+ * @returns {number} The sum of a and b
+ */
+function add(a, b) {
+  return a + b;
+}
+```
+
+## Basic Syntax Rules
+
+### 1. Statements End with Semicolons (Optional but Recommended)
+
+```javascript
+console.log("Hello"); // With semicolon (recommended)
+console.log("World"); // Without semicolon (works due to ASI)
+
+// ASI (Automatic Semicolon Insertion) can cause issues:
+let a = 1;
+let b = ((2)[(a, b)] = [b, a]); // Error! ASI doesn't insert semicolon before [
+```
+
+**Best Practice:** Always use semicolons to avoid ASI pitfalls.
+
+### 2. Case Sensitive
+
+```javascript
+let name = "John";
+let Name = "Jane";
+let NAME = "Bob";
+// These are three different variables!
+
+// Keywords are case sensitive too
+console.log("Works");
+Console.log("Error!"); // Console is not defined
+```
+
+### 3. Whitespace is Ignored
+
+```javascript
+// These are the same:
+let x = 5 + 3;
+let x = 5 + 3;
+let x = 5 + 3;
+
+// But readability matters!
+let x = 5 + 3; // ✅ Recommended
+```
+
+### 4. Code Blocks Use Curly Braces
+
+```javascript
+if (true) {
+  console.log("Inside block");
+  console.log("Still inside");
+}
+
+// Single-line blocks can omit braces (not recommended)
+if (true) console.log("Works but avoid");
+
+// Better to always use braces for consistency
+if (true) {
+  console.log("Recommended");
+}
+```
+
+## Your First JavaScript Programs
+
+### Example 1: Hello World
+
+```javascript
+console.log("Hello, World!");
+```
+
+### Example 2: Simple Math
+
+```javascript
+console.log("2 + 2 =", 2 + 2);
+console.log("10 - 5 =", 10 - 5);
+console.log("3 * 4 =", 3 * 4);
+console.log("20 / 4 =", 20 / 4);
+console.log("10 % 3 =", 10 % 3); // Modulus (remainder)
+```
+
+### Example 3: Working with Text
+
+```javascript
+console.log("Hello" + " " + "World"); // Concatenation
+console.log("My name is John");
+console.log("I am " + 25 + " years old");
+
+// Modern way with template literals
+console.log(`I am ${25} years old`);
+```
+
+### Example 4: Interactive Alert
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <button onclick="greet()">Click Me!</button>
+
+    <script>
+      function greet() {
+        alert("Hello! Welcome to JavaScript!");
+      }
+    </script>
+  </body>
+</html>
+```
+
+### Example 5: User Input
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      // Get user input
+      let userName = prompt("What's your name?");
+
+      // Display greeting
+      alert("Hello, " + userName + "!");
+
+      // Log to console
+      console.log("User name:", userName);
+    </script>
+  </body>
+</html>
+```
+
+## Common Beginner Mistakes
+
+### 1. Forgetting Quotes for Strings
+
+```javascript
+// Wrong
+console.log(Hello); // Error: Hello is not defined
+
+// Correct
+console.log("Hello");
+console.log("Hello");
+console.log(`Hello`);
+```
+
+### 2. Mismatched Parentheses/Brackets
+
+```javascript
+// Wrong
+console.log('Hello';  // Missing closing parenthesis
+console.log('Hello'));  // Extra closing parenthesis
+
+// Correct
+console.log('Hello');
+```
+
+### 3. Case Sensitivity
+
+```javascript
+// Wrong
+Console.log("Hello"); // Error: Console is not defined
+console.Log("Hello"); // Error: console.Log is not a function
+
+// Correct
+console.log("Hello");
+```
+
+### 4. Confusing = (Assignment) with == or === (Comparison)
+
+```javascript
+let x = 5; // Assignment
+x == 5; // Comparison (loose)
+x === 5; // Comparison (strict)
+
+// Common mistake in conditions
+if ((x = 10)) {
+  // ❌ Assignment, not comparison!
+  console.log("This always runs");
+}
+
+if (x === 10) {
+  // ✅ Correct comparison
+  console.log("x is 10");
+}
+```
+
+### 5. Forgetting to Call Functions
+
+```javascript
+function greet() {
+  console.log("Hello!");
+}
+
+greet; // ❌ Just references the function, doesn't call it
+greet(); // ✅ Calls the function
+```
+
+## Understanding JavaScript Execution
+
+### The JavaScript Engine
+
+JavaScript code goes through several stages:
+
+1. **Parsing** - Code is converted into an Abstract Syntax Tree (AST)
+2. **Compilation** - Just-In-Time (JIT) compilation to machine code
+3. **Execution** - Code is executed by the engine
+
+### The Call Stack
+
+JavaScript uses a **call stack** to keep track of function execution:
+
+```javascript
+function first() {
+  console.log("First function");
+  second();
+  console.log("First function end");
+}
+
+function second() {
+  console.log("Second function");
+}
+
+first();
+
+// Call Stack visualization:
+// 1. first() is pushed
+// 2. second() is pushed (inside first)
+// 3. second() completes and is popped
+// 4. first() completes and is popped
+```
+
+## Quick Reference
+
+| Concept             | Syntax            | Example                          |
+| ------------------- | ----------------- | -------------------------------- |
+| Print to console    | `console.log()`   | `console.log('Hello');`          |
+| Single-line comment | `//`              | `// This is a comment`           |
+| Multi-line comment  | `/* */`           | `/* Comment */`                  |
+| Alert popup         | `alert()`         | `alert('Message');`              |
+| User input          | `prompt()`        | `prompt('Enter name:');`         |
+| Confirm dialog      | `confirm()`       | `confirm('Are you sure?');`      |
+| External script     | `<script src="">` | `<script src="app.js"></script>` |
+
+## Interview Questions & Answers
+
+### Q1: What is JavaScript and what are its key features?
+
+**Answer:**
+JavaScript is a high-level, interpreted, dynamically-typed programming language primarily used for web development. Key features include:
+
+- **Interpreted**: Code is executed line-by-line by JavaScript engines
+- **Dynamically Typed**: Variable types are determined at runtime
+- **Single-Threaded**: Executes code on one thread but handles async operations via event loop
+- **First-Class Functions**: Functions are treated as values
+- **Prototype-Based**: Inheritance is prototype-based, not class-based (before ES6)
+- **Multi-Paradigm**: Supports procedural, object-oriented, and functional programming
+
+### Q2: What is the difference between client-side and server-side JavaScript?
+
+**Answer:**
+
+- **Client-Side JavaScript** (Browser):
+  - Runs in the user's browser
+  - Used for DOM manipulation, user interactions, form validation
+  - Has access to browser APIs (window, document, localStorage)
+  - Cannot directly access file system or databases
+
+- **Server-Side JavaScript** (Node.js):
+  - Runs on a server using Node.js runtime
+  - Used for backend logic, database operations, file handling
+  - Has access to file system, databases, OS-level operations
+  - No access to browser-specific APIs
+
+### Q3: What are the different ways to include JavaScript in HTML?
+
+**Answer:**
+There are three main ways:
+
+1. **Inline JavaScript** - Inside HTML tags (not recommended):
+
+```html
+<button onclick="alert('Hello')">Click</button>
+```
+
+2. **Internal JavaScript** - Inside `<script>` tags:
+
+```html
+<script>
+  console.log("Hello");
+</script>
+```
+
+3. **External JavaScript** - Separate `.js` file (recommended):
+
+```html
+<script src="script.js"></script>
+```
+
+### Q4: What is the difference between `defer` and `async` attributes in script tags?
+
+**Answer:**
+
+| Attribute  | Behavior                                                     | Use Case                        |
+| ---------- | ------------------------------------------------------------ | ------------------------------- |
+| **Normal** | Blocks HTML parsing until script loads and executes          | Default (place at end of body)  |
+| **defer**  | Downloads in parallel, executes after HTML parsing completes | Scripts that need DOM ready     |
+| **async**  | Downloads in parallel, executes immediately when ready       | Independent scripts (analytics) |
+
+```html
+<script src="script.js"></script>
+<!-- Blocking -->
+<script src="script.js" defer></script>
+<!-- Execute after parsing -->
+<script src="script.js" async></script>
+<!-- Execute asynchronously -->
+```
+
+### Q5: What is the console object and what are its common methods?
+
+**Answer:**
+The `console` object provides access to the browser's debugging console. Common methods:
+
+- `console.log()` - General logging
+- `console.error()` - Error messages (red)
+- `console.warn()` - Warning messages (yellow)
+- `console.info()` - Informational messages
+- `console.table()` - Display data in table format
+- `console.time()` / `console.timeEnd()` - Measure execution time
+- `console.clear()` - Clear the console
+- `console.count()` - Count occurrences
+- `console.group()` / `console.groupEnd()` - Group messages
+
+### Q6: Why should we use semicolons in JavaScript even though they're optional?
+
+**Answer:**
+While JavaScript has Automatic Semicolon Insertion (ASI), it's recommended to use semicolons because:
+
+1. **Prevents ASI bugs**: ASI can fail in certain situations:
+
+```javascript
+let a = 1;
+let b = ((2)[(a, b)] = [b, a]); // Error! ASI doesn't work here
+```
+
+2. **Code clarity**: Makes intent explicit
+3. **Minification safety**: Helps with code compression
+4. **Consistency**: Matches other C-style languages
+
+### Q7: What is the purpose of comments in JavaScript?
+
+**Answer:**
+Comments serve several purposes:
+
+1. **Documentation** - Explain what code does
+2. **Debugging** - Temporarily disable code
+3. **Communication** - Help other developers understand code
+4. **Code organization** - Section headers and structure
+
+```javascript
+// Single-line comment for brief notes
+
+/*
+  Multi-line comment
+  for longer explanations
+*/
+
+/**
+ * JSDoc comment
+ * for function documentation
+ */
+```
+
+### Q8: What happens during JavaScript code execution?
+
+**Answer:**
+JavaScript execution happens in phases:
+
+1. **Creation Phase**:
+   - Memory is allocated for variables and functions
+   - Variables are hoisted (set to `undefined`)
+   - Function declarations are fully hoisted
+
+2. **Execution Phase**:
+   - Code runs line-by-line
+   - Variables get their actual values
+   - Functions are executed when called
+
+3. **Call Stack Management**:
+   - Functions are pushed onto the call stack when called
+   - Functions are popped off when they complete
+
+### Q9: What is the difference between `console.log()`, `alert()`, and `prompt()`?
+
+**Answer:**
+
+| Method          | Purpose              | Returns        | Blocks Execution   |
+| --------------- | -------------------- | -------------- | ------------------ |
+| `console.log()` | Debug logging        | `undefined`    | No                 |
+| `alert()`       | Show message to user | `undefined`    | Yes (until closed) |
+| `prompt()`      | Get user input       | String or null | Yes (until closed) |
+| `confirm()`     | Yes/No dialog        | Boolean        | Yes (until closed) |
+
+```javascript
+console.log("Debug message"); // Logs to console
+alert("Alert message"); // Shows popup
+let name = prompt("Enter your name:"); // Gets input
+let ok = confirm("Are you sure?"); // Returns true/false
+```
+
+### Q10: What are the common mistakes beginners make in JavaScript?
+
+**Answer:**
+Common beginner mistakes include:
+
+1. **Forgetting quotes** around strings
+2. **Case sensitivity** errors (e.g., `Console.log` instead of `console.log`)
+3. **Mismatched parentheses** or brackets
+4. **Confusing assignment (`=`)** with comparison (`==` or `===`)
+5. **Not calling functions** (forgetting parentheses)
+6. **Missing semicolons** in certain contexts
+7. **Using `var`** instead of `let`/`const`
+8. **Not understanding scope** and variable hoisting
+
+---
+
+

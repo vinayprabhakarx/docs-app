@@ -1,0 +1,551 @@
+---
+title: "Spread & Rest - Expanding and Collecting"
+description: Documentation for Spread & Rest - Expanding and Collecting.
+---
+
+# Spread & Rest - Expanding and Collecting
+
+
+
+## What are Spread and Rest?
+
+**Spread (...)** expands an iterable into individual elements. **Rest (...)** collects multiple elements into an array. They use the same syntax but serve opposite purposes.
+
+> **Definition:** The spread operator "unpacks" elements from arrays, objects, or iterables into individual components. The rest operator "packs" multiple elements into a single array or object. The context determines which operation occurs.
+
+```javascript
+// Spread - expands array
+const arr = [1, 2, 3];
+console.log(...arr); // 1 2 3
+
+// Rest - collects into array
+function sum(...numbers) {
+  return numbers.reduce((a, b) => a + b);
+}
+```
+
+## Spread Operator
+
+### Spread in Arrays
+
+```javascript
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+
+// Combine arrays
+const combined = [...arr1, ...arr2];
+console.log(combined); // [1, 2, 3, 4, 5, 6]
+
+// Add elements at any position
+const withExtra = [0, ...arr1, 3.5, ...arr2, 7];
+console.log(withExtra); // [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+
+// Copy array (shallow copy)
+const copy = [...arr1];
+console.log(copy); // [1, 2, 3]
+console.log(copy === arr1); // false (different reference)
+
+// Spread string into characters
+const str = "hello";
+const chars = [...str];
+console.log(chars); // ['h', 'e', 'l', 'l', 'o']
+
+// Spread Set to array
+const set = new Set([1, 2, 2, 3]);
+const arr = [...set]; // [1, 2, 3]
+
+// Spread Map to array of entries
+const map = new Map([
+  ["a", 1],
+  ["b", 2],
+]);
+const entries = [...map]; // [['a', 1], ['b', 2]]
+```
+
+### Spread in Function Calls
+
+```javascript
+const numbers = [1, 5, 3, 9, 2];
+
+// Pass array elements as arguments
+console.log(Math.max(...numbers)); // 9
+console.log(Math.min(...numbers)); // 1
+
+// Old way (apply method)
+console.log(Math.max.apply(null, numbers)); // 9
+
+// Multiple spreads
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+console.log(Math.max(...arr1, ...arr2)); // 4
+
+// Mix spread with regular arguments
+console.log(Math.max(10, ...numbers, 100)); // 100
+
+// Using with any function
+function greet(name, age, city) {
+  console.log(`${name}, ${age}, from ${city}`);
+}
+
+const userData = ["John", 30, "NYC"];
+greet(...userData); // John, 30, from NYC
+```
+
+### Spread in Objects
+
+```javascript
+const user = { name: "John", age: 30 };
+const address = { city: "NYC", country: "USA" };
+
+// Combine objects
+const combined = { ...user, ...address };
+console.log(combined);
+// { name: 'John', age: 30, city: 'NYC', country: 'USA' }
+
+// Copy object (shallow copy)
+const copy = { ...user };
+console.log(copy); // { name: 'John', age: 30 }
+console.log(copy === user); // false
+
+// Override properties
+const updated = { ...user, age: 31 };
+console.log(updated); // { name: 'John', age: 31 }
+
+// Add properties
+const withEmail = { ...user, email: "john@example.com" };
+
+// Spread array into object (indices become keys)
+const arr = ["a", "b", "c"];
+const arrObj = { ...arr }; // { '0': 'a', '1': 'b', '2': 'c' }
+```
+
+### Spread Order Matters
+
+```javascript
+const defaults = { theme: "light", fontSize: 14, language: "en" };
+const userPrefs = { theme: "dark" };
+
+// User preferences override defaults (later wins)
+const settings1 = { ...defaults, ...userPrefs };
+console.log(settings1); // { theme: 'dark', fontSize: 14, language: 'en' }
+
+// Defaults override user preferences (wrong order)
+const settings2 = { ...userPrefs, ...defaults };
+console.log(settings2); // { theme: 'light', fontSize: 14, language: 'en' }
+
+// Property at specific position
+const settings3 = { ...defaults, theme: "dark", ...{ debug: true } };
+```
+
+### Shallow Copy Warning
+
+```javascript
+// ⚠️ Spread creates shallow copy only!
+const nested = { a: 1, b: { c: 2 } };
+const copy = { ...nested };
+
+copy.a = 100; // Original not affected
+copy.b.c = 200; // Original IS affected!
+
+console.log(nested.a); // 1 (unchanged)
+console.log(nested.b.c); // 200 (changed!)
+
+// Same with arrays
+const nestedArr = [
+  [1, 2],
+  [3, 4],
+];
+const arrCopy = [...nestedArr];
+arrCopy[0][0] = 99;
+console.log(nestedArr[0][0]); // 99 (changed!)
+```
+
+## Rest Parameters
+
+### Basic Rest Parameters
+
+```javascript
+// Collect all arguments
+function sum(...numbers) {
+  return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
+
+// Rest with other parameters (must be last)
+function greet(greeting, ...names) {
+  return `${greeting}, ${names.join(" and ")}!`;
+}
+
+console.log(greet("Hello", "John")); // Hello, John!
+console.log(greet("Hello", "John", "Jane", "Bob"));
+// Hello, John and Jane and Bob!
+
+// Rest gives you a real array (unlike arguments)
+function example(...args) {
+  console.log(Array.isArray(args)); // true
+  return args.map((x) => x * 2); // Array methods work!
+}
+```
+
+### Rest in Destructuring
+
+```javascript
+// Array destructuring
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(second); // 2
+console.log(rest); // [3, 4, 5]
+
+// Object destructuring
+const user = {
+  name: "John",
+  age: 30,
+  city: "NYC",
+  country: "USA",
+};
+
+const { name, age, ...address } = user;
+console.log(name); // 'John'
+console.log(age); // 30
+console.log(address); // { city: 'NYC', country: 'USA' }
+```
+
+### Rest Must Be Last
+
+```javascript
+// ✅ Correct - rest is last
+function example(a, b, ...rest) {
+  console.log(a, b, rest);
+}
+
+// ❌ Error - rest must be last parameter
+// function example(...rest, a, b) { }
+
+// ❌ Error in destructuring too
+// const [first, ...rest, last] = [1, 2, 3, 4]; // SyntaxError!
+
+// ✅ Correct
+const [first, ...rest] = [1, 2, 3, 4];
+```
+
+## Spread vs Rest Comparison
+
+| Feature  | Spread                                          | Rest                               |
+| -------- | ----------------------------------------------- | ---------------------------------- |
+| Purpose  | Expands/unpacks                                 | Collects/packs                     |
+| Location | Array literals, function calls, object literals | Function parameters, destructuring |
+| Example  | `[...arr]`                                      | `function(...args)`                |
+| Result   | Individual elements                             | Array/object                       |
+
+```javascript
+// Spread - unpacks array into elements
+const arr = [1, 2, 3];
+console.log(...arr); // 1 2 3 (three separate values)
+
+// Rest - packs elements into array
+function example(...args) {
+  console.log(args); // [1, 2, 3] (one array)
+}
+example(1, 2, 3);
+```
+
+## Practical Use Cases
+
+### 1. Merging Arrays
+
+```javascript
+const fruits = ["apple", "banana"];
+const vegetables = ["carrot", "potato"];
+const dairy = ["milk", "cheese"];
+
+// Merge multiple arrays
+const groceries = [...fruits, ...vegetables, ...dairy];
+
+// Add items while merging
+const shopping = ["bread", ...fruits, "eggs", ...vegetables];
+```
+
+### 2. Cloning Arrays and Objects
+
+```javascript
+// Clone array
+const original = [1, 2, 3];
+const clone = [...original];
+
+// Clone object
+const user = { name: "John", age: 30 };
+const userCopy = { ...user };
+
+// ⚠️ Shallow copy only - nested objects are still references!
+```
+
+### 3. Deep Clone (JSON method)
+
+```javascript
+// Simple deep clone (limitations: no functions, dates become strings)
+const deepClone = JSON.parse(JSON.stringify(original));
+
+// Using structuredClone (modern browsers)
+const deepCopy = structuredClone(original);
+```
+
+### 4. Immutable Updates
+
+```javascript
+// Update array immutably
+const todos = ["Task 1", "Task 2"];
+const newTodos = [...todos, "Task 3"]; // Add
+const removed = todos.filter((_, i) => i !== 0); // Remove
+
+// Update object immutably
+const user = { name: "John", age: 30 };
+const updated = { ...user, age: 31 }; // Update property
+const withEmail = { ...user, email: "john@example.com" }; // Add property
+
+// Update nested property immutably
+const state = {
+  user: { name: "John", address: { city: "NYC" } },
+};
+
+const newState = {
+  ...state,
+  user: {
+    ...state.user,
+    address: {
+      ...state.user.address,
+      city: "LA",
+    },
+  },
+};
+```
+
+### 5. Function Arguments
+
+```javascript
+// Convert arguments to array
+function oldWay() {
+  const args = Array.prototype.slice.call(arguments);
+  console.log(args);
+}
+
+// ✅ Modern way with rest
+function modernWay(...args) {
+  console.log(args);
+}
+
+// Flexible parameters
+function createUser(name, age, ...permissions) {
+  return {
+    name,
+    age,
+    permissions, // Array of all remaining arguments
+  };
+}
+
+createUser("John", 30, "read", "write", "delete");
+// { name: 'John', age: 30, permissions: ['read', 'write', 'delete'] }
+```
+
+### 6. Removing Properties
+
+```javascript
+const user = {
+  id: 1,
+  name: "John",
+  password: "secret",
+  email: "john@example.com",
+};
+
+// Remove password
+const { password, ...publicUser } = user;
+console.log(publicUser);
+// { id: 1, name: 'John', email: 'john@example.com' }
+
+// Remove multiple properties
+const { password: pwd, email: mail, ...minimal } = user;
+console.log(minimal); // { id: 1, name: 'John' }
+```
+
+### 7. Conditional Properties
+
+```javascript
+const includeEmail = true;
+
+const user = {
+  name: "John",
+  age: 30,
+  ...(includeEmail && { email: "john@example.com" }),
+};
+
+// If includeEmail is true: { name: 'John', age: 30, email: '...' }
+// If includeEmail is false: { name: 'John', age: 30 }
+
+// Multiple conditions
+const config = {
+  ...baseConfig,
+  ...(isDev && devConfig),
+  ...(isProd && prodConfig),
+};
+```
+
+### 8. Array Manipulation
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// Insert at position
+const insertAt = (arr, index, ...items) => [
+  ...arr.slice(0, index),
+  ...items,
+  ...arr.slice(index),
+];
+
+console.log(insertAt(numbers, 2, 99, 100));
+// [1, 2, 99, 100, 3, 4, 5]
+
+// Remove at position
+const removeAt = (arr, index) => [
+  ...arr.slice(0, index),
+  ...arr.slice(index + 1),
+];
+
+// Remove duplicates
+const withDuplicates = [1, 2, 2, 3, 3, 4];
+const unique = [...new Set(withDuplicates)];
+console.log(unique); // [1, 2, 3, 4]
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between spread and rest operators?
+
+Although they use identical syntax (...), spread and rest serve opposite purposes determined by context. Spread expands or "unpacks" an array, object, or iterable into individual elements. It's used in array literals, object literals, and function calls. Rest collects or "packs" multiple elements into a single array or object. It's used in function parameters and destructuring. Think of spread as taking one thing and making many, while rest takes many things and makes one. For example, `Math.max(...arr)` spreads array elements as separate arguments, while `function sum(...nums)` collects all arguments into the nums array.
+
+---
+
+### Q2: Does the spread operator create a deep copy or shallow copy?
+
+Spread creates a shallow copy, meaning it only copies the first level of properties or elements. Nested objects and arrays are copied by reference, not by value. If you modify a nested object in the copy, it affects the original. For true deep copying, you can use `JSON.parse(JSON.stringify(obj))` for simple objects without functions, dates, or circular references, or use `structuredClone()` in modern browsers, or libraries like Lodash's cloneDeep. Understanding this is crucial for state management in React and similar frameworks where immutability matters.
+
+---
+
+### Q3: Can you use rest parameters with arrow functions?
+
+Yes, rest parameters work identically in arrow functions and regular functions. The syntax is `const sum = (...numbers) => numbers.reduce((a, b) => a + b, 0)`. Rest parameters are actually more useful with arrow functions because arrow functions don't have their own `arguments` object. Before rest parameters, accessing all arguments in functions required the `arguments` keyword, which doesn't exist in arrow functions. Rest parameters provide a modern, cleaner way to handle variable numbers of arguments that works consistently in all function types.
+
+---
+
+### Q4: How do you conditionally add properties to an object using spread?
+
+Use the logical AND operator with spread to conditionally include properties: `{ ...obj, ...(condition && { key: value }) }`. If the condition is true, the object `{ key: value }` is spread into the result. If false, the expression evaluates to false, and spreading false has no effect on the resulting object. This pattern is useful for building configuration objects, API request bodies, or component props where certain properties should only be included based on runtime conditions. You can chain multiple conditions for different optional properties.
+
+---
+
+### Q5: What is the difference between spread in function calls and array literals?
+
+In function calls, spread passes array elements as separate arguments: `Math.max(...[1, 2, 3])` is equivalent to `Math.max(1, 2, 3)`. In array literals, spread copies elements into a new array: `[...arr1, ...arr2]` creates a new array containing all elements. The practical difference is that function call spread doesn't create an array - it just distributes values - while array literal spread always produces a new array. Both expand iterables, but the destination determines the result type. Function call spread is useful when you have data in an array but the function expects separate arguments.
+
+---
+
+### Q6: Why must rest parameters be the last parameter?
+
+Rest parameters must be last because they collect "all remaining" arguments. If REST weren't last, there would be no way to determine where the "remaining" arguments start. For example, in `function(a, ...rest, b)`, how would JavaScript know which argument is `b`? The rest operator is greedy and takes everything left over, so anything after it would be unreachable. This rule applies in both function parameters and destructuring. The same logic explains why you can only have one rest parameter per function or destructuring pattern.
+
+---
+
+### Q7: How do you use spread to merge objects with defaults?
+
+Create a new object with defaults first, then spread the specific values after: `{ ...defaults, ...userPrefs }`. Because later properties override earlier ones, user preferences take precedence over defaults. The order matters: `{ ...userPrefs, ...defaults }` would let defaults override user choices, which is usually wrong. This pattern is common for configuration objects, function options, and state updates. You can add more spreads: `{ ...defaults, ...userPrefs, ...overrides }` for layered configurations. Always remember that this creates shallow merges - nested objects need special handling.
+
+---
+
+### Q8: How does spread differ from Array.concat() and Object.assign()?
+
+Spread, concat, and Object.assign can achieve similar results, but spread is generally preferred for its cleaner syntax. For arrays, `[...arr1, ...arr2]` versus `arr1.concat(arr2)` - spread is more readable and allows mixing in individual elements easily. For objects, `{ ...obj1, ...obj2 }` versus `Object.assign({}, obj1, obj2)` - spread doesn't mutate the first argument while Object.assign does unless you pass an empty object first. Both create shallow copies. Spread is also more flexible - you can spread strings and Sets, while concat only works with arrays.
+
+---
+
+### Q9: What happens when you spread an empty array or object?
+
+Spreading an empty array or object is perfectly valid and common. Spreading an empty array `[...[], 1, 2]` results in `[1, 2]` - it contributes nothing. Spreading an empty object `{ ...{}, a: 1 }` results in `{ a: 1 }` - also contributes nothing. This is actually useful for conditional spreading: `{ ...(condition ? obj : {}) }` safely handles the false case. Spreading null or undefined throws an error in object context and returns nothing in array iteration. Always ensure what you're spreading is a valid array, object, or iterable.
+
+---
+
+### Q10: How do you use spread for immutable state updates?
+
+Immutable updates are crucial in React and Redux. For objects, spread existing properties then override: `{ ...state, count: state.count + 1 }`. For arrays, use spread to add `[...arr, newItem]`, or with slice to remove `[...arr.slice(0, i), ...arr.slice(i + 1)]`. For nested updates, spread at each level: `{ ...state, user: { ...state.user, name: 'New' } }`. This creates new references without mutating original data. Tools like Immer simplify deeply nested updates by letting you write "mutating" code that produces immutable results behind the scenes.
+
+## Practical Examples
+
+```javascript
+// Example 1: Merge with defaults
+function createConfig(userConfig = {}) {
+  const defaults = {
+    timeout: 5000,
+    retries: 3,
+    debug: false,
+  };
+  return { ...defaults, ...userConfig };
+}
+
+// Example 2: Immutable array operations
+const todos = ["Task 1", "Task 2", "Task 3"];
+
+// Add
+const add = [...todos, "Task 4"];
+
+// Remove by index
+const removeAt = (arr, index) => [
+  ...arr.slice(0, index),
+  ...arr.slice(index + 1),
+];
+
+// Update by index
+const updateAt = (arr, index, value) => [
+  ...arr.slice(0, index),
+  value,
+  ...arr.slice(index + 1),
+];
+
+// Example 3: Function composition
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((v, f) => f(v), x);
+
+const double = (x) => x * 2;
+const increment = (x) => x + 1;
+const square = (x) => x * x;
+
+const compute = pipe(double, increment, square);
+console.log(compute(3)); // ((3 * 2) + 1)² = 49
+
+// Example 4: Safe object updates
+function updateUser(user, updates) {
+  return {
+    ...user,
+    ...updates,
+    updatedAt: new Date(),
+  };
+}
+
+// Example 5: Extract and transform
+const users = [
+  { id: 1, name: "John", role: "admin" },
+  { id: 2, name: "Jane", role: "user" },
+];
+
+const [admin, ...regularUsers] = users;
+const userNames = regularUsers.map(({ name }) => name);
+
+// Example 6: Collect remaining arguments
+function logWithPrefix(prefix, ...messages) {
+  messages.forEach((msg) => console.log(`${prefix}: ${msg}`));
+}
+
+logWithPrefix("DEBUG", "Starting", "Processing", "Done");
+```
+
+

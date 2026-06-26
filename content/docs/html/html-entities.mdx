@@ -1,0 +1,200 @@
+---
+title: "HTML Entities - Special Characters"
+description: Documentation for HTML Entities - Special Characters.
+---
+
+# HTML Entities - Special Characters
+
+
+
+## What are HTML Entities?
+
+HTML entities are codes used to display characters that have special meaning in HTML or are not available on standard keyboards.
+
+> **Definition:** HTML entities start with `&` and end with `;`. They can be named (like `&copy;`) or numeric (like `&#169;` or `&#x00A9;`). Use them for reserved characters, special symbols, and characters not on your keyboard.
+
+## Reserved Characters
+
+These characters must be escaped because they have special meaning in HTML.
+
+| Character | Entity   | Numeric | Purpose                   |
+| --------- | -------- | ------- | ------------------------- |
+| `<`       | `&lt;`   | `&#60;` | Less than / tag open      |
+| `>`       | `&gt;`   | `&#62;` | Greater than / tag close  |
+| `&`       | `&amp;`  | `&#38;` | Ampersand                 |
+| `"`       | `&quot;` | `&#34;` | Double quote              |
+| `'`       | `&apos;` | `&#39;` | Single quote / apostrophe |
+
+```html
+<!-- Displaying HTML code -->
+<p>Use &lt;strong&gt; for bold text.</p>
+
+<!-- Ampersand in text -->
+<p>Tom &amp; Jerry</p>
+
+<!-- Quotes in attributes -->
+<input value='She said "Hello"' />
+```
+
+## Common Symbols
+
+| Symbol | Entity     | Description          |
+| ------ | ---------- | -------------------- |
+| ©      | `&copy;`   | Copyright            |
+| ®      | `&reg;`    | Registered trademark |
+| ™      | `&trade;`  | Trademark            |
+| •      | `&bull;`   | Bullet point         |
+| …      | `&hellip;` | Horizontal ellipsis  |
+| —      | `&mdash;`  | Em dash              |
+| –      | `&ndash;`  | En dash              |
+| °      | `&deg;`    | Degree               |
+| ±      | `&plusmn;` | Plus-minus           |
+| ×      | `&times;`  | Multiplication       |
+| ÷      | `&divide;` | Division             |
+| €      | `&euro;`   | Euro                 |
+| £      | `&pound;`  | Pound                |
+| ¥      | `&yen;`    | Yen                  |
+| ¢      | `&cent;`   | Cent                 |
+| ₹      | `&#8377;`  | Indian Rupee         |
+
+```html
+<p>&copy; 2024 Company Name. All rights reserved.</p>
+<p>Temperature: 72&deg;F (22&deg;C)</p>
+<p>Price: &euro;99.99 or &pound;85</p>
+<p>5 &times; 10 = 50</p>
+```
+
+## Whitespace Entities
+
+| Entity     | Description        |
+| ---------- | ------------------ |
+| `&nbsp;`   | Non-breaking space |
+| `&ensp;`   | En space (1/2 em)  |
+| `&emsp;`   | Em space (1 em)    |
+| `&thinsp;` | Thin space         |
+
+```html
+<!-- Non-breaking space prevents line break -->
+<p>100&nbsp;km</p>
+<p>Mr.&nbsp;Smith</p>
+<p>10:00&nbsp;AM</p>
+
+<!-- Multiple spaces (don't use for layout) -->
+<p>Indented&emsp;&emsp;text</p>
+```
+
+## Arrows
+
+| Symbol | Entity   | Description  |
+| ------ | -------- | ------------ |
+| ←      | `&larr;` | Left arrow   |
+| →      | `&rarr;` | Right arrow  |
+| ↑      | `&uarr;` | Up arrow     |
+| ↓      | `&darr;` | Down arrow   |
+| ↔      | `&harr;` | Left-right   |
+| ⇐      | `&lArr;` | Double left  |
+| ⇒      | `&rArr;` | Double right |
+
+```html
+<p>Previous &larr; &rarr; Next</p>
+<p>Select &rarr; Continue &rarr; Submit</p>
+```
+
+## Math Symbols
+
+| Symbol | Entity    | Description      |
+| ------ | --------- | ---------------- |
+| ∞      | `&infin;` | Infinity         |
+| √      | `&radic;` | Square root      |
+| ∑      | `&sum;`   | Sum              |
+| π      | `&pi;`    | Pi               |
+| ≠      | `&ne;`    | Not equal        |
+| ≤      | `&le;`    | Less or equal    |
+| ≥      | `&ge;`    | Greater or equal |
+| ≈      | `&asymp;` | Approximately    |
+
+```html
+<p>&radic;16 = 4</p>
+<p>&pi; &asymp; 3.14159</p>
+<p>x &ne; y</p>
+<p>a &le; b &le; c</p>
+```
+
+## Quotation Marks
+
+| Symbol | Entity    | Description        |
+| ------ | --------- | ------------------ |
+| "      | `&ldquo;` | Left double quote  |
+| "      | `&rdquo;` | Right double quote |
+| '      | `&lsquo;` | Left single quote  |
+| '      | `&rsquo;` | Right single quote |
+| «      | `&laquo;` | Left guillemet     |
+| »      | `&raquo;` | Right guillemet    |
+
+```html
+<p>&ldquo;To be or not to be&rdquo;</p>
+<p>It&rsquo;s a beautiful day</p>
+<p>&laquo;Bonjour&raquo;</p>
+```
+
+## Greek Letters
+
+| Symbol | Entity    | Name  |
+| ------ | --------- | ----- |
+| α      | `&alpha;` | Alpha |
+| β      | `&beta;`  | Beta  |
+| γ      | `&gamma;` | Gamma |
+| δ      | `&delta;` | Delta |
+| Ω      | `&Omega;` | Omega |
+| Σ      | `&Sigma;` | Sigma |
+
+## Emoji via Unicode
+
+```html
+<!-- Using numeric entities -->
+<p>&#128512;</p>
+<!-- 😀 -->
+<p>&#10084;</p>
+<!-- ❤ -->
+<p>&#9733;</p>
+<!-- ★ -->
+<p>&#10003;</p>
+<!-- ✓ -->
+<p>&#10007;</p>
+<!-- ✗ -->
+
+<!-- Modern approach: use actual emoji (with UTF-8) -->
+<p>😀 🎉 ✅ ❌</p>
+```
+
+## Interview Questions & Answers
+
+### Q1: Why do we need HTML entities?
+
+HTML entities are needed for three main reasons: displaying reserved characters that have special meaning in HTML (like `<`, `>`, `&`), showing characters not available on the keyboard (like ©, ™, €), and ensuring consistent rendering across different character encodings. Without entities, browsers would interpret `<div>` as an actual div tag rather than displaying the text. They also help with characters that might not display correctly without proper encoding.
+
+---
+
+### Q2: What's the difference between `&nbsp;` and a regular space?
+
+A regular space can be collapsed (multiple spaces become one) and allows line breaks. `&nbsp;` (non-breaking space) prevents the browser from collapsing multiple spaces and prevents line breaks at that point. Use it to keep words together (like "100 km" or "Mr. Smith") or when you specifically need multiple spaces. Don't use multiple `&nbsp;` for layout - use CSS instead. Regular spaces are for normal word separation.
+
+---
+
+### Q3: Should you use named or numeric entities?
+
+Named entities (like `&copy;`) are more readable and easier to remember. Numeric entities (like `&#169;` or `&#x00A9;`) cover all Unicode characters while named entities only exist for common ones. For reserved characters and common symbols, use named entities. For special characters without names, use numeric. The hexadecimal form (`&#x00A9;`) matches Unicode code points directly. Both render identically - choose based on readability and availability.
+
+---
+
+### Q4: When should you escape quotes?
+
+Escape quotes when they're inside attribute values using the same quote type: `value="She said &quot;Hello&quot;"`. If using single quotes for attributes, escape single quotes inside. In general HTML content, quotes usually don't need escaping. Best practice: use different quote types (`value='He said "Hi"'`) when possible, or escape with entities when necessary. Always escape in JavaScript strings within HTML.
+
+---
+
+### Q5: With UTF-8, do we still need entities?
+
+With proper UTF-8 encoding, you can use many special characters directly (€, ©, emoji) without entities. However, you still need entities for: reserved HTML characters (`<`, `>`, `&`), non-breaking spaces (`&nbsp;`), and characters difficult to type or distinguish visually. Some special characters may also cause issues in certain contexts. Using entities for reserved characters is always required for valid HTML.
+
+

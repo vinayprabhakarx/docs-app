@@ -1,0 +1,1095 @@
+---
+title: "Object Methods - Manipulating Objects"
+description: Documentation for Object Methods - Manipulating Objects.
+---
+
+# Object Methods - Manipulating Objects
+
+
+
+## What are Object Methods?
+
+**Object methods** are static functions on the `Object` constructor that allow you to inspect, manipulate, transform, and control objects. They are essential tools for working with object data structures in JavaScript.
+
+> **Key Concept:** Object methods are called on `Object` itself (e.g., `Object.keys()`), not on object instances. These are **static methods**, unlike array methods which are called on array instances.
+
+### Why Use Object Methods?
+
+| Benefit               | Description                                   |
+| --------------------- | --------------------------------------------- |
+| **Inspection**        | Examine object structure, keys, values        |
+| **Transformation**    | Convert between objects and arrays            |
+| **Immutability**      | Freeze or seal objects to prevent changes     |
+| **Prototype Control** | Create objects with specific prototype chains |
+| **Property Control**  | Define properties with specific attributes    |
+
+## Object Methods - Quick Reference
+
+| Method                         | Purpose                    | Returns                      |
+| ------------------------------ | -------------------------- | ---------------------------- |
+| `Object.keys()`                | Get all keys               | Array of keys                |
+| `Object.values()`              | Get all values             | Array of values              |
+| `Object.entries()`             | Get key-value pairs        | Array of [key, value] arrays |
+| `Object.fromEntries()`         | Create object from entries | New object                   |
+| `Object.assign()`              | Merge objects              | Merged object                |
+| `Object.freeze()`              | Make immutable             | Frozen object                |
+| `Object.seal()`                | Prevent add/delete         | Sealed object                |
+| `Object.create()`              | Create with prototype      | New object                   |
+| `Object.hasOwn()`              | Check own property         | Boolean                      |
+| `Object.getOwnPropertyNames()` | Get all property names     | Array (incl. non-enumerable) |
+| `Object.defineProperty()`      | Define property attributes | Modified object              |
+
+## Object.keys() - Get All Keys
+
+Returns an array of the object's **own enumerable** property names.
+
+> **Definition:** `Object.keys()` extracts only the object's own properties (not inherited) that are enumerable, returning them as an array of strings.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+  city: "NYC",
+};
+
+let keys = Object.keys(person);
+console.log(keys); // ['name', 'age', 'city']
+
+// Iterate over keys
+Object.keys(person).forEach((key) => {
+  console.log(`${key}: ${person[key]}`);
+});
+// name: John
+// age: 25
+// city: NYC
+
+// Count properties
+let count = Object.keys(person).length;
+console.log(count); // 3
+
+// Check if object is empty
+let isEmpty = Object.keys(person).length === 0;
+console.log(isEmpty); // false
+```
+
+> **Note:** Order of keys follows insertion order for string keys, but numeric keys are sorted first.
+
+```javascript
+let obj = { b: 1, 2: "two", a: 2, 1: "one" };
+console.log(Object.keys(obj)); // ['1', '2', 'b', 'a']
+// Numeric keys come first (sorted), then string keys (insertion order)
+```
+
+## Object.values() - Get All Values
+
+Returns an array of the object's **own enumerable** property values.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+  city: "NYC",
+};
+
+let values = Object.values(person);
+console.log(values); // ['John', 25, 'NYC']
+
+// Sum numeric values
+let scores = { math: 90, english: 85, science: 92 };
+let total = Object.values(scores).reduce((sum, score) => sum + score, 0);
+console.log(total); // 267
+
+// Find max value
+let max = Math.max(...Object.values(scores));
+console.log(max); // 92
+
+// Check if value exists
+let hasNYC = Object.values(person).includes("NYC");
+console.log(hasNYC); // true
+```
+
+## Object.entries() - Get Key-Value Pairs
+
+Returns an array of `[key, value]` pairs, perfect for iteration and transformation.
+
+> **Definition:** `Object.entries()` converts an object into an array of arrays, where each inner array contains a key-value pair. This enables powerful array methods to be used on object data.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+  city: "NYC",
+};
+
+let entries = Object.entries(person);
+console.log(entries);
+// [['name', 'John'], ['age', 25], ['city', 'NYC']]
+
+// Iterate with destructuring (most powerful pattern)
+for (let [key, value] of Object.entries(person)) {
+  console.log(`${key}: ${value}`);
+}
+
+// Convert to Map
+let map = new Map(Object.entries(person));
+console.log(map.get("name")); // 'John'
+
+// Filter object properties
+let filtered = Object.entries(person).filter(
+  ([key, value]) => typeof value === "string",
+);
+console.log(filtered); // [['name', 'John'], ['city', 'NYC']]
+
+// Transform values
+let doubled = Object.entries({ a: 1, b: 2, c: 3 }).map(([key, value]) => [
+  key,
+  value * 2,
+]);
+console.log(doubled); // [['a', 2], ['b', 4], ['c', 6]]
+```
+
+## Object.fromEntries() - Create Object from Entries
+
+The **reverse** of `Object.entries()` - converts an array of key-value pairs back into an object.
+
+> **Use Case:** Essential for transforming objects, since you can convert to entries, use array methods, then convert back.
+
+```javascript
+// From array of pairs
+let entries = [
+  ["name", "John"],
+  ["age", 25],
+  ["city", "NYC"],
+];
+let person = Object.fromEntries(entries);
+console.log(person); // { name: 'John', age: 25, city: 'NYC' }
+
+// From Map
+let map = new Map([
+  ["a", 1],
+  ["b", 2],
+]);
+let obj = Object.fromEntries(map);
+console.log(obj); // { a: 1, b: 2 }
+
+// Transform object values (powerful pattern!)
+let prices = { apple: 1.99, banana: 0.99, orange: 2.49 };
+
+let discounted = Object.fromEntries(
+  Object.entries(prices).map(([item, price]) => [item, price * 0.9]),
+);
+console.log(discounted);
+// { apple: 1.791, banana: 0.891, orange: 2.241 }
+
+// Filter object properties
+let scores = { math: 90, english: 75, science: 85 };
+
+let passed = Object.fromEntries(
+  Object.entries(scores).filter(([subject, score]) => score >= 80),
+);
+console.log(passed); // { math: 90, science: 85 }
+
+// Rename object keys
+let user = { firstName: "John", lastName: "Doe" };
+
+let renamed = Object.fromEntries(
+  Object.entries(user).map(([key, value]) => [key.toLowerCase(), value]),
+);
+console.log(renamed); // { firstname: 'John', lastname: 'Doe' }
+```
+
+## Object.assign() - Merge Objects
+
+Copies properties from source objects to a target object. **Modifies the target**.
+
+> **Warning:** `Object.assign()` performs a **shallow copy** - nested objects are copied by reference, not cloned.
+
+```javascript
+// Basic merge (modifies target!)
+let target = { a: 1, b: 2 };
+let source = { b: 3, c: 4 };
+
+Object.assign(target, source);
+console.log(target); // { a: 1, b: 3, c: 4 } - target modified!
+
+// Create new object (common safe pattern)
+let obj1 = { a: 1, b: 2 };
+let obj2 = { b: 3, c: 4 };
+let merged = Object.assign({}, obj1, obj2);
+console.log(merged); // { a: 1, b: 3, c: 4 }
+console.log(obj1); // { a: 1, b: 2 } - unchanged
+
+// Multiple sources (later sources overwrite)
+let defaults = { theme: "light", lang: "en", debug: false };
+let userPrefs = { theme: "dark" };
+let overrides = { debug: true };
+
+let config = Object.assign({}, defaults, userPrefs, overrides);
+console.log(config); // { theme: 'dark', lang: 'en', debug: true }
+
+// Clone object (shallow)
+let original = { name: "John", age: 25 };
+let clone = Object.assign({}, original);
+console.log(clone); // { name: 'John', age: 25 }
+```
+
+### Object.assign() vs Spread Operator
+
+Both perform shallow merging, but spread is generally preferred for its cleaner syntax.
+
+```javascript
+let obj1 = { a: 1, b: 2 };
+let obj2 = { b: 3, c: 4 };
+
+// Object.assign() - older approach
+let merged1 = Object.assign({}, obj1, obj2);
+
+// Spread operator (ES6+) - preferred
+let merged2 = { ...obj1, ...obj2 };
+
+// Both produce: { a: 1, b: 3, c: 4 }
+```
+
+| Feature      | Object.assign()         | Spread Operator          |
+| ------------ | ----------------------- | ------------------------ |
+| **Syntax**   | More verbose            | Cleaner                  |
+| **Mutates**  | Yes (target object)     | No (creates new object)  |
+| **Setters**  | Triggers setters        | Does not trigger setters |
+| **Use case** | When mutation is needed | General merging          |
+
+## Object.freeze() - Make Immutable
+
+Makes an object **completely immutable** - no modifications, additions, or deletions allowed.
+
+> **Important:** `Object.freeze()` is **shallow** - nested objects are NOT frozen automatically.
+
+```javascript
+let person = Object.freeze({
+  name: "John",
+  age: 25,
+});
+
+// Cannot modify
+person.age = 30; // Silently fails (strict mode: throws error)
+console.log(person.age); // 25 (unchanged)
+
+// Cannot add
+person.city = "NYC"; // Silently fails
+console.log(person.city); // undefined
+
+// Cannot delete
+delete person.name; // Silently fails
+console.log(person.name); // 'John' (still there)
+
+// Check if frozen
+console.log(Object.isFrozen(person)); // true
+```
+
+### Shallow Freeze Problem
+
+```javascript
+let user = Object.freeze({
+  name: "John",
+  address: { city: "NYC" },
+});
+
+// Nested object is NOT frozen!
+user.address.city = "LA"; // Works!
+console.log(user.address.city); // 'LA'
+
+// Deep freeze solution
+function deepFreeze(obj) {
+  Object.freeze(obj);
+  Object.values(obj).forEach((value) => {
+    if (typeof value === "object" && value !== null) {
+      deepFreeze(value);
+    }
+  });
+  return obj;
+}
+
+let frozen = deepFreeze({ a: { b: { c: 1 } } });
+```
+
+## Object.seal() - Prevent Add/Delete
+
+Prevents adding or deleting properties, but **allows modification** of existing values.
+
+> **Use Case:** When you want a fixed structure but mutable values.
+
+```javascript
+let person = Object.seal({
+  name: "John",
+  age: 25,
+});
+
+// CAN modify existing
+person.age = 30;
+console.log(person.age); // 30 ✅
+
+// Cannot add new
+person.city = "NYC"; // Silently fails
+console.log(person.city); // undefined
+
+// Cannot delete
+delete person.name; // Silently fails
+console.log(person.name); // 'John' (still there)
+
+// Check if sealed
+console.log(Object.isSealed(person)); // true
+```
+
+### Comparison: freeze() vs seal() vs preventExtensions()
+
+| Operation         | freeze()            | seal()              | preventExtensions()     |
+| ----------------- | ------------------- | ------------------- | ----------------------- |
+| Modify values     | ❌ No               | ✅ Yes              | ✅ Yes                  |
+| Add properties    | ❌ No               | ❌ No               | ❌ No                   |
+| Delete properties | ❌ No               | ❌ No               | ✅ Yes                  |
+| Check method      | `Object.isFrozen()` | `Object.isSealed()` | `Object.isExtensible()` |
+| Use case          | Constants           | Fixed structure     | No new properties       |
+
+```javascript
+// preventExtensions() - least restrictive
+let obj = Object.preventExtensions({ a: 1 });
+obj.a = 2; // ✅ Works
+delete obj.a; // ✅ Works
+obj.b = 3; // ❌ Fails
+```
+
+## Object.create() - Create with Prototype
+
+Creates a new object with the specified prototype object.
+
+> **Definition:** `Object.create()` gives you precise control over an object's prototype chain, useful for inheritance patterns.
+
+```javascript
+// Create object with null prototype (pure dictionary)
+let dict = Object.create(null);
+dict.hello = "world";
+console.log(dict.toString); // undefined (no inherited methods)
+console.log("hello" in dict); // true
+
+// Create with prototype
+let personProto = {
+  greet() {
+    return `Hello, I'm ${this.name}`;
+  },
+  introduce() {
+    return `${this.name}, ${this.age} years old`;
+  },
+};
+
+let person = Object.create(personProto);
+person.name = "John";
+person.age = 25;
+
+console.log(person.greet()); // "Hello, I'm John"
+console.log(person.introduce()); // "John, 25 years old"
+
+// With property descriptors
+let person2 = Object.create(personProto, {
+  name: {
+    value: "Jane",
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+  age: {
+    value: 30,
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+});
+
+console.log(person2.name); // 'Jane'
+console.log(person2.greet()); // "Hello, I'm Jane"
+```
+
+### Object.create(null) vs {}
+
+```javascript
+// Regular object inherits from Object.prototype
+let regular = {};
+console.log(regular.toString); // [Function: toString]
+console.log("toString" in regular); // true
+
+// Object.create(null) - no prototype
+let pure = Object.create(null);
+console.log(pure.toString); // undefined
+console.log("toString" in pure); // false
+
+// Use case: Safe key-value storage (no prototype pollution)
+let cache = Object.create(null);
+cache["constructor"] = "value"; // Safe! No conflict
+```
+
+## Object.hasOwn() - Check Own Property
+
+Modern way to check if an object has a property as its **own** (not inherited) property. **(ES2022)**
+
+> **Why Object.hasOwn()?** It's safer than `hasOwnProperty()` because it works even on objects with no prototype.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+};
+
+// Modern way (ES2022) - preferred
+console.log(Object.hasOwn(person, "name")); // true
+console.log(Object.hasOwn(person, "city")); // false
+console.log(Object.hasOwn(person, "toString")); // false (inherited)
+
+// Old way (still works)
+console.log(person.hasOwnProperty("name")); // true
+
+// Why hasOwn is better:
+let obj = Object.create(null); // No prototype!
+obj.key = "value";
+
+// obj.hasOwnProperty("key");    // ❌ Error! Object has no prototype
+console.log(Object.hasOwn(obj, "key")); // ✅ true (works!)
+```
+
+## Object.getOwnPropertyNames() - Get All Property Names
+
+Returns all own property names, **including non-enumerable** ones.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+};
+
+// Define non-enumerable property
+Object.defineProperty(person, "id", {
+  value: 123,
+  enumerable: false, // Won't show in for...in or Object.keys()
+});
+
+// Object.keys() - only enumerable
+console.log(Object.keys(person)); // ['name', 'age']
+
+// Object.getOwnPropertyNames() - ALL own properties
+console.log(Object.getOwnPropertyNames(person)); // ['name', 'age', 'id']
+
+// Useful for debugging
+console.log(Object.getOwnPropertyNames([]));
+// ['length'] - arrays have non-enumerable 'length' property
+
+console.log(Object.getOwnPropertyNames(Array.prototype).slice(0, 5));
+// ['length', 'constructor', 'concat', 'copyWithin', 'fill']
+```
+
+## Object.defineProperty() - Define Property with Attributes
+
+Define or modify a property with specific attributes (writable, enumerable, configurable).
+
+> **Use Case:** Create read-only properties, hidden properties, or computed properties with getters/setters.
+
+### Property Attributes
+
+| Attribute      | Default   | Description                              |
+| -------------- | --------- | ---------------------------------------- |
+| `value`        | undefined | The property value                       |
+| `writable`     | false     | Can the value be changed?                |
+| `enumerable`   | false     | Shows in for...in and Object.keys()?     |
+| `configurable` | false     | Can property be deleted or reconfigured? |
+| `get`          | undefined | Getter function                          |
+| `set`          | undefined | Setter function                          |
+
+```javascript
+let person = {};
+
+// Basic property definition
+Object.defineProperty(person, "name", {
+  value: "John",
+  writable: true, // Can be changed
+  enumerable: true, // Shows in Object.keys()
+  configurable: true, // Can be deleted/reconfigured
+});
+
+console.log(person.name); // 'John'
+
+// Read-only property
+Object.defineProperty(person, "id", {
+  value: 123,
+  writable: false, // Cannot be changed
+  enumerable: true,
+  configurable: false, // Cannot be deleted
+});
+
+person.id = 456; // Silently fails
+console.log(person.id); // 123 (unchanged)
+
+// Hidden property (non-enumerable)
+Object.defineProperty(person, "_secret", {
+  value: "hidden",
+  enumerable: false, // Won't show in Object.keys()
+});
+
+console.log(Object.keys(person)); // ['name', 'id'] - no _secret!
+console.log(person._secret); // 'hidden' - but still accessible
+
+// Getter and Setter
+Object.defineProperty(person, "age", {
+  get() {
+    return this._age || 0;
+  },
+  set(value) {
+    if (value < 0) throw new Error("Age cannot be negative");
+    this._age = value;
+  },
+  enumerable: true,
+});
+
+person.age = 25;
+console.log(person.age); // 25
+// person.age = -5;      // Error: Age cannot be negative
+```
+
+### Object.defineProperties() - Multiple Properties
+
+```javascript
+let person = {};
+
+Object.defineProperties(person, {
+  firstName: {
+    value: "John",
+    writable: true,
+    enumerable: true,
+  },
+  lastName: {
+    value: "Doe",
+    writable: true,
+    enumerable: true,
+  },
+  fullName: {
+    get() {
+      return `${this.firstName} ${this.lastName}`;
+    },
+    enumerable: true,
+  },
+});
+
+console.log(person.fullName); // "John Doe"
+```
+
+## Object.getOwnPropertyDescriptor() - Inspect Property
+
+Get the descriptor for a specific property.
+
+```javascript
+let person = { name: "John" };
+
+let descriptor = Object.getOwnPropertyDescriptor(person, "name");
+console.log(descriptor);
+// {
+//   value: 'John',
+//   writable: true,
+//   enumerable: true,
+//   configurable: true
+// }
+
+// Get all descriptors
+let descriptors = Object.getOwnPropertyDescriptors(person);
+console.log(descriptors);
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between Object.keys() and Object.getOwnPropertyNames()?
+
+**Answer:**
+
+| Feature            | Object.keys()              | Object.getOwnPropertyNames() |
+| ------------------ | -------------------------- | ---------------------------- |
+| **Returns**        | Enumerable properties only | All own properties           |
+| **Non-enumerable** | ❌ Excluded                | ✅ Included                  |
+| **Use case**       | Normal iteration           | Complete property inspection |
+
+```javascript
+let obj = { visible: 1 };
+Object.defineProperty(obj, "hidden", {
+  value: 2,
+  enumerable: false,
+});
+
+console.log(Object.keys(obj)); // ['visible']
+console.log(Object.getOwnPropertyNames(obj)); // ['visible', 'hidden']
+```
+
+**When to use which:**
+
+- `Object.keys()` - Most common, for iterating over "visible" properties
+- `Object.getOwnPropertyNames()` - Debugging, introspection, or when you need ALL properties
+
+---
+
+### Q2: Explain Object.freeze() vs Object.seal() vs Object.preventExtensions().
+
+**Answer:**
+
+| Operation         | freeze()    | seal() | preventExtensions() |
+| ----------------- | ----------- | ------ | ------------------- |
+| Modify values     | ❌ No       | ✅ Yes | ✅ Yes              |
+| Add properties    | ❌ No       | ❌ No  | ❌ No               |
+| Delete properties | ❌ No       | ❌ No  | ✅ Yes              |
+| Reconfigure props | ❌ No       | ❌ No  | ✅ Yes              |
+| Strictness level  | Most strict | Medium | Least strict        |
+
+```javascript
+// All three are SHALLOW - only affect top level
+
+let frozen = Object.freeze({ a: 1, nested: { b: 2 } });
+frozen.a = 10; // ❌ Fails
+frozen.nested.b = 20; // ✅ Works! (nested not frozen)
+
+// Use cases:
+// freeze() - True constants, configuration objects
+// seal() - Objects with fixed schema but mutable values
+// preventExtensions() - Prevent new properties only
+```
+
+---
+
+### Q3: How do you deep clone an object?
+
+**Answer:**
+
+There are several approaches, each with trade-offs:
+
+```javascript
+let original = {
+  name: "John",
+  address: { city: "NYC" },
+  date: new Date(),
+  fn: function () {},
+};
+
+// Method 1: JSON (limitations with functions, dates, undefined)
+let clone1 = JSON.parse(JSON.stringify(original));
+// ❌ Functions are lost
+// ❌ Dates become strings
+// ❌ undefined values are lost
+// ❌ Circular references throw error
+
+// Method 2: structuredClone() (ES2022+ - recommended)
+let clone2 = structuredClone(original);
+// ✅ Handles dates, Maps, Sets, ArrayBuffer
+// ❌ Does not clone functions
+// ✅ Handles circular references
+
+// Method 3: Recursive function
+function deepClone(obj) {
+  if (obj === null || typeof obj !== "object") return obj;
+  if (obj instanceof Date) return new Date(obj);
+  if (Array.isArray(obj)) return obj.map(deepClone);
+
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, deepClone(v)]),
+  );
+}
+
+// Method 4: Libraries (Lodash)
+// let clone4 = _.cloneDeep(original);
+```
+
+| Method           | Functions | Dates     | Circular | Browser Support |
+| ---------------- | --------- | --------- | -------- | --------------- |
+| JSON             | ❌ Lost   | ❌ String | ❌ Error | All             |
+| structuredClone  | ❌ Error  | ✅ Works  | ✅ Works | Modern          |
+| Manual recursive | Depends   | ✅ Works  | ❌ No    | All             |
+| Lodash cloneDeep | ✅ Works  | ✅ Works  | ✅ Works | All             |
+
+---
+
+### Q4: What is the difference between Object.assign() and spread operator?
+
+**Answer:**
+
+Both perform **shallow merging**, but have subtle differences:
+
+| Feature              | Object.assign()          | Spread `{...}`        |
+| -------------------- | ------------------------ | ------------------- |
+| **Syntax**           | More verbose             | Cleaner             |
+| **Mutates**          | ✅ Yes (modifies target) | ❌ No (creates new) |
+| **Triggers setters** | ✅ Yes                   | ❌ No               |
+| **Non-enumerable**   | Skips                    | Skips               |
+
+```javascript
+let obj1 = { a: 1 };
+let obj2 = { b: 2 };
+
+// Object.assign mutates first argument
+Object.assign(obj1, obj2);
+console.log(obj1); // { a: 1, b: 2 } - modified!
+
+// Spread creates new object
+let merged = { ...obj1, ...obj2 }; // obj1 unchanged
+
+// Setter behavior difference
+let target = {
+  set name(val) {
+    console.log("Setter called:", val);
+  },
+};
+
+Object.assign(target, { name: "John" }); // Logs: "Setter called: John"
+let spread = { ...target, name: "John" }; // No log (setter not triggered)
+```
+
+**Recommendation:** Use spread for most cases; use `Object.assign()` when you specifically need to modify an existing object or trigger setters.
+
+---
+
+### Q5: What is Object.create(null) and when would you use it?
+
+**Answer:**
+
+`Object.create(null)` creates an object with **no prototype**, meaning no inherited properties or methods.
+
+```javascript
+let regularObj = {};
+let nullProtoObj = Object.create(null);
+
+// Regular object inherits from Object.prototype
+console.log(regularObj.toString); // [Function: toString]
+console.log("toString" in regularObj); // true
+
+// Null prototype has no inherited methods
+console.log(nullProtoObj.toString); // undefined
+console.log("toString" in nullProtoObj); // false
+```
+
+**Use cases:**
+
+1. **Safe dictionaries/maps** - No prototype pollution concerns
+2. **Cache objects** - Keys like "constructor" or "toString" won't conflict
+3. **Performance** - Slightly faster property lookups (no prototype chain)
+
+```javascript
+// Problem with regular objects as maps
+let cache = {};
+cache["constructor"] = "value";
+console.log(cache.constructor); // [Function: Object] - unexpected!
+
+// Solution: null prototype
+let safeCache = Object.create(null);
+safeCache["constructor"] = "value";
+console.log(safeCache.constructor); // "value" - as expected!
+```
+
+---
+
+### Q6: How do you iterate over object properties safely?
+
+**Answer:**
+
+```javascript
+let person = { name: "John", age: 25 };
+
+// Method 1: Object.keys() + forEach (recommended)
+Object.keys(person).forEach((key) => {
+  console.log(`${key}: ${person[key]}`);
+});
+
+// Method 2: Object.entries() + for...of (most flexible)
+for (let [key, value] of Object.entries(person)) {
+  console.log(`${key}: ${value}`);
+}
+
+// Method 3: for...in (use with caution)
+for (let key in person) {
+  // IMPORTANT: Always use hasOwnProperty to skip inherited props
+  if (Object.hasOwn(person, key)) {
+    // or person.hasOwnProperty(key)
+    console.log(`${key}: ${person[key]}`);
+  }
+}
+```
+
+**Why for...in can be problematic:**
+
+```javascript
+Object.prototype.customProp = "inherited";
+
+let obj = { a: 1 };
+for (let key in obj) {
+  console.log(key); // "a", "customProp" - includes inherited!
+}
+
+// Safe with check
+for (let key in obj) {
+  if (Object.hasOwn(obj, key)) {
+    console.log(key); // "a" only
+  }
+}
+```
+
+---
+
+### Q7: How do you make a property read-only?
+
+**Answer:**
+
+```javascript
+// Method 1: Object.defineProperty
+let user = {};
+Object.defineProperty(user, "id", {
+  value: 123,
+  writable: false, // Cannot be changed
+  configurable: false, // Cannot be redefined
+  enumerable: true,
+});
+
+user.id = 456; // Silently fails (error in strict mode)
+console.log(user.id); // 123
+
+// Method 2: Getter only (no setter)
+let person = {
+  _birthYear: 1990,
+  get age() {
+    return new Date().getFullYear() - this._birthYear;
+  },
+  // No setter = read-only
+};
+
+console.log(person.age); // Calculated
+person.age = 30; // Silently fails
+console.log(person.age); // Still calculated
+
+// Method 3: Object.freeze (for entire object)
+let config = Object.freeze({
+  API_KEY: "secret",
+  VERSION: "1.0",
+});
+```
+
+---
+
+### Q8: Explain property descriptors in JavaScript.
+
+**Answer:**
+
+Every object property has a **descriptor** that defines its behavior:
+
+```javascript
+// Data descriptor (most common)
+{
+  value: any,         // The property value
+  writable: boolean,  // Can value be changed?
+  enumerable: boolean, // Shows in for...in/Object.keys?
+  configurable: boolean // Can be deleted/reconfigured?
+}
+
+// Accessor descriptor (getters/setters)
+{
+  get: function,      // Called when property is read
+  set: function,      // Called when property is written
+  enumerable: boolean,
+  configurable: boolean
+}
+```
+
+**Note:** A property can be either data descriptor OR accessor descriptor, not both.
+
+```javascript
+// Inspect existing descriptors
+let obj = { name: "John" };
+console.log(Object.getOwnPropertyDescriptor(obj, "name"));
+// { value: 'John', writable: true, enumerable: true, configurable: true }
+
+// Properties created with defineProperty have false defaults
+Object.defineProperty(obj, "id", { value: 123 });
+console.log(Object.getOwnPropertyDescriptor(obj, "id"));
+// { value: 123, writable: false, enumerable: false, configurable: false }
+```
+
+---
+
+### Q9: How do you check if two objects are equal?
+
+**Answer:**
+
+Objects are compared by **reference**, not value. Two objects with identical properties are NOT equal.
+
+```javascript
+let obj1 = { name: "John" };
+let obj2 = { name: "John" };
+let obj3 = obj1;
+
+console.log(obj1 === obj2); // false (different references)
+console.log(obj1 === obj3); // true (same reference)
+
+// Shallow equality check
+function shallowEqual(obj1, obj2) {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  return keys1.every((key) => obj1[key] === obj2[key]);
+}
+
+// Deep equality check
+function deepEqual(obj1, obj2) {
+  if (obj1 === obj2) return true;
+  if (typeof obj1 !== "object" || typeof obj2 !== "object") return false;
+  if (obj1 === null || obj2 === null) return false;
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  return keys1.every((key) => deepEqual(obj1[key], obj2[key]));
+}
+
+// Quick check (limited - ordering matters, ignores functions)
+JSON.stringify(obj1) === JSON.stringify(obj2);
+```
+
+---
+
+### Q10: What is the prototype chain and how does it relate to Object methods?
+
+**Answer:**
+
+The prototype chain is how JavaScript implements inheritance. When accessing a property, JavaScript looks up the chain until found or reaches `null`.
+
+```javascript
+let animal = {
+  eats: true,
+  walk() {
+    console.log("Walking");
+  },
+};
+
+let dog = Object.create(animal);
+dog.barks = true;
+
+// Property lookup follows the chain
+console.log(dog.barks); // true (own property)
+console.log(dog.eats); // true (inherited from animal)
+console.log(dog.fly); // undefined (not found in chain)
+
+// The chain:
+// dog → animal → Object.prototype → null
+
+// Check property origin
+console.log(Object.hasOwn(dog, "barks")); // true (own)
+console.log(Object.hasOwn(dog, "eats")); // false (inherited)
+console.log("eats" in dog); // true (in chain)
+
+// Get the prototype
+console.log(Object.getPrototypeOf(dog) === animal); // true
+```
+
+## Practical Examples
+
+### Example 1: Transform Object Keys
+
+```javascript
+let user = { firstName: "john", lastName: "doe", userAge: 25 };
+
+// Convert to SCREAMING_SNAKE_CASE
+let transformed = Object.fromEntries(
+  Object.entries(user).map(([key, value]) => [
+    key.replace(/([A-Z])/g, "_$1").toUpperCase(),
+    value,
+  ]),
+);
+console.log(transformed);
+// { FIRST_NAME: 'john', LAST_NAME: 'doe', USER_AGE: 25 }
+```
+
+### Example 2: Filter Object by Value Type
+
+```javascript
+let data = {
+  name: "John",
+  age: 25,
+  active: true,
+  score: 85.5,
+  email: "john@example.com",
+};
+
+// Get only string values
+let strings = Object.fromEntries(
+  Object.entries(data).filter(([key, value]) => typeof value === "string"),
+);
+console.log(strings); // { name: 'John', email: 'john@example.com' }
+
+// Get only numeric values
+let numbers = Object.fromEntries(
+  Object.entries(data).filter(([key, value]) => typeof value === "number"),
+);
+console.log(numbers); // { age: 25, score: 85.5 }
+```
+
+### Example 3: Merge with Defaults
+
+```javascript
+function createUser(options = {}) {
+  const defaults = {
+    role: "user",
+    active: true,
+    theme: "light",
+    notifications: true,
+  };
+
+  return { ...defaults, ...options };
+}
+
+let user1 = createUser({ name: "John", role: "admin" });
+console.log(user1);
+// { role: 'admin', active: true, theme: 'light', notifications: true, name: 'John' }
+```
+
+### Example 4: Create Immutable Configuration
+
+```javascript
+const Config = Object.freeze({
+  API_URL: "https://api.example.com",
+  TIMEOUT: 5000,
+  MAX_RETRIES: 3,
+  FEATURES: Object.freeze({
+    darkMode: true,
+    notifications: true,
+  }),
+});
+
+// Cannot modify
+Config.API_URL = "https://hacked.com"; // Fails
+Config.FEATURES.darkMode = false; // Fails (we froze nested too)
+
+console.log(Config.API_URL); // Still "https://api.example.com"
+```
+
+### Example 5: Property Counter by Type
+
+```javascript
+let data = {
+  a: 1,
+  b: "hello",
+  c: true,
+  d: 2,
+  e: "world",
+  f: null,
+  g: undefined,
+};
+
+let typeCounts = Object.values(data).reduce((acc, val) => {
+  let type = val === null ? "null" : typeof val;
+  acc[type] = (acc[type] || 0) + 1;
+  return acc;
+}, {});
+
+console.log(typeCounts);
+// { number: 2, string: 2, boolean: 1, null: 1, undefined: 1 }
+```
+
+

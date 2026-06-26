@@ -1,0 +1,959 @@
+---
+title: "Array Methods - Powerful Array Manipulation"
+description: Documentation for Array Methods - Powerful Array Manipulation.
+---
+
+# Array Methods - Powerful Array Manipulation
+
+
+
+## What are Array Methods?
+
+**Array methods** are built-in functions attached to all arrays that allow you to manipulate, transform, search, and iterate over array elements efficiently. They are fundamental to modern JavaScript development and functional programming patterns.
+
+> **Key Concept:** Most array methods are **higher-order functions** - they take a callback function as an argument and apply it to array elements.
+
+### Why Use Array Methods?
+
+| Benefit              | Description                                               |
+| -------------------- | --------------------------------------------------------- |
+| **Cleaner Code**     | Declarative syntax vs manual loops                        |
+| **Immutability**     | Many methods return new arrays without modifying original |
+| **Chainability**     | Methods can be linked together for complex operations     |
+| **Functional Style** | Enables functional programming patterns                   |
+| **Less Error-Prone** | No off-by-one errors or manual index management           |
+
+## Array Methods - Quick Reference
+
+| Method        | Purpose                      | Returns              | Modifies Original? |
+| ------------- | ---------------------------- | -------------------- | ------------------ |
+| `map()`       | Transform each element       | New array            | ❌ No              |
+| `filter()`    | Select elements by condition | New array            | ❌ No              |
+| `reduce()`    | Reduce to single value       | Any value            | ❌ No              |
+| `forEach()`   | Execute function on each     | undefined            | ❌ No              |
+| `find()`      | Find first matching element  | Element or undefined | ❌ No              |
+| `findIndex()` | Find index of first match    | Index or -1          | ❌ No              |
+| `some()`      | Check if any match           | Boolean              | ❌ No              |
+| `every()`     | Check if all match           | Boolean              | ❌ No              |
+| `includes()`  | Check if value exists        | Boolean              | ❌ No              |
+| `indexOf()`   | Find index of value          | Index or -1          | ❌ No              |
+| `sort()`      | Sort array                   | Sorted array         | ✅ Yes             |
+| `reverse()`   | Reverse array                | Reversed array       | ✅ Yes             |
+| `flat()`      | Flatten nested arrays        | New array            | ❌ No              |
+| `flatMap()`   | Map then flatten             | New array            | ❌ No              |
+
+## 1. map() - Transform Elements
+
+Creates a **new array** by applying a transformation function to each element. The original array remains unchanged.
+
+> **Definition:** `map()` applies a callback function to every element and returns a new array with the transformed values. The new array always has the same length as the original.
+
+### Syntax
+
+```javascript
+array.map((element, index, array) => {
+  return transformedElement;
+});
+```
+
+**Parameters explained:**
+
+- `element` - The current element being processed
+- `index` - The index of the current element (optional)
+- `array` - The original array (optional, rarely used)
+
+### Examples
+
+```javascript
+// Example 1: Double each number
+let numbers = [1, 2, 3, 4, 5];
+let doubled = numbers.map((num) => num * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+console.log(numbers); // [1, 2, 3, 4, 5] - original unchanged!
+
+// Example 2: Extract property from objects
+let users = [
+  { name: "John", age: 25 },
+  { name: "Jane", age: 30 },
+  { name: "Bob", age: 35 },
+];
+
+let names = users.map((user) => user.name);
+console.log(names); // ['John', 'Jane', 'Bob']
+
+// Example 3: Using index parameter
+let numbers2 = [10, 20, 30];
+let indexed = numbers2.map((num, index) => `${index}: ${num}`);
+console.log(indexed); // ['0: 10', '1: 20', '2: 30']
+
+// Example 4: Convert to JSX/HTML elements
+let fruits = ["apple", "banana", "orange"];
+let html = fruits.map((fruit) => `<li>${fruit}</li>`);
+console.log(html);
+// ['<li>apple</li>', '<li>banana</li>', '<li>orange</li>']
+
+// Example 5: Transform object structure
+let products = [
+  { name: "Laptop", price: 999 },
+  { name: "Phone", price: 699 },
+];
+
+let formatted = products.map((p) => ({
+  item: p.name,
+  cost: `$${p.price.toFixed(2)}`,
+}));
+console.log(formatted);
+// [{ item: 'Laptop', cost: '$999.00' }, { item: 'Phone', cost: '$699.00' }]
+```
+
+> **Common Mistake:** Forgetting to `return` in the callback. Without return, you'll get an array of `undefined` values.
+
+## 2. filter() - Select Elements
+
+Creates a **new array** containing only elements that pass a test (return `true` from the callback).
+
+> **Definition:** `filter()` tests each element with a callback function. Elements that pass the test (return truthy) are included in the new array.
+
+### Syntax
+
+```javascript
+array.filter((element, index, array) => {
+  return condition; // true to keep, false to remove
+});
+```
+
+### Examples
+
+```javascript
+// Example 1: Filter even numbers
+let numbers = [1, 2, 3, 4, 5, 6];
+let evens = numbers.filter((num) => num % 2 === 0);
+console.log(evens); // [2, 4, 6]
+
+// Example 2: Filter by object property
+let users = [
+  { name: "John", age: 17 },
+  { name: "Jane", age: 25 },
+  { name: "Bob", age: 30 },
+];
+
+let adults = users.filter((user) => user.age >= 18);
+console.log(adults);
+// [{ name: 'Jane', age: 25 }, { name: 'Bob', age: 30 }]
+
+// Example 3: Remove falsy values
+let mixed = [0, 1, "", "hello", null, undefined, false, true];
+let truthy = mixed.filter(Boolean);
+console.log(truthy); // [1, 'hello', true]
+
+// Example 4: Remove duplicates (using index)
+let numbers2 = [1, 2, 2, 3, 4, 4, 5];
+let unique = numbers2.filter((num, index, arr) => arr.indexOf(num) === index);
+console.log(unique); // [1, 2, 3, 4, 5]
+
+// Example 5: Filter by multiple conditions
+let products = [
+  { name: "Laptop", price: 999, inStock: true },
+  { name: "Phone", price: 699, inStock: false },
+  { name: "Tablet", price: 499, inStock: true },
+];
+
+let available = products.filter((p) => p.inStock && p.price < 800);
+console.log(available); // [{ name: 'Tablet', price: 499, inStock: true }]
+
+// Example 6: Search functionality
+let items = ["apple", "banana", "apricot", "orange"];
+let searchTerm = "ap";
+let results = items.filter((item) =>
+  item.toLowerCase().includes(searchTerm.toLowerCase()),
+);
+console.log(results); // ['apple', 'apricot']
+```
+
+> **Tip:** Use `filter(Boolean)` as a quick way to remove all falsy values (0, "", null, undefined, false, NaN) from an array.
+
+## 3. reduce() - Reduce to Single Value
+
+The most powerful array method - reduces an array to a **single value** by applying an accumulator function.
+
+> **Definition:** `reduce()` executes a "reducer" callback on each element, passing the return value to the next iteration. The final result is a single accumulated value (which can be any type).
+
+### Syntax
+
+```javascript
+array.reduce((accumulator, currentValue, index, array) => {
+  return newAccumulator;
+}, initialValue);
+```
+
+**Parameters explained:**
+
+- `accumulator` - The accumulated result from previous iterations
+- `currentValue` - The current element being processed
+- `index` - The current index (optional)
+- `array` - The original array (optional)
+- `initialValue` - Starting value for accumulator (highly recommended!)
+
+### Examples
+
+```javascript
+// Example 1: Sum all numbers
+let numbers = [1, 2, 3, 4, 5];
+let sum = numbers.reduce((total, num) => total + num, 0);
+console.log(sum); // 15
+
+// Step-by-step visualization:
+// Initial: total = 0
+// Step 1: total = 0 + 1 = 1
+// Step 2: total = 1 + 2 = 3
+// Step 3: total = 3 + 3 = 6
+// Step 4: total = 6 + 4 = 10
+// Step 5: total = 10 + 5 = 15
+
+// Example 2: Find maximum value
+let nums = [5, 12, 8, 130, 44];
+let max = nums.reduce((max, num) => (num > max ? num : max), nums[0]);
+console.log(max); // 130
+
+// Example 3: Count occurrences (frequency counter)
+let fruits = ["apple", "banana", "apple", "orange", "banana", "apple"];
+let count = fruits.reduce((acc, fruit) => {
+  acc[fruit] = (acc[fruit] || 0) + 1;
+  return acc;
+}, {});
+console.log(count); // { apple: 3, banana: 2, orange: 1 }
+
+// Example 4: Flatten nested array
+let nested = [
+  [1, 2],
+  [3, 4],
+  [5, 6],
+];
+let flattened = nested.reduce((acc, arr) => acc.concat(arr), []);
+console.log(flattened); // [1, 2, 3, 4, 5, 6]
+
+// Example 5: Group by property
+let users = [
+  { name: "John", role: "admin" },
+  { name: "Jane", role: "user" },
+  { name: "Bob", role: "admin" },
+  { name: "Alice", role: "user" },
+];
+
+let grouped = users.reduce((acc, user) => {
+  if (!acc[user.role]) acc[user.role] = [];
+  acc[user.role].push(user.name);
+  return acc;
+}, {});
+console.log(grouped);
+// { admin: ['John', 'Bob'], user: ['Jane', 'Alice'] }
+
+// Example 6: Pipeline/compose functions
+let pipeline = [(x) => x + 1, (x) => x * 2, (x) => x - 3];
+
+let result = pipeline.reduce((val, fn) => fn(val), 5);
+console.log(result); // ((5 + 1) * 2) - 3 = 9
+
+// Example 7: Calculate average
+let scores = [85, 90, 78, 92, 88];
+let average = scores.reduce((acc, score, index, arr) => {
+  acc += score;
+  if (index === arr.length - 1) {
+    return acc / arr.length;
+  }
+  return acc;
+}, 0);
+console.log(average); // 86.6
+```
+
+> **Warning:** Always provide an `initialValue` to avoid unexpected behavior with empty arrays or type mismatches.
+
+## 4. forEach() - Execute Function on Each
+
+Executes a function for each element. **Does not return anything** (returns `undefined`).
+
+> **Definition:** `forEach()` is used for side effects only - logging, DOM manipulation, or modifying external variables. Unlike `map()`, it doesn't create a new array.
+
+### Examples
+
+```javascript
+// Example 1: Log each element
+let numbers = [1, 2, 3, 4, 5];
+numbers.forEach((num) => console.log(num));
+// Logs: 1, 2, 3, 4, 5
+
+// Example 2: With index
+let fruits = ["apple", "banana", "orange"];
+fruits.forEach((fruit, index) => {
+  console.log(`${index + 1}. ${fruit}`);
+});
+// 1. apple
+// 2. banana
+// 3. orange
+
+// Example 3: Modify external variable (side effect)
+let sum = 0;
+numbers.forEach((num) => {
+  sum += num;
+});
+console.log(sum); // 15
+
+// Example 4: DOM manipulation (common use case)
+// document.querySelectorAll('.btn').forEach(btn => {
+//   btn.addEventListener('click', handleClick);
+// });
+```
+
+### forEach() Limitations
+
+```javascript
+// ❌ Cannot break or return early from forEach
+let numbers = [1, 2, 3, 4, 5];
+
+numbers.forEach((num) => {
+  if (num === 3) return; // Only skips current iteration, doesn't break
+  console.log(num);
+});
+// Logs: 1, 2, 4, 5 (3 is skipped, but loop continues)
+
+// ✅ Use regular for loop if you need to break
+for (let num of numbers) {
+  if (num === 3) break;
+  console.log(num);
+}
+// Logs: 1, 2 (stops at 3)
+```
+
+> **Key Difference from map():** `forEach()` is for side effects; `map()` is for transformations. If you need a new array, use `map()`.
+
+## 5. find() and findIndex()
+
+Find the **first** element or index that matches a condition.
+
+> **Definition:**
+>
+> - `find()` returns the first element that passes the test, or `undefined` if none found
+> - `findIndex()` returns the index of the first match, or `-1` if none found
+
+### Examples
+
+```javascript
+let numbers = [5, 12, 8, 130, 44];
+
+// find() - returns element
+let found = numbers.find((num) => num > 10);
+console.log(found); // 12 (first element > 10)
+
+// findIndex() - returns index
+let index = numbers.findIndex((num) => num > 10);
+console.log(index); // 1 (index of 12)
+
+// With objects (most common use case)
+let users = [
+  { id: 1, name: "John" },
+  { id: 2, name: "Jane" },
+  { id: 3, name: "Bob" },
+];
+
+let user = users.find((u) => u.id === 2);
+console.log(user); // { id: 2, name: 'Jane' }
+
+let userIndex = users.findIndex((u) => u.id === 2);
+console.log(userIndex); // 1
+
+// Not found cases
+let notFound = numbers.find((num) => num > 200);
+console.log(notFound); // undefined
+
+let notFoundIndex = numbers.findIndex((num) => num > 200);
+console.log(notFoundIndex); // -1
+```
+
+### find() vs filter()
+
+```javascript
+let numbers = [5, 12, 8, 130, 44];
+
+// find() - returns FIRST match only
+let first = numbers.find((num) => num > 10);
+console.log(first); // 12
+
+// filter() - returns ALL matches
+let all = numbers.filter((num) => num > 10);
+console.log(all); // [12, 130, 44]
+```
+
+## 6. some() and every()
+
+Test whether **any** or **all** elements pass a condition.
+
+> **Definition:**
+>
+> - `some()` returns `true` if **at least one** element passes the test
+> - `every()` returns `true` only if **all** elements pass the test
+
+### Examples
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+
+// some() - at least one matches (like OR)
+let hasEven = numbers.some((num) => num % 2 === 0);
+console.log(hasEven); // true (2 and 4 are even)
+
+let hasNegative = numbers.some((num) => num < 0);
+console.log(hasNegative); // false
+
+// every() - all must match (like AND)
+let allPositive = numbers.every((num) => num > 0);
+console.log(allPositive); // true
+
+let allEven = numbers.every((num) => num % 2 === 0);
+console.log(allEven); // false
+
+// With objects - form validation example
+let users = [
+  { name: "John", age: 25, verified: true },
+  { name: "Jane", age: 30, verified: true },
+  { name: "Bob", age: 17, verified: false },
+];
+
+let hasMinor = users.some((user) => user.age < 18);
+console.log(hasMinor); // true
+
+let allVerified = users.every((user) => user.verified);
+console.log(allVerified); // false
+
+let allAdults = users.every((user) => user.age >= 18);
+console.log(allAdults); // false
+```
+
+> **Short-circuit behavior:**
+>
+> - `some()` stops as soon as it finds a `true` result
+> - `every()` stops as soon as it finds a `false` result
+
+## 7. includes() and indexOf()
+
+Simple value checking methods.
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+// includes() - returns boolean
+console.log(fruits.includes("banana")); // true
+console.log(fruits.includes("grape")); // false
+
+// indexOf() - returns index or -1
+console.log(fruits.indexOf("banana")); // 1
+console.log(fruits.indexOf("grape")); // -1
+
+// ⚠️ Cannot check objects with includes/indexOf (reference comparison)
+let users = [{ name: "John" }, { name: "Jane" }];
+console.log(users.includes({ name: "John" })); // false!
+
+// Use find() for objects
+let hasJohn = users.find((u) => u.name === "John") !== undefined;
+console.log(hasJohn); // true
+```
+
+## 8. sort() - Sort Array (Mutates!)
+
+Sorts array elements **in place** (modifies original).
+
+> **Warning:** `sort()` is one of the few array methods that **mutates** the original array!
+
+### Default Behavior (String Sort)
+
+```javascript
+// ⚠️ Default sort converts to strings
+let numbers = [10, 5, 40, 25, 100];
+numbers.sort();
+console.log(numbers); // [10, 100, 25, 40, 5] - Wrong! (string comparison)
+```
+
+### Custom Compare Function
+
+```javascript
+// Ascending order
+let numbers = [10, 5, 40, 25, 100];
+numbers.sort((a, b) => a - b);
+console.log(numbers); // [5, 10, 25, 40, 100]
+
+// Descending order
+numbers.sort((a, b) => b - a);
+console.log(numbers); // [100, 40, 25, 10, 5]
+
+// Sort objects by property
+let users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 },
+  { name: "Bob", age: 35 },
+];
+
+// Sort by age (ascending)
+users.sort((a, b) => a.age - b.age);
+console.log(users);
+// [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }, { name: 'Bob', age: 35 }]
+
+// Sort by name (alphabetical)
+users.sort((a, b) => a.name.localeCompare(b.name));
+console.log(users);
+// [{ name: 'Bob', ... }, { name: 'Jane', ... }, { name: 'John', ... }]
+```
+
+### Non-Mutating Sort
+
+```javascript
+// Create sorted copy without modifying original
+let original = [3, 1, 4, 1, 5];
+let sorted = [...original].sort((a, b) => a - b);
+
+console.log(original); // [3, 1, 4, 1, 5] - unchanged
+console.log(sorted); // [1, 1, 3, 4, 5]
+
+// Using toSorted() (ES2023)
+let sorted2 = original.toSorted((a, b) => a - b);
+```
+
+## 9. flat() and flatMap()
+
+Handle nested arrays.
+
+```javascript
+// flat() - flatten nested arrays
+let nested = [1, [2, 3], [4, [5, 6]]];
+
+console.log(nested.flat()); // [1, 2, 3, 4, [5, 6]] - depth 1
+console.log(nested.flat(2)); // [1, 2, 3, 4, 5, 6] - depth 2
+console.log(nested.flat(Infinity)); // Flatten any depth
+
+// flatMap() - map + flat (depth 1)
+let sentences = ["Hello world", "How are you"];
+let words = sentences.flatMap((s) => s.split(" "));
+console.log(words); // ['Hello', 'world', 'How', 'are', 'you']
+
+// Equivalent to:
+let words2 = sentences.map((s) => s.split(" ")).flat();
+```
+
+## Method Chaining
+
+Combine multiple methods for powerful, readable transformations.
+
+```javascript
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Chain: filter even → map to square → reduce to sum
+let result = numbers
+  .filter((num) => num % 2 === 0) // [2, 4, 6, 8, 10]
+  .map((num) => num * num) // [4, 16, 36, 64, 100]
+  .reduce((sum, num) => sum + num, 0); // 220
+
+console.log(result); // 220
+
+// Example 2: Process user data
+let users = [
+  { name: "John", age: 25, active: true },
+  { name: "Jane", age: 17, active: true },
+  { name: "Bob", age: 30, active: false },
+  { name: "Alice", age: 22, active: true },
+];
+
+let activeAdultNames = users
+  .filter((user) => user.active)
+  .filter((user) => user.age >= 18)
+  .map((user) => user.name)
+  .sort();
+
+console.log(activeAdultNames); // ['Alice', 'John']
+
+// Example 3: Data pipeline
+let orders = [
+  { product: "Laptop", price: 999, qty: 1 },
+  { product: "Phone", price: 699, qty: 2 },
+  { product: "Tablet", price: 499, qty: 1 },
+];
+
+let summary = orders
+  .map((order) => ({ ...order, total: order.price * order.qty }))
+  .filter((order) => order.total > 500)
+  .reduce((acc, order) => acc + order.total, 0);
+
+console.log(summary); // 2397
+```
+
+## Comparison: map vs filter vs reduce
+
+| Method     | Purpose                 | Returns                 | Example                              |
+| ---------- | ----------------------- | ----------------------- | ------------------------------------ |
+| `map()`    | Transform each element  | New array (same length) | `[1,2,3].map(x => x*2)` → `[2,4,6]`  |
+| `filter()` | Select elements         | New array (≤ length)    | `[1,2,3].filter(x => x>1)` → `[2,3]` |
+| `reduce()` | Combine to single value | Any value               | `[1,2,3].reduce((a,b) => a+b)` → `6` |
+
+## Interview Questions & Answers
+
+### Q1: What is the difference between map() and forEach()?
+
+**Answer:**
+
+| Feature       | map()                    | forEach()            |
+| ------------- | ------------------------ | -------------------- |
+| **Returns**   | New array                | undefined            |
+| **Purpose**   | Transform data           | Side effects         |
+| **Chainable** | ✅ Yes                   | ❌ No                |
+| **Use case**  | Create transformed array | Logging, DOM updates |
+
+```javascript
+// map() - returns new array
+let doubled = [1, 2, 3].map((x) => x * 2);
+console.log(doubled); // [2, 4, 6]
+
+// forEach() - no return, used for side effects
+[1, 2, 3].forEach((x) => console.log(x));
+// Returns: undefined
+```
+
+**Key Rule:** Use `map()` when you need a transformed array; use `forEach()` for operations that don't need a return value.
+
+---
+
+### Q2: How does reduce() work internally?
+
+**Answer:**
+
+`reduce()` iterates through the array, maintaining an "accumulator" that carries forward the result of each iteration.
+
+```javascript
+let sum = [1, 2, 3, 4].reduce((acc, num) => {
+  console.log(`acc: ${acc}, num: ${num}, result: ${acc + num}`);
+  return acc + num;
+}, 0);
+
+// Output:
+// acc: 0, num: 1, result: 1
+// acc: 1, num: 2, result: 3
+// acc: 3, num: 3, result: 6
+// acc: 6, num: 4, result: 10
+// Final sum: 10
+```
+
+**Without initial value (not recommended):**
+
+- First array element becomes initial accumulator
+- Iteration starts at index 1
+- Throws error on empty array
+
+---
+
+### Q3: What's the difference between find() and filter()?
+
+**Answer:**
+
+| Feature         | find()                 | filter()               |
+| --------------- | ---------------------- | ---------------------- |
+| **Returns**     | First matching element | All matching elements  |
+| **Return type** | Element or undefined   | Array (possibly empty) |
+| **Stops when**  | First match found      | After checking all     |
+
+```javascript
+let numbers = [5, 12, 8, 130, 44];
+
+// find() - returns first match only
+let first = numbers.find((n) => n > 10);
+console.log(first); // 12
+
+// filter() - returns all matches
+let all = numbers.filter((n) => n > 10);
+console.log(all); // [12, 130, 44]
+```
+
+---
+
+### Q4: When to use some() vs every()?
+
+**Answer:**
+
+- `some()` - Returns `true` if **at least one** element passes (logical OR)
+- `every()` - Returns `true` only if **all** elements pass (logical AND)
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+
+// some: ANY element > 3?
+console.log(numbers.some((x) => x > 3)); // true (4, 5)
+
+// every: ALL elements > 3?
+console.log(numbers.every((x) => x > 3)); // false (1, 2, 3 don't match)
+
+// Practical use case: Form validation
+let fields = [
+  { name: "email", valid: true },
+  { name: "password", valid: true },
+  { name: "phone", valid: false },
+];
+
+let hasErrors = fields.some((f) => !f.valid); // true
+let allValid = fields.every((f) => f.valid); // false
+```
+
+---
+
+### Q5: Why does sort() behave strangely with numbers?
+
+**Answer:**
+
+By default, `sort()` converts elements to **strings** and sorts alphabetically. This causes unexpected results with numbers.
+
+```javascript
+// Default sort (string comparison)
+[10, 5, 40, 25, 100].sort();
+// Result: [10, 100, 25, 40, 5]
+// Because: "10" < "100" < "25" < "40" < "5" (string comparison)
+
+// Correct numeric sort
+[10, 5, 40, 25, 100].sort((a, b) => a - b);
+// Result: [5, 10, 25, 40, 100]
+
+// Compare function logic:
+// Return negative: a comes first
+// Return positive: b comes first
+// Return 0: no change
+```
+
+---
+
+### Q6: How do you remove duplicates from an array?
+
+**Answer:**
+
+```javascript
+let numbers = [1, 2, 2, 3, 4, 4, 5];
+
+// Method 1: Set (most concise)
+let unique1 = [...new Set(numbers)];
+console.log(unique1); // [1, 2, 3, 4, 5]
+
+// Method 2: filter with indexOf
+let unique2 = numbers.filter((num, index, arr) => arr.indexOf(num) === index);
+
+// Method 3: reduce
+let unique3 = numbers.reduce(
+  (acc, num) => (acc.includes(num) ? acc : [...acc, num]),
+  [],
+);
+
+// For objects - remove by property
+let users = [
+  { id: 1, name: "John" },
+  { id: 2, name: "Jane" },
+  { id: 1, name: "John" }, // duplicate
+];
+
+let uniqueUsers = users.filter(
+  (user, index, arr) => arr.findIndex((u) => u.id === user.id) === index,
+);
+```
+
+---
+
+### Q7: Explain method chaining and why it works.
+
+**Answer:**
+
+Method chaining works because array methods like `map()`, `filter()`, `sort()` return arrays, allowing you to call another method on the result.
+
+```javascript
+// Each method returns an array, enabling the next call
+let result = [1, 2, 3, 4, 5]
+  .filter((n) => n > 2) // Returns [3, 4, 5]
+  .map((n) => n * 2) // Returns [6, 8, 10]
+  .reduce((a, b) => a + b); // Returns 24
+
+// Equivalent to:
+let step1 = [1, 2, 3, 4, 5].filter((n) => n > 2); // [3, 4, 5]
+let step2 = step1.map((n) => n * 2); // [6, 8, 10]
+let step3 = step2.reduce((a, b) => a + b); // 24
+```
+
+**Why forEach() breaks chains:**
+
+```javascript
+[1, 2, 3]
+  .filter((n) => n > 1) // Returns [2, 3]
+  .forEach(console.log) // Returns undefined
+  .map((n) => n * 2); // ERROR! Cannot call .map on undefined
+```
+
+---
+
+### Q8: What is the difference between slice() and splice()?
+
+**Answer:**
+
+| Feature     | slice()             | splice()               |
+| ----------- | ------------------- | ---------------------- |
+| **Purpose** | Extract portion     | Add/remove elements    |
+| **Mutates** | ❌ No (returns new) | ✅ Yes (modifies orig) |
+| **Returns** | New array           | Removed elements       |
+
+```javascript
+let arr = [1, 2, 3, 4, 5];
+
+// slice(start, end) - doesn't mutate
+let sliced = arr.slice(1, 4);
+console.log(sliced); // [2, 3, 4]
+console.log(arr); // [1, 2, 3, 4, 5] - unchanged
+
+// splice(start, deleteCount, ...items) - mutates!
+let removed = arr.splice(1, 2, "a", "b");
+console.log(removed); // [2, 3] - removed items
+console.log(arr); // [1, 'a', 'b', 4, 5] - modified!
+```
+
+---
+
+### Q9: How do you flatten a nested array?
+
+**Answer:**
+
+```javascript
+let nested = [1, [2, 3], [4, [5, 6]]];
+
+// Method 1: flat() with depth
+console.log(nested.flat()); // [1, 2, 3, 4, [5, 6]]
+console.log(nested.flat(2)); // [1, 2, 3, 4, 5, 6]
+console.log(nested.flat(Infinity)); // Any depth
+
+// Method 2: reduce + concat (recursive)
+function flatten(arr) {
+  return arr.reduce(
+    (acc, val) => acc.concat(Array.isArray(val) ? flatten(val) : val),
+    [],
+  );
+}
+
+// Method 3: toString + split (only for numbers/strings)
+let flat = nested.toString().split(",").map(Number);
+```
+
+---
+
+### Q10: How do you implement your own map() function?
+
+**Answer:**
+
+```javascript
+// Custom map implementation
+Array.prototype.myMap = function (callback) {
+  const result = [];
+  for (let i = 0; i < this.length; i++) {
+    // Handle sparse arrays
+    if (i in this) {
+      result.push(callback(this[i], i, this));
+    }
+  }
+  return result;
+};
+
+// Test
+let doubled = [1, 2, 3].myMap((x) => x * 2);
+console.log(doubled); // [2, 4, 6]
+
+// Custom filter implementation
+Array.prototype.myFilter = function (callback) {
+  const result = [];
+  for (let i = 0; i < this.length; i++) {
+    if (i in this && callback(this[i], i, this)) {
+      result.push(this[i]);
+    }
+  }
+  return result;
+};
+
+// Custom reduce implementation
+Array.prototype.myReduce = function (callback, initialValue) {
+  let acc = initialValue;
+  let startIndex = 0;
+
+  if (arguments.length < 2) {
+    if (this.length === 0) throw new TypeError("Reduce of empty array");
+    acc = this[0];
+    startIndex = 1;
+  }
+
+  for (let i = startIndex; i < this.length; i++) {
+    if (i in this) {
+      acc = callback(acc, this[i], i, this);
+    }
+  }
+  return acc;
+};
+```
+
+## Practical Examples
+
+### Example 1: Shopping Cart Total
+
+```javascript
+let cart = [
+  { item: "Apple", price: 1.99, qty: 3 },
+  { item: "Banana", price: 0.99, qty: 5 },
+  { item: "Orange", price: 2.49, qty: 2 },
+];
+
+let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+console.log(`Total: $${total.toFixed(2)}`); // Total: $13.89
+```
+
+### Example 2: Data Processing Pipeline
+
+```javascript
+let users = [
+  { name: "John", age: 25, city: "NYC", active: true },
+  { name: "Jane", age: 17, city: "LA", active: true },
+  { name: "Bob", age: 30, city: "NYC", active: false },
+  { name: "Alice", age: 28, city: "NYC", active: true },
+];
+
+// Get active adult names from NYC
+let result = users
+  .filter((u) => u.active && u.age >= 18 && u.city === "NYC")
+  .map((u) => u.name)
+  .sort();
+
+console.log(result); // ['Alice', 'John']
+```
+
+### Example 3: Word Frequency Counter
+
+```javascript
+let text = "hello world hello javascript world hello";
+let frequency = text.split(" ").reduce((acc, word) => {
+  acc[word] = (acc[word] || 0) + 1;
+  return acc;
+}, {});
+
+console.log(frequency); // { hello: 3, world: 2, javascript: 1 }
+```
+
+### Example 4: Group and Transform Data
+
+```javascript
+let transactions = [
+  { type: "credit", amount: 100 },
+  { type: "debit", amount: 50 },
+  { type: "credit", amount: 200 },
+  { type: "debit", amount: 75 },
+];
+
+let summary = transactions.reduce((acc, t) => {
+  acc[t.type] = (acc[t.type] || 0) + t.amount;
+  return acc;
+}, {});
+
+console.log(summary); // { credit: 300, debit: 125 }
+console.log(`Net: $${summary.credit - summary.debit}`); // Net: $175
+```
+
+

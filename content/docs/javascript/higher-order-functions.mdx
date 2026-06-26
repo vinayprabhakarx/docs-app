@@ -1,0 +1,804 @@
+---
+title: "Higher-Order Functions - Functions Using Functions"
+description: Documentation for Higher-Order Functions - Functions Using Functions.
+---
+
+# Higher-Order Functions - Functions Using Functions
+
+
+
+## What are Higher-Order Functions?
+
+**Higher-order functions** are functions that either:
+
+1. Take one or more functions as arguments (callbacks)
+2. Return a function as a result
+3. Or both
+
+> **Definition:** A higher-order function is a function that operates on other functions, either by accepting them as arguments or by returning them. This is a fundamental concept in functional programming that enables code reuse, abstraction, and composition.
+
+```javascript
+// Takes function as argument
+function processArray(arr, callback) {
+  return arr.map(callback);
+}
+
+// Returns a function
+function multiplier(factor) {
+  return function (number) {
+    return number * factor;
+  };
+}
+
+// Both: takes function and returns function
+function compose(f, g) {
+  return function (x) {
+    return f(g(x));
+  };
+}
+```
+
+### Why Use Higher-Order Functions?
+
+| Benefit         | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| **Abstraction** | Hide complex logic behind simple interfaces          |
+| **Reusability** | Create generic functions that work with any callback |
+| **Composition** | Build complex operations from simple functions       |
+| **Declarative** | Focus on "what" not "how"                            |
+| **Testability** | Easier to test small, focused functions              |
+
+## Types of Higher-Order Functions
+
+| Type                 | Description                  | Example                         |
+| -------------------- | ---------------------------- | ------------------------------- |
+| **Accept functions** | Take functions as parameters | `map()`, `filter()`, `reduce()` |
+| **Return functions** | Return new functions         | Function factories, currying    |
+| **Both**             | Accept and return functions  | Decorators, middleware          |
+
+## Functions as Arguments
+
+### Built-in Higher-Order Functions
+
+JavaScript arrays have many built-in higher-order functions.
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+
+// map - transform each element
+let doubled = numbers.map(function (n) {
+  return n * 2;
+});
+console.log(doubled); // [2, 4, 6, 8, 10]
+
+// filter - select elements
+let evens = numbers.filter(function (n) {
+  return n % 2 === 0;
+});
+console.log(evens); // [2, 4]
+
+// reduce - combine to single value
+let sum = numbers.reduce(function (acc, n) {
+  return acc + n;
+}, 0);
+console.log(sum); // 15
+
+// forEach - execute for each
+numbers.forEach(function (n) {
+  console.log(n * 2);
+});
+
+// find, some, every, sort, etc.
+let found = numbers.find((n) => n > 3); // 4
+let hasEven = numbers.some((n) => n % 2 === 0); // true
+let allPositive = numbers.every((n) => n > 0); // true
+```
+
+### Custom Higher-Order Functions
+
+```javascript
+// Example 1: Repeat function
+function repeat(n, action) {
+  for (let i = 0; i < n; i++) {
+    action(i);
+  }
+}
+
+repeat(3, function (i) {
+  console.log(`Iteration ${i}`);
+});
+// Iteration 0
+// Iteration 1
+// Iteration 2
+
+// Example 2: Unless (opposite of if)
+function unless(condition, action) {
+  if (!condition) {
+    action();
+  }
+}
+
+unless(false, () => console.log("Condition was false")); // Executes
+unless(true, () => console.log("This won't run")); // Doesn't execute
+
+// Example 3: Custom filter implementation
+function filterArray(arr, predicate) {
+  let result = [];
+  for (let element of arr) {
+    if (predicate(element)) {
+      result.push(element);
+    }
+  }
+  return result;
+}
+
+let nums = [1, 2, 3, 4, 5, 6];
+let evens = filterArray(nums, (n) => n % 2 === 0);
+console.log(evens); // [2, 4, 6]
+
+// Example 4: Transform with condition
+function transformIf(arr, predicate, transform) {
+  return arr.map((item) => (predicate(item) ? transform(item) : item));
+}
+
+let result = transformIf(
+  [1, 2, 3, 4, 5],
+  (n) => n % 2 === 0, // condition: is even
+  (n) => n * 10, // transform: multiply by 10
+);
+console.log(result); // [1, 20, 3, 40, 5]
+```
+
+## Functions Returning Functions
+
+### Function Factories
+
+Function factories create specialized functions based on parameters.
+
+```javascript
+// Example 1: Multiplier factory
+function createMultiplier(factor) {
+  return function (number) {
+    return number * factor;
+  };
+}
+
+let double = createMultiplier(2);
+let triple = createMultiplier(3);
+let times10 = createMultiplier(10);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+console.log(times10(5)); // 50
+
+// Example 2: Greeter factory
+function createGreeter(greeting) {
+  return function (name) {
+    return `${greeting}, ${name}!`;
+  };
+}
+
+let sayHello = createGreeter("Hello");
+let sayHi = createGreeter("Hi");
+let sayGoodbye = createGreeter("Goodbye");
+
+console.log(sayHello("John")); // 'Hello, John!'
+console.log(sayHi("Jane")); // 'Hi, Jane!'
+
+// Example 3: Validator factory
+function createValidator(minLength, maxLength) {
+  return function (str) {
+    return str.length >= minLength && str.length <= maxLength;
+  };
+}
+
+const validateUsername = createValidator(3, 20);
+const validatePassword = createValidator(8, 50);
+
+console.log(validateUsername("Jo")); // false (too short)
+console.log(validateUsername("John")); // true
+console.log(validatePassword("pass")); // false (too short)
+console.log(validatePassword("password123")); // true
+
+// Example 4: Comparator factory
+function createComparator(key, ascending = true) {
+  return function (a, b) {
+    if (ascending) {
+      return a[key] > b[key] ? 1 : -1;
+    }
+    return a[key] < b[key] ? 1 : -1;
+  };
+}
+
+const users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 },
+  { name: "Bob", age: 35 },
+];
+
+console.log(users.sort(createComparator("age"))); // Sort by age ascending
+console.log(users.sort(createComparator("name", false))); // Sort by name descending
+```
+
+## Currying
+
+**Currying** transforms a function with multiple arguments into a sequence of functions each taking a single argument.
+
+> **Definition:** Currying is the technique of converting a function that takes multiple arguments into a sequence of functions that each take a single argument. Named after mathematician Haskell Curry.
+
+```javascript
+// Normal function
+function add(a, b, c) {
+  return a + b + c;
+}
+console.log(add(1, 2, 3)); // 6
+
+// Curried version
+function addCurried(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
+}
+
+console.log(addCurried(1)(2)(3)); // 6
+
+// Arrow function version (more concise)
+const addCurriedArrow = (a) => (b) => (c) => a + b + c;
+console.log(addCurriedArrow(1)(2)(3)); // 6
+
+// Partial application with currying
+const add5 = addCurried(5);
+const add5and10 = add5(10);
+console.log(add5and10(3)); // 18
+
+// Practical example: Volume calculator
+const volume = (length) => (width) => (height) => length * width * height;
+
+const area = volume(10); // Fix length = 10
+const box = area(5); // Fix width = 5
+console.log(box(2)); // 100 (10 * 5 * 2)
+
+// Generic curry function
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args);
+    }
+    return function (...moreArgs) {
+      return curried.apply(this, args.concat(moreArgs));
+    };
+  };
+}
+
+// Usage
+function multiply(a, b, c) {
+  return a * b * c;
+}
+
+const curriedMultiply = curry(multiply);
+console.log(curriedMultiply(2)(3)(4)); // 24
+console.log(curriedMultiply(2, 3)(4)); // 24
+console.log(curriedMultiply(2)(3, 4)); // 24
+console.log(curriedMultiply(2, 3, 4)); // 24
+```
+
+## Function Composition
+
+Combining multiple functions to create a new function.
+
+> **Definition:** Function composition is the process of combining two or more functions to produce a new function. Mathematically, (f ∘ g)(x) = f(g(x)).
+
+```javascript
+// Example 1: Simple composition
+const add1 = (x) => x + 1;
+const multiply2 = (x) => x * 2;
+const subtract3 = (x) => x - 3;
+
+// Manual composition (right to left)
+const result = subtract3(multiply2(add1(5)));
+console.log(result); // (5 + 1) * 2 - 3 = 9
+
+// Compose function (right to left execution)
+const compose =
+  (...fns) =>
+  (x) =>
+    fns.reduceRight((acc, fn) => fn(acc), x);
+
+const calculate = compose(subtract3, multiply2, add1);
+console.log(calculate(5)); // 9
+
+// Pipe function (left to right execution - more intuitive)
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((acc, fn) => fn(acc), x);
+
+const calculate2 = pipe(add1, multiply2, subtract3);
+console.log(calculate2(5)); // 9
+
+// Example 2: Data transformation pipeline
+const users = [
+  { name: "john doe", age: 25, active: true },
+  { name: "jane smith", age: 17, active: true },
+  { name: "bob jones", age: 30, active: false },
+];
+
+const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+const getNames = (users) => users.map((u) => u.name);
+const capitalizeNames = (names) => names.map(capitalize);
+const filterActive = (users) => users.filter((u) => u.active);
+const filterAdults = (users) => users.filter((u) => u.age >= 18);
+
+const processUsers = pipe(
+  filterActive,
+  filterAdults,
+  getNames,
+  capitalizeNames,
+);
+
+console.log(processUsers(users)); // ['John doe']
+```
+
+## Partial Application
+
+Creating a new function by pre-filling some arguments of an existing function.
+
+> **Key Difference from Currying:** Partial application fixes multiple arguments at once and may return the final result, while currying always takes one argument at a time and always returns a function until all arguments are provided.
+
+```javascript
+// Example 1: Manual partial application
+function partial(fn, ...fixedArgs) {
+  return function (...remainingArgs) {
+    return fn(...fixedArgs, ...remainingArgs);
+  };
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+const double = partial(multiply, 2);
+const triple = partial(multiply, 3);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+
+// Example 2: Logger with partial application
+function log(level, timestamp, message) {
+  console.log(`[${level}] ${timestamp}: ${message}`);
+}
+
+const logError = partial(log, "ERROR");
+const logInfo = partial(log, "INFO");
+
+logError(Date.now(), "Something went wrong");
+logInfo(Date.now(), "Process completed");
+
+// Example 3: API client
+function fetchData(baseURL, endpoint, options) {
+  return fetch(baseURL + endpoint, options);
+}
+
+const fetchFromAPI = partial(fetchData, "https://api.example.com");
+const fetchUsers = partial(fetchFromAPI, "/users");
+
+// fetchUsers({ method: "GET" });
+```
+
+## Decorators
+
+Functions that modify the behavior of other functions.
+
+```javascript
+// Example 1: Timing decorator
+function withTiming(fn) {
+  return function (...args) {
+    const start = performance.now();
+    const result = fn(...args);
+    const end = performance.now();
+    console.log(`${fn.name} took ${end - start}ms`);
+    return result;
+  };
+}
+
+function slowFunction() {
+  let sum = 0;
+  for (let i = 0; i < 1000000; i++) {
+    sum += i;
+  }
+  return sum;
+}
+
+const timedFunction = withTiming(slowFunction);
+timedFunction(); // Logs execution time
+
+// Example 2: Logging decorator
+function withLogging(fn) {
+  return function (...args) {
+    console.log(`Calling ${fn.name} with:`, args);
+    const result = fn(...args);
+    console.log(`${fn.name} returned:`, result);
+    return result;
+  };
+}
+
+const add = (a, b) => a + b;
+const loggedAdd = withLogging(add);
+loggedAdd(5, 3);
+// Calling add with: [5, 3]
+// add returned: 8
+
+// Example 3: Memoization decorator
+function memoize(fn) {
+  const cache = new Map();
+  return function (...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      console.log("From cache");
+      return cache.get(key);
+    }
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+const memoizedFib = memoize(fibonacci);
+console.log(memoizedFib(10)); // Calculates
+console.log(memoizedFib(10)); // From cache
+
+// Example 4: Rate limiting decorator
+function rateLimit(fn, limit, interval) {
+  let calls = 0;
+
+  setInterval(() => {
+    calls = 0;
+  }, interval);
+
+  return function (...args) {
+    if (calls < limit) {
+      calls++;
+      return fn(...args);
+    }
+    console.log("Rate limit exceeded");
+  };
+}
+
+const limitedLog = rateLimit(console.log, 3, 1000); // 3 calls per second
+```
+
+## Interview Questions & Answers
+
+### Q1: What is a higher-order function?
+
+**Answer:**
+
+A higher-order function is a function that either takes one or more functions as arguments, returns a function, or both. This is a core concept in functional programming that enables powerful patterns like callbacks, function composition, and currying.
+
+```javascript
+// Takes function as argument
+const map = (arr, fn) => arr.map(fn);
+
+// Returns function
+const multiplier = (n) => (x) => x * n;
+
+// Both
+const compose = (f, g) => (x) => f(g(x));
+```
+
+Common examples include array methods like `map()`, `filter()`, and `reduce()`, which all accept callback functions as arguments.
+
+---
+
+### Q2: Explain currying with an example.
+
+**Answer:**
+
+Currying transforms a function that takes multiple arguments into a sequence of functions that each take a single argument. This enables partial application and function reuse.
+
+```javascript
+// Normal function
+const add = (a, b, c) => a + b + c;
+add(1, 2, 3); // 6
+
+// Curried version
+const addCurried = (a) => (b) => (c) => a + b + c;
+addCurried(1)(2)(3); // 6
+
+// Partial application
+const add5 = addCurried(5); // Returns function
+const add5and10 = add5(10); // Returns function
+console.log(add5and10(2)); // 17
+```
+
+**Benefits:**
+
+- Create specialized functions from general ones
+- Enable function composition
+- Improve code reusability
+
+---
+
+### Q3: What's the difference between partial application and currying?
+
+**Answer:**
+
+| Feature             | Currying                    | Partial Application      |
+| ------------------- | --------------------------- | ------------------------ |
+| **Arguments**       | One at a time               | Can fix multiple at once |
+| **Result**          | Always returns a function   | May return final result  |
+| **Arity reduction** | Reduces by 1 each time      | Reduces by N             |
+| **Implementation**  | Nested single-arg functions | Pre-filled arguments     |
+
+```javascript
+// Currying - one argument at a time
+const curriedAdd = (a) => (b) => (c) => a + b + c;
+curriedAdd(1)(2)(3); // Always one arg per call
+
+// Partial - fix multiple at once
+const add = (a, b, c) => a + b + c;
+const add5 = partial(add, 5); // Fix one
+const add5and10 = partial(add, 5, 10); // Fix two
+add5and10(3); // 18
+```
+
+---
+
+### Q4: What is function composition?
+
+**Answer:**
+
+Function composition is combining two or more functions to create a new function where the output of one function becomes the input of the next. In mathematical notation: `(f ∘ g)(x) = f(g(x))`.
+
+```javascript
+// Two common patterns:
+// compose - right to left (like math)
+const compose =
+  (...fns) =>
+  (x) =>
+    fns.reduceRight((acc, fn) => fn(acc), x);
+
+// pipe - left to right (more intuitive)
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((acc, fn) => fn(acc), x);
+
+const add1 = (x) => x + 1;
+const double = (x) => x * 2;
+
+const composed = compose(double, add1); // First add1, then double
+console.log(composed(5)); // (5 + 1) * 2 = 12
+```
+
+---
+
+### Q5: How do you implement a custom map function?
+
+**Answer:**
+
+```javascript
+function customMap(array, callback) {
+  const result = [];
+  for (let i = 0; i < array.length; i++) {
+    result.push(callback(array[i], i, array));
+  }
+  return result;
+}
+
+// Usage
+const numbers = [1, 2, 3, 4];
+const doubled = customMap(numbers, (n, i) => {
+  console.log(`Index ${i}: ${n}`);
+  return n * 2;
+});
+console.log(doubled); // [2, 4, 6, 8]
+```
+
+The key is to accept the callback, iterate over the array, call the callback with each element (plus index and array), and collect results in a new array.
+
+---
+
+### Q6: What is memoization and how do you implement it?
+
+**Answer:**
+
+Memoization is an optimization technique that caches function results based on inputs, avoiding redundant calculations.
+
+```javascript
+function memoize(fn) {
+  const cache = new Map();
+
+  return function (...args) {
+    const key = JSON.stringify(args);
+
+    if (cache.has(key)) {
+      return cache.get(key); // Return cached result
+    }
+
+    const result = fn.apply(this, args);
+    cache.set(key, result); // Cache new result
+    return result;
+  };
+}
+
+// Example: Expensive calculation
+const factorial = memoize(function (n) {
+  if (n <= 1) return 1;
+  return n * factorial(n - 1);
+});
+
+console.log(factorial(5)); // Calculates: 120
+console.log(factorial(5)); // From cache: 120
+console.log(factorial(6)); // Uses cached factorial(5)
+```
+
+**Use cases:** Recursive algorithms (Fibonacci, factorial), expensive computations, API calls.
+
+---
+
+### Q7: What is the difference between compose and pipe?
+
+**Answer:**
+
+Both combine functions, but they differ in execution order:
+
+| Feature         | compose        | pipe           |
+| --------------- | -------------- | -------------- |
+| Execution order | Right to left  | Left to right  |
+| Matches math    | Yes: f(g(x))   | No             |
+| Readability     | Less intuitive | More intuitive |
+
+```javascript
+const compose =
+  (...fns) =>
+  (x) =>
+    fns.reduceRight((acc, fn) => fn(acc), x);
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((acc, fn) => fn(acc), x);
+
+const add1 = (x) => x + 1;
+const double = (x) => x * 2;
+const square = (x) => x * x;
+
+// compose: reads right to left
+compose(square, double, add1)(2); // add1 → double → square: ((2+1)*2)² = 36
+
+// pipe: reads left to right (like a pipeline)
+pipe(add1, double, square)(2); // add1 → double → square: ((2+1)*2)² = 36
+```
+
+---
+
+### Q8: How are decorators implemented in JavaScript?
+
+**Answer:**
+
+Decorators are higher-order functions that wrap other functions to add behavior without modifying the original function.
+
+```javascript
+// Pattern: Return a wrapper function
+function decorator(fn) {
+  return function (...args) {
+    // Before original function
+    console.log("Before");
+
+    const result = fn.apply(this, args); // Call original
+
+    // After original function
+    console.log("After");
+
+    return result;
+  };
+}
+
+// Common decorators:
+// 1. Timing
+const withTiming =
+  (fn) =>
+  (...args) => {
+    const start = Date.now();
+    const result = fn(...args);
+    console.log(`Took ${Date.now() - start}ms`);
+    return result;
+  };
+
+// 2. Error handling
+const withErrorHandling =
+  (fn) =>
+  (...args) => {
+    try {
+      return fn(...args);
+    } catch (error) {
+      console.error("Error:", error);
+      return null;
+    }
+  };
+
+// 3. Debouncing
+const debounce = (fn, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: Data processing pipeline
+const data = [
+  { name: "Product A", price: 100, category: "electronics" },
+  { name: "Product B", price: 50, category: "books" },
+  { name: "Product C", price: 200, category: "electronics" },
+  { name: "Product D", price: 30, category: "books" },
+];
+
+const filterByCategory = (category) => (items) =>
+  items.filter((item) => item.category === category);
+
+const mapToPrices = (items) => items.map((item) => item.price);
+
+const sum = (prices) => prices.reduce((a, b) => a + b, 0);
+
+const applyDiscount = (discount) => (price) => price * (1 - discount);
+
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((acc, fn) => fn(acc), x);
+
+const getElectronicsTotal = pipe(
+  filterByCategory("electronics"),
+  mapToPrices,
+  sum,
+);
+
+console.log(getElectronicsTotal(data)); // 300
+
+// Example 2: Validation pipeline
+const isNotEmpty = (str) => str.trim().length > 0;
+const isEmail = (str) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
+const isLongEnough = (min) => (str) => str.length >= min;
+
+const validate =
+  (...validators) =>
+  (value) =>
+    validators.every((validator) => validator(value));
+
+const isValidEmail = validate(isNotEmpty, isEmail, isLongEnough(5));
+
+console.log(isValidEmail("test@example.com")); // true
+console.log(isValidEmail("abc")); // false
+
+// Example 3: Event handler factory
+function createClickHandler(action) {
+  return function (event) {
+    event.preventDefault();
+    action(event.target);
+  };
+}
+
+const logClick = createClickHandler((element) => {
+  console.log("Clicked:", element.textContent);
+});
+
+const highlightClick = createClickHandler((element) => {
+  element.classList.toggle("highlight");
+});
+
+// button.addEventListener('click', logClick);
+```
+
+

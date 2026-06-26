@@ -1,0 +1,153 @@
+---
+title: "CSS Best Practices - Writing Better CSS"
+description: Documentation for CSS Best Practices - Writing Better CSS.
+---
+
+# CSS Best Practices - Writing Better CSS
+
+
+
+## What are CSS Best Practices?
+
+Best practices are guidelines for writing maintainable, scalable, and performant CSS code.
+
+## Organization
+
+### 1. Use a Consistent Structure
+
+```css
+/* Variables */
+:root {
+    --primary: #007bff;
+}
+
+/* Reset/Base */
+* {
+    box-sizing: border-box;
+}
+
+/* Layout */
+.container { }
+
+/* Components */
+.button { }
+
+/* Utilities */
+.text-center { }
+```
+
+---
+
+### 2. BEM Methodology
+
+```css
+/* Block */
+.card { }
+
+/* Element */
+.card__title { }
+.card__content { }
+
+/* Modifier */
+.card--featured { }
+```
+
+## Performance
+
+### 1. Minimize Specificity
+
+**Bad:**
+```css
+#header nav ul li a { }
+```
+
+**Good:**
+```css
+.nav-link { }
+```
+
+---
+
+### 2. Avoid !important
+
+**Bad:**
+```css
+.text { color: red !important; }
+```
+
+**Good:**
+```css
+.container .text { color: red; }
+```
+
+---
+
+### 3. Use Shorthand
+
+**Bad:**
+```css
+.box {
+    margin-top: 10px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+```
+
+**Good:**
+```css
+.box {
+    margin: 10px 20px;
+}
+```
+
+## Maintainability
+
+### 1. Use CSS Variables
+
+```css
+:root {
+    --primary: #007bff;
+    --spacing: 20px;
+}
+
+.button {
+    background: var(--primary);
+    padding: var(--spacing);
+}
+```
+
+---
+
+### 2. Mobile-First Approach
+
+```css
+/* Mobile (default) */
+.container {
+    width: 100%;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+    .container {
+        width: 750px;
+    }
+}
+```
+
+---
+
+### 3. Comment Your Code
+
+```css
+/* Primary navigation */
+.nav { }
+
+/* TODO: Refactor this */
+.legacy-code { }
+```
+
+---
+
+
+

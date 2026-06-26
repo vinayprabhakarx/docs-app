@@ -1,0 +1,206 @@
+---
+title: "Forms & Validation - Handling User Input"
+description: Documentation for Forms & Validation - Handling User Input.
+---
+
+# Forms & Validation - Handling User Input
+
+
+
+## What are Forms in React?
+
+React forms manage user input through controlled components and state.
+
+## Controlled vs Uncontrolled
+
+| Feature      | Controlled     | Uncontrolled        |
+| ------------ | -------------- | ------------------- |
+| Value source | React state    | DOM                 |
+| Get value    | State variable | ref.current.value   |
+| Best for     | Most forms     | File inputs, simple |
+
+## Controlled Components
+
+```jsx
+function TextInput() {
+  const [name, setName] = useState("");
+
+  return (
+    <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+  );
+}
+```
+
+## Handling Multiple Inputs
+
+```jsx
+function Form() {
+  const [form, setForm] = useState({ name: "", email: "" });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  return (
+    <form>
+      <input name="name" value={form.name} onChange={handleChange} />
+      <input name="email" value={form.email} onChange={handleChange} />
+    </form>
+  );
+}
+```
+
+## Form Submission
+
+```jsx
+function ContactForm() {
+  const [form, setForm] = useState({ name: '', message: '' });
+  const [status, setStatus] = useState('idle');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('submitting');
+
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        body: JSON.stringify(form)
+      });
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="name" value={form.name} onChange={...} />
+      <button disabled={status === 'submitting'}>Send</button>
+      {status === 'success' && <p>Sent!</p>}
+    </form>
+  );
+}
+```
+
+## Basic Validation
+
+```jsx
+function ValidatedForm() {
+  const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!email) newErrors.email = "Required";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid";
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    // Submit
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={email} onChange={(e) => setEmail(e.target.value)} />
+      {errors.email && <span>{errors.email}</span>}
+      <button>Submit</button>
+    </form>
+  );
+}
+```
+
+## Real-time Validation
+
+```jsx
+function RealTimeValidation() {
+  const [email, setEmail] = useState("");
+  const [touched, setTouched] = useState(false);
+
+  const isValid = /\S+@\S+\.\S+/.test(email);
+  const showError = touched && !isValid;
+
+  return (
+    <div>
+      <input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onBlur={() => setTouched(true)}
+      />
+      {showError && <span>Invalid email</span>}
+    </div>
+  );
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What is the difference between controlled and uncontrolled components?
+
+**Controlled**: React state controls value via `value` + `onChange`. **Uncontrolled**: DOM manages value, access via ref. Controlled is preferred for real-time validation, conditional logic. Uncontrolled for file inputs or simplicity.
+
+---
+
+### Q2: Why use e.preventDefault() in form handlers?
+
+Stops browser's default form submission (page reload), allowing React to handle submission via JavaScript for SPA behavior, async operations, and validation.
+
+---
+
+### Q3: How do you handle multiple inputs with one handler?
+
+Use `name` attribute matching state keys: `setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))`. Check `e.target.type` for checkboxes.
+
+---
+
+### Q4: How do you implement form validation?
+
+On submit: validate all fields, set errors state. Real-time: validate on change/blur. Use libraries (React Hook Form, Formik) for complex forms. Track `touched` to show errors after interaction.
+
+---
+
+### Q5: What's the difference between value and defaultValue?
+
+`value` = controlled (React manages). `defaultValue` = uncontrolled (initial value, DOM manages). Don't mix them.
+
+---
+
+### Q6: How do you handle file inputs?
+
+File inputs are uncontrolled. Access via `e.target.files[0]` in onChange. Reset with ref: `inputRef.current.value = ''`.
+
+---
+
+### Q7: When should you use form libraries?
+
+Use Formik/React Hook Form for: many fields, complex validation, dynamic fields, or to reduce boilerplate. Simple forms don't need them.
+
+---
+
+### Q8: How do you implement dynamic form fields?
+
+Store as array: `[{ id, value }]`. Map to render, add with `[...fields, newField]`, remove with filter, update with map. Use stable ids as keys.
+
+---
+
+### Q9: How do you create a multi-step form?
+
+Track step in state, render different fields per step, persist all data in single state object, validate per step, submit on final step.
+
+---
+
+### Q10: How do you handle server errors?
+
+Catch API errors, map to form field errors, update errors state, display alongside client errors, clear on field change.
+
+

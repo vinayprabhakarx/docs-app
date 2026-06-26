@@ -1,0 +1,109 @@
+---
+title: "CSS Performance - Optimization Techniques"
+description: Documentation for CSS Performance - Optimization Techniques.
+---
+
+# CSS Performance - Optimization Techniques
+
+
+
+## What is CSS Performance?
+
+CSS performance refers to how efficiently your styles are loaded, parsed, and rendered by the browser.
+
+## Performance Tips
+
+### 1. Minimize CSS File Size
+
+**Minify CSS:**
+```css
+/* Before minification */
+.button {
+    background-color: #007bff;
+    padding: 10px 20px;
+}
+
+/* After minification */
+.button{background-color:#007bff;padding:10px 20px}
+```
+
+---
+
+### 2. Reduce Selector Complexity
+
+**Slow:**
+```css
+div#header nav ul li a.active { }
+```
+
+**Fast:**
+```css
+.nav-link-active { }
+```
+
+---
+
+### 3. Use Transform and Opacity for Animations
+
+**Slow (triggers layout):**
+```css
+.box {
+    transition: width 0.3s, height 0.3s;
+}
+```
+
+**Fast (GPU-accelerated):**
+```css
+.box {
+    transition: transform 0.3s, opacity 0.3s;
+}
+```
+
+---
+
+### 4. Avoid @import
+
+**Slow:**
+```css
+@import url('styles.css');
+```
+
+**Fast:**
+```html
+<link rel="stylesheet" href="styles.css">
+```
+
+---
+
+### 5. Critical CSS
+
+Load critical CSS inline, defer non-critical:
+
+```html
+<style>
+    /* Critical above-the-fold CSS */
+    .header { }
+</style>
+
+<link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+```
+
+---
+
+### 6. Use will-change Sparingly
+
+```css
+.animated-element {
+    will-change: transform; /* Hint to browser */
+}
+
+/* Remove after animation */
+.animated-element.done {
+    will-change: auto;
+}
+```
+
+---
+
+
+

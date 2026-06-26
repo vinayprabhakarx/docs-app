@@ -1,0 +1,467 @@
+---
+title: "State - Managing Component Data"
+description: Documentation for State - Managing Component Data.
+---
+
+# State - Managing Component Data
+
+
+
+## What is State?
+
+State is data that changes over time within a component.
+
+> **Definition:** State is a JavaScript object that holds dynamic data belonging to a component. Unlike props (passed from parent), state is managed within the component itself. When state changes, React automatically re-renders the component to reflect the new data in the UI.
+
+## Why Use State?
+
+| Purpose                | Explanation                     |
+| ---------------------- | ------------------------------- |
+| **Dynamic UI**         | Update UI when data changes     |
+| **User Interactions**  | Respond to clicks, inputs, etc. |
+| **Data Management**    | Track internal component data   |
+| **Controlled Inputs**  | Manage form input values        |
+| **Toggle UI Elements** | Show/hide, enable/disable       |
+
+## State Flow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    React State Flow                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│   User Action (click, type, etc.)                       │
+│           │                                             │
+│           ↓                                             │
+│   Event Handler Called                                  │
+│           │                                             │
+│           ↓                                             │
+│   setState/setter Updates State                         │
+│           │                                             │
+│           ↓                                             │
+│   React Schedules Re-render                             │
+│           │                                             │
+│           ↓                                             │
+│   Component Re-renders with New State                   │
+│           │                                             │
+│           ↓                                             │
+│   DOM Updated (if needed)                               │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+## useState Hook
+
+The primary way to add state to functional components.
+
+### Basic Syntax
+
+```jsx
+import { useState } from "react";
+
+function Counter() {
+  // [currentValue, setterFunction] = useState(initialValue)
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+### Multiple State Variables
+
+```jsx
+function UserForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [age, setAge] = useState(0);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  return (
+    <form>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <input value={email} onChange={(e) => setEmail(e.target.value)} />
+      {/* ... */}
+    </form>
+  );
+}
+```
+
+### Object State
+
+```jsx
+function UserForm() {
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    age: 0,
+  });
+
+  // ❌ Wrong: Direct mutation
+  const handleChange = (field, value) => {
+    user[field] = value; // Mutation doesn't trigger re-render
+    setUser(user);
+  };
+
+  // ✅ Correct: Create new object
+  const handleChange = (field, value) => {
+    setUser({
+      ...user, // Spread existing properties
+      [field]: value, // Override the changed field
+    });
+  };
+
+  // ✅ Better: Functional update
+  const handleChange = (field, value) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      [field]: value,
+    }));
+  };
+
+  return (
+    <input
+      value={user.name}
+      onChange={(e) => handleChange("name", e.target.value)}
+    />
+  );
+}
+```
+
+### Array State
+
+```jsx
+function TodoList() {
+  const [todos, setTodos] = useState([]);
+
+  // Add item
+  const addTodo = (text) => {
+    setTodos([...todos, { id: Date.now(), text, done: false }]);
+  };
+
+  // Remove item
+  const removeTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  // Update item
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo,
+      ),
+    );
+  };
+
+  // Insert at index
+  const insertAt = (index, item) => {
+    setTodos([...todos.slice(0, index), item, ...todos.slice(index)]);
+  };
+
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>
+          <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>
+            {todo.text}
+          </span>
+          <button onClick={() => toggleTodo(todo.id)}>Toggle</button>
+          <button onClick={() => removeTodo(todo.id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Immutable State Updates
+
+### Why Immutability Matters
+
+```jsx
+// ❌ Mutation: React doesn't detect change
+const [user, setUser] = useState({ name: "Alice" });
+
+const handleUpdate = () => {
+  user.name = "Bob"; // Same reference
+  setUser(user); // React: "Same object, no change"
+};
+
+// ✅ Immutable: React detects new reference
+const handleUpdate = () => {
+  setUser({ ...user, name: "Bob" }); // New object reference
+};
+```
+
+### Array Operations (Immutable)
+
+| Operation | Mutates (❌ Avoid)       | Immutable (✅ Use)   |
+| --------- | ------------------------ | -------------------- |
+| Add       | `push`, `unshift`        | `[...arr, item]`     |
+| Remove    | `pop`, `shift`, `splice` | `filter()`           |
+| Update    | `arr[i] = x`             | `map()`              |
+| Sort      | `sort()`                 | `[...arr].sort()`    |
+| Reverse   | `reverse()`              | `[...arr].reverse()` |
+
+## Functional Updates
+
+Use when new state depends on previous state.
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  // ❌ Potential issue with stale state
+  const incrementThree = () => {
+    setCount(count + 1); // Uses stale `count`
+    setCount(count + 1); // Same stale `count`
+    setCount(count + 1); // Same stale `count`
+    // Result: increments by 1, not 3!
+  };
+
+  // ✅ Correct: Functional update
+  const incrementThree = () => {
+    setCount((prev) => prev + 1); // prev = 0, returns 1
+    setCount((prev) => prev + 1); // prev = 1, returns 2
+    setCount((prev) => prev + 1); // prev = 2, returns 3
+    // Result: increments by 3
+  };
+
+  return <button onClick={incrementThree}>+3</button>;
+}
+```
+
+## Lazy Initial State
+
+For expensive initial state calculations.
+
+```jsx
+// ❌ createInitialState runs EVERY render
+const [state, setState] = useState(createInitialState());
+
+// ✅ createInitialState runs ONLY on first render
+const [state, setState] = useState(() => createInitialState());
+
+// Example: Reading from localStorage
+function App() {
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    return saved || "light";
+  });
+
+  // ...
+}
+```
+
+## Lifting State Up
+
+Share state between components by moving it to their common ancestor.
+
+```jsx
+// Before: State in each component (can't sync)
+function TemperatureInput() {
+  const [value, setValue] = useState("");
+  // ...
+}
+
+// After: State lifted to parent
+function Calculator() {
+  const [celsius, setCelsius] = useState("");
+
+  const fahrenheit = celsius ? (celsius * 9) / 5 + 32 : "";
+
+  return (
+    <div>
+      <TemperatureInput scale="c" value={celsius} onChange={setCelsius} />
+      <TemperatureInput
+        scale="f"
+        value={fahrenheit}
+        onChange={(f) => setCelsius(((f - 32) * 5) / 9)}
+      />
+    </div>
+  );
+}
+
+function TemperatureInput({ scale, value, onChange }) {
+  return (
+    <fieldset>
+      <legend>
+        Enter temperature in {scale === "c" ? "Celsius" : "Fahrenheit"}:
+      </legend>
+      <input value={value} onChange={(e) => onChange(e.target.value)} />
+    </fieldset>
+  );
+}
+```
+
+## State in Class Components
+
+```jsx
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  // Or using class fields
+  // state = { count: 0 };
+
+  increment = () => {
+    // setState with object
+    this.setState({ count: this.state.count + 1 });
+
+    // setState with function (for dependent updates)
+    this.setState((prevState) => ({
+      count: prevState.count + 1,
+    }));
+
+    // setState with callback (runs after update)
+    this.setState({ count: this.state.count + 1 }, () =>
+      console.log("Updated:", this.state.count),
+    );
+  };
+
+  render() {
+    return <button onClick={this.increment}>Count: {this.state.count}</button>;
+  }
+}
+```
+
+## When to Use State
+
+| Use State For            | Example                          |
+| ------------------------ | -------------------------------- |
+| Form input values        | Controlled inputs                |
+| Toggle states            | Modal open/closed, dark mode     |
+| Dynamic lists            | Todo items, shopping cart        |
+| User interaction results | Selected tab, expanded accordion |
+| Data from API            | Fetched users, posts             |
+| Derived UI state         | Loading, error, success          |
+
+## When NOT to Use State
+
+| Avoid State For                 | Use Instead                 |
+| ------------------------------- | --------------------------- |
+| Data that doesn't affect render | useRef                      |
+| Derived data                    | Calculate during render     |
+| Props that don't change         | Keep as props               |
+| DOM references                  | useRef                      |
+| Global app state                | Context or state management |
+
+## Common Mistakes & Exceptions
+
+### 1. Direct State Mutation
+
+```jsx
+// ❌ Direct mutation
+const [items, setItems] = useState([1, 2, 3]);
+items.push(4); // Mutates original array
+setItems(items); // Same reference, no re-render
+
+// ✅ Create new array
+setItems([...items, 4]);
+```
+
+### 2. Using State Value Immediately After Setting
+
+```jsx
+const [count, setCount] = useState(0);
+
+const handleClick = () => {
+  setCount(5);
+  console.log(count); // Still 0! State updates are async
+};
+
+// ✅ Use effect to react to state changes
+useEffect(() => {
+  console.log("Count changed:", count);
+}, [count]);
+```
+
+### 3. Overusing State
+
+```jsx
+// ❌ Storing derived data in state
+const [items, setItems] = useState([]);
+const [itemCount, setItemCount] = useState(0); // Redundant!
+
+// ✅ Calculate derived values
+const [items, setItems] = useState([]);
+const itemCount = items.length; // Derived from items
+```
+
+### 4. Recreating Initial State
+
+```jsx
+// ❌ Function runs every render
+const [data, setData] = useState(expensiveComputation());
+
+// ✅ Use lazy initialization
+const [data, setData] = useState(() => expensiveComputation());
+```
+
+## Interview Questions & Answers
+
+### Q1: What is state in React and how does it differ from props?
+
+State is internal data owned and managed by a component that can change over time. When state changes, React re-renders the component. **Differences from props**: State is created inside the component (props come from parent), state can be modified (props are read-only), state changes trigger re-render from within (prop changes come from parent re-rendering). State is for data that changes due to user interaction or other events; props configure components from outside.
+
+---
+
+### Q2: What is the useState hook and how does it work?
+
+`useState` is a React hook that adds state to functional components. It returns an array with two elements: the current state value and a function to update it. `const [count, setCount] = useState(0)`. The initial value is only used on first render. When you call the setter (`setCount(1)`), React schedules a re-render with the new value. The state persists between renders. Multiple `useState` calls can manage different pieces of state.
+
+---
+
+### Q3: Why is state immutability important in React?
+
+React uses reference comparison to detect changes. If you mutate an object/array directly, the reference stays the same, and React doesn't detect the change, so no re-render occurs. Immutability also enables: optimizations (React can skip renders if reference is same), time-travel debugging (previous states are preserved), predictable state transitions, and easier testing. Always create new objects/arrays instead of mutating: `{...obj, key: value}` or `[...arr, item]`.
+
+---
+
+### Q4: What are functional updates and when should you use them?
+
+Functional updates pass a function to the setter: `setCount(prev => prev + 1)`. Use them when new state depends on previous state. This is important because setState is asynchronous and batched - multiple calls with the same `count` value will result in one update. With functional updates, each call receives the latest state. Also use for event handlers created in loops where the state value might be stale by the time the handler executes.
+
+---
+
+### Q5: What is lazy initialization and when to use it?
+
+Lazy initialization passes a function to useState: `useState(() => computeValue())` instead of `useState(computeValue())`. The function only runs on the first render, not on every re-render. Use it when: initial state requires expensive computation, reading from localStorage/sessionStorage, parsing large data structures, or any one-time setup. Without lazy initialization, the computation runs every render even though the result is discarded after the first.
+
+---
+
+### Q6: What is "lifting state up" and why do it?
+
+Lifting state up means moving state to the nearest common ancestor when multiple components need to share it. Instead of each component managing its own state (which can't sync), the parent manages state and passes it down as props with update handlers. This maintains the single source of truth principle. Use it when: sibling components need the same data, you need to sync state between components, or computed values depend on multiple children's data.
+
+---
+
+### Q7: How does setState work differently in class components?
+
+In class components, `this.setState()` can be called with an object or function, and it **merges** the update with existing state (unlike useState which replaces). It also accepts a callback as second argument that runs after the update. Example: `this.setState({ count: 1 }, () => console.log('Updated'))`. State is accessed via `this.state.property`. You must call `super(props)` in constructor and initialize state there or as a class field.
+
+---
+
+### Q8: What is batching in React state updates?
+
+React batches multiple setState calls into a single re-render for performance. Before React 18, batching only worked in event handlers. React 18 introduced automatic batching everywhere (promises, timeouts, native events). This means multiple `setCount`/`setName` calls cause one re-render, not multiple. To force immediate update (rare), use `flushSync` from react-dom. Understanding batching explains why state isn't immediately updated after calling the setter.
+
+---
+
+### Q9: When should you use one state object vs multiple useState calls?
+
+Use **separate useState calls** when state pieces change independently (they won't always update together). Use **object state** when state pieces always change together, represent a single entity, or have many related fields. Separate states are simpler, cause fewer re-renders, and are easier to split into custom hooks. Object state reduces boilerplate for forms but requires spreading to avoid losing fields. There's no strict rule - prioritize code clarity.
+
+---
+
+### Q10: How do you handle complex state logic in React?
+
+For complex state (many fields, complex updates, dependent transitions), consider: **useReducer** - centralizes logic in a reducer function, handles complex state transitions, action-based updates. **Custom hooks** - extract and reuse stateful logic. **State management libraries** (Redux, Zustand) - for app-wide state. **Derived state** - calculate values during render instead of storing. Choose based on complexity: useState for simple cases, useReducer for complex logic, libraries for global state.
+
+

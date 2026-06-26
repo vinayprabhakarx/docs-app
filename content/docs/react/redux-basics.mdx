@@ -1,0 +1,123 @@
+---
+title: "Redux Basics - Predictable State Management"
+description: Documentation for Redux Basics - Predictable State Management.
+---
+
+# Redux Basics - Predictable State Management
+
+
+
+## Redux Core Concepts
+
+| Concept      | Description                               |
+| ------------ | ----------------------------------------- |
+| **Store**    | Single source of truth                    |
+| **State**    | Application data (read-only)              |
+| **Action**   | Plain object describing what happened     |
+| **Reducer**  | Pure function: (state, action) → newState |
+| **Dispatch** | Send action to reducer                    |
+
+## Redux Flow
+
+```
+Action → Dispatch → Reducer → New State → UI Update
+```
+
+## Basic Setup
+
+```jsx
+// actions.js
+export const increment = () => ({ type: "INCREMENT" });
+export const decrement = () => ({ type: "DECREMENT" });
+export const addBy = (amount) => ({ type: "ADD", payload: amount });
+
+// reducer.js
+const initialState = { count: 0 };
+
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+    case "INCREMENT":
+      return { ...state, count: state.count + 1 };
+    case "DECREMENT":
+      return { ...state, count: state.count - 1 };
+    case "ADD":
+      return { ...state, count: state.count + action.payload };
+    default:
+      return state;
+  }
+}
+
+// store.js
+import { createStore } from "redux";
+const store = createStore(counterReducer);
+```
+
+## React-Redux Hooks
+
+```jsx
+import { Provider, useSelector, useDispatch } from "react-redux";
+
+// Wrap app with Provider
+<Provider store={store}>
+  <App />
+</Provider>;
+
+// Component
+function Counter() {
+  const count = useSelector((state) => state.count);
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <span>{count}</span>
+      <button onClick={() => dispatch(increment())}>+</button>
+    </div>
+  );
+}
+```
+
+## Combining Reducers
+
+```jsx
+import { combineReducers } from "redux";
+
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  todos: todosReducer,
+  user: userReducer,
+});
+
+// Access: state.counter.count, state.todos, etc.
+```
+
+## Interview Questions & Answers
+
+### Q1: What are Redux core principles?
+
+Single source of truth (one store), state is read-only (only actions change it), changes made by pure functions (reducers).
+
+---
+
+### Q2: What's the difference between action and action creator?
+
+Action is plain object: `{ type: 'ADD', payload: 5 }`. Action creator is function returning action: `const add = (n) => ({ type: 'ADD', payload: n })`.
+
+---
+
+### Q3: Why are reducers pure functions?
+
+Predictable behavior, testable, enables time-travel debugging, no side effects ensure consistent state transitions.
+
+---
+
+### Q4: What is useSelector?
+
+Hook to access Redux state. Subscribes to store and re-renders when selected state changes. Use memoized selectors for performance.
+
+---
+
+### Q5: Why use Redux over Context?
+
+Better for complex state, built-in DevTools, middleware support, optimized re-renders with selectors, established patterns.
+
+

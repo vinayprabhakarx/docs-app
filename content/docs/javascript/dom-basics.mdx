@@ -1,0 +1,546 @@
+---
+title: "DOM Basics - Document Object Model"
+description: Documentation for DOM Basics - Document Object Model.
+---
+
+# DOM Basics - Document Object Model
+
+
+
+## What is the DOM?
+
+**The DOM (Document Object Model)** is a programming interface for HTML documents. It represents the page as a tree of objects that JavaScript can manipulate.
+
+> **Definition:** The DOM is a platform-independent, language-neutral interface that allows programs and scripts to dynamically access and update the content, structure, and style of documents. It represents the document as a hierarchical tree of nodes that JavaScript can read and modify.
+
+```
+document
+  └── html
+      ├── head
+      │   ├── title
+      │   └── meta
+      └── body
+          ├── header
+          ├── main
+          │   ├── section
+          │   └── article
+          └── footer
+```
+
+### Why is the DOM Important?
+
+| Benefit               | Description                                       |
+| --------------------- | ------------------------------------------------- |
+| **Dynamic content**   | Update page content without reloading             |
+| **User interaction**  | Respond to clicks, inputs, and other events       |
+| **Real-time updates** | Change styles, text, and structure instantly      |
+| **Single Page Apps**  | Enable modern SPA frameworks like React, Vue      |
+| **Accessibility**     | Programmatically manage focus and ARIA attributes |
+
+## The Document Object
+
+The `document` object is the entry point to the DOM.
+
+```javascript
+// Access document properties
+console.log(document.title); // Page title
+console.log(document.URL); // Current URL
+console.log(document.domain); // Domain name
+console.log(document.doctype); // Document type
+console.log(document.head); // <head> element
+console.log(document.body); // <body> element
+
+// Document methods
+document.write("Hello"); // Write to document (avoid in modern code)
+document.getElementById("myId"); // Get element by ID
+document.querySelector(".myClass"); // Get first matching element
+```
+
+## DOM Tree Structure
+
+Every HTML element is a **node** in the DOM tree.
+
+| Node Type          | Description         | Example                  |
+| ------------------ | ------------------- | ------------------------ |
+| **Element Node**   | HTML elements       | `<div>`, `<p>`, `<span>` |
+| **Text Node**      | Text content        | Text inside elements     |
+| **Attribute Node** | Element attributes  | `class="myClass"`        |
+| **Comment Node**   | HTML comments       | `<!-- comment -->`       |
+| **Document Node**  | The document itself | `document`               |
+
+```html
+<div id="container" class="box">
+  Hello World
+  <!-- This is a comment -->
+</div>
+```
+
+```javascript
+// Element node: <div>
+// Attribute nodes: id="container", class="box"
+// Text node: "Hello World"
+// Comment node: <!-- This is a comment -->
+```
+
+## Node Relationships
+
+```javascript
+const element = document.querySelector("#myDiv");
+
+// Parent
+console.log(element.parentNode); // Parent node (any node type)
+console.log(element.parentElement); // Parent element (element only)
+
+// Children
+console.log(element.childNodes); // All child nodes (including text)
+console.log(element.children); // Only element children
+console.log(element.firstChild); // First child node
+console.log(element.firstElementChild); // First element child
+console.log(element.lastChild); // Last child node
+console.log(element.lastElementChild); // Last element child
+
+// Siblings
+console.log(element.nextSibling); // Next sibling node
+console.log(element.nextElementSibling); // Next sibling element
+console.log(element.previousSibling); // Previous sibling node
+console.log(element.previousElementSibling); // Previous sibling element
+```
+
+## Accessing Elements
+
+### By ID
+
+```javascript
+// Get element by ID (most specific)
+const element = document.getElementById("myId");
+
+// Returns null if not found
+const notFound = document.getElementById("nonexistent"); // null
+```
+
+### By Class Name
+
+```javascript
+// Get elements by class (returns HTMLCollection)
+const elements = document.getElementsByClassName("myClass");
+
+// HTMLCollection is array-like but not an array
+console.log(elements.length); // Number of elements
+console.log(elements[0]); // First element
+
+// Convert to array
+const elementsArray = Array.from(elements);
+```
+
+### By Tag Name
+
+```javascript
+// Get all paragraphs
+const paragraphs = document.getElementsByTagName("p");
+
+// Get all divs
+const divs = document.getElementsByTagName("div");
+
+// Get all elements
+const allElements = document.getElementsByTagName("*");
+```
+
+### Query Selectors (Modern & Recommended)
+
+```javascript
+// Get first matching element (like CSS selector)
+const element = document.querySelector(".myClass");
+const button = document.querySelector("#submitBtn");
+const firstPara = document.querySelector("p");
+
+// Get all matching elements (returns NodeList)
+const elements = document.querySelectorAll(".myClass");
+const allButtons = document.querySelectorAll("button");
+
+// Complex selectors
+const nested = document.querySelector(".container .item");
+const multiple = document.querySelectorAll("div.active, span.highlight");
+```
+
+### Comparison: Selection Methods
+
+| Method                     | Returns        | Live?  | CSS Selectors? |
+| -------------------------- | -------------- | ------ | -------------- |
+| `getElementById()`         | Single element | N/A    | ❌ No          |
+| `getElementsByClassName()` | HTMLCollection | ✅ Yes | ❌ No          |
+| `getElementsByTagName()`   | HTMLCollection | ✅ Yes | ❌ No          |
+| `querySelector()`          | Single element | ❌ No  | ✅ Yes         |
+| `querySelectorAll()`       | NodeList       | ❌ No  | ✅ Yes         |
+
+## Element Properties
+
+```javascript
+const element = document.querySelector("#myDiv");
+
+// Content properties
+console.log(element.innerHTML); // HTML content
+console.log(element.textContent); // Text only
+console.log(element.innerText); // Visible text
+
+// Attribute properties
+console.log(element.id); // ID attribute
+console.log(element.className); // Class attribute
+console.log(element.classList); // DOMTokenList of classes
+
+// Style property
+console.log(element.style); // Inline styles
+```
+
+## Modifying Content
+
+### innerHTML vs textContent vs innerText
+
+```javascript
+const div = document.querySelector("#myDiv");
+
+// innerHTML - parses HTML
+div.innerHTML = "<strong>Bold text</strong>"; // Renders as bold
+
+// textContent - plain text (faster, safer)
+div.textContent = "<strong>Bold text</strong>"; // Shows as plain text
+
+// innerText - visible text only
+div.innerText = "Hello\nWorld"; // Respects line breaks
+```
+
+### Comparison
+
+| Property      | Parses HTML | Performance | Security    |
+| ------------- | ----------- | ----------- | ----------- |
+| `innerHTML`   | ✅ Yes      | Slower      | ⚠️ XSS risk |
+| `textContent` | ❌ No       | Fastest     | ✅ Safe     |
+| `innerText`   | ❌ No       | Slower      | ✅ Safe     |
+
+```javascript
+// ⚠️ innerHTML with user input - XSS vulnerability!
+div.innerHTML = userInput; // Dangerous!
+
+// ✅ textContent is safe
+div.textContent = userInput; // Safe
+```
+
+## Modifying Attributes
+
+```javascript
+const img = document.querySelector("img");
+
+// Get attribute
+const src = img.getAttribute("src");
+const alt = img.getAttribute("alt");
+
+// Set attribute
+img.setAttribute("src", "new-image.jpg");
+img.setAttribute("alt", "New image");
+
+// Remove attribute
+img.removeAttribute("alt");
+
+// Check if attribute exists
+if (img.hasAttribute("src")) {
+  console.log("Image has src");
+}
+
+// Direct property access (preferred for standard attributes)
+img.src = "image.jpg";
+img.alt = "My image";
+
+// Data attributes
+const element = document.querySelector("#myDiv");
+element.dataset.userId = "123"; // Sets data-user-id="123"
+console.log(element.dataset.userId); // "123"
+```
+
+## Modifying Styles
+
+```javascript
+const element = document.querySelector("#myDiv");
+
+// Inline styles (camelCase for CSS properties)
+element.style.color = "red";
+element.style.backgroundColor = "blue";
+element.style.fontSize = "20px";
+element.style.marginTop = "10px";
+
+// Multiple styles
+Object.assign(element.style, {
+  color: "white",
+  backgroundColor: "black",
+  padding: "10px",
+  borderRadius: "5px",
+});
+
+// Get computed style (actual rendered style)
+const styles = window.getComputedStyle(element);
+console.log(styles.color); // Computed color
+console.log(styles.fontSize); // Computed font size
+```
+
+## Working with Classes
+
+```javascript
+const element = document.querySelector("#myDiv");
+
+// classList methods
+element.classList.add("active"); // Add class
+element.classList.remove("hidden"); // Remove class
+element.classList.toggle("visible"); // Toggle class
+element.classList.contains("active"); // Check if has class
+
+// Multiple classes
+element.classList.add("class1", "class2", "class3");
+element.classList.remove("class1", "class2");
+
+// Replace class
+element.classList.replace("oldClass", "newClass");
+
+// className (string of all classes)
+element.className = "class1 class2"; // Replaces all classes
+console.log(element.className); // 'class1 class2'
+```
+
+## Creating Elements
+
+```javascript
+// Create new element
+const div = document.createElement("div");
+const p = document.createElement("p");
+const span = document.createElement("span");
+
+// Set properties
+div.id = "myDiv";
+div.className = "container";
+div.textContent = "Hello World";
+
+// Set attributes
+div.setAttribute("data-id", "123");
+
+// Set styles
+div.style.color = "blue";
+
+// Create text node
+const textNode = document.createTextNode("Hello");
+
+// Create document fragment (for batch operations)
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  fragment.appendChild(li);
+}
+list.appendChild(fragment); // Single DOM update
+```
+
+## Adding Elements to DOM
+
+```javascript
+const parent = document.querySelector("#parent");
+const newDiv = document.createElement("div");
+newDiv.textContent = "New element";
+
+// Append (add to end)
+parent.appendChild(newDiv);
+
+// Prepend (add to beginning)
+parent.prepend(newDiv);
+
+// Insert before
+const referenceNode = document.querySelector("#reference");
+parent.insertBefore(newDiv, referenceNode);
+
+// Modern methods (more flexible)
+parent.append(newDiv); // Can append multiple nodes/strings
+parent.prepend(newDiv);
+referenceNode.before(newDiv); // Insert before reference
+referenceNode.after(newDiv); // Insert after reference
+
+// insertAdjacentHTML - insert HTML at specific positions
+element.insertAdjacentHTML("beforebegin", "<p>Before</p>"); // Before element
+element.insertAdjacentHTML("afterbegin", "<p>First child</p>"); // First child
+element.insertAdjacentHTML("beforeend", "<p>Last child</p>"); // Last child
+element.insertAdjacentHTML("afterend", "<p>After</p>"); // After element
+```
+
+## Removing Elements
+
+```javascript
+const element = document.querySelector("#myDiv");
+
+// Modern way (recommended)
+element.remove();
+
+// Old way
+element.parentNode.removeChild(element);
+
+// Remove all children
+element.innerHTML = ""; // Simple but slower
+while (element.firstChild) {
+  element.removeChild(element.firstChild); // More efficient
+}
+
+// replaceChildren - clear and optionally add new children
+element.replaceChildren(); // Clear all
+element.replaceChildren(newChild1, newChild2); // Replace with new
+```
+
+## Replacing Elements
+
+```javascript
+const oldElement = document.querySelector("#old");
+const newElement = document.createElement("div");
+newElement.textContent = "New element";
+
+// Modern way
+oldElement.replaceWith(newElement);
+
+// Old way
+oldElement.parentNode.replaceChild(newElement, oldElement);
+```
+
+## Interview Questions & Answers
+
+### Q1: What is the DOM?
+
+The DOM, or Document Object Model, is a programming interface that browsers create when they load an HTML document. It represents the page as a tree structure where each HTML element becomes a node that JavaScript can access and manipulate. The DOM is not part of JavaScript itself - it's a Web API that browsers provide. When you use methods like getElementById or querySelector, you're using the DOM API. The DOM is live, meaning changes you make through JavaScript immediately reflect on the page. This is what enables dynamic web applications where content can change without reloading the page.
+
+---
+
+### Q2: What's the difference between innerHTML and textContent?
+
+| Feature     | innerHTML      | textContent    |
+| ----------- | -------------- | -------------- |
+| Parses HTML | ✅ Yes         | ❌ No          |
+| Performance | Slower         | Faster         |
+| Security    | ⚠️ XSS risk    | ✅ Safe        |
+| Use case    | Inserting HTML | Inserting text |
+
+innerHTML parses and renders HTML tags, while textContent treats everything as plain text. innerHTML is slower because it has to parse HTML and can be a security risk if used with user input (XSS attacks). textContent is faster, safer, and should be used when you only need to insert or read text content. Use innerHTML only when you specifically need to insert HTML markup.
+
+### Q3: What's the difference between querySelector and getElementById?
+
+querySelector accepts any CSS selector and returns the first matching element, making it very flexible - you can select by class, attribute, pseudo-class, or complex combinations. getElementById only accepts an ID and is slightly faster because it's optimized for that specific lookup. querySelector is preferred in modern development for its consistency and flexibility, but getElementById can be useful when you need maximum performance for frequently accessed elements. The main practical difference is that querySelector requires the # prefix for IDs while getElementById doesn't.
+
+---
+
+### Q4: What's the difference between HTMLCollection and NodeList?
+
+HTMLCollection and NodeList are both array-like objects that hold DOM elements, but they behave differently. HTMLCollection is live, meaning it automatically updates when the DOM changes. NodeList from querySelectorAll is static and won't update after creation. HTMLCollection only contains element nodes, while NodeList can include text nodes and comments. NodeList has a forEach method built in, but HTMLCollection doesn't. Both can be converted to true arrays using Array.from() if you need array methods like map or filter. Understanding this difference is important to avoid bugs when the DOM changes.
+| Feature | HTMLCollection | NodeList |
+| ------------- | ------------------------ | ------------------ |
+| Returned by | `getElementsBy*` methods | `querySelectorAll` |
+| Live updates | ✅ Yes | ❌ No (usually) |
+| Array methods | ❌ No | Some (forEach) |
+| Can iterate | ✅ Yes | ✅ Yes |
+
+---
+
+### Q5: What's the difference between node and element in the DOM?
+
+In the DOM, everything is a node, but not everything is an element. The term node is broader and includes element nodes, text nodes, comment nodes, and others. Elements are specifically the HTML tags like div, p, and span. When you use childNodes, you get all nodes including whitespace text nodes. When you use children, you get only element nodes. Similarly, parentNode can return any node type while parentElement only returns elements. This distinction matters when traversing the DOM because whitespace between elements creates text nodes that might interfere with your logic.
+
+---
+
+### Q6: How do you prevent XSS attacks when manipulating the DOM?
+
+XSS (Cross-Site Scripting) attacks happen when malicious scripts are injected into your page through user input. The main prevention is to never use innerHTML with untrusted data because it parses and executes HTML and scripts. Instead, use textContent which treats everything as plain text and won't execute code. If you must insert HTML, sanitize it first using established libraries like DOMPurify. You should also validate and encode user input on the server side. The Content Security Policy HTTP header provides another layer of protection by restricting script sources.
+
+---
+
+### Q7: What is a DocumentFragment and when should you use it?
+
+A DocumentFragment is a lightweight container that holds DOM nodes but isn't part of the actual DOM tree. It's useful when you need to build up multiple elements before adding them to the page. When you append a DocumentFragment to the DOM, only its children are inserted - the fragment itself disappears. The key benefit is performance: instead of causing multiple reflows by adding elements one at a time, you build everything in the fragment and insert once. This is particularly important when creating lists or tables with many items.
+
+---
+
+### Q8: What's the difference between attribute and property in the DOM?
+
+Attributes are defined in HTML and accessed via getAttribute/setAttribute, while properties are JavaScript object properties on DOM element objects. They're often synchronized but not always identical. For example, an input's value attribute is the initial value from HTML, but the value property reflects the current user input. The checked attribute on a checkbox represents the initial state, but the checked property reflects the current state. Standard attributes like id, class, and href are mapped to properties, but custom attributes need getAttribute. Generally, use properties for reading current state and attributes for initial or custom values.
+
+---
+
+### Q9: How does getComputedStyle differ from element.style?
+
+element.style only accesses inline styles set directly on the element, either through the style attribute in HTML or via JavaScript. It doesn't reflect styles from CSS stylesheets or inherited styles. getComputedStyle returns the final computed values after all CSS rules are applied, including inheritance and cascading. If you set font-size in a stylesheet but not inline, element.style.fontSize will be empty but getComputedStyle will give you the actual size. Use getComputedStyle when you need to know what's actually being rendered, and element.style when you want to read or write inline styles.
+
+---
+
+### Q10: What are the best practices for efficient DOM manipulation?
+
+Efficient DOM manipulation starts with minimizing DOM access since it's slower than regular JavaScript operations. Cache element references in variables rather than querying repeatedly. Batch your changes using DocumentFragment or by making changes to detached elements before inserting them. Avoid layout thrashing by reading all necessary values before writing changes. Use requestAnimationFrame for visual updates. Prefer classList methods over manipulating className strings. Use event delegation on parent elements instead of attaching many listeners to children. When making many changes, consider using innerHTML once rather than many appendChild calls, but be mindful of XSS risks.
+
+## Practical Examples
+
+```javascript
+// Example 1: Create and append card
+function createCard(title, content) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const cardTitle = document.createElement("h3");
+  cardTitle.textContent = title;
+
+  const cardContent = document.createElement("p");
+  cardContent.textContent = content;
+
+  card.appendChild(cardTitle);
+  card.appendChild(cardContent);
+
+  return card;
+}
+
+const container = document.querySelector("#container");
+const myCard = createCard("Hello", "This is a card");
+container.appendChild(myCard);
+
+// Example 2: Toggle dark mode
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("darkMode", isDark);
+}
+
+// Example 3: Dynamic list
+function addListItem(text) {
+  const ul = document.querySelector("#myList");
+  const li = document.createElement("li");
+  li.textContent = text;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.onclick = () => li.remove();
+
+  li.appendChild(deleteBtn);
+  ul.appendChild(li);
+}
+
+// Example 4: Update multiple elements
+function updatePrices(multiplier) {
+  const prices = document.querySelectorAll(".price");
+
+  prices.forEach((priceElement) => {
+    const currentPrice = parseFloat(priceElement.textContent);
+    const newPrice = (currentPrice * multiplier).toFixed(2);
+    priceElement.textContent = newPrice;
+  });
+}
+
+// Example 5: Efficient batch DOM updates
+function renderList(items) {
+  const fragment = document.createDocumentFragment();
+
+  items.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    fragment.appendChild(li);
+  });
+
+  document.querySelector("#list").appendChild(fragment);
+}
+```
+
+

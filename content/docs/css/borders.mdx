@@ -1,0 +1,131 @@
+---
+title: "Borders - Border Styling"
+description: Documentation for Borders - Border Styling.
+---
+
+# Borders - Border Styling
+
+
+
+## What are Border Properties?
+
+Border properties control the appearance of borders around elements, including width, style, color, and radius.
+
+## Border Properties - Quick Reference
+
+| Property | Description | Example |
+|---|---|---|
+| `border-width` | Border thickness | `border-width: 2px;` |
+| `border-style` | Border style | `border-style: solid;` |
+| `border-color` | Border color | `border-color: #007bff;` |
+| `border` | Shorthand | `border: 2px solid #007bff;` |
+| `border-radius` | Rounded corners | `border-radius: 8px;` |
+| `border-top` | Top border | `border-top: 1px solid black;` |
+| `border-right` | Right border | `border-right: 1px solid black;` |
+| `border-bottom` | Bottom border | `border-bottom: 1px solid black;` |
+| `border-left` | Left border | `border-left: 1px solid black;` |
+
+## Border Styles
+
+```css
+.solid { border-style: solid; }
+.dashed { border-style: dashed; }
+.dotted { border-style: dotted; }
+.double { border-style: double; }
+.groove { border-style: groove; }
+.ridge { border-style: ridge; }
+.inset { border-style: inset; }
+.outset { border-style: outset; }
+.none { border-style: none; }
+```
+
+## Detailed Examples
+
+### 1. Basic Border
+
+```css
+.box {
+    border: 2px solid #007bff;
+}
+```
+
+---
+
+### 2. Individual Sides
+
+```css
+.card {
+    border-top: 3px solid #007bff;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+```
+
+---
+
+### 3. border-radius
+
+```css
+.rounded {
+    border-radius: 8px;
+}
+
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.pill {
+    border-radius: 50px;
+}
+
+.custom {
+    border-radius: 10px 20px 30px 40px; /* top-left, top-right, bottom-right, bottom-left */
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Card with Border
+
+```css
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.card:hover {
+    border-color: #007bff;
+}
+```
+
+---
+
+### Pattern 2: Accent Border
+
+```css
+.accent-box {
+    border-left: 4px solid #007bff;
+    padding-left: 15px;
+}
+```
+
+---
+
+### Pattern 3: Button
+
+```css
+.btn {
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    padding: 10px 20px;
+}
+```
+
+---
+
+
+

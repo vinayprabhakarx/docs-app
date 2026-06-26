@@ -1,0 +1,842 @@
+---
+title: "Functions - Reusable Code Blocks"
+description: Documentation for Functions - Reusable Code Blocks.
+---
+
+# Functions - Reusable Code Blocks
+
+
+
+## What are Functions?
+
+A **function** is a reusable block of code that performs a specific task. You define it once and call it whenever you need it — instead of repeating the same logic again and again.
+
+```javascript
+// Repetitive — bad
+console.log("Hello, John!");
+console.log("Hello, Jane!");
+console.log("Hello, Bob!");
+
+// Reusable — good
+function greet(name) {
+  console.log("Hello, " + name + "!");
+}
+
+greet("John"); // Hello, John!
+greet("Jane"); // Hello, Jane!
+greet("Bob"); // Hello, Bob!
+```
+
+### Why Use Functions?
+
+- **Reusability** — Write once, use many times
+- **Maintainability** — Change logic in one place, not everywhere
+- **Abstraction** — Hide complexity behind a simple name. `Math.max(1,5,3)` returns `5` — you don't care how it works inside, just what it does
+- **Readability** — Good function names explain what code does: `calculateTax()`, `isValidEmail()`
+- **Testability** — Small isolated functions are easy to test individually
+
+## Quick Reference — Three Ways to Write Functions
+
+| Feature         | Declaration          | Expression                   | Arrow (ES6+)            |
+| --------------- | -------------------- | ---------------------------- | ----------------------- |
+| **Syntax**      | `function name() {}` | `const name = function() {}` | `const name = () => {}` |
+| **Hoisting**    | ✅ Yes               | ❌ No                        | ❌ No                   |
+| **Own `this`**  | ✅ Yes               | ✅ Yes                       | ❌ No (uses outer)      |
+| **Constructor** | ✅ Yes (`new`)       | ✅ Yes (`new`)               | ❌ No                   |
+| **Best for**    | General purpose      | Callbacks, conditionals      | Short callbacks         |
+
+## 1. Function Declaration
+
+The standard way to define a function. The biggest feature is **hoisting** — you can call it before it appears in the code.
+
+### Syntax
+
+```javascript
+function functionName(param1, param2) {
+  // function body
+  return value; // optional
+}
+```
+
+### Examples
+
+```javascript
+// Simple — no params, no return
+function sayHello() {
+  console.log("Hello!");
+}
+sayHello(); // Hello!
+
+// With parameter
+function greet(name) {
+  console.log("Hello, " + name + "!");
+}
+greet("John"); // Hello, John!
+
+// With return value
+function add(a, b) {
+  return a + b;
+}
+console.log(add(5, 3)); // 8
+
+// Multiple params with template literal
+function introduce(name, age, city) {
+  return `I am ${name}, ${age} years old, from ${city}`;
+}
+console.log(introduce("John", 25, "NYC"));
+// I am John, 25 years old, from NYC
+```
+
+### Hoisting
+
+Function declarations are **fully hoisted** — JavaScript reads the entire function before executing any code. So you can call it before the line it is written on.
+
+```javascript
+console.log(add(2, 3)); // 5 — works fine, called before declaration
+
+function add(a, b) {
+  return a + b;
+}
+```
+
+> **Remember:** Only function **declarations** are hoisted. Function expressions and arrow functions are **not**. This is one of the most common interview traps.
+
+## 2. Function Expression
+
+A function assigned to a variable. Works the same as a declaration, but it is **not hoisted**.
+
+### Syntax
+
+```javascript
+const functionName = function (param1, param2) {
+  // function body
+  return value;
+};
+```
+
+### Examples
+
+```javascript
+// Basic function expression
+const greet = function (name) {
+  return "Hello, " + name;
+};
+console.log(greet("Jane")); // Hello, Jane
+
+// Anonymous — no name after 'function' keyword
+const multiply = function (a, b) {
+  return a * b;
+};
+console.log(multiply(4, 5)); // 20
+
+// Named function expression — useful for recursion and debugging
+const factorial = function fact(n) {
+  if (n <= 1) return 1;
+  return n * fact(n - 1); // calls itself using 'fact'
+};
+console.log(factorial(5)); // 120
+
+// Note: 'fact' is NOT accessible outside
+// console.log(fact); // ReferenceError
+```
+
+### Not Hoisted — Important Trap!
+
+```javascript
+// ❌ This throws an error — NOT ReferenceError, but TypeError
+greet("John"); // TypeError: greet is not a function
+
+const greet = function (name) {
+  console.log("Hello, " + name);
+};
+```
+
+> **Why TypeError and not ReferenceError?** The variable `greet` IS hoisted to the top — but only as `undefined`. So when you try to call `undefined()`, JavaScript says "that's not a function" → **TypeError**. This is a very common interview question.
+
+## 3. Arrow Functions (ES6+)
+
+A shorter way to write functions. Two big differences from regular functions: **no own `this`** and **cannot be used as constructors**.
+
+### Syntax — All Forms
+
+```javascript
+// Multiple params — use parentheses and curly braces
+const add = (a, b) => {
+  return a + b;
+};
+
+// Single expression — skip curly braces, return is automatic
+const add = (a, b) => a + b;
+
+// Single param — parentheses are optional
+const square = (x) => x * x;
+const square = (x) => x * x; // both work
+
+// No params — parentheses are required
+const sayHi = () => "Hi!";
+
+// Returning an object — wrap in parentheses
+const makePerson = (name, age) => ({ name: name, age: age });
+console.log(makePerson("John", 25)); // { name: 'John', age: 25 }
+```
+
+> **Why wrap object in `()`?** If you write `=> { name, age }`, JavaScript reads the `{}` as a **function body**, not an object. Wrapping in `()` tells it "this is an expression, not a block".
+
+### Examples
+
+```javascript
+const greet = (name) => "Hello, " + name;
+console.log(greet("John")); // Hello, John
+
+const multiply = (a, b) => a * b;
+console.log(multiply(3, 4)); // 12
+
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((n) => n * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+```
+
+### `this` Binding — The Real Difference
+
+Arrow functions do **not** have their own `this`. They grab `this` from the surrounding code where they are defined. Regular functions create their own `this` based on how they are called.
+
+```javascript
+const person = {
+  name: "John",
+  // Regular function — 'this' refers to person object
+  greetRegular: function () {
+    console.log("Hello, " + this.name); // Hello, John ✅
+  },
+  // Arrow function — 'this' does NOT refer to person
+  greetArrow: () => {
+    console.log("Hello, " + this.name); // Hello, undefined ❌
+  },
+};
+
+person.greetRegular(); // Hello, John
+person.greetArrow(); // Hello, undefined
+```
+
+> **Remember:** Arrow functions are best for **callbacks** inside methods (like inside `.map()`, `.forEach()`, `setTimeout()`), because they keep the `this` from the outer function. Do **not** use arrow functions as object methods directly.
+
+### Cannot Be Used as Constructor
+
+```javascript
+const Person = (name) => {
+  this.name = name;
+};
+
+const john = new Person("John"); // ❌ TypeError: Person is not a constructor
+```
+
+> Arrow functions cannot be used with the `new` keyword. If you need to create objects with `new`, use a regular function or a class.
+
+## 4. Parameters and Arguments
+
+**Parameters** are the variable names in the function definition. **Arguments** are the actual values you pass when calling it.
+
+```javascript
+function greet(name, age) {
+  // name, age → parameters
+  console.log(name, age);
+}
+
+greet("John", 25); // "John", 25 → arguments
+```
+
+### Default Parameters (ES6+)
+
+If an argument is not passed (or passed as `undefined`), the default value is used.
+
+```javascript
+function greet(name = "Guest") {
+  return "Hello, " + name;
+}
+
+console.log(greet()); // Hello, Guest  (no argument → default used)
+console.log(greet("John")); // Hello, John   (argument passed → default skipped)
+console.log(greet(undefined)); // Hello, Guest  (undefined → default used)
+console.log(greet(null)); // Hello, null   (null → default NOT used)
+```
+
+> **Important trap:** `undefined` triggers the default value. `null` does **NOT**. This catches a lot of developers by surprise. `null` is an actual value — it means "intentionally no value". `undefined` means "nothing was provided".
+
+```javascript
+// Multiple defaults — each one is independent
+function createUser(name = "Anonymous", age = 0, role = "user") {
+  return { name, age, role };
+}
+
+console.log(createUser()); // { name: 'Anonymous', age: 0, role: 'user' }
+console.log(createUser("John", 25)); // { name: 'John', age: 25, role: 'user' }
+console.log(createUser("John", 25, "admin")); // { name: 'John', age: 25, role: 'admin' }
+```
+
+### Rest Parameters (`...`)
+
+Collects all remaining arguments into a single **array**.
+
+```javascript
+function sum(...numbers) {
+  let total = 0;
+  for (let num of numbers) {
+    total += num;
+  }
+  return total;
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
+```
+
+> **Remember:** The rest parameter must **always be the last parameter**. Putting it anywhere else is a syntax error.
+
+```javascript
+// ✅ Correct — rest is last
+function introduce(name, ...hobbies) {
+  console.log(`I am ${name}`);
+  console.log("Hobbies:", hobbies);
+}
+introduce("John", "reading", "coding", "gaming");
+// I am John
+// Hobbies: ['reading', 'coding', 'gaming']
+
+// ❌ Wrong — rest is NOT last
+function bad(...items, last) {} // SyntaxError
+```
+
+### Passing More or Fewer Arguments Than Parameters
+
+JavaScript does not throw an error if the count does not match.
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+
+// Fewer arguments — missing ones become undefined
+console.log(add(5)); // NaN  (5 + undefined = NaN)
+
+// More arguments — extras are silently ignored
+console.log(add(5, 3, 10)); // 8  (10 is ignored)
+```
+
+> **How to access extra arguments?** Use the `arguments` object (available in regular functions only, not arrow functions).
+
+```javascript
+function showAll() {
+  console.log(arguments); // { 0: 'a', 1: 'b', 2: 'c' }
+}
+showAll("a", "b", "c");
+
+// Modern way — use rest parameters instead
+function showAll(...args) {
+  console.log(args); // ['a', 'b', 'c']  — actual array
+}
+```
+
+> **Note:** `arguments` is an array-like object, **not** a real array. You cannot use `.map()`, `.filter()` etc. on it directly. Rest parameters (`...args`) give you an actual array — prefer rest parameters in modern code.
+
+## 5. Return Statement
+
+`return` sends a value back from the function to whoever called it. If a function has no `return`, it automatically returns `undefined`.
+
+```javascript
+// With return — value comes back
+function add(a, b) {
+  return a + b;
+}
+console.log(add(5, 3)); // 8
+
+// Without return — undefined comes back
+function greet(name) {
+  console.log("Hello, " + name);
+  // no return statement
+}
+let result = greet("John"); // logs: Hello, John
+console.log(result); // undefined
+```
+
+### Early Return
+
+`return` exits the function **immediately**. Any code after it does not run.
+
+```javascript
+function checkAge(age) {
+  if (age < 18) {
+    return "Too young"; // exits here if age < 18
+  }
+  // this line only runs if age >= 18
+  return "Welcome!";
+}
+
+console.log(checkAge(15)); // Too young
+console.log(checkAge(25)); // Welcome!
+```
+
+```javascript
+// Code after return is dead code — never executes
+function example() {
+  return 10;
+  console.log("This never runs"); // ❌ dead code
+}
+console.log(example()); // 10
+```
+
+### Multiple Return Points
+
+Using early returns keeps code flat and readable — avoids deep nesting.
+
+```javascript
+function getGrade(score) {
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+}
+
+console.log(getGrade(95)); // A
+console.log(getGrade(82)); // B
+console.log(getGrade(45)); // F
+```
+
+## 6. Function Scope
+
+Variables declared **inside** a function are **local** — they only exist inside that function. Variables declared **outside** are **global** — accessible everywhere.
+
+```javascript
+let globalVar = "I am global";
+
+function myFunction() {
+  let localVar = "I am local";
+
+  console.log(globalVar); // ✅ "I am global" — can access global
+  console.log(localVar); // ✅ "I am local"  — can access local
+}
+
+myFunction();
+console.log(globalVar); // ✅ "I am global"
+console.log(localVar); // ❌ ReferenceError: localVar is not defined
+```
+
+### Parameters Are Local Too
+
+Function parameters behave the same as local variables — they only exist inside the function.
+
+```javascript
+function greet(name) {
+  console.log("Hello, " + name);
+}
+
+greet("John"); // Hello, John
+console.log(name); // ❌ ReferenceError: name is not defined
+```
+
+### Inner Function Can Access Outer Variables (Scope Chain)
+
+A function can always read variables from its **outer** scope. This is called the **scope chain** — JavaScript looks outward, layer by layer, until it finds the variable.
+
+```javascript
+let city = "New York";
+
+function outer() {
+  let country = "USA";
+
+  function inner() {
+    let name = "John";
+    // inner can access ALL of these
+    console.log(name); // John
+    console.log(country); // USA
+    console.log(city); // New York
+  }
+
+  inner();
+}
+
+outer();
+```
+
+> **Remember:** Variables flow **inward** (outer → inner), never outward. An outer function cannot access a variable declared in an inner function.
+
+## 7. Callback Functions
+
+A **callback** is a function that you pass as an argument to another function. The other function will **call it back** at some point.
+
+```javascript
+// 'callback' is a function passed as an argument
+function processUser(name, callback) {
+  console.log("Processing " + name);
+  callback(); // calling the function that was passed in
+}
+
+processUser("John", function () {
+  console.log("Done processing!");
+});
+// Processing John
+// Done processing!
+```
+
+### Why Callbacks Exist
+
+Callbacks let you pass **behavior** into a function, not just data. You decide _what happens_ by passing a different function.
+
+```javascript
+function calculate(a, b, operation) {
+  return operation(a, b); // runs whatever function you pass
+}
+
+// Pass addition
+console.log(
+  calculate(5, 3, function (x, y) {
+    return x + y;
+  }),
+); // 8
+
+// Pass subtraction
+console.log(
+  calculate(5, 3, function (x, y) {
+    return x - y;
+  }),
+); // 2
+
+// Pass multiplication
+console.log(
+  calculate(5, 3, function (x, y) {
+    return x * y;
+  }),
+); // 15
+```
+
+### Callbacks with Array Methods
+
+This is where you will use callbacks the most in real code.
+
+```javascript
+let numbers = [1, 2, 3, 4, 5];
+
+// forEach — do something with each element
+numbers.forEach(function (num) {
+  console.log(num * 2);
+});
+// 2, 4, 6, 8, 10
+
+// map — create a new array by transforming each element
+let doubled = numbers.map(function (num) {
+  return num * 2;
+});
+console.log(doubled); // [2, 4, 6, 8, 10]
+
+// filter — create a new array with only elements that pass a test
+let evens = numbers.filter(function (num) {
+  return num % 2 === 0;
+});
+console.log(evens); // [2, 4]
+```
+
+## 8. IIFE (Immediately Invoked Function Expression)
+
+An **IIFE** is a function that is defined and executed at the same time — right where it is written.
+
+### Syntax
+
+```javascript
+// Wrap function in () then call it with ()
+(function () {
+  console.log("I run immediately!");
+})();
+
+// With parameters
+(function (name) {
+  console.log("Hello, " + name);
+})("John");
+// Hello, John
+
+// Arrow function version
+(() => {
+  console.log("Arrow IIFE");
+})();
+```
+
+### Why IIFEs Exist
+
+The main purpose is to create a **private scope** — variables inside an IIFE are not accessible outside.
+
+```javascript
+(function () {
+  let secret = "hidden value";
+  console.log(secret); // ✅ accessible inside
+})();
+
+console.log(secret); // ❌ ReferenceError — not accessible outside
+```
+
+> **Historical context:** Before `let`, `const`, and ES6 modules existed, `var` was the only option — and `var` leaks into the global scope. IIFEs were the main way to keep variables private. You still see them in older codebases, but they are much less common in modern JavaScript.
+
+## Interview Questions
+
+### Q1: What is the difference between a function declaration and a function expression?
+
+A **declaration** is written as `function name() {}` and is **fully hoisted** — you can call it before the line it appears on. An **expression** is written as `const name = function() {}` and is **not hoisted**. The variable is hoisted but holds `undefined` until that line runs. Calling it before that line throws a **TypeError** (not ReferenceError), because you are trying to call `undefined` as a function.
+
+```javascript
+// Declaration — works before the line
+console.log(declared()); // "hello"
+function declared() {
+  return "hello";
+}
+
+// Expression — crashes before the line
+console.log(expressed()); // TypeError: expressed is not a function
+var expressed = function () {
+  return "hello";
+};
+```
+
+### Q2: What is the difference between parameters and arguments?
+
+**Parameters** are the names you define in the function signature. **Arguments** are the actual values passed when calling the function. If fewer arguments are passed than parameters, the missing ones become `undefined`. If more are passed, the extras are silently ignored (but accessible via the `arguments` object in regular functions).
+
+```javascript
+function example(a, b) {
+  console.log(a, b);
+}
+
+example(1); // 1, undefined — b is missing
+example(1, 2, 3); // 1, 2        — 3 is ignored
+```
+
+### Q3: What does a function return if there is no `return` statement?
+
+It returns `undefined`.
+
+```javascript
+function noReturn() {
+  let x = 10;
+}
+console.log(noReturn()); // undefined
+```
+
+### Q4: What are arrow functions and how do they differ from regular functions?
+
+Arrow functions are a shorter syntax introduced in ES6. The two key behavioral differences are: (1) they do **not** have their own `this` — they use `this` from the surrounding scope, and (2) they **cannot** be used as constructors with `new`. They also do not have their own `arguments` object.
+
+### Q5: What happens when you pass `undefined` vs `null` to a default parameter?
+
+`undefined` **triggers** the default value. `null` does **not** — it is treated as an intentional value.
+
+```javascript
+function test(val = "default") {
+  console.log(val);
+}
+
+test(undefined); // "default" — default kicks in
+test(null); // null      — default does NOT kick in
+test(); // "default" — same as passing undefined
+```
+
+### Q6: What is hoisting, and how does it differ between declarations and expressions?
+
+**Hoisting** means JavaScript moves certain things to the top of their scope before running the code. Function **declarations** are fully hoisted — the entire function is available from the start. Function **expressions** — the variable name is hoisted, but its value is `undefined` until the assignment line runs. This is why calling an expression before its line gives **TypeError**, not ReferenceError.
+
+```javascript
+console.log(typeof declared); // "function" — fully hoisted
+console.log(typeof expressed); // "undefined" — only variable hoisted
+
+function declared() {}
+var expressed = function () {};
+```
+
+### Q7: What is the `arguments` object, and why do developers prefer rest parameters?
+
+`arguments` is a special object available inside **regular functions** (not arrow functions) that contains all the arguments passed to the function. However, it is **not a real array** — you cannot use `.map()`, `.filter()`, or other array methods on it. Rest parameters (`...args`) give you an actual array, which is cleaner and works everywhere. Prefer rest parameters in modern code.
+
+```javascript
+function oldWay() {
+  console.log(arguments); // { 0: 1, 1: 2, 2: 3 } — array-like object
+  console.log(Array.isArray(arguments)); // false
+}
+
+function newWay(...args) {
+  console.log(args); // [1, 2, 3] — real array
+  console.log(Array.isArray(args)); // true
+}
+
+oldWay(1, 2, 3);
+newWay(1, 2, 3);
+```
+
+### Q8: What is an IIFE and why was it used?
+
+An **IIFE** (Immediately Invoked Function Expression) is a function that runs the moment it is defined. Its main purpose is to create a **private scope** — variables inside cannot be accessed outside. Before `let`/`const` and modules, `var` leaked everything into the global scope. IIFEs were the standard solution to keep variables private. They are less common now but still appear in older codebases.
+
+```javascript
+(function () {
+  var privateVar = "no one can see this";
+})();
+
+console.log(privateVar); // ReferenceError
+```
+
+### Q9: Can arrow functions be used as constructors?
+
+**No.** Arrow functions do not have their own `this`, so they cannot be used with the `new` keyword. Trying to do so throws a TypeError. Use regular functions or classes for constructors.
+
+```javascript
+const Person = (name) => {
+  this.name = name;
+};
+const p = new Person("John"); // ❌ TypeError: Person is not a constructor
+
+// ✅ Use regular function or class instead
+function Person(name) {
+  this.name = name;
+}
+const p = new Person("John"); // Works
+```
+
+### Q10: What is a callback function? Give an example of where it is commonly used.
+
+A **callback** is a function passed as an argument to another function, which then calls it at some point. It lets you pass **behavior** into a function — the caller decides _what happens_. Callbacks are used everywhere in JavaScript: array methods like `.map()`, `.filter()`, `.forEach()`, event listeners, `setTimeout`, and API calls.
+
+```javascript
+function doWork(name, onComplete) {
+  console.log("Working on " + name);
+  onComplete(name); // call the callback when done
+}
+
+doWork("task1", function (name) {
+  console.log(name + " is finished!");
+});
+// Working on task1
+// task1 is finished!
+```
+
+### Q11: Write a function that memoizes another function.
+
+**Memoization** means caching the result of a function call so that if it is called again with the same arguments, it returns the cached result instead of recalculating.
+
+```javascript
+function memoize(fn) {
+  let cache = {};
+
+  return function (...args) {
+    let key = JSON.stringify(args); // convert args to a string key
+
+    if (cache[key] !== undefined) {
+      console.log("Returning cached result");
+      return cache[key]; // return cached value
+    }
+
+    let result = fn(...args); // run the original function
+    cache[key] = result; // store the result
+    return result;
+  };
+}
+
+// Usage
+function slowAdd(a, b) {
+  console.log("Calculating...");
+  return a + b;
+}
+
+const fastAdd = memoize(slowAdd);
+
+console.log(fastAdd(2, 3)); // Calculating... → 5
+console.log(fastAdd(2, 3)); // Returning cached result → 5
+console.log(fastAdd(4, 5)); // Calculating... → 9
+```
+
+### Q12: Write a simple debounce function.
+
+**Debouncing** delays running a function until a certain time has passed since it was last called. If it gets called again before that time, the timer resets. This is useful for things like search input — you don't want to fire an API call on every single keystroke.
+
+```javascript
+function debounce(fn, delay) {
+  let timer = null;
+
+  return function (...args) {
+    // If there is a pending timer, cancel it
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    // Start a new timer
+    timer = setTimeout(() => {
+      fn(...args); // run the function after delay
+    }, delay);
+  };
+}
+
+// Usage
+function search(query) {
+  console.log("Searching for: " + query);
+}
+
+const debouncedSearch = debounce(search, 500); // 500ms delay
+
+debouncedSearch("j"); // timer starts
+debouncedSearch("ja"); // timer resets
+debouncedSearch("jav"); // timer resets
+debouncedSearch("java"); // timer resets — after 500ms, logs: Searching for: java
+// Only ONE search call fires, not four
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: Temperature converter
+function celsiusToFahrenheit(celsius) {
+  return (celsius * 9) / 5 + 32;
+}
+console.log(celsiusToFahrenheit(0)); // 32
+console.log(celsiusToFahrenheit(100)); // 212
+
+// Example 2: Check even or odd
+const isEven = (num) => num % 2 === 0;
+console.log(isEven(4)); // true
+console.log(isEven(7)); // false
+
+// Example 3: Find maximum in array
+function findMax(arr) {
+  let max = arr[0];
+  for (let num of arr) {
+    if (num > max) max = num;
+  }
+  return max;
+}
+console.log(findMax([3, 7, 2, 9, 1])); // 9
+
+// Example 4: Factorial — recursive function
+function factorial(n) {
+  if (n <= 1) return 1; // base case
+  return n * factorial(n - 1); // calls itself with smaller value
+}
+console.log(factorial(5)); // 120  (5 × 4 × 3 × 2 × 1)
+
+// Example 5: Simple email validation
+function isValidEmail(email) {
+  return email.includes("@") && email.includes(".");
+}
+console.log(isValidEmail("test@example.com")); // true
+console.log(isValidEmail("invalid")); // false
+
+// Example 6: Capitalize first letter
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+console.log(capitalize("hello")); // Hello
+console.log(capitalize("world")); // World
+
+// Example 7: Repeat a string
+function repeat(str, times) {
+  let result = "";
+  for (let i = 0; i < times; i++) {
+    result += str;
+  }
+  return result;
+}
+console.log(repeat("ab", 3)); // ababab
+```
+
+

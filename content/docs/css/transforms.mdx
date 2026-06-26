@@ -1,0 +1,167 @@
+---
+title: "Transforms - 2D and 3D Transformations"
+description: Documentation for Transforms - 2D and 3D Transformations.
+---
+
+# Transforms - 2D and 3D Transformations
+
+
+
+## What are CSS Transforms?
+
+Transforms allow you to rotate, scale, skew, or translate elements in 2D or 3D space without affecting the document flow.
+
+## Transform Functions - Quick Reference
+
+| Function | Description | Example |
+|---|---|---|
+| `translate()` | Move element | `transform: translate(50px, 100px);` |
+| `translateX()` | Move horizontally | `transform: translateX(50px);` |
+| `translateY()` | Move vertically | `transform: translateY(100px);` |
+| `scale()` | Resize element | `transform: scale(1.5);` |
+| `scaleX()` | Scale horizontally | `transform: scaleX(2);` |
+| `scaleY()` | Scale vertically | `transform: scaleY(0.5);` |
+| `rotate()` | Rotate element | `transform: rotate(45deg);` |
+| `skew()` | Skew element | `transform: skew(10deg, 20deg);` |
+| `skewX()` | Skew horizontally | `transform: skewX(10deg);` |
+| `skewY()` | Skew vertically | `transform: skewY(10deg);` |
+
+## Detailed Examples
+
+### 1. translate()
+
+```css
+.move-right {
+    transform: translateX(50px);
+}
+
+.move-down {
+    transform: translateY(100px);
+}
+
+.move-both {
+    transform: translate(50px, 100px);
+}
+```
+
+---
+
+### 2. scale()
+
+```css
+.enlarge {
+    transform: scale(1.5); /* 150% size */
+}
+
+.shrink {
+    transform: scale(0.5); /* 50% size */
+}
+
+.stretch {
+    transform: scale(2, 1); /* 2x width, 1x height */
+}
+```
+
+---
+
+### 3. rotate()
+
+```css
+.rotate-45 {
+    transform: rotate(45deg);
+}
+
+.rotate-full {
+    transform: rotate(360deg);
+}
+```
+
+---
+
+### 4. Multiple Transforms
+
+```css
+.combined {
+    transform: translate(50px, 50px) rotate(45deg) scale(1.2);
+}
+```
+
+## Transform Origin
+
+```css
+.element {
+    transform-origin: center; /* Default */
+    transform: rotate(45deg);
+}
+
+.top-left {
+    transform-origin: top left;
+    transform: rotate(45deg);
+}
+
+.custom {
+    transform-origin: 50px 50px;
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Button Hover
+
+```css
+.button {
+    transition: transform 0.3s;
+}
+
+.button:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+```
+
+---
+
+### Pattern 2: Card Flip
+
+```css
+.card {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card:hover {
+    transform: rotateY(180deg);
+}
+```
+
+---
+
+### Pattern 3: Rotate Icon
+
+```css
+.icon {
+    transition: transform 0.3s;
+}
+
+.icon:hover {
+    transform: rotate(180deg);
+}
+```
+
+---
+
+### Pattern 4: Scale on Hover
+
+```css
+.image {
+    transition: transform 0.3s;
+}
+
+.image:hover {
+    transform: scale(1.1);
+}
+```
+
+---
+
+
+

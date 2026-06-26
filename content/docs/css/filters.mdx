@@ -1,0 +1,121 @@
+---
+title: "CSS Filters - Visual Effects"
+description: Documentation for CSS Filters - Visual Effects.
+---
+
+# CSS Filters - Visual Effects
+
+
+
+## What are CSS Filters?
+
+CSS filters apply visual effects like blur, brightness, contrast, and more to elements. They're commonly used for images but work on any element.
+
+## Filter Functions - Quick Reference
+
+| Filter | Description | Example |
+|---|---|---|
+| `blur()` | Blur effect | `filter: blur(5px);` |
+| `brightness()` | Adjust brightness | `filter: brightness(1.5);` |
+| `contrast()` | Adjust contrast | `filter: contrast(200%);` |
+| `grayscale()` | Convert to grayscale | `filter: grayscale(100%);` |
+| `hue-rotate()` | Rotate colors | `filter: hue-rotate(90deg);` |
+| `invert()` | Invert colors | `filter: invert(100%);` |
+| `opacity()` | Transparency | `filter: opacity(50%);` |
+| `saturate()` | Adjust saturation | `filter: saturate(200%);` |
+| `sepia()` | Sepia tone | `filter: sepia(100%);` |
+| `drop-shadow()` | Drop shadow | `filter: drop-shadow(2px 2px 4px black);` |
+
+## Detailed Examples
+
+### 1. blur()
+
+```css
+.blurred {
+    filter: blur(5px);
+}
+
+.background-blur {
+    backdrop-filter: blur(10px); /* Blur background behind element */
+}
+```
+
+---
+
+### 2. brightness()
+
+```css
+.bright {
+    filter: brightness(1.5); /* 150% brightness */
+}
+
+.dark {
+    filter: brightness(0.5); /* 50% brightness */
+}
+```
+
+---
+
+### 3. grayscale()
+
+```css
+.grayscale {
+    filter: grayscale(100%);
+}
+
+.grayscale:hover {
+    filter: grayscale(0%); /* Color on hover */
+}
+```
+
+---
+
+### 4. Multiple Filters
+
+```css
+.combined {
+    filter: brightness(1.2) contrast(1.1) saturate(1.3);
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Image Hover Effect
+
+```css
+.image {
+    filter: grayscale(100%);
+    transition: filter 0.3s;
+}
+
+.image:hover {
+    filter: grayscale(0%);
+}
+```
+
+---
+
+### Pattern 2: Glass Morphism
+
+```css
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+```
+
+---
+
+### Pattern 3: Dark Mode Invert
+
+```css
+[data-theme="dark"] img {
+    filter: invert(1) hue-rotate(180deg);
+}
+```
+
+---
+
+
+

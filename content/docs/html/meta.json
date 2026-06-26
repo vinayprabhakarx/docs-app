@@ -1,0 +1,23 @@
+{
+  "index": "Index",
+  "html-basics": "HTML Basics",
+  "document-structure": "Document Structure",
+  "text-elements": "Text Elements",
+  "links-navigation": "Links Navigation",
+  "images-media": "Images Media",
+  "lists": "Lists",
+  "tables": "Tables",
+  "forms-basics": "Forms Basics",
+  "forms-advanced": "Forms Advanced",
+  "input-patterns": "Input Patterns",
+  "form-validation": "Form Validation",
+  "semantic-elements": "Semantic Elements",
+  "accessibility": "Accessibility",
+  "seo-meta-tags": "Seo Meta Tags",
+  "html-entities": "HTML Entities",
+  "html5-apis": "Html5 APIS",
+  "embedding-content": "Embedding Content",
+  "global-attributes": "Global Attributes",
+  "best-practices": "Best Practices",
+  "html-cheat-sheet": "HTML Cheat Sheet"
+}

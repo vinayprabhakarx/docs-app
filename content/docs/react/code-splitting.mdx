@@ -1,0 +1,82 @@
+---
+title: "Code Splitting - Reduce Bundle Size"
+description: Documentation for Code Splitting - Reduce Bundle Size.
+---
+
+# Code Splitting - Reduce Bundle Size
+
+
+
+## React.lazy and Suspense
+
+```jsx
+import { lazy, Suspense } from "react";
+
+// Dynamic import - loads only when needed
+const Dashboard = lazy(() => import("./Dashboard"));
+const Settings = lazy(() => import("./Settings"));
+
+function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+## Component-Level Splitting
+
+```jsx
+const HeavyChart = lazy(() => import("./HeavyChart"));
+
+function Dashboard({ showChart }) {
+  return (
+    <div>
+      <Stats />
+      {showChart && (
+        <Suspense fallback={<ChartSkeleton />}>
+          <HeavyChart />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+```
+
+## Named Exports
+
+```jsx
+// For named exports, create intermediate file
+// MathUtils.js
+export const add = (a, b) => a + b;
+
+// lazy doesn't work with named exports directly
+// Create wrapper
+const AddFunction = lazy(() =>
+  import("./MathUtils").then((module) => ({ default: module.add })),
+);
+```
+
+## Interview Questions & Answers
+
+### Q1: What is code splitting?
+
+Breaking large bundle into smaller chunks loaded on demand. Reduces initial load time. Uses dynamic import() syntax.
+
+---
+
+### Q2: What is React.lazy?
+
+Function to lazy load components. Takes function returning dynamic import. Component renders when needed.
+
+---
+
+### Q3: What is Suspense?
+
+Component to show fallback while lazy components load. Required wrapper for lazy components. Can nest for different loading states.
+
+

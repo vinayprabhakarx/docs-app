@@ -1,0 +1,3156 @@
+---
+title: "Variables & Data Types - Storing and Working with Data"
+description: Documentation for Variables & Data Types - Storing and Working with Data.
+---
+
+# Variables & Data Types - Storing and Working with Data
+
+
+
+## What are Variables?
+
+**Variables** are containers that store data values. Think of them as labeled boxes where you can store information and retrieve it later.
+
+### Why Use Variables?
+
+- **Store data** - Keep information for later use
+- **Reuse values** - Use the same value multiple times
+- **Make code readable** - Give meaningful names to values
+- **Dynamic programs** - Values can change during execution
+
+## Variable Declaration Keywords
+
+JavaScript has **three ways** to declare variables: `var`, `let`, and `const`.
+
+### Quick Comparison Table
+
+| Feature           | var                | let          | const              |
+| ----------------- | ------------------ | ------------ | ------------------ |
+| **Scope**         | Function scope     | Block scope  | Block scope        |
+| **Reassignment**  | ✅ Yes             | ✅ Yes       | ❌ No              |
+| **Redeclaration** | ✅ Yes             | ❌ No        | ❌ No              |
+| **Hoisting**      | ✅ Yes (undefined) | ✅ Yes (TDZ) | ✅ Yes (TDZ)       |
+| **Modern Usage**  | ❌ Avoid           | ✅ Use       | ✅ Use (preferred) |
+
+## 1. var (Old Way - Avoid in Modern Code)
+
+`var` is the **old way** of declaring variables. It has quirks that can cause bugs.
+
+### Basic Syntax
+
+```javascript
+var variableName = value;
+```
+
+### Examples
+
+```javascript
+// Declaring a variable
+var name = "John";
+console.log(name); // Output: John
+
+// Reassigning (changing the value)
+name = "Jane";
+console.log(name); // Output: Jane
+
+// Declaring without initialization
+var age;
+console.log(age); // Output: undefined (no value assigned yet)
+
+// Assigning value later
+age = 25;
+console.log(age); // Output: 25
+```
+
+### Problems with var
+
+#### Problem 1: Function Scope (Not Block Scope)
+
+```javascript
+// var ignores block scope
+if (true) {
+  var x = 10;
+}
+console.log(x); // Output: 10 (accessible outside block!)
+
+// This can cause bugs:
+for (var i = 0; i < 3; i++) {
+  // Loop code
+}
+console.log(i); // Output: 3 (i leaked outside the loop!)
+```
+
+#### Problem 2: Redeclaration Allowed
+
+```javascript
+var name = "John";
+var name = "Jane"; // No error! Redeclared the same variable
+console.log(name); // Output: Jane
+
+// This can accidentally overwrite variables
+```
+
+#### Problem 3: Hoisting Issues
+
+```javascript
+console.log(x); // Output: undefined (not an error!)
+var x = 5;
+
+// JavaScript "hoists" var declarations to the top:
+// Equivalent to:
+// var x;
+// console.log(x);
+// x = 5;
+```
+
+**Why should we avoid `var`?**
+
+- Function scope (not block scope) causes variable leakage
+- Allows redeclaration (can accidentally overwrite)
+- Hoisting behavior can be confusing
+- Not compatible with modern JavaScript best practices
+
+## 2. let (Modern Way - Block Scoped)
+
+`let` is the **modern way** to declare variables that can change.
+
+### Basic Syntax
+
+```javascript
+let variableName = value;
+```
+
+### Examples
+
+```javascript
+// Basic declaration
+let name = "John";
+console.log(name); // Output: John
+
+// Reassignment is allowed
+name = "Jane";
+console.log(name); // Output: Jane
+
+// Block scope - stays inside { }
+if (true) {
+  let x = 10;
+  console.log(x); // Output: 10 (works inside block)
+}
+// console.log(x); // Error: x is not defined (not accessible outside)
+
+// Loop example
+for (let i = 0; i < 3; i++) {
+  console.log(i); // Output: 0, 1, 2
+}
+// console.log(i); // Error: i is not defined (stays in loop)
+```
+
+### let vs var - Block Scope Comparison
+
+```javascript
+// Example 1: if block
+if (true) {
+  var varVariable = "I leak out";
+  let letVariable = "I stay inside";
+}
+console.log(varVariable); // Output: I leak out
+// console.log(letVariable); // Error: not defined
+
+// Example 2: for loop
+for (var i = 0; i < 3; i++) {}
+console.log(i); // Output: 3 (leaked)
+
+for (let j = 0; j < 3; j++) {}
+// console.log(j); // Error: not defined (contained)
+```
+
+### Redeclaration Not Allowed
+
+```javascript
+let name = "John";
+// let name = 'Jane'; // Error: Identifier 'name' has already been declared
+
+// But reassignment is fine:
+name = "Jane"; // ✅ Works
+```
+
+### Temporal Dead Zone (TDZ)
+
+```javascript
+// console.log(x); // Error: Cannot access 'x' before initialization
+let x = 5;
+
+// The period between entering scope and declaration is called TDZ
+// This prevents using variables before they're declared
+```
+
+**What is the Temporal Dead Zone?**
+
+- The time between entering a scope and the variable declaration
+- Variables exist but cannot be accessed
+- Prevents using variables before initialization
+- Applies to `let` and `const` declarations
+
+## 3. const (Modern Way - Constant Values)
+
+`const` declares **constants** - variables that cannot be reassigned.
+
+### Basic Syntax
+
+```javascript
+const variableName = value;
+```
+
+### Examples
+
+```javascript
+// Must initialize when declaring
+const PI = 3.14159;
+console.log(PI); // Output: 3.14159
+
+// Reassignment not allowed
+// PI = 3.14; // Error: Assignment to constant variable
+
+// Must initialize immediately
+// const x; // Error: Missing initializer in const declaration
+const x = 10; // ✅ Correct
+
+// Block scoped (like let)
+if (true) {
+  const y = 20;
+  console.log(y); // Output: 20
+}
+// console.log(y); // Error: not defined
+```
+
+### const with Objects and Arrays (Important!)
+
+```javascript
+// const prevents reassignment, NOT mutation
+const person = {
+  name: "John",
+  age: 25,
+};
+
+// ✅ Can modify properties
+person.name = "Jane";
+person.age = 30;
+console.log(person); // Output: { name: 'Jane', age: 30 }
+
+// ❌ Cannot reassign the entire object
+// person = { name: 'Bob' }; // Error: Assignment to constant variable
+
+// Same with arrays
+const numbers = [1, 2, 3];
+
+// ✅ Can modify array contents
+numbers.push(4);
+numbers[0] = 10;
+console.log(numbers); // Output: [10, 2, 3, 4]
+
+// ❌ Cannot reassign the array
+// numbers = [5, 6, 7]; // Error: Assignment to constant variable
+```
+
+**Can you change a const object?**
+
+- You **cannot reassign** the variable
+- You **can modify** the object's properties
+- `const` makes the binding constant, not the value
+- The reference (memory address) remains constant, but the object's contents can change
+
+## When to Use Which?
+
+### Best Practices (Modern JavaScript)
+
+```javascript
+// 1. Use const by default
+const API_KEY = "abc123";
+const MAX_USERS = 100;
+const user = { name: "John" };
+
+// 2. Use let when you need to reassign
+let counter = 0;
+counter++; // Need to change value
+
+let userName = "Guest";
+userName = "John"; // Will change later
+
+// 3. Never use var in modern code
+// var x = 10; // ❌ Don't do this
+```
+
+### Decision Flow
+
+```
+Need to declare a variable?
+    ↓
+Will the value change?
+    ↓
+    Yes → Use let
+    No  → Use const (preferred)
+```
+
+## 🧠 Deep Theory: How Variables Work Internally
+
+### Memory Allocation: Stack vs Heap
+
+Understanding how JavaScript stores variables in memory is **crucial for interviews**.
+
+#### Stack Memory (Primitive Types)
+
+```javascript
+// Primitives are stored in STACK memory
+let age = 25; // Stored in stack
+let name = "John"; // Stored in stack
+let isActive = true; // Stored in stack
+
+// Stack characteristics:
+// - Fast access
+// - Fixed size
+// - Automatically managed
+// - Stores primitive values directly
+```
+
+**Stack Memory Diagram:**
+
+```
+┌─────────────────┐
+│   Stack         │
+├─────────────────┤
+│ isActive: true  │
+│ name: 'John'    │
+│ age: 25         │
+└─────────────────┘
+```
+
+#### Heap Memory (Reference Types)
+
+```javascript
+// Objects are stored in HEAP memory
+let person = {
+  // Reference in stack, object in heap
+  name: "John",
+  age: 25,
+};
+
+let numbers = [1, 2, 3]; // Reference in stack, array in heap
+
+// Heap characteristics:
+// - Slower access than stack
+// - Dynamic size (can grow)
+// - Garbage collected
+// - Stores complex data structures
+```
+
+**Heap Memory Diagram:**
+
+```
+Stack                    Heap
+┌──────────────┐        ┌────────────────────┐
+│ person: 0x001│───────>│ 0x001: {           │
+│              │        │   name: 'John',    │
+│ numbers: 0x002│──────>│   age: 25          │
+└──────────────┘        │ }                  │
+                        │ 0x002: [1, 2, 3]   │
+                        └────────────────────┘
+```
+
+**Why does this happen?**
+
+```javascript
+// Primitive (stack) - value is copied
+let a = 10;
+let b = a; // Copies the VALUE
+b = 20;
+console.log(a); // 10 (unchanged)
+
+// Object (heap) - reference is copied
+let obj1 = { value: 10 };
+let obj2 = obj1; // Copies the REFERENCE (memory address)
+obj2.value = 20;
+console.log(obj1.value); // 20 (changed! Both point to same object)
+```
+
+**Answer:** Primitives are stored by value in the stack, so copying creates a new independent value. Objects are stored in the heap, and variables hold references (memory addresses), so copying shares the same object.
+
+---
+
+### Execution Context & Variable Environment
+
+Every time code runs, JavaScript creates an **Execution Context**.
+
+#### What is an Execution Context?
+
+An execution context is an environment where JavaScript code is executed. It contains:
+
+1. **Variable Environment** - All variables and functions
+2. **Scope Chain** - Access to outer variables
+3. **this keyword** - Context binding
+
+#### Types of Execution Contexts
+
+```javascript
+// 1. Global Execution Context (GEC)
+var globalVar = "I am global";
+let globalLet = "Also global";
+
+// 2. Function Execution Context (FEC)
+function myFunction() {
+  var localVar = "I am local";
+  let localLet = "Also local";
+  // New execution context created when function is called
+}
+
+myFunction(); // Creates new FEC
+
+// 3. Eval Execution Context (avoid using eval)
+```
+
+#### Execution Context Phases
+
+**Phase 1: Creation Phase (Memory Allocation)**
+
+```javascript
+console.log(x); // undefined (not error!)
+console.log(greet); // [Function: greet]
+// console.log(y); // Error: Cannot access before initialization
+
+var x = 10;
+let y = 20;
+
+function greet() {
+  return "Hello";
+}
+
+// During creation phase:
+// 1. var x is hoisted and initialized to undefined
+// 2. function greet is fully hoisted
+// 3. let y is hoisted but in TDZ (Temporal Dead Zone)
+```
+
+**What happens in Creation Phase:**
+
+```
+1. Create Variable Environment
+2. Create Scope Chain
+3. Determine 'this' value
+4. Hoist var declarations (initialize to undefined)
+5. Hoist function declarations (fully)
+6. Hoist let/const declarations (but keep in TDZ)
+```
+
+**Phase 2: Execution Phase**
+
+```javascript
+// Now code executes line by line
+var x = 10; // x gets actual value
+let y = 20; // y exits TDZ and gets value
+console.log(x); // 10
+console.log(y); // 20
+```
+
+**Explain this code:**
+
+```javascript
+console.log(a); // undefined
+console.log(b); // Error: Cannot access 'b' before initialization
+console.log(c); // Error: c is not defined
+
+var a = 1;
+let b = 2;
+```
+
+**Answer:**
+
+- `a` is hoisted with `var`, initialized to `undefined` in creation phase
+- `b` is hoisted with `let`, but in TDZ until line executes
+- `c` is never declared, so it doesn't exist at all
+
+---
+
+### Scope and Scope Chain
+
+**Scope** determines where variables are accessible in your code.
+
+#### Types of Scope
+
+```javascript
+// 1. Global Scope - accessible everywhere
+var globalVar = "Global";
+let globalLet = "Also Global";
+
+function test() {
+  console.log(globalVar); // Accessible
+  console.log(globalLet); // Accessible
+}
+
+// 2. Function Scope - accessible within function
+function myFunction() {
+  var functionVar = "Function scoped";
+  let functionLet = "Also function scoped";
+
+  console.log(functionVar); // ✅ Works
+  console.log(functionLet); // ✅ Works
+}
+
+// console.log(functionVar); // ❌ Error: not defined
+// console.log(functionLet); // ❌ Error: not defined
+
+// 3. Block Scope - accessible within { }
+if (true) {
+  var blockVar = "Leaks out"; // var ignores block scope
+  let blockLet = "Stays inside"; // let respects block scope
+  const blockConst = "Also stays"; // const respects block scope
+}
+
+console.log(blockVar); // ✅ Works (var leaked out)
+// console.log(blockLet); // ❌ Error
+// console.log(blockConst); // ❌ Error
+```
+
+#### Scope Chain
+
+The scope chain is how JavaScript looks up variables.
+
+```javascript
+// Global scope
+let globalVar = "Global";
+
+function outer() {
+  // Outer function scope
+  let outerVar = "Outer";
+
+  function inner() {
+    // Inner function scope
+    let innerVar = "Inner";
+
+    // Scope chain lookup:
+    console.log(innerVar); // 1. Found in inner scope
+    console.log(outerVar); // 2. Not in inner, check outer scope
+    console.log(globalVar); // 3. Not in outer, check global scope
+    // console.log(notDefined); // 4. Not found anywhere - Error!
+  }
+
+  inner();
+}
+
+outer();
+```
+
+**Scope Chain Diagram:**
+
+```
+┌─────────────────────────────────┐
+│      Global Scope               │
+│  globalVar: 'Global'            │
+│  ┌───────────────────────────┐  │
+│  │   Outer Function Scope    │  │
+│  │   outerVar: 'Outer'       │  │
+│  │  ┌─────────────────────┐  │  │
+│  │  │ Inner Function Scope│  │  │
+│  │  │ innerVar: 'Inner'   │  │  │
+│  │  │                     │  │  │
+│  │  │ Looks up chain:     │  │  │
+│  │  │ inner → outer → global │  │
+│  │  └─────────────────────┘  │  │
+│  └───────────────────────────┘  │
+└─────────────────────────────────┘
+```
+
+**What will this print?**
+
+```javascript
+let x = 10;
+
+function outer() {
+  let x = 20;
+
+  function inner() {
+    let x = 30;
+    console.log(x);
+  }
+
+  inner();
+  console.log(x);
+}
+
+outer();
+console.log(x);
+```
+
+**Answer:** 30, 20, 10
+
+- `inner()` finds `x` in its own scope (30)
+- `outer()` finds `x` in its own scope (20)
+- Global finds `x` in global scope (10)
+
+---
+
+### Lexical Scope (Static Scope)
+
+JavaScript uses **lexical scoping** - scope is determined by where functions are **written**, not where they're **called**.
+
+```javascript
+let name = "Global";
+
+function outer() {
+  let name = "Outer";
+
+  function inner() {
+    // inner() is written inside outer()
+    // So it has access to outer's variables
+    console.log(name); // 'Outer' (lexical scope)
+  }
+
+  return inner;
+}
+
+let myFunc = outer();
+myFunc(); // 'Outer' (not 'Global', even though called in global scope)
+
+// This is the basis of CLOSURES!
+```
+
+**Key Points about Lexical Scope:**
+
+- Scope is determined at **write time**, not **runtime**
+- Inner functions have access to outer function variables
+- Forms the foundation for **closures**
+- More predictable than dynamic scoping
+
+---
+
+### Variable Lifecycle
+
+Understanding the complete lifecycle of variables:
+
+#### var Lifecycle
+
+```javascript
+// 1. Creation Phase: Hoisted and initialized to undefined
+console.log(x); // undefined
+
+// 2. Execution Phase: Assigned value
+var x = 10;
+
+// 3. Can be reassigned
+x = 20;
+
+// 4. Can be redeclared
+var x = 30;
+
+// 5. Function scoped
+if (true) {
+  var x = 40; // Same variable!
+}
+console.log(x); // 40
+```
+
+#### let/const Lifecycle
+
+```javascript
+// 1. Creation Phase: Hoisted but in TDZ
+// console.log(y); // Error: Cannot access before initialization
+
+// 2. TDZ (Temporal Dead Zone)
+// Variable exists but cannot be accessed
+
+// 3. Declaration: Exits TDZ
+let y = 10;
+
+// 4. Can be reassigned (let only)
+y = 20;
+
+// 5. Cannot be redeclared
+// let y = 30; // Error
+
+// 6. Block scoped
+if (true) {
+  let y = 40; // Different variable!
+}
+console.log(y); // 20
+```
+
+---
+
+### Pass by Value vs Pass by Reference
+
+**Critical Interview Topic!**
+
+#### JavaScript is ALWAYS Pass by Value
+
+But the "value" for objects is the **reference** (memory address).
+
+```javascript
+// Primitives: Pass by Value
+function changePrimitive(x) {
+  x = 100; // Changes local copy only
+  console.log("Inside:", x); // 100
+}
+
+let num = 50;
+changePrimitive(num);
+console.log("Outside:", num); // 50 (unchanged)
+
+// Objects: Pass by Value (but value is a reference!)
+function changeObject(obj) {
+  obj.name = "Changed"; // Modifies original object
+  console.log("Inside:", obj.name); // 'Changed'
+}
+
+let person = { name: "John" };
+changeObject(person);
+console.log("Outside:", person.name); // 'Changed' (modified!)
+
+// But reassignment doesn't affect original
+function reassignObject(obj) {
+  obj = { name: "New Object" }; // Creates new object, local only
+  console.log("Inside:", obj.name); // 'New Object'
+}
+
+let user = { name: "John" };
+reassignObject(user);
+console.log("Outside:", user.name); // 'John' (unchanged!)
+```
+
+**Why?**
+
+- When you pass `person`, you pass a **copy of the reference** (memory address)
+- Both the original and copy point to the **same object** in heap
+- Modifying properties affects the shared object
+- Reassigning creates a new object, but only changes the local copy of the reference
+
+**Memory Diagram:**
+
+```
+Before function call:
+person ──────> { name: 'John' } (in heap)
+
+During function call:
+person ──────> { name: 'John' } <────── obj (copy of reference)
+
+After obj.name = 'Changed':
+person ──────> { name: 'Changed' } <────── obj (same object modified)
+
+After obj = { name: 'New' }:
+person ──────> { name: 'Changed' }
+obj ──────────> { name: 'New' } (new object, local only)
+```
+
+---
+
+### Garbage Collection
+
+JavaScript automatically manages memory through **garbage collection**.
+
+#### How Garbage Collection Works
+
+```javascript
+// Object created in heap
+let user = { name: "John", age: 25 };
+
+// Still reachable - won't be collected
+console.log(user.name);
+
+// Remove reference
+user = null;
+
+// Original object no longer reachable
+// Garbage collector will free the memory
+```
+
+**Mark and Sweep Algorithm:**
+
+1. **Mark Phase**: GC marks all reachable objects (starting from roots)
+2. **Sweep Phase**: GC removes unmarked (unreachable) objects
+3. **Compact Phase**: (optional) Defragment memory
+
+**Common Causes of Memory Leaks:**
+
+```javascript
+// 1. Unintentional global variables
+function createLeak() {
+  leak = "I'm global!"; // Missing var/let/const
+}
+
+// 2. Forgotten timers
+let intervalId = setInterval(() => {
+  // This keeps running and holding references
+}, 1000);
+// Remember to: clearInterval(intervalId);
+
+// 3. Closures holding references
+function outer() {
+  let largeData = new Array(1000000);
+  return function inner() {
+    // inner keeps reference to largeData
+    console.log(largeData.length);
+  };
+}
+
+// 4. Detached DOM nodes
+let element = document.getElementById("myElement");
+document.body.removeChild(element);
+// element still holds reference to removed DOM node
+```
+
+## Data Types in JavaScript
+
+JavaScript has **8 data types**: 7 primitive types + 1 object type.
+
+### Data Types Overview Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     JAVASCRIPT DATA TYPES                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │                    PRIMITIVE TYPES (7)                           │   │
+│  │                  (Immutable, Stored by Value)                    │   │
+│  ├──────────────────────────────────────────────────────────────────┤   │
+│  │                                                                  │   │
+│  │  1. NUMBER                                                       │   │
+│  │     ├─ Integers: 42, -10, 0                                      │   │
+│  │     ├─ Floats: 3.14, -0.5                                        │   │
+│  │     ├─ Special: Infinity, -Infinity, NaN                         │   │
+│  │     └─ Storage: 64-bit floating point (IEEE 754)                 │   │
+│  │                                                                  │   │
+│  │  2. STRING                                                       │   │
+│  │     ├─ Single quotes: 'hello'                                    │   │
+│  │     ├─ Double quotes: "world"                                    │   │
+│  │     ├─ Template literals: `Hello ${name}`                        │   │
+│  │     └─ Immutable: Cannot change characters                       │   │
+│  │                                                                  │   │
+│  │  3. BOOLEAN                                                      │   │
+│  │     ├─ Only two values: true, false                              │   │
+│  │     └─ Truthy/Falsy conversions                                  │   │
+│  │                                                                  │   │
+│  │  4. UNDEFINED                                                    │   │
+│  │     ├─ Variable declared but not assigned                        │   │
+│  │     ├─ Default function return value                             │   │
+│  │     └─ typeof: "undefined"                                       │   │
+│  │                                                                  │   │
+│  │  5. NULL                                                         │   │
+│  │     ├─ Intentional absence of value                              │   │
+│  │     ├─ typeof: "object" (JavaScript bug!)                        │   │
+│  │     └─ Must be explicitly assigned                               │   │
+│  │                                                                  │   │
+│  │  6. SYMBOL (ES6)                                                 │   │
+│  │     ├─ Unique identifiers: Symbol('id')                          │   │
+│  │     ├─ Always unique (even with same description)                │   │
+│  │     └─ Use: Hidden object properties, constants                  │   │
+│  │                                                                  │   │
+│  │  7. BIGINT (ES2020)                                              │   │
+│  │     ├─ Large integers: 1234567890123456789012345678901234567890n │   │
+│  │     ├─ Beyond Number.MAX_SAFE_INTEGER                            │   │
+│  │     └─ Cannot mix with regular numbers                           │   │
+│  │                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │                    REFERENCE TYPE (1)                            │   │
+│  │                  (Mutable, Stored by Reference)                  │   │
+│  ├──────────────────────────────────────────────────────────────────┤   │
+│  │                                                                  │   │
+│  │  8. OBJECT                                                       │   │
+│  │     ├─ Plain objects: { name: 'John', age: 25 }                  │   │
+│  │     ├─ Arrays: [1, 2, 3, 4, 5]                                   │   │
+│  │     ├─ Functions: function() {}, () => {}                        │   │
+│  │     ├─ Dates: new Date()                                         │   │
+│  │     ├─ RegExp: /pattern/g                                        │   │
+│  │     ├─ Maps: new Map()                                           │   │
+│  │     ├─ Sets: new Set()                                           │   │
+│  │     └─ And more: WeakMap, WeakSet, etc.                          │   │
+│  │                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Memory Storage Diagram
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                    MEMORY ALLOCATION MODEL                             │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   STACK MEMORY                          HEAP MEMORY                    │
+│   (Fast, Fixed Size)                    (Slower, Dynamic Size)         │
+│                                                                        │
+│   ┌──────────────────┐                  ┌─────────────────────────┐    │
+│   │  Primitive Values│                  │  Reference Types        │    │
+│   ├──────────────────┤                  ├─────────────────────────┤    │
+│   │                  │                  │                         │    │
+│   │  age: 25         │                  │  0x001: {               │    │
+│   │  name: 'John'    │                  │    name: 'John',        │    │
+│   │  isActive: true  │                  │    age: 25              │    │
+│   │  price: 99.99    │                  │  }                      │    │
+│   │  status: null    │                  │                         │    │
+│   │                  │                  │  0x002: [1, 2, 3, 4, 5] │    │
+│   │  ─────────────   │                  │                         │    │
+│   │  References:     │                  │  0x003: function() {    │    │
+│   │  person: 0x001 ──┼──────────────────┼──>  return 'Hello';     │    │
+│   │  numbers: 0x002 ─┼──────────────────┼──>}                     │    │
+│   │  greet: 0x003 ───┼──────────────────┼──>                      │    │
+│   │                  │                  │                         │    │
+│   └──────────────────┘                  │  0x004: new Date()      │    │
+│                                         │                         │    │
+│                                         │  0x005: /regex/g        │    │
+│                                         │                         │    │
+│                                         └─────────────────────────┘    │
+│                                                                        │
+│   CHARACTERISTICS:                      CHARACTERISTICS:               │
+│   • Stores primitives directly          • Stores complex objects       │
+│   • Stores references to objects        • Garbage collected            │
+│   • LIFO (Last In First Out)            • Dynamic size allocation      │
+│   • Automatic management                • Slower access                │
+│   • Limited size                        • Much larger capacity         │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Type Checking Diagram
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                    TYPE CHECKING WITH typeof                           │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   VALUE                    typeof RETURNS         NOTES                │
+│   ─────────────────────    ──────────────────     ──────────────────   │
+│   42                    →  "number"               All numbers          │
+│   3.14                  →  "number"               Including decimals   │
+│   NaN                   →  "number"               ⚠️ Still a number!   │
+│   Infinity              →  "number"               Special numeric value│
+│                                                                        │
+│   "hello"               →  "string"               Any text             │
+│   'world'               →  "string"               Single/double quotes │
+│   `template`            →  "string"               Template literals    │
+│                                                                        │
+│   true                  →  "boolean"              Boolean true         │
+│   false                 →  "boolean"              Boolean false        │
+│                                                                        │
+│   undefined             →  "undefined"            Not assigned         │
+│                                                                        │
+│   null                  →  "object"               ⚠️ JavaScript bug!   │
+│                                                                        │
+│   Symbol('id')          →  "symbol"               Unique identifier    │
+│                                                                        │
+│   123n                  →  "bigint"               Large integers       │
+│                                                                        │
+│   {}                    →  "object"               Plain object         │
+│   []                    →  "object"               ⚠️ Array is object   │
+│   new Date()            →  "object"               Date object          │
+│   /regex/               →  "object"               RegExp object        │
+│                                                                        │
+│   function() {}         →  "function"             Function type        │
+│   () => {}              →  "function"             Arrow function       │
+│   class MyClass {}      →  "function"             ⚠️ Class is function │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Value vs Reference Behavior
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│              COPYING BEHAVIOR: VALUE vs REFERENCE                      │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  PRIMITIVE (Copy by Value)          OBJECT (Copy by Reference)         │
+│  ───────────────────────────        ──────────────────────────────     │
+│                                                                        │
+│  let a = 10;                        let obj1 = { value: 10 };          │
+│  let b = a;  ← Copy VALUE           let obj2 = obj1;  ← Copy REFERENCE │
+│  b = 20;                            obj2.value = 20;                   │
+│                                                                        │
+│  Stack:                             Stack:              Heap:          │
+│  ┌──────────┐                       ┌──────────┐       ┌─────────┐     │
+│  │ a: 10    │ ← Independent          │obj1:0x001│──────→│ value:20│    │
+│  │ b: 20    │ ← Independent          │obj2:0x001│──────→│         │    │
+│  └──────────┘                       └──────────┘       └─────────┘     │
+│                                      Both reference same object!       │
+│  Result:                            Result:                            │
+│  a = 10 (unchanged)                 obj1.value = 20 (changed!)         │
+│  b = 20 (changed)                   obj2.value = 20 (changed!)         │
+│                                                                        │
+│  ✅ Independent copies              ⚠️ Shared reference                │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Falsy vs Truthy Values
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                    FALSY vs TRUTHY VALUES                              │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  FALSY (Only 7 values)              TRUTHY (Everything Else)           │
+│  ──────────────────────             ────────────────────────           │
+│                                                                        │
+│  1. false                           true                               │
+│  2. 0                               1, -1, 0.5 (any non-zero number)   │
+│  3. -0                              " " (space is NOT empty)           │
+│  4. "" (empty string)               "0", "false" (non-empty strings)   │
+│  5. null                            [] (empty array)                   │
+│  6. undefined                       {} (empty object)                  │
+│  7. NaN                             function() {} (functions)          │
+│                                     Infinity, -Infinity                │
+│                                     new Date(), /regex/                │
+│                                                                        │
+│  Usage in Conditions:                                                  │
+│  ────────────────────                                                  │
+│  if (value) {                       // Runs if value is truthy         │
+│      // Truthy block                                                   │
+│  } else {                                                              │
+│      // Falsy block                 // Runs if value is falsy          │
+│  }                                                                     │
+│                                                                        │
+│  Common Patterns:                                                      │
+│  ────────────────                                                      │
+│  let result = value || 'default';   // Use default if falsy            │
+│  let result = value ?? 'default';   // Use default if null/undefined   │
+│  if (array.length) { ... }          // Check array not empty           │
+│  if (object.property) { ... }       // Check property exists & truthy  │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Primitive Data Types (7)
+
+Primitives are **immutable** (cannot be changed) and stored **by value**.
+
+#### 1. Number
+
+```javascript
+// Integers
+let age = 25;
+let negative = -10;
+let zero = 0;
+
+// Floating point (decimals)
+let price = 19.99;
+let pi = 3.14159;
+
+// Special numeric values
+let infinity = Infinity;
+let negInfinity = -Infinity;
+let notANumber = NaN; // Not a Number
+
+// Number operations
+console.log(10 / 0); // Output: Infinity
+console.log("hello" * 5); // Output: NaN (invalid operation)
+console.log(NaN === NaN); // Output: false (NaN is not equal to itself!)
+
+// Checking for NaN
+console.log(isNaN(NaN)); // Output: true
+console.log(isNaN("hello")); // Output: true
+console.log(isNaN(123)); // Output: false
+
+// Number precision issues
+console.log(0.1 + 0.2); // Output: 0.30000000000000004
+console.log(0.1 + 0.2 === 0.3); // Output: false
+
+// Safe integer range
+console.log(Number.MAX_SAFE_INTEGER); // 9007199254740991
+console.log(Number.MIN_SAFE_INTEGER); // -9007199254740991
+```
+
+**Key Points:**
+
+- JavaScript has only ONE number type (64-bit floating point)
+- All numbers are stored in IEEE 754 double-precision format
+- Be careful with floating-point arithmetic
+
+#### 2. String
+
+```javascript
+// Single quotes
+let name1 = "John";
+
+// Double quotes
+let name2 = "Jane";
+
+// Backticks (template literals - ES6+)
+let name3 = `Bob`;
+
+// Strings are immutable
+let str = "Hello";
+str[0] = "h"; // Doesn't work
+console.log(str); // Output: Hello (unchanged)
+
+// String concatenation
+let firstName = "John";
+let lastName = "Doe";
+let fullName = firstName + " " + lastName;
+console.log(fullName); // Output: John Doe
+
+// Template literals (modern way)
+let age = 25;
+let message = `My name is ${firstName} and I am ${age} years old`;
+console.log(message); // Output: My name is John and I am 25 years old
+
+// Multi-line strings with template literals
+let multiLine = `This is
+a multi-line
+string`;
+console.log(multiLine);
+
+// Escape characters
+let quote = 'He said, "Hello"'; // Using different quotes
+let quote2 = 'He said, "Hello"'; // Escaping with \
+let newLine = "Line 1\nLine 2"; // \n for new line
+let tab = "Column1\tColumn2"; // \t for tab
+let backslash = "C:\\Users\\Name"; // \\ for backslash
+```
+
+**Common String Escape Sequences:**
+
+- `\n` - New line
+- `\t` - Tab
+- `\\` - Backslash
+- `\'` - Single quote
+- `\"` - Double quote
+- `\r` - Carriage return
+- `\b` - Backspace
+
+#### 3. Boolean
+
+```javascript
+// Only two values: true or false
+let isActive = true;
+let isLoggedIn = false;
+
+// Boolean from comparisons
+let isAdult = age >= 18; // true if age is 18 or more
+let isEqual = 5 === 5; // true
+let isGreater = 10 > 20; // false
+
+// Truthy and Falsy values (important for interviews!)
+// Falsy values (convert to false):
+Boolean(false); // false
+Boolean(0); // false
+Boolean(-0); // false
+Boolean(""); // false (empty string)
+Boolean(null); // false
+Boolean(undefined); // false
+Boolean(NaN); // false
+
+// Everything else is truthy:
+Boolean(true); // true
+Boolean(1); // true
+Boolean(-1); // true (any non-zero number)
+Boolean("hello"); // true
+Boolean(" "); // true (space is not empty)
+Boolean([]); // true (empty array)
+Boolean({}); // true (empty object)
+Boolean(function () {}); // true
+```
+
+**What are falsy values in JavaScript?**
+
+There are exactly **7 falsy values**:
+
+1. `false`
+2. `0`
+3. `-0`
+4. `""` (empty string)
+5. `null`
+6. `undefined`
+7. `NaN`
+
+Everything else is truthy!
+
+#### 4. Undefined
+
+```javascript
+// Variable declared but not assigned
+let x;
+console.log(x); // Output: undefined
+console.log(typeof x); // Output: "undefined"
+
+// Function with no return value
+function doNothing() {
+  // No return statement
+}
+console.log(doNothing()); // Output: undefined
+
+// Accessing non-existent property
+let person = { name: "John" };
+console.log(person.age); // Output: undefined
+
+// Function parameter not provided
+function greet(name) {
+  console.log(name);
+}
+greet(); // Output: undefined
+
+// Undefined vs not defined
+let declared;
+console.log(declared); // Output: undefined
+// console.log(notDeclared); // Error: notDeclared is not defined
+```
+
+#### 5. Null
+
+```javascript
+// Intentional absence of value
+let emptyValue = null;
+console.log(emptyValue); // Output: null
+console.log(typeof null); // Output: "object" (JavaScript bug!)
+
+// Null vs Undefined
+let x; // undefined (not assigned)
+let y = null; // null (explicitly set to nothing)
+
+console.log(x === undefined); // true
+console.log(y === null); // true
+console.log(x === y); // false (different types)
+console.log(x == y); // true (loose equality coerces types)
+
+// Common use cases for null
+let selectedUser = null; // No user selected yet
+let apiResponse = null; // Waiting for API response
+```
+
+**Difference between null and undefined?**
+
+| Feature      | undefined                   | null                         |
+| ------------ | --------------------------- | ---------------------------- |
+| **Meaning**  | Variable not initialized    | Intentional absence          |
+| **Type**     | "undefined"                 | "object" (JS bug)            |
+| **Assigned** | Automatically by JavaScript | Must be explicitly set       |
+| **Use Case** | Default value               | Explicitly "no value"        |
+| **Equality** | `undefined == null` (true)  | `undefined === null` (false) |
+
+#### 6. Symbol (ES6+)
+
+```javascript
+// Creates unique identifiers
+let id1 = Symbol("id");
+let id2 = Symbol("id");
+
+console.log(id1 === id2); // Output: false (always unique!)
+console.log(typeof id1); // Output: "symbol"
+
+// Use case: unique object keys
+let user = {
+  name: "John",
+  [id1]: 123, // Symbol as property key
+};
+
+console.log(user[id1]); // Output: 123
+console.log(user.id1); // Output: undefined (can't access with dot notation)
+
+// Symbols are not enumerable
+for (let key in user) {
+  console.log(key); // Only prints 'name', not symbol
+}
+
+// Well-known symbols
+console.log(Symbol.iterator); // Built-in symbol
+console.log(Symbol.toStringTag); // Another built-in symbol
+
+// Global symbol registry
+let globalSym1 = Symbol.for("app.id");
+let globalSym2 = Symbol.for("app.id");
+console.log(globalSym1 === globalSym2); // true (same global symbol)
+```
+
+**Why use Symbols?**
+
+- Create truly unique property keys
+- Avoid property name collisions
+- Create "hidden" properties (not in for...in loops)
+- Define custom behaviors (iterator, toStringTag, etc.)
+
+#### 7. BigInt (ES2020+)
+
+```javascript
+// For very large integers beyond Number.MAX_SAFE_INTEGER
+let bigNumber = 1234567890123456789012345678901234567890n; // Note the 'n'
+let anotherBig = BigInt("9007199254740991");
+
+console.log(bigNumber); // Output: 1234567890123456789012345678901234567890n
+console.log(typeof bigNumber); // Output: "bigint"
+
+// Cannot mix BigInt with regular numbers
+// let result = bigNumber + 100; // Error: Cannot mix BigInt and other types
+let result = bigNumber + 100n; // ✅ Correct
+
+// Operations
+let a = 10n;
+let b = 20n;
+console.log(a + b); // 30n
+console.log(a * b); // 200n
+console.log(a - b); // -10n
+console.log(b / a); // 2n (no decimals, integer division)
+
+// Comparison
+console.log(10n === 10); // false (different types)
+console.log(10n == 10); // true (loose equality)
+console.log(10n < 20); // true (comparison works)
+
+// Limitations
+console.log(Math.sqrt(9n)); // Error: Cannot convert BigInt to number
+```
+
+**When to use BigInt?**
+
+- Working with very large integers (cryptography, timestamps)
+- Need precision beyond Number.MAX_SAFE_INTEGER
+- Financial calculations requiring exact integer arithmetic
+
+### Reference Type: Object
+
+```javascript
+// Objects store collections of data
+let person = {
+  name: "John",
+  age: 25,
+  isStudent: true,
+};
+
+// Arrays are objects
+let numbers = [1, 2, 3, 4, 5];
+console.log(typeof numbers); // Output: "object"
+
+// Functions are objects
+function greet() {
+  return "Hello";
+}
+console.log(typeof greet); // Output: "function"
+
+// Dates are objects
+let now = new Date();
+console.log(typeof now); // Output: "object"
+
+// RegExp are objects
+let pattern = /abc/;
+console.log(typeof pattern); // Output: "object"
+
+// null is considered an object (JavaScript bug!)
+console.log(typeof null); // Output: "object"
+```
+
+## typeof Operator
+
+The `typeof` operator returns a string indicating the type of a value.
+
+```javascript
+// Primitive types
+console.log(typeof 42); // "number"
+console.log(typeof 3.14); // "number"
+console.log(typeof NaN); // "number" (yes, NaN is a number type!)
+console.log(typeof Infinity); // "number"
+
+console.log(typeof "hello"); // "string"
+console.log(typeof ""); // "string"
+console.log(typeof `template`); // "string"
+
+console.log(typeof true); // "boolean"
+console.log(typeof false); // "boolean"
+
+console.log(typeof undefined); // "undefined"
+
+console.log(typeof null); // "object" (this is a bug in JavaScript!)
+
+console.log(typeof Symbol("id")); // "symbol"
+
+console.log(typeof 123n); // "bigint"
+
+// Reference types
+console.log(typeof {}); // "object"
+console.log(typeof []); // "object" (arrays are objects!)
+console.log(typeof new Date()); // "object"
+console.log(typeof /regex/); // "object"
+
+console.log(typeof function () {}); // "function"
+console.log(typeof class {}); // "function" (classes are functions!)
+
+// Undeclared variables
+console.log(typeof undeclaredVariable); // "undefined" (no error!)
+```
+
+**Why typeof null === "object"?**
+
+This is a **historical bug** in JavaScript that cannot be fixed due to backward compatibility. In the original JavaScript implementation, values were stored with a type tag, and objects had a tag of 0. Null was represented as NULL pointer (0x00), so it was incorrectly identified as an object.
+
+## Type Conversion
+
+### Implicit Conversion (Type Coercion)
+
+JavaScript automatically converts types when needed.
+
+```javascript
+// String concatenation (+ operator prefers strings)
+console.log("5" + 3); // "53" (number to string)
+console.log("Hello" + " " + "World"); // "Hello World"
+console.log("" + 123); // "123" (number to string)
+
+// Arithmetic operators (-, *, /, % prefer numbers)
+console.log("5" - 3); // 2 (string to number)
+console.log("5" * "2"); // 10 (both to numbers)
+console.log("10" / "2"); // 5
+console.log("10" % 3); // 1
+
+// Boolean coercion
+console.log(true + 1); // 2 (true becomes 1)
+console.log(false + 1); // 1 (false becomes 0)
+console.log(true + true); // 2
+console.log(true * 5); // 5
+
+// Comparison operators
+console.log("5" == 5); // true (string converted to number)
+console.log("5" === 5); // false (no conversion, different types)
+console.log(null == undefined); // true (special case)
+console.log(null === undefined); // false
+
+// Tricky examples
+console.log("5" + 2 + 3); // "523" (left to right: "5" + 2 = "52", "52" + 3 = "523")
+console.log(2 + 3 + "5"); // "55" (left to right: 2 + 3 = 5, 5 + "5" = "55")
+console.log("5" - 2 + 3); // 6 (left to right: "5" - 2 = 3, 3 + 3 = 6)
+```
+
+### Explicit Conversion
+
+Manually converting types:
+
+```javascript
+// String to Number
+let str = "123";
+let num1 = Number(str); // 123
+let num2 = parseInt(str); // 123 (integer)
+let num3 = parseFloat("12.5"); // 12.5 (decimal)
+let num4 = +str; // 123 (unary plus)
+
+console.log(Number("123")); // 123
+console.log(Number("12.5")); // 12.5
+console.log(Number("123abc")); // NaN
+console.log(Number("")); // 0
+console.log(Number("   ")); // 0
+console.log(Number(true)); // 1
+console.log(Number(false)); // 0
+console.log(Number(null)); // 0
+console.log(Number(undefined)); // NaN
+
+// parseInt vs parseFloat
+console.log(parseInt("123.45")); // 123 (stops at decimal)
+console.log(parseFloat("123.45")); // 123.45
+console.log(parseInt("123px")); // 123 (stops at non-digit)
+console.log(parseInt("px123")); // NaN (must start with digit)
+
+// Number to String
+let num = 123;
+let str1 = String(num); // "123"
+let str2 = num.toString(); // "123"
+let str3 = num + ""; // "123"
+
+console.log(String(123)); // "123"
+console.log(String(true)); // "true"
+console.log(String(false)); // "false"
+console.log(String(null)); // "null"
+console.log(String(undefined)); // "undefined"
+console.log(String([1, 2, 3])); // "1,2,3"
+console.log(String({ a: 1 })); // "[object Object]"
+
+// To Boolean
+let bool1 = Boolean(1); // true
+let bool2 = Boolean(0); // false
+let bool3 = !!"hello"; // true (double NOT trick)
+let bool4 = !!0; // false
+
+console.log(Boolean(1)); // true
+console.log(Boolean(0)); // false
+console.log(Boolean("")); // false
+console.log(Boolean("hello")); // true
+console.log(Boolean(null)); // false
+console.log(Boolean(undefined)); // false
+console.log(Boolean({})); // true
+console.log(Boolean([])); // true
+```
+
+**Type Conversion Table:**
+
+| Original Value | String              | Number | Boolean |
+| -------------- | ------------------- | ------ | ------- |
+| `0`            | `"0"`               | `0`    | `false` |
+| `1`            | `"1"`               | `1`    | `true`  |
+| `"0"`          | `"0"`               | `0`    | `true`  |
+| `"1"`          | `"1"`               | `1`    | `true`  |
+| `""`           | `""`                | `0`    | `false` |
+| `" "`          | `" "`               | `0`    | `true`  |
+| `"hello"`      | `"hello"`           | `NaN`  | `true`  |
+| `true`         | `"true"`            | `1`    | `true`  |
+| `false`        | `"false"`           | `0`    | `false` |
+| `null`         | `"null"`            | `0`    | `false` |
+| `undefined`    | `"undefined"`       | `NaN`  | `false` |
+| `[]`           | `""`                | `0`    | `true`  |
+| `[1]`          | `"1"`               | `1`    | `true`  |
+| `[1,2]`        | `"1,2"`             | `NaN`  | `true`  |
+| `{}`           | `"[object Object]"` | `NaN`  | `true`  |
+
+## Variable Naming Rules
+
+### Rules (Must Follow)
+
+```javascript
+// ✅ Can contain letters, digits, underscore, dollar sign
+let userName = "John";
+let user_name = "John";
+let $price = 100;
+let _private = "secret";
+let user123 = "John";
+
+// ✅ Must start with letter, underscore, or dollar sign
+let name = "John";
+let _name = "John";
+let $name = "John";
+
+// ❌ Cannot start with a digit
+// let 1name = 'John'; // Error: Unexpected number
+
+// ❌ Cannot use reserved keywords
+// let let = 5; // Error: Unexpected token 'let'
+// let class = 'A'; // Error: Unexpected token 'class'
+// let function = 'test'; // Error: Unexpected token 'function'
+// let return = true; // Error: Unexpected token 'return'
+
+// ✅ Case sensitive
+let Name = "John";
+let name = "Jane";
+let NAME = "Bob";
+// These are three different variables!
+
+// ✅ Unicode characters allowed (but avoid)
+let имя = "Russian"; // Works but not recommended
+let 名前 = "Japanese"; // Works but not recommended
+```
+
+**Reserved Keywords (Cannot Use):**
+
+```
+break, case, catch, class, const, continue, debugger, default, delete,
+do, else, enum, export, extends, false, finally, for, function, if,
+import, in, instanceof, new, null, return, super, switch, this, throw,
+true, try, typeof, var, void, while, with, yield, let, static, implements,
+interface, package, private, protected, public
+```
+
+### Conventions (Best Practices)
+
+```javascript
+// Use camelCase for variables and functions
+let firstName = "John";
+let userAge = 25;
+let isLoggedIn = true;
+let getUserData = function () {};
+
+// Use PascalCase for classes and constructors
+class UserProfile {}
+class ShoppingCart {}
+function Person(name) {
+  this.name = name;
+}
+
+// Use UPPER_CASE for constants (true constants)
+const API_KEY = "abc123";
+const MAX_USERS = 100;
+const DATABASE_URL = "mongodb://localhost:27017";
+const TAX_RATE = 0.15;
+
+// Use descriptive names
+let u = "John"; // ❌ Bad - not descriptive
+let userName = "John"; // ✅ Good - clear meaning
+
+let x = 25; // ❌ Bad - what is x?
+let userAge = 25; // ✅ Good - clear purpose
+
+let temp = getData(); // ❌ Bad - what temp data?
+let userProfile = getData(); // ✅ Good - specific
+
+// Avoid abbreviations (unless very common)
+let usrNm = "John"; // ❌ Bad
+let userName = "John"; // ✅ Good
+
+let numOfItms = 5; // ❌ Bad
+let numberOfItems = 5; // ✅ Good
+let itemCount = 5; // ✅ Also good
+
+// Boolean variables should ask yes/no questions
+let user = true; // ❌ Bad - unclear
+let isUser = true; // ✅ Good
+let hasPermission = true; // ✅ Good
+let canEdit = false; // ✅ Good
+let shouldUpdate = true; // ✅ Good
+
+// Use plural for arrays/collections
+let user = ["John", "Jane"]; // ❌ Bad
+let users = ["John", "Jane"]; // ✅ Good
+let items = [1, 2, 3]; // ✅ Good
+
+// Functions should be verbs
+let userData = function () {}; // ❌ Bad
+let getUserData = function () {}; // ✅ Good
+let calculateTotal = function () {}; // ✅ Good
+let isValid = function () {}; // ✅ Good
+```
+
+## Practice Examples
+
+### Example 1: Swap Two Variables
+
+```javascript
+// Method 1: Using temporary variable
+let a = 5;
+let b = 10;
+let temp = a;
+a = b;
+b = temp;
+console.log(a, b); // 10, 5
+
+// Method 2: Using destructuring (ES6+)
+let x = 5;
+let y = 10;
+[x, y] = [y, x];
+console.log(x, y); // 10, 5
+
+// Method 3: Using arithmetic (works only with numbers)
+let m = 5;
+let n = 10;
+m = m + n; // m = 15
+n = m - n; // n = 5
+m = m - n; // m = 10
+console.log(m, n); // 10, 5
+
+// Method 4: Using XOR (works only with integers)
+let p = 5;
+let q = 10;
+p = p ^ q;
+q = p ^ q;
+p = p ^ q;
+console.log(p, q); // 10, 5
+```
+
+### Example 2: Check if Variable is Defined
+
+```javascript
+// Using typeof
+let userName;
+if (typeof userName === "undefined") {
+  console.log("userName is not defined");
+}
+
+// Check if null or undefined
+let value = null;
+if (value == null) {
+  // Matches both null and undefined
+  console.log("value is null or undefined");
+}
+
+// Check if exists and has value
+if (userName) {
+  // Falsy check
+  console.log("userName exists and is truthy");
+}
+```
+
+### Example 3: Default Values
+
+```javascript
+// Using || operator (pre-ES6)
+let userInput = null;
+let finalValue = userInput || "default";
+console.log(finalValue); // 'default'
+
+// Problem with || operator
+let count = 0;
+let value = count || 10;
+console.log(value); // 10 (but 0 is valid!)
+
+// Using ?? (Nullish Coalescing - ES2020)
+let count2 = 0;
+let value2 = count2 ?? 10;
+console.log(value2); // 0 (only null/undefined trigger default)
+
+// Function default parameters
+function greet(name = "Guest") {
+  console.log(`Hello, ${name}!`);
+}
+greet(); // Hello, Guest!
+greet("John"); // Hello, John!
+```
+
+### Example 4: Type Checking
+
+```javascript
+// Check if number
+let value = 123;
+console.log(typeof value === "number"); // true
+console.log(!isNaN(value)); // true
+
+// Check if string
+console.log(typeof value === "string"); // false
+
+// Check if array (typeof returns "object")
+console.log(Array.isArray([1, 2, 3])); // true
+console.log(Array.isArray({ a: 1 })); // false
+
+// Check if object (not array, not null)
+function isObject(val) {
+  return typeof val === "object" && val !== null && !Array.isArray(val);
+}
+console.log(isObject({})); // true
+console.log(isObject([])); // false
+console.log(isObject(null)); // false
+
+// Check if function
+console.log(typeof function () {} === "function"); // true
+```
+
+### Example 5: Value vs Reference
+
+```javascript
+// Primitive: Copy value
+let original = 100;
+let copy = original;
+copy = 200;
+console.log(original); // 100
+console.log(copy); // 200
+
+// Object: Copy reference
+let person1 = { name: "John" };
+let person2 = person1; // Same reference
+person2.name = "Jane";
+console.log(person1.name); // 'Jane' (changed!)
+
+// Deep copy object (simple version)
+let person3 = { name: "John", age: 25 };
+let person4 = { ...person3 }; // Spread operator (shallow copy)
+person4.name = "Jane";
+console.log(person3.name); // 'John' (unchanged)
+
+// Deep copy with JSON (loses functions, symbols, undefined)
+let obj1 = { name: "John", details: { age: 25 } };
+let obj2 = JSON.parse(JSON.stringify(obj1));
+obj2.details.age = 30;
+console.log(obj1.details.age); // 25 (unchanged)
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between `let`, `const`, and `var`?
+
+**Answer:**
+
+| Feature             | var                                 | let                               | const                             |
+| ------------------- | ----------------------------------- | --------------------------------- | --------------------------------- |
+| **Scope**           | Function scope                      | Block scope                       | Block scope                       |
+| **Hoisting**        | Hoisted, initialized to `undefined` | Hoisted, in TDZ until declaration | Hoisted, in TDZ until declaration |
+| **Reassignment**    | Allowed                             | Allowed                           | Not allowed                       |
+| **Redeclaration**   | Allowed                             | Not allowed                       | Not allowed                       |
+| **Global Property** | Creates global property             | Does not create global property   | Does not create global property   |
+| **Best Practice**   | Avoid in modern code                | Use for variables that change     | Use by default for constants      |
+
+**Practical Example:**
+
+```javascript
+// Scope difference
+if (true) {
+  var x = 1; // Function scoped
+  let y = 2; // Block scoped
+  const z = 3; // Block scoped
+}
+console.log(x); // 1 (accessible)
+// console.log(y); // Error: y is not defined
+// console.log(z); // Error: z is not defined
+
+// Hoisting difference
+console.log(a); // undefined
+console.log(b); // Error: Cannot access before initialization
+var a = 1;
+let b = 2;
+
+// Reassignment difference
+var c = 1;
+c = 2; // ✅ OK
+let d = 1;
+d = 2; // ✅ OK
+const e = 1;
+// e = 2; // ❌ Error: Assignment to constant variable
+
+// const with objects
+const person = { name: "John" };
+person.name = "Jane"; // ✅ OK - modifying property
+// person = {}; // ❌ Error - reassigning
+```
+
+---
+
+### Q2: What are primitive data types and reference types in JavaScript?
+
+**Answer:**
+
+**Primitive Types (7):**
+
+1. Number - `42`, `3.14`, `NaN`, `Infinity`
+2. String - `"hello"`, `'world'`, `` `template` ``
+3. Boolean - `true`, `false`
+4. Undefined - `undefined`
+5. Null - `null`
+6. Symbol - `Symbol('id')`
+7. BigInt - `123n`
+
+**Reference Types:**
+
+- Object - `{}`, `[]`, `function(){}`, `new Date()`
+
+**Key Differences:**
+
+```javascript
+// Primitives: Stored by value
+let a = 10;
+let b = a; // Copy value
+b = 20;
+console.log(a); // 10 (unchanged)
+
+// Reference: Stored by reference
+let obj1 = { value: 10 };
+let obj2 = obj1; // Copy reference
+obj2.value = 20;
+console.log(obj1.value); // 20 (changed!)
+
+// Memory allocation
+// Primitives → Stack (fast, fixed size)
+// Objects → Heap (slower, dynamic size)
+```
+
+---
+
+### Q3: Explain hoisting in JavaScript.
+
+**Answer:**
+
+**Hoisting** is JavaScript's behavior of moving declarations to the top of their scope during the compilation phase.
+
+**How it works:**
+
+```javascript
+// What you write:
+console.log(x); // undefined
+var x = 5;
+
+// How JavaScript interprets it:
+var x; // Declaration hoisted
+console.log(x); // undefined
+x = 5; // Assignment stays in place
+
+// Function hoisting
+greet(); // "Hello" - works!
+function greet() {
+  return "Hello";
+}
+
+// let/const in Temporal Dead Zone
+console.log(y); // Error: Cannot access before initialization
+let y = 10;
+
+// Function expressions NOT hoisted
+sayHi(); // Error: sayHi is not a function
+var sayHi = function () {
+  return "Hi";
+};
+```
+
+**Important Points:**
+
+- Only **declarations** are hoisted, not **initializations**
+- `var` declarations are hoisted and initialized to `undefined`
+- `let` and `const` are hoisted but remain in **TDZ** (Temporal Dead Zone)
+- Function **declarations** are fully hoisted
+- Function **expressions** are NOT hoisted
+
+---
+
+### Q4: What is the Temporal Dead Zone (TDZ)?
+
+**Answer:**
+
+The **Temporal Dead Zone** is the period between entering a scope and the actual variable declaration where `let` and `const` variables cannot be accessed.
+
+```javascript
+// TDZ starts at beginning of scope
+console.log(x); // Error: Cannot access 'x' before initialization
+// TDZ continues...
+// TDZ continues...
+let x = 10; // TDZ ends here
+
+// Why TDZ exists:
+// 1. Catch errors early
+// 2. Prevent using variables before initialization
+// 3. Make code more predictable
+
+// Example with function scope
+function example() {
+  // TDZ starts for 'name'
+  console.log(name); // Error!
+  let name = "John"; // TDZ ends
+}
+
+// TDZ with const
+const func = () => {
+  // TDZ for 'value'
+  return value; // Error!
+  const value = 42;
+};
+```
+
+---
+
+### Q5: Difference between `null` and `undefined`?
+
+**Answer:**
+
+| Feature        | `undefined`                               | `null`                         |
+| -------------- | ----------------------------------------- | ------------------------------ |
+| **Meaning**    | Variable declared but not assigned        | Intentional absence of value   |
+| **Type**       | `"undefined"`                             | `"object"` (JavaScript bug)    |
+| **Assignment** | Automatic by JavaScript                   | Must be explicitly set         |
+| **Use Case**   | Default value for uninitialized variables | Explicitly indicate "no value" |
+| **Equality**   | `undefined == null` → `true`              | `undefined === null` → `false` |
+
+**Examples:**
+
+```javascript
+// undefined - not initialized
+let x;
+console.log(x); // undefined
+console.log(typeof x); // "undefined"
+
+// null - explicitly set to nothing
+let y = null;
+console.log(y); // null
+console.log(typeof y); // "object" (bug!)
+
+// Function returns
+function noReturn() {}
+console.log(noReturn()); // undefined
+
+// Object property
+let obj = { name: "John" };
+console.log(obj.age); // undefined (doesn't exist)
+console.log(obj.salary); // undefined
+
+// Explicit null
+let user = null; // No user logged in
+let selectedItem = null; // Nothing selected
+
+// Checking for both
+if (value == null) {
+  // Matches both null AND undefined
+  console.log("No value");
+}
+
+if (value === undefined) {
+  // Only matches undefined
+}
+
+if (value === null) {
+  // Only matches null
+}
+```
+
+---
+
+### Q6: What are falsy values in JavaScript?
+
+**Answer:**
+
+There are exactly **7 falsy values** in JavaScript:
+
+1. `false` - Boolean false
+2. `0` - Number zero
+3. `-0` - Negative zero
+4. `""` - Empty string
+5. `null` - Null value
+6. `undefined` - Undefined value
+7. `NaN` - Not a Number
+
+**Everything else is truthy**, including:
+
+```javascript
+// All falsy values
+Boolean(false); // false
+Boolean(0); // false
+Boolean(-0); // false
+Boolean(""); // false
+Boolean(null); // false
+Boolean(undefined); // false
+Boolean(NaN); // false
+
+// Truthy values (everything else!)
+Boolean(true); // true
+Boolean(1); // true
+Boolean(-1); // true (any non-zero number)
+Boolean(" "); // true (space is NOT empty)
+Boolean("0"); // true (string "0")
+Boolean("false"); // true (string "false")
+Boolean([]); // true (empty array)
+Boolean({}); // true (empty object)
+Boolean(function () {}); // true
+
+// Practical use
+let value = 0;
+if (value) {
+  console.log("Truthy");
+} else {
+  console.log("Falsy"); // This runs
+}
+
+// Common pitfall
+let items = [];
+if (items) {
+  // ✅ Always true! Empty array is truthy
+  console.log("Has items"); // Runs even though array is empty
+}
+
+// Correct way to check empty array
+if (items.length) {
+  console.log("Has items");
+}
+```
+
+---
+
+### Q7: Explain type coercion with examples.
+
+**Answer:**
+
+**Type coercion** is automatic type conversion performed by JavaScript.
+
+**String Coercion (+ operator):**
+
+```javascript
+console.log("5" + 3); // "53" (number → string)
+console.log("Hello" + " " + "World"); // "Hello World"
+console.log("" + 123); // "123"
+console.log("Value: " + true); // "Value: true"
+```
+
+**Number Coercion (-, \*, /, %):**
+
+```javascript
+console.log("5" - 3); // 2 (string → number)
+console.log("10" * "2"); // 20 (both → number)
+console.log("20" / "4"); // 5
+console.log("10" % 3); // 1
+console.log("5" - true); // 4 (true → 1)
+```
+
+**Boolean Coercion:**
+
+```javascript
+console.log(true + 1); // 2 (true → 1)
+console.log(false + 5); // 5 (false → 0)
+console.log(true + true); // 2
+if (1) {
+  /* Runs - 1 → true */
+}
+if ("") {
+  /* Doesn't run - "" → false */
+}
+```
+
+**Comparison Coercion:**
+
+```javascript
+console.log("5" == 5); // true (loose equality, coerces types)
+console.log("5" === 5); // false (strict equality, no coercion)
+console.log(null == undefined); // true (special case)
+console.log(null === undefined); // false (different types)
+console.log(0 == false); // true (both falsy)
+console.log(0 === false); // false (different types)
+```
+
+**Tricky Examples:**
+
+```javascript
+console.log("5" + 2 + 3); // "523" (left to right)
+console.log(2 + 3 + "5"); // "55" (2+3=5, then 5+"5"="55")
+console.log("5" - 2 + 3); // 6 ("5"-2=3, 3+3=6)
+console.log([] + []); // "" (both → "")
+console.log([] + {}); // "[object Object]"
+console.log({} + []); // 0 (parsed as empty block + [])
+console.log(true + false); // 1 (1 + 0)
+console.log("5" * "2"); // 10 (both → number)
+console.log("abc" - 1); // NaN (can't convert "abc")
+```
+
+---
+
+### Q8: What is the difference between `==` and `===`?
+
+**Answer:**
+
+| Operator | Name              | Type Coercion | Example               |
+| -------- | ----------------- | ------------- | --------------------- |
+| `==`     | Loose Equality    | Yes           | `"5" == 5` → `true`   |
+| `===`    | Strict Equality   | No            | `"5" === 5` → `false` |
+| `!=`     | Loose Inequality  | Yes           | `"5" != 5` → `false`  |
+| `!==`    | Strict Inequality | No            | `"5" !== 5` → `true`  |
+
+**Examples:**
+
+```javascript
+// Loose equality (==) - converts types
+console.log(5 == "5"); // true (string → number)
+console.log(0 == false); // true (boolean → number)
+console.log(null == undefined); // true (special case)
+console.log("" == 0); // true (both falsy)
+console.log([] == false); // true (both → 0)
+
+// Strict equality (===) - no conversion
+console.log(5 === "5"); // false (different types)
+console.log(0 === false); // false (different types)
+console.log(null === undefined); // false (different types)
+console.log("" === 0); // false (different types)
+console.log([] === false); // false (different types)
+
+// Special cases
+console.log(NaN == NaN); // false (NaN not equal to anything)
+console.log(NaN === NaN); // false
+console.log(Object.is(NaN, NaN)); // true (use Object.is for NaN)
+
+// Best practice
+// ✅ Always use === and !==
+if (value === 10) {
+  /* Recommended */
+}
+// ❌ Avoid == unless specific need
+if (value == 10) {
+  /* Not recommended */
+}
+
+// Only acceptable use of ==
+if (value == null) {
+  // Checks both null AND undefined
+  console.log("No value");
+}
+```
+
+---
+
+### Q9: Explain `typeof` operator and its quirks.
+
+**Answer:**
+
+The `typeof` operator returns a string indicating the type of a value.
+
+**Basic Usage:**
+
+```javascript
+console.log(typeof 42); // "number"
+console.log(typeof "hello"); // "string"
+console.log(typeof true); // "boolean"
+console.log(typeof undefined); // "undefined"
+console.log(typeof Symbol("id")); // "symbol"
+console.log(typeof 123n); // "bigint"
+console.log(typeof {}); // "object"
+console.log(typeof function () {}); // "function"
+```
+
+**Quirks and Gotchas:**
+
+```javascript
+// 1. typeof null returns "object" (JavaScript bug!)
+console.log(typeof null); // "object" ❌ Should be "null"
+
+// 2. Arrays are objects
+console.log(typeof []); // "object" (use Array.isArray())
+console.log(Array.isArray([])); // true ✅
+
+// 3. NaN is a number
+console.log(typeof NaN); // "number"
+console.log(isNaN(NaN)); // true
+
+// 4. Functions are "function", not "object"
+console.log(typeof function () {}); // "function" (even though functions are objects)
+
+// 5. Undeclared variables don't throw error
+console.log(typeof undeclaredVar); // "undefined" (no error!)
+// console.log(undeclaredVar); // Error: undeclaredVar is not defined
+
+// 6. Class is "function"
+console.log(typeof class {}); // "function"
+
+// Correct type checking
+// For null
+let value = null;
+console.log(value === null); // true ✅
+
+// For arrays
+console.log(Array.isArray([1, 2, 3])); // true ✅
+
+// For objects (not array, not null)
+function isObject(val) {
+  return typeof val === "object" && val !== null && !Array.isArray(val);
+}
+
+// For number (not NaN)
+function isValidNumber(val) {
+  return typeof val === "number" && !isNaN(val);
+}
+```
+
+---
+
+### Q10: What is pass by value vs pass by reference in JavaScript?
+
+**Answer:**
+
+JavaScript is **always pass by value**, but for objects, the "value" is the reference (memory address).
+
+**Primitives - Pass by Value:**
+
+```javascript
+function changePrimitive(x) {
+  x = 100; // Changes local copy only
+  console.log("Inside:", x); // 100
+}
+
+let num = 50;
+changePrimitive(num);
+console.log("Outside:", num); // 50 (unchanged)
+
+// Explanation: num's value (50) is COPIED to x
+// Changing x doesn't affect num
+```
+
+**Objects - Pass by Value of Reference:**
+
+```javascript
+function changeObject(obj) {
+  obj.name = "Changed"; // Modifies original object
+  console.log("Inside:", obj.name); // "Changed"
+}
+
+let person = { name: "John" };
+changeObject(person);
+console.log("Outside:", person.name); // "Changed" (modified!)
+
+// Explanation: person's reference (memory address) is COPIED to obj
+// Both person and obj point to SAME object
+// Modifying obj.name affects the shared object
+```
+
+**Reassignment Doesn't Affect Original:**
+
+```javascript
+function reassignObject(obj) {
+  obj = { name: "New" }; // Creates new object, local only
+  console.log("Inside:", obj.name); // "New"
+}
+
+let user = { name: "John" };
+reassignObject(user);
+console.log("Outside:", user.name); // "John" (unchanged!)
+
+// Explanation: obj = {...} creates a NEW object
+// Only changes obj's reference, not user's reference
+```
+
+**Memory Diagram:**
+
+```
+Pass Primitive:
+num (50) ──copy value──> x (50)
+After x=100: num (50), x (100) - separate values
+
+Pass Object:
+person (ref→0x001) ──copy ref──> obj (ref→0x001)
+Both point to: 0x001: { name: 'John' }
+After obj.name='Changed': 0x001: { name: 'Changed' }
+
+Reassign Object:
+person (ref→0x001) points to: 0x001: { name: 'John' }
+obj (ref→0x002) points to: 0x002: { name: 'New' }
+person unchanged!
+```
+
+---
+
+### Q11: Explain scope and scope chain.
+
+**Answer:**
+
+**Scope** determines where variables are accessible.
+
+**Types of Scope:**
+
+```javascript
+// 1. Global Scope
+var globalVar = "Global";
+let globalLet = "Also Global";
+
+// 2. Function Scope (var, let, const)
+function myFunc() {
+  var funcVar = "Function scoped";
+  let funcLet = "Also function scoped";
+  console.log(funcVar); // ✅ Accessible
+}
+// console.log(funcVar); // ❌ Error: not defined
+
+// 3. Block Scope (let, const only)
+if (true) {
+  var blockVar = "Leaks out"; // var ignores blocks
+  let blockLet = "Stays inside";
+  const blockConst = "Also stays";
+}
+console.log(blockVar); // ✅ Works (var leaked)
+// console.log(blockLet); // ❌ Error
+// console.log(blockConst); // ❌ Error
+```
+
+**Scope Chain:**
+
+```javascript
+let global = "Global";
+
+function outer() {
+  let outerVar = "Outer";
+
+  function inner() {
+    let innerVar = "Inner";
+
+    // Scope chain: inner → outer → global
+    console.log(innerVar); // Found in inner scope
+    console.log(outerVar); // Found in outer scope
+    console.log(global); // Found in global scope
+    // console.log(notDefined); // Error: not found anywhere
+  }
+
+  inner();
+  // console.log(innerVar); // Error: not accessible here
+}
+
+outer();
+// console.log(outerVar); // Error: not accessible here
+```
+
+**Lexical Scoping:**
+
+```javascript
+let name = "Global";
+
+function outer() {
+  let name = "Outer";
+
+  function inner() {
+    // Scope determined by WHERE function is WRITTEN, not WHERE it's CALLED
+    console.log(name); // "Outer" (lexical scope)
+  }
+
+  return inner;
+}
+
+let myFunc = outer();
+myFunc(); // "Outer" (not "Global")
+```
+
+---
+
+### Q12: What happens when you create a variable without `var`, `let`, or `const`?
+
+**Answer:**
+
+Creating a variable without a declaration keyword creates an **implicit global variable** (in non-strict mode), which is a bad practice.
+
+```javascript
+// Non-strict mode
+function createLeak() {
+  leak = "I'm global!"; // No var/let/const = implicit global
+}
+
+createLeak();
+console.log(leak); // "I'm global!" (accessible globally!)
+
+// In strict mode
+("use strict");
+function createError() {
+  x = 10; // Error: x is not defined
+}
+
+// Why this is bad:
+// 1. Pollutes global scope
+// 2. Hard to track bugs
+// 3. Can accidentally overwrite existing globals
+// 4. Not obvious where variable is defined
+
+// ✅ Always use var/let/const
+function goodPractice() {
+  let local = "Properly scoped";
+}
+```
+
+**Best Practice:** Always use `"use strict";` and proper variable declarations.
+
+---
+
+### Q13: Can `const` variables be changed? Explain with objects and arrays.
+
+**Answer:**
+
+**`const` prevents reassignment, NOT mutation.**
+
+**Primitives:**
+
+```javascript
+const num = 10;
+// num = 20; // ❌ Error: Assignment to constant variable
+// Can't change the value
+```
+
+**Objects:**
+
+```javascript
+const person = {
+  name: "John",
+  age: 25,
+};
+
+// ✅ Can modify properties
+person.name = "Jane";
+person.age = 30;
+person.city = "New York"; // Can add properties
+delete person.age; // Can delete properties
+console.log(person); // { name: 'Jane', city: 'New York' }
+
+// ❌ Cannot reassign the object
+// person = { name: 'Bob' }; // Error: Assignment to constant variable
+```
+
+**Arrays:**
+
+```javascript
+const numbers = [1, 2, 3];
+
+// ✅ Can modify array contents
+numbers.push(4); // Add elements
+numbers[0] = 10; // Modify elements
+numbers.pop(); // Remove elements
+console.log(numbers); // [10, 2, 3]
+
+// ❌ Cannot reassign the array
+// numbers = [5, 6, 7]; // Error: Assignment to constant variable
+```
+
+**Why:**
+
+- `const` makes the **variable binding** constant
+- The **reference** (memory address) cannot change
+- The **contents** of the object/array can still be modified
+
+**Make truly immutable:**
+
+```javascript
+// Freeze object (shallow)
+const user = Object.freeze({ name: "John", age: 25 });
+user.name = "Jane"; // Silently fails (or error in strict mode)
+console.log(user.name); // "John" (unchanged)
+
+// Deep freeze (for nested objects)
+function deepFreeze(obj) {
+  Object.freeze(obj);
+  Object.keys(obj).forEach((key) => {
+    if (typeof obj[key] === "object" && obj[key] !== null) {
+      deepFreeze(obj[key]);
+    }
+  });
+  return obj;
+}
+```
+
+---
+
+### Q14: What is the difference between stack and heap memory?
+
+**Answer:**
+
+**Stack Memory:**
+
+- Stores **primitive values** and **references** to objects
+- **Fixed size** allocation
+- **Fast** access
+- **Automatic** memory management (LIFO - Last In First Out)
+- Limited size (stack overflow if exceeded)
+
+**Heap Memory:**
+
+- Stores **objects** and **arrays**
+- **Dynamic size** allocation
+- **Slower** access than stack
+- **Garbage collected**
+- Much larger than stack
+
+**Example:**
+
+```javascript
+// Stack memory
+let age = 25; // Primitive stored in stack
+let name = "John"; // Primitive stored in stack
+
+// Heap memory
+let person = { name: "John", age: 25 };
+// person variable (reference) → Stack
+// { name: 'John', age: 25 } object → Heap
+
+// Memory diagram:
+// Stack:           Heap:
+// age: 25          0x001: { name: 'John', age: 25 }
+// name: 'John'     0x002: [1, 2, 3]
+// person: 0x001
+// numbers: 0x002
+
+let numbers = [1, 2, 3];
+```
+
+**Why it matters:**
+
+```javascript
+// Stack - value copied
+let a = 10;
+let b = a; // Copy value
+b = 20;
+console.log(a); // 10 (unchanged)
+
+// Heap - reference copied
+let obj1 = { value: 10 };
+let obj2 = obj1; // Copy reference (same object)
+obj2.value = 20;
+console.log(obj1.value); // 20 (changed!)
+```
+
+---
+
+### Q15: Explain variable naming conventions and best practices.
+
+**Answer:**
+
+**Naming Conventions:**
+
+```javascript
+// 1. camelCase - variables and functions
+let firstName = "John";
+let userAge = 25;
+function getUserData() {}
+
+// 2. PascalCase - classes and constructors
+class UserProfile {}
+class ShoppingCart {}
+function Person(name) {
+  this.name = name;
+}
+
+// 3. UPPER_CASE - constants
+const API_KEY = "abc123";
+const MAX_USERS = 100;
+const TAX_RATE = 0.15;
+
+// 4. _private - private/internal (convention, not enforced)
+let _privateVar = "internal";
+function _helperFunction() {}
+```
+
+**Best Practices:**
+
+```javascript
+// ✅ Use descriptive names
+let userName = "John"; // Good
+let u = "John"; // Bad
+
+// ✅ Boolean should ask yes/no
+let isLoggedIn = true; // Good
+let hasPermission = false; // Good
+let canEdit = true; // Good
+let user = true; // Bad
+
+// ✅ Functions should be verbs
+function getUserData() {} // Good
+function calculateTotal() {} // Good
+function userData() {} // Bad
+
+// ✅ Arrays should be plural
+let users = ["John", "Jane"]; // Good
+let user = ["John", "Jane"]; // Bad
+
+// ✅ Avoid abbreviations
+let numberOfItems = 5; // Good
+let numOfItms = 5; // Bad
+
+// ✅ Consistent naming
+let getUserData(); // Good
+let fetchUserInfo(); // Also good
+let getUsrDta(); // Bad - inconsistent
+
+// ✅ Constants in UPPER_CASE
+const MAX_RETRY_ATTEMPTS = 3;
+const API_ENDPOINT = "https://api.example.com";
+```
+
+**Rules:**
+
+```javascript
+// ✅ Can start with letter, _, $
+let name = "valid";
+let _private = "valid";
+let $jquery = "valid";
+
+// ❌ Cannot start with number
+// let 1name = 'invalid'; // Error
+
+// ✅ Can contain letters, digits, _, $
+let user123 = "valid";
+let first_name = "valid";
+
+// ❌ Cannot use reserved keywords
+// let let = 'invalid'; // Error
+// let class = 'invalid'; // Error
+
+// ✅ Case sensitive
+let Name = "John";
+let name = "Jane"; // Different variable!
+```
+
+---
+
+### Q16: What is garbage collection in JavaScript?
+
+**Answer:**
+
+**Garbage Collection** is automatic memory management where the JavaScript engine frees memory that is no longer being used.
+
+**How it works:**
+
+1. **Mark Phase** - GC marks all reachable objects starting from roots (global variables, currently executing function, etc.)
+2. **Sweep Phase** - GC removes unmarked (unreachable) objects
+3. **Compact Phase** - (Optional) Defragment memory
+
+**Example:**
+
+```javascript
+// Object is reachable
+let user = { name: "John", age: 25 };
+
+// Still reachable through 'user'
+console.log(user.name);
+
+// Remove reference
+user = null;
+
+// Original object { name: 'John', age: 25 } is now unreachable
+// Garbage collector will free the memory
+```
+
+**When objects are collected:**
+
+```javascript
+function createUser() {
+  let user = { name: "John" }; // Created in heap
+  return user;
+} // After function, local reference is gone, but object returned
+
+let myUser = createUser(); // Object still reachable through myUser
+
+myUser = null; // Now object is unreachable → will be collected
+```
+
+**Common Memory Leaks:**
+
+```javascript
+// 1. Global variables
+function leak() {
+  leak = "I'm global!"; // Missing var/let/const
+}
+
+// 2. Forgotten timers
+let id = setInterval(() => {
+  // Holds references
+}, 1000);
+// clearInterval(id); // Remember to clear!
+
+// 3. Closures holding large data
+function outer() {
+  let largeArray = new Array(1000000);
+  return function inner() {
+    console.log(largeArray.length); // Keeps largeArray in memory
+  };
+}
+
+// 4. Event listeners not removed
+element.addEventListener("click", handler);
+// element.removeEventListener('click', handler); // Remember to remove!
+```
+
+**Best Practices:**
+
+- Set unused references to `null`
+- Clear timers and intervals
+- Remove event listeners when no longer needed
+- Be careful with closures and large data structures
+- Use WeakMap/WeakSet for objects that should be garbage collected
+
+---
+
+### Q17: What are truthy and falsy values? How do they affect conditional statements?
+
+**Answer:**
+
+**Falsy Values (7 total):**
+
+```javascript
+// All falsy values
+if (false) console.log("Won't run");
+if (0) console.log("Won't run");
+if (-0) console.log("Won't run");
+if ("") console.log("Won't run");
+if (null) console.log("Won't run");
+if (undefined) console.log("Won't run");
+if (NaN) console.log("Won't run");
+```
+
+**Truthy Values (Everything else!):**
+
+```javascript
+// All truthy examples
+if (true) console.log("Runs"); // true
+if (1) console.log("Runs"); // non-zero number
+if (-1) console.log("Runs"); // negative number
+if (" ") console.log("Runs"); // non-empty string (even space)
+if ("0") console.log("Runs"); // string "0"
+if ("false") console.log("Runs"); // string "false"
+if ([]) console.log("Runs"); // empty array
+if ({}) console.log("Runs"); // empty object
+if (function () {}) console.log("Runs"); // function
+```
+
+**Practical Usage:**
+
+```javascript
+// Check if variable has value
+let userName = "";
+if (userName) {
+  console.log("User logged in");
+} else {
+  console.log("No user"); // Runs (empty string is falsy)
+}
+
+// Default values (old way)
+let input = "";
+let value = input || "default";
+console.log(value); // "default"
+
+// Problem with ||
+let count = 0;
+let value = count || 10;
+console.log(value); // 10 (but 0 is valid!)
+
+// Solution: Nullish coalescing (??)
+let count2 = 0;
+let value2 = count2 ?? 10;
+console.log(value2); // 0 (only null/undefined trigger default)
+
+// Ternary with truthy/falsy
+let status = user ? "Logged in" : "Guest";
+
+// Common pitfalls
+if ([] == false) console.log("True!"); // True (coerced to 0)
+if ([]) console.log("True!"); // True (array is truthy!)
+
+// Array check
+let items = [];
+if (items) console.log("Has items?"); // Runs! (Wrong)
+if (items.length) console.log("Has items"); // Correct way
+```
+
+---
+
+### Q18: How do you clone objects in JavaScript?
+
+**Answer:**
+
+There are several ways to clone objects, each with different behaviors:
+
+**1. Shallow Clone - Spread Operator (ES6+):**
+
+```javascript
+let original = { name: "John", age: 25 };
+let clone = { ...original };
+
+clone.name = "Jane";
+console.log(original.name); // "John" (unchanged)
+console.log(clone.name); // "Jane"
+
+// Problem: Only shallow (nested objects are still referenced)
+let person = {
+  name: "John",
+  address: { city: "New York" },
+};
+let copy = { ...person };
+copy.address.city = "Boston";
+console.log(person.address.city); // "Boston" (changed!)
+```
+
+**2. Shallow Clone - Object.assign():**
+
+```javascript
+let original = { name: "John", age: 25 };
+let clone = Object.assign({}, original);
+
+clone.name = "Jane";
+console.log(original.name); // "John" (unchanged)
+
+// Same shallow copy issue
+let person = {
+  name: "John",
+  address: { city: "New York" },
+};
+let copy = Object.assign({}, person);
+copy.address.city = "Boston";
+console.log(person.address.city); // "Boston" (changed!)
+```
+
+**3. Deep Clone - JSON methods:**
+
+```javascript
+let original = {
+  name: "John",
+  address: { city: "New York" },
+};
+let clone = JSON.parse(JSON.stringify(original));
+
+clone.address.city = "Boston";
+console.log(original.address.city); // "New York" (unchanged!)
+
+// Limitations:
+// - Loses functions
+// - Loses undefined values
+// - Loses Symbols
+// - Loses Date objects (become strings)
+// - Circular references cause error
+
+let obj = {
+  name: "John",
+  greet: function () {}, // Lost
+  date: new Date(), // Becomes string
+  undef: undefined, // Lost
+  sym: Symbol("id"), // Lost
+};
+
+let cloned = JSON.parse(JSON.stringify(obj));
+console.log(cloned);
+// { name: 'John', date: '2024-...' }
+// greet, undef, sym are missing!
+```
+
+**4. Deep Clone - structuredClone() (Modern):**
+
+```javascript
+let original = {
+  name: "John",
+  address: { city: "New York" },
+  date: new Date(),
+};
+
+let clone = structuredClone(original);
+clone.address.city = "Boston";
+
+console.log(original.address.city); // "New York" (unchanged!)
+console.log(clone.date instanceof Date); // true (preserved!)
+
+// Still limitations:
+// - No functions
+// - No Symbols
+// - Better than JSON for most cases
+```
+
+**5. Deep Clone - Manual recursive:**
+
+```javascript
+function deepClone(obj) {
+  // Handle null and primitives
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+
+  // Handle Date
+  if (obj instanceof Date) {
+    return new Date(obj.getTime());
+  }
+
+  // Handle Array
+  if (Array.isArray(obj)) {
+    return obj.map((item) => deepClone(item));
+  }
+
+  // Handle Object
+  const cloned = {};
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      cloned[key] = deepClone(obj[key]);
+    }
+  }
+  return cloned;
+}
+
+// Usage
+let original = {
+  name: "John",
+  address: { city: "New York" },
+  hobbies: ["reading", "coding"],
+};
+
+let clone = deepClone(original);
+clone.address.city = "Boston";
+console.log(original.address.city); // "New York" (unchanged!)
+```
+
+**Comparison Table:**
+
+| Method                 | Shallow/Deep | Functions | Dates  | Symbols | Circular Refs |
+| ---------------------- | ------------ | --------- | ------ | ------- | ------------- |
+| Spread `{...obj}`      | Shallow      | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes        |
+| `Object.assign()`      | Shallow      | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes        |
+| `JSON.parse/stringify` | Deep         | ❌ No     | ❌ No  | ❌ No   | ❌ Error      |
+| `structuredClone()`    | Deep         | ❌ No     | ✅ Yes | ❌ No   | ✅ Yes        |
+| Manual recursive       | Deep         | Custom    | Custom | Custom  | Custom        |
+
+---
+
+### Q19: Explain `Number()`, `parseInt()`, and `parseFloat()` differences.
+
+**Answer:**
+
+**Number() - Strict Conversion:**
+
+```javascript
+// Converts entire string to number
+console.log(Number("123")); // 123
+console.log(Number("12.5")); // 12.5
+console.log(Number("  100  ")); // 100 (trims whitespace)
+
+// Strict: returns NaN for invalid formats
+console.log(Number("123abc")); // NaN
+console.log(Number("abc123")); // NaN
+console.log(Number("12.5.6")); // NaN
+
+// Special values
+console.log(Number("")); // 0 (empty string)
+console.log(Number("   ")); // 0 (whitespace)
+console.log(Number(true)); // 1
+console.log(Number(false)); // 0
+console.log(Number(null)); // 0
+console.log(Number(undefined)); // NaN
+```
+
+**parseInt() - Parse Integer:**
+
+```javascript
+// Parses until it hits non-digit
+console.log(parseInt("123")); // 123
+console.log(parseInt("123.45")); // 123 (stops at decimal)
+console.log(parseInt("123abc")); // 123 (stops at 'a')
+console.log(parseInt("  100  ")); // 100 (trims whitespace)
+
+// Must start with digit (or -)
+console.log(parseInt("abc123")); // NaN
+console.log(parseInt("-123abc")); // -123
+
+// Radix parameter (base)
+console.log(parseInt("10")); // 10 (decimal by default)
+console.log(parseInt("10", 10)); // 10 (decimal)
+console.log(parseInt("10", 2)); // 2 (binary)
+console.log(parseInt("10", 8)); // 8 (octal)
+console.log(parseInt("10", 16)); // 16 (hexadecimal)
+
+console.log(parseInt("FF", 16)); // 255 (hex)
+console.log(parseInt("0xFF")); // 255 (auto-detect hex)
+
+// Always specify radix!
+console.log(parseInt("08")); // 8 (modern browsers)
+console.log(parseInt("08", 10)); // 8 (safer)
+```
+
+**parseFloat() - Parse Decimal:**
+
+```javascript
+// Parses decimal numbers
+console.log(parseFloat("123.45")); // 123.45
+console.log(parseFloat("123.45abc")); // 123.45 (stops at 'a')
+console.log(parseFloat("  12.5  ")); // 12.5 (trims whitespace)
+
+// Only one decimal point
+console.log(parseFloat("12.5.6")); // 12.5 (stops at second '.')
+
+// Scientific notation
+console.log(parseFloat("1.5e3")); // 1500
+console.log(parseFloat("1.5E-3")); // 0.0015
+
+// No radix parameter (always base 10)
+console.log(parseFloat("0xFF")); // 0 (not hexadecimal support)
+```
+
+**Comparison:**
+
+```javascript
+let input = "123.45abc";
+
+console.log(Number(input)); // NaN (strict, entire string must be valid)
+console.log(parseInt(input)); // 123 (stops at decimal)
+console.log(parseFloat(input)); // 123.45 (parses decimal, stops at 'a')
+
+// Empty string
+console.log(Number("")); // 0
+console.log(parseInt("")); // NaN
+console.log(parseFloat("")); // NaN
+
+// Whitespace
+console.log(Number("   ")); // 0
+console.log(parseInt("   ")); // NaN
+console.log(parseFloat("   ")); // NaN
+
+// Boolean
+console.log(Number(true)); // 1
+console.log(parseInt(true)); // NaN (converts to "true" first)
+console.log(parseFloat(true)); // NaN
+```
+
+**When to use which:**
+
+```javascript
+// Number() - when you need strict validation
+let age = Number(userInput);
+if (isNaN(age)) {
+  console.log("Invalid number");
+}
+
+// parseInt() - when parsing integers from mixed strings
+let pixels = parseInt("100px"); // 100
+let year = parseInt("2024-01-01"); // 2024
+
+// parseFloat() - when parsing decimals from mixed strings
+let price = parseFloat("$19.99"); // NaN (starts with $)
+let price2 = parseFloat("19.99 USD"); // 19.99
+let percentage = parseFloat("75.5%"); // 75.5
+```
+
+---
+
+### Q20: What is the difference between value types and reference types?
+
+**Answer:**
+
+**Value Types (Primitives):**
+
+```javascript
+// Stored directly in variable
+// Copied by value
+// Stored in stack
+let a = 10;
+let b = a; // Creates new copy
+b = 20;
+
+console.log(a); // 10 (unchanged)
+console.log(b); // 20
+
+// Memory:
+// a: 10 (stack)
+// b: 20 (stack) - separate value
+```
+
+**Reference Types (Objects):**
+
+```javascript
+// Stored by reference
+// Variable holds memory address
+// Stored in heap
+let obj1 = { value: 10 };
+let obj2 = obj1; // Copies reference, not object
+
+obj2.value = 20;
+
+console.log(obj1.value); // 20 (changed!)
+console.log(obj2.value); // 20
+
+// Memory:
+// Stack:           Heap:
+// obj1: ref→0x001  0x001: { value: 20 }
+// obj2: ref→0x001  (same object)
+```
+
+**Comparison:**
+
+```javascript
+// Primitives: compared by value
+let x = 10;
+let y = 10;
+console.log(x === y); // true (same value)
+
+// Objects: compared by reference
+let obj1 = { value: 10 };
+let obj2 = { value: 10 };
+console.log(obj1 === obj2); // false (different objects)
+
+let obj3 = obj1;
+console.log(obj1 === obj3); // true (same reference)
+```
+
+**Function Parameters:**
+
+```javascript
+// Primitives: pass by value
+function changePrimitive(x) {
+  x = 100; // Local change only
+}
+let num = 50;
+changePrimitive(num);
+console.log(num); // 50 (unchanged)
+
+// Objects: pass by reference
+function changeObject(obj) {
+  obj.value = 100; // Modifies original
+}
+let myObj = { value: 50 };
+changeObject(myObj);
+console.log(myObj.value); // 100 (changed!)
+
+// But reassignment doesn't affect original
+function reassign(obj) {
+  obj = { value: 999 }; // New object, local only
+}
+let myObj2 = { value: 50 };
+reassign(myObj2);
+console.log(myObj2.value); // 50 (unchanged)
+```
+
+**Key Takeaways:**
+
+1. **Value Types**: Number, String, Boolean, undefined, null, Symbol, BigInt
+   - Stored in stack
+   - Copied by value
+   - Independent copies
+
+2. **Reference Types**: Object, Array, Function, Date, RegExp
+   - Stored in heap
+   - Variable holds reference (memory address)
+   - Multiple variables can reference same object
+
+3. **Comparison**: Primitives compare values, objects compare references
+
+4. **Immutability**: Primitives are immutable, objects are mutable
+
+---
+
+

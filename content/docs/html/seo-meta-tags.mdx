@@ -1,0 +1,269 @@
+---
+title: "SEO & Meta Tags - Optimizing for Search Engines"
+description: Documentation for SEO & Meta Tags - Optimizing for Search Engines.
+---
+
+# SEO & Meta Tags - Optimizing for Search Engines
+
+
+
+## What is SEO?
+
+SEO (Search Engine Optimization) is the practice of improving your website's visibility in search engine results.
+
+> **Definition:** HTML plays a crucial role in SEO through proper document structure, semantic elements, and meta tags. Search engines use these to understand your content, determine relevance, and display rich results. Good HTML structure forms the foundation of technical SEO.
+
+## Essential Meta Tags
+
+```html
+<head>
+  <!-- Character encoding -->
+  <meta charset="UTF-8" />
+
+  <!-- Viewport for mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Page title (most important) -->
+  <title>Primary Keyword - Secondary | Brand Name</title>
+
+  <!-- Meta description -->
+  <meta
+    name="description"
+    content="Compelling 150-160 character description 
+    that includes keywords and encourages clicks."
+  />
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://example.com/page" />
+</head>
+```
+
+## Meta Tags Reference
+
+| Meta Tag      | Purpose               | Best Practice                 |
+| ------------- | --------------------- | ----------------------------- |
+| `<title>`     | Page title in results | 50-60 chars, keyword first    |
+| `description` | Snippet in results    | 150-160 chars, compelling CTA |
+| `robots`      | Indexing instructions | index,follow is default       |
+| `canonical`   | Preferred URL         | Prevents duplicate content    |
+| `viewport`    | Mobile responsiveness | Required for mobile-first     |
+
+## Title Tag Best Practices
+
+```html
+<!-- Format: Primary Keyword - Secondary | Brand -->
+<title>JavaScript Tutorial - Learn JS from Scratch | CodeLearn</title>
+
+<!-- ❌ Too long (will be truncated) -->
+<title>
+  Complete JavaScript Tutorial for Beginners to Advanced - Learn Everything
+  About JS
+</title>
+
+<!-- ❌ Keyword stuffing -->
+<title>JavaScript JavaScript Tutorial JavaScript Course JavaScript Learn</title>
+
+<!-- ✅ Good examples -->
+<title>Web Development Courses - Learn HTML, CSS, JS | Udemy</title>
+<title>iPhone 15 Pro - Apple</title>
+<title>Best Coffee Shops in New York | 2024 Guide</title>
+```
+
+## Open Graph (Social Media)
+
+```html
+<head>
+  <!-- Basic Open Graph -->
+  <meta property="og:title" content="Page Title" />
+  <meta
+    property="og:description"
+    content="Page description for social sharing"
+  />
+  <meta property="og:image" content="https://example.com/image.jpg" />
+  <meta property="og:url" content="https://example.com/page" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Site Name" />
+
+  <!-- Image dimensions (recommended) -->
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+</head>
+```
+
+| og:type Values | Use For                |
+| -------------- | ---------------------- |
+| `website`      | Homepage, general page |
+| `article`      | Blog posts, news       |
+| `product`      | Product pages          |
+| `video.movie`  | Video content          |
+| `music.song`   | Music content          |
+
+## Twitter Cards
+
+```html
+<head>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@yourusername" />
+  <meta name="twitter:title" content="Page Title" />
+  <meta name="twitter:description" content="Description for Twitter" />
+  <meta name="twitter:image" content="https://example.com/image.jpg" />
+</head>
+```
+
+| Card Type             | Use For              |
+| --------------------- | -------------------- |
+| `summary`             | Default, small image |
+| `summary_large_image` | Large image preview  |
+| `app`                 | App download cards   |
+| `player`              | Video/audio players  |
+
+## Robots Meta Tag
+
+```html
+<!-- Default (index and follow links) -->
+<meta name="robots" content="index, follow" />
+
+<!-- Don't index this page -->
+<meta name="robots" content="noindex" />
+
+<!-- Don't follow links on this page -->
+<meta name="robots" content="nofollow" />
+
+<!-- Don't show in search results -->
+<meta name="robots" content="noindex, nofollow" />
+
+<!-- Don't cache/archive -->
+<meta name="robots" content="noarchive" />
+
+<!-- Don't show snippet -->
+<meta name="robots" content="nosnippet" />
+```
+
+| Value       | Effect                         |
+| ----------- | ------------------------------ |
+| `index`     | Allow indexing (default)       |
+| `noindex`   | Prevent indexing               |
+| `follow`    | Follow links on page (default) |
+| `nofollow`  | Don't follow any links         |
+| `noarchive` | Don't show cached version      |
+| `nosnippet` | Don't show text snippet        |
+
+## Semantic HTML for SEO
+
+```html
+<!-- Single h1 per page -->
+<h1>Main Page Title with Primary Keyword</h1>
+
+<!-- Logical heading hierarchy -->
+<h2>Section Heading</h2>
+<h3>Subsection</h3>
+<h3>Subsection</h3>
+<h2>Another Section</h2>
+
+<!-- Semantic structure -->
+<article>
+  <header>
+    <h1>Article Title</h1>
+    <time datetime="2024-01-15">January 15, 2024</time>
+  </header>
+  <p>Article content...</p>
+</article>
+```
+
+## Structured Data (JSON-LD)
+
+```html
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Article Title",
+    "author": {
+      "@type": "Person",
+      "name": "Author Name"
+    },
+    "datePublished": "2024-01-15",
+    "image": "https://example.com/image.jpg"
+  }
+</script>
+```
+
+## Complete SEO Template
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO -->
+    <title>Primary Keyword - Secondary | Brand</title>
+    <meta
+      name="description"
+      content="150-160 character compelling description"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://example.com/page" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Title for Social" />
+    <meta property="og:description" content="Description for social" />
+    <meta property="og:image" content="https://example.com/og-image.jpg" />
+    <meta property="og:url" content="https://example.com/page" />
+    <meta property="og:type" content="article" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Title for Twitter" />
+    <meta name="twitter:description" content="Description for Twitter" />
+    <meta
+      name="twitter:image"
+      content="https://example.com/twitter-image.jpg"
+    />
+  </head>
+  <body>
+    <main>
+      <article>
+        <h1>Primary Keyword in Heading</h1>
+        <p>Content with natural keyword usage...</p>
+      </article>
+    </main>
+  </body>
+</html>
+```
+
+## Interview Questions & Answers
+
+### Q1: Why is the title tag the most important for SEO?
+
+The title tag is the primary signal search engines use to understand page content. It appears as the clickable headline in search results, directly affecting click-through rates. Keep it 50-60 characters to avoid truncation. Place your most important keyword near the beginning. Each page should have a unique, descriptive title. A good title improves both rankings and user engagement. It also appears in browser tabs and when pages are bookmarked or shared.
+
+---
+
+### Q2: What's the difference between canonical and robots directives?
+
+The canonical tag tells search engines which URL is the "official" version when duplicate or similar content exists at multiple URLs - it consolidates ranking signals. The robots meta tag controls whether pages should be indexed at all and whether links should be followed. Use canonical for URL normalization (www vs non-www, parameters). Use robots noindex to prevent indexing entirely (admin pages, thank you pages).
+
+---
+
+### Q3: What are Open Graph and Twitter Card meta tags for?
+
+Open Graph (og:) tags control how your content appears when shared on Facebook, LinkedIn, and other platforms. Twitter Cards control Twitter's preview. Without these, platforms may display incorrect or no preview. Specify title, description, and image (1200x630px recommended for OG). Use `og:type` to specify content type. These tags improve click-through rates and branding on social media. Different images can be specified for each platform.
+
+---
+
+### Q4: What is structured data and why use it?
+
+Structured data (typically JSON-LD format) provides explicit information about your content in a format search engines understand. It enables rich results like star ratings, recipe cards, FAQ dropdowns, and event details in search results. Schema.org vocabulary defines the types. Place JSON-LD scripts in the head or body. Rich results significantly improve visibility and click-through rates. Google's Rich Results Test validates your markup.
+
+---
+
+### Q5: How does heading structure affect SEO?
+
+Headings (h1-h6) create content hierarchy that search engines use to understand topic structure and importance. Use one h1 per page for the main topic with your primary keyword. Follow logical order (h1 → h2 → h3) without skipping levels. Headings help search engines identify main topics and subtopics. They also improve accessibility and user scanning. Don't use headings just for styling - use CSS instead.
+
+

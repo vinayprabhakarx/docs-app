@@ -1,0 +1,363 @@
+---
+title: "Images & Media - Visual Content"
+description: Documentation for Images & Media - Visual Content.
+---
+
+# Images & Media - Visual Content
+
+
+
+## What are Media Elements?
+
+Media elements allow embedding images, audio, and video content in web pages.
+
+> **Definition:** HTML provides native elements for different types of media: `<img>` for images, `<video>` for videos, `<audio>` for sound, and `<picture>` for responsive images. These elements can include fallback content and multiple sources for compatibility.
+
+## Images
+
+### Basic Image
+
+```html
+<img src="photo.jpg" alt="Description of the image" />
+```
+
+### Image Attributes
+
+| Attribute  | Purpose                  | Required    | Example                                  |
+| ---------- | ------------------------ | ----------- | ---------------------------------------- |
+| `src`      | Image source URL         | ✅ Yes      | `src="photo.jpg"`                        |
+| `alt`      | Alternative text         | ✅ Yes      | `alt="A sunset over ocean"`              |
+| `width`    | Width in pixels          | Recommended | `width="800"`                            |
+| `height`   | Height in pixels         | Recommended | `height="600"`                           |
+| `loading`  | Lazy loading strategy    | No          | `loading="lazy"`                         |
+| `decoding` | Decoding behavior        | No          | `decoding="async"`                       |
+| `srcset`   | Responsive image sources | No          | `srcset="small.jpg 400w, ..."`           |
+| `sizes`    | Display sizes for srcset | No          | `sizes="(max-width: 600px) 100vw, 50vw"` |
+
+```html
+<!-- Complete image example -->
+<img
+  src="hero.jpg"
+  alt="Team working together in modern office"
+  width="1200"
+  height="800"
+  loading="lazy"
+  decoding="async"
+/>
+```
+
+### Alt Text Best Practices
+
+| Image Type       | Alt Text Approach              | Example                          |
+| ---------------- | ------------------------------ | -------------------------------- |
+| Informative      | Describe content/meaning       | `alt="Chart showing 40% growth"` |
+| Decorative       | Empty alt (but still required) | `alt=""`                         |
+| Link/Button      | Describe the action            | `alt="Go to homepage"`           |
+| Text in image    | Include the text               | `alt="Sale: 50% off"`            |
+| Complex (graphs) | Brief alt + longer description | Use `aria-describedby`           |
+
+```html
+<!-- Informative image -->
+<img src="ceo.jpg" alt="CEO Jane Smith speaking at conference" />
+
+<!-- Decorative image (purely visual) -->
+<img src="divider.png" alt="" />
+
+<!-- Image as link -->
+<a href="/">
+  <img src="logo.png" alt="Company Name - Go to homepage" />
+</a>
+
+<!-- Complex image with long description -->
+<img src="chart.png" alt="Sales chart" aria-describedby="chart-desc" />
+<p id="chart-desc">Sales increased from $1M in Q1 to $2.5M in Q4...</p>
+```
+
+### Image Formats
+
+| Format | Best For                    | Transparency | Animation | Compression |
+| ------ | --------------------------- | ------------ | --------- | ----------- |
+| JPEG   | Photos                      | ❌           | ❌        | Lossy       |
+| PNG    | Graphics, screenshots       | ✅           | ❌        | Lossless    |
+| GIF    | Simple animations           | ✅           | ✅        | Lossless    |
+| WebP   | Photos & graphics (modern)  | ✅           | ✅        | Both        |
+| AVIF   | Best compression (newest)   | ✅           | ✅        | Lossy       |
+| SVG    | Icons, logos, illustrations | ✅           | ✅        | Vector      |
+
+### Responsive Images
+
+```html
+<!-- Using srcset with width descriptors -->
+<img
+  src="photo-800.jpg"
+  srcset="photo-400.jpg 400w, photo-800.jpg 800w, photo-1200.jpg 1200w"
+  sizes="(max-width: 600px) 100vw,
+         (max-width: 1200px) 50vw,
+         800px"
+  alt="Description"
+/>
+
+<!-- Using srcset with pixel density -->
+<img
+  src="logo.png"
+  srcset="logo.png 1x, logo@2x.png 2x, logo@3x.png 3x"
+  alt="Company Logo"
+/>
+```
+
+### Picture Element (Art Direction)
+
+```html
+<picture>
+  <!-- WebP format for modern browsers -->
+  <source type="image/webp" srcset="photo.webp" />
+
+  <!-- AVIF for cutting edge browsers -->
+  <source type="image/avif" srcset="photo.avif" />
+
+  <!-- Different images for different screens -->
+  <source media="(min-width: 1200px)" srcset="photo-large.jpg" />
+  <source media="(min-width: 600px)" srcset="photo-medium.jpg" />
+
+  <!-- Fallback -->
+  <img src="photo-small.jpg" alt="Description" />
+</picture>
+
+<!-- Art direction example - different crops -->
+<picture>
+  <source media="(min-width: 800px)" srcset="hero-wide.jpg" />
+  <source media="(min-width: 400px)" srcset="hero-square.jpg" />
+  <img src="hero-portrait.jpg" alt="Hero image" />
+</picture>
+```
+
+## Figure and Figcaption
+
+```html
+<!-- Image with caption -->
+<figure>
+  <img src="chart.png" alt="Q4 Sales Results" />
+  <figcaption>Figure 1: Q4 Sales exceeded projections by 25%</figcaption>
+</figure>
+
+<!-- Multiple images with shared caption -->
+<figure>
+  <img src="before.jpg" alt="Kitchen before renovation" />
+  <img src="after.jpg" alt="Kitchen after renovation" />
+  <figcaption>Kitchen renovation: Before and After</figcaption>
+</figure>
+
+<!-- Code with caption -->
+<figure>
+  <pre><code>const greeting = "Hello";</code></pre>
+  <figcaption>Example: Variable declaration in JavaScript</figcaption>
+</figure>
+
+<!-- Blockquote with caption -->
+<figure>
+  <blockquote>
+    <p>The only way to do great work is to love what you do.</p>
+  </blockquote>
+  <figcaption>— Steve Jobs</figcaption>
+</figure>
+```
+
+## Video
+
+```html
+<!-- Basic video -->
+<video src="video.mp4" controls>Your browser doesn't support video.</video>
+
+<!-- Video with multiple sources -->
+<video controls width="800" height="450" poster="thumbnail.jpg">
+  <source src="video.webm" type="video/webm" />
+  <source src="video.mp4" type="video/mp4" />
+  <track kind="subtitles" src="captions.vtt" srclang="en" label="English" />
+  <p>
+    Your browser doesn't support HTML video.
+    <a href="video.mp4">Download the video</a>.
+  </p>
+</video>
+```
+
+### Video Attributes
+
+| Attribute      | Purpose                            | Example              |
+| -------------- | ---------------------------------- | -------------------- |
+| `src`          | Video source                       | `src="video.mp4"`    |
+| `controls`     | Show playback controls             | `controls`           |
+| `autoplay`     | Start playing automatically        | `autoplay`           |
+| `muted`        | Mute audio (required for autoplay) | `muted`              |
+| `loop`         | Loop playback                      | `loop`               |
+| `poster`       | Thumbnail image                    | `poster="thumb.jpg"` |
+| `preload`      | Preload behavior                   | `preload="metadata"` |
+| `width/height` | Dimensions                         | `width="800"`        |
+| `playsinline`  | Play inline on mobile              | `playsinline`        |
+
+```html
+<!-- Autoplay (must be muted) -->
+<video autoplay muted loop playsinline>
+  <source src="background.mp4" type="video/mp4" />
+</video>
+
+<!-- Video with poster and preload -->
+<video
+  controls
+  poster="thumbnail.jpg"
+  preload="metadata"
+  width="640"
+  height="360"
+>
+  <source src="video.mp4" type="video/mp4" />
+</video>
+```
+
+### Video Tracks (Subtitles/Captions)
+
+```html
+<video controls>
+  <source src="movie.mp4" type="video/mp4" />
+
+  <!-- Subtitles -->
+  <track kind="subtitles" src="subs-en.vtt" srclang="en" label="English" />
+  <track kind="subtitles" src="subs-es.vtt" srclang="es" label="Spanish" />
+
+  <!-- Captions (includes sound descriptions) -->
+  <track
+    kind="captions"
+    src="captions-en.vtt"
+    srclang="en"
+    label="English"
+    default
+  />
+
+  <!-- Descriptions for visually impaired -->
+  <track kind="descriptions" src="desc.vtt" srclang="en" label="Descriptions" />
+</video>
+```
+
+## Audio
+
+```html
+<!-- Basic audio -->
+<audio src="song.mp3" controls>Your browser doesn't support audio.</audio>
+
+<!-- Audio with multiple sources -->
+<audio controls>
+  <source src="song.ogg" type="audio/ogg" />
+  <source src="song.mp3" type="audio/mpeg" />
+  <p>
+    Your browser doesn't support audio.
+    <a href="song.mp3">Download the audio</a>.
+  </p>
+</audio>
+```
+
+### Audio Attributes
+
+| Attribute  | Purpose                     | Example           |
+| ---------- | --------------------------- | ----------------- |
+| `src`      | Audio source                | `src="audio.mp3"` |
+| `controls` | Show playback controls      | `controls`        |
+| `autoplay` | Start playing automatically | `autoplay`        |
+| `muted`    | Start muted                 | `muted`           |
+| `loop`     | Loop playback               | `loop`            |
+| `preload`  | Preload behavior            | `preload="auto"`  |
+
+## Lazy Loading
+
+```html
+<!-- Native lazy loading for images -->
+<img src="photo.jpg" alt="Photo" loading="lazy" />
+
+<!-- Eager loading (default) for above-the-fold -->
+<img src="hero.jpg" alt="Hero" loading="eager" />
+
+<!-- Iframe lazy loading -->
+<iframe src="embed.html" loading="lazy"></iframe>
+```
+
+| loading Value | Behavior                       |
+| ------------- | ------------------------------ |
+| `lazy`        | Load when approaching viewport |
+| `eager`       | Load immediately (default)     |
+
+## Image Maps
+
+```html
+<!-- Clickable regions on an image -->
+<img src="planets.jpg" alt="Solar System" usemap="#planetmap" />
+
+<map name="planetmap">
+  <area shape="rect" coords="0,0,82,126" href="sun.html" alt="Sun" />
+  <area shape="circle" coords="90,58,3" href="mercury.html" alt="Mercury" />
+  <area
+    shape="poly"
+    coords="124,58,140,68,140,50"
+    href="venus.html"
+    alt="Venus"
+  />
+</map>
+```
+
+## Interview Questions & Answers
+
+### Q1: Why is the alt attribute required for images?
+
+The alt attribute provides alternative text when images can't be displayed or accessed. It's critical for accessibility - screen readers read alt text to visually impaired users. It also appears when images fail to load, helps search engines understand image content for SEO, and is required for valid HTML. For decorative images, use an empty alt (`alt=""`) but never omit the attribute entirely. Descriptive alt text should convey the image's meaning or purpose, not just describe it literally.
+
+---
+
+### Q2: What's the difference between srcset and the picture element?
+
+`srcset` helps browsers choose the right image size for the screen - the browser decides which image to load based on viewport width or pixel density. Use it when you have the same image in different sizes. The `<picture>` element enables art direction - you control which image appears based on media queries. Use it when you want different crops or images for different screens (e.g., wide landscape for desktop, portrait crop for mobile). Picture gives more control, srcset is simpler for same-image scaling.
+
+---
+
+### Q3: How does lazy loading work and when should you use it?
+
+Native lazy loading (`loading="lazy"`) defers loading images until they approach the viewport as the user scrolls. This improves initial page load time and saves bandwidth for images users never scroll to. Use for images below the fold - not initially visible. Don't use for hero images, logos, or above-fold content that should load immediately. The browser handles distance thresholds automatically. For older browser support, you can use JavaScript intersection observer as a fallback.
+
+---
+
+### Q4: What is the purpose of the figure and figcaption elements?
+
+`<figure>` represents self-contained content that's referenced from main content but could be moved without affecting flow - like images, diagrams, code examples, or quotes. `<figcaption>` provides a caption or legend for the figure. They're semantic elements that help assistive technologies understand the relationship between content and its caption. Unlike putting text under an image, figcaption is programmatically linked to the figure, improving accessibility and SEO.
+
+---
+
+### Q5: What video formats should you provide for cross-browser support?
+
+For maximum compatibility, provide MP4 (H.264 codec) as the primary format - it works in all modern browsers. Add WebM (VP9 codec) for better compression in supported browsers. Order matters: list preferred formats first. Always include text fallback with download link for unsupported browsers. For newer content, AV1 offers excellent compression but limited support currently. Test across browsers and include the `type` attribute so browsers can skip formats they don't support without downloading.
+
+---
+
+### Q6: How do you make videos accessible?
+
+Provide captions using the `<track>` element with kind="captions" for deaf/hard-of-hearing users - include dialogue and important sounds. Add subtitles for different languages. Include audio descriptions (`kind="descriptions"`) for visually impaired users describing visual content. Always provide controls for play/pause. Don't autoplay without muting. Ensure keyboard accessibility. Provide transcript as text alternative. Use the poster attribute for meaningful thumbnails. Test with screen readers.
+
+---
+
+### Q7: What's the difference between autoplay and muted for videos?
+
+Autoplay attempts to play video immediately on page load, but browsers block autoplay of videos with audio to prevent annoying users. Muted ensures the video starts without sound. To autoplay reliably, you must include both `autoplay` and `muted`. The `playsinline` attribute is also needed for iOS to prevent fullscreen playback. This pattern is common for background videos. For videos with audio, let users initiate playback with controls.
+
+---
+
+### Q8: When should you use SVG vs raster images?
+
+Use SVG for icons, logos, illustrations, and simple graphics - they scale infinitely without quality loss, are usually smaller files, can be styled with CSS, and are accessible with text alternatives. Use raster formats (JPEG, PNG, WebP) for photographs and complex images with many colors. SVG becomes inefficient for photographic content. Consider WebP as a modern raster format that offers good compression with support for transparency. Choose based on image content, not file extension habit.
+
+---
+
+### Q9: What is the preload attribute for audio and video?
+
+The preload attribute hints how much of the media file should be loaded when the page loads. Values: `none` (don't preload), `metadata` (only load duration, dimensions, etc.), and `auto` (load the whole file if possible). Use `none` to save bandwidth when playback is unlikely, `metadata` to show duration/controls without full download, and `auto` when immediate playback is expected. It's a hint, not a command - browsers may ignore it. Preloading improves user experience when bandwidth allows.
+
+---
+
+### Q10: How do you optimize images for web performance?
+
+Choose appropriate formats: JPEG for photos, PNG for graphics needing transparency, WebP/AVIF for modern browsers. Compress images with tools like ImageOptim or squoosh.app. Serve responsive images with srcset for different screen sizes. Use lazy loading for below-fold images. Set explicit width/height to prevent layout shift. Consider next-gen formats with picture element fallbacks. Use CDNs for faster delivery. Implement caching headers. Don't use huge images scaled down with CSS - resize server-side.
+
+

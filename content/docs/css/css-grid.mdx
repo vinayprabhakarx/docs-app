@@ -1,0 +1,530 @@
+---
+title: "CSS Grid - Two-Dimensional Grid Layouts"
+description: Documentation for CSS Grid - Two-Dimensional Grid Layouts.
+---
+
+# CSS Grid - Two-Dimensional Grid Layouts
+
+
+
+## What is CSS Grid?
+
+CSS Grid is a powerful **two-dimensional layout system** that lets you create complex layouts with rows and columns. Unlike Flexbox (which is one-dimensional), Grid can handle both dimensions simultaneously.
+
+Think of Grid as a spreadsheet for your webpage - you define rows and columns, then place items in specific cells.
+
+### Why Use CSS Grid?
+
+Before Grid, creating complex layouts required nested divs, floats, and positioning hacks. Grid solves this by:
+- **Two-dimensional control** - Manage rows AND columns together
+- **Precise placement** - Put items exactly where you want them
+- **Responsive layouts** - Easily adapt to different screen sizes
+- **Less markup** - No need for wrapper divs
+- **Alignment control** - Align items in both directions
+
+## Grid Properties - Quick Reference
+
+### Container Properties (Parent)
+
+| Property | Description | Example |
+|---|---|---|
+| `display` | Enable grid | `display: grid;` |
+| `grid-template-columns` | Define columns | `grid-template-columns: 200px 1fr 1fr;` |
+| `grid-template-rows` | Define rows | `grid-template-rows: 100px auto 100px;` |
+| `grid-template-areas` | Named grid areas | `grid-template-areas: "header header" "sidebar main";` |
+| `gap` | Space between cells | `gap: 20px;` or `gap: 10px 20px;` |
+| `row-gap` | Vertical spacing | `row-gap: 10px;` |
+| `column-gap` | Horizontal spacing | `column-gap: 20px;` |
+| `justify-items` | Align items horizontally | `justify-items: start | end | center | stretch;` |
+| `align-items` | Align items vertically | `align-items: start | end | center | stretch;` |
+| `justify-content` | Align grid horizontally | `justify-content: start | end | center | space-between;` |
+| `align-content` | Align grid vertically | `align-content: start | end | center | space-between;` |
+
+### Item Properties (Children)
+
+| Property | Description | Example |
+|---|---|---|
+| `grid-column` | Column span | `grid-column: 1 / 3;` or `grid-column: span 2;` |
+| `grid-row` | Row span | `grid-row: 1 / 3;` or `grid-row: span 2;` |
+| `grid-area` | Named area or shorthand | `grid-area: header;` or `grid-area: 1 / 1 / 2 / 3;` |
+| `justify-self` | Align item horizontally | `justify-self: start | end | center | stretch;` |
+| `align-self` | Align item vertically | `align-self: start | end | center | stretch;` |
+
+## Container Properties - Detailed Explanation
+
+### 1. display: grid
+
+**What it does:**
+Turns an element into a grid container, making its direct children grid items.
+
+**Syntax:**
+```css
+.container {
+    display: grid;
+}
+```
+
+**HTML Example:**
+```html
+<div class="grid-container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+</div>
+```
+
+**CSS Example:**
+```css
+.grid-container {
+    display: grid;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.item {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+```
+
+---
+
+### 2. grid-template-columns
+
+**What it does:**
+Defines the number and size of columns in your grid.
+
+**Syntax:**
+```css
+grid-template-columns: value value value;
+```
+
+**HTML Example:**
+```html
+<div class="grid">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+    <div>6</div>
+</div>
+```
+
+**CSS Example 1 - Fixed columns:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: 200px 200px 200px;
+    gap: 10px;
+}
+```
+
+**Result:** 3 columns, each 200px wide.
+
+**CSS Example 2 - Fractional units (fr):**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
+    gap: 10px;
+}
+```
+
+**Result:** 3 equal columns that fill available space.
+
+**CSS Example 3 - Mixed units:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: 200px 1fr 2fr;
+    gap: 10px;
+}
+```
+
+**Result:** First column 200px, second takes 1 part, third takes 2 parts of remaining space.
+
+**CSS Example 4 - repeat() function:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Same as: 1fr 1fr 1fr */
+    gap: 10px;
+}
+```
+
+**CSS Example 5 - auto-fit (responsive):**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+```
+
+**Result:** Automatically creates as many columns as fit, each at least 200px wide.
+
+---
+
+### 3. grid-template-rows
+
+**What it does:**
+Defines the number and size of rows in your grid.
+
+**Syntax:**
+```css
+grid-template-rows: value value value;
+```
+
+**CSS Example 1 - Fixed rows:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 100px 200px 100px;
+    gap: 10px;
+}
+```
+
+**Result:** 3 rows with heights 100px, 200px, 100px.
+
+**CSS Example 2 - Auto rows:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 10px;
+}
+```
+
+**Result:** Rows adjust to content height.
+
+---
+
+### 4. grid-template-areas
+
+**What it does:**
+Creates named areas in your grid for easier placement.
+
+**Syntax:**
+```css
+grid-template-areas:
+    "area1 area2 area3"
+    "area4 area5 area6";
+```
+
+**HTML Example:**
+```html
+<div class="layout">
+    <header class="header">Header</header>
+    <aside class="sidebar">Sidebar</aside>
+    <main class="main">Main Content</main>
+    <footer class="footer">Footer</footer>
+</div>
+```
+
+**CSS Example:**
+```css
+.layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+    gap: 10px;
+    min-height: 100vh;
+}
+
+.header {
+    grid-area: header;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+.main {
+    grid-area: main;
+    background-color: white;
+    padding: 20px;
+}
+
+.footer {
+    grid-area: footer;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+}
+```
+
+**Result:** Classic layout with header spanning full width, sidebar + main in middle, footer spanning full width.
+
+---
+
+### 5. gap (row-gap, column-gap)
+
+**What it does:**
+Creates space between grid cells.
+
+**Syntax:**
+```css
+gap: 20px; /* Both row and column */
+row-gap: 10px; /* Vertical spacing */
+column-gap: 20px; /* Horizontal spacing */
+gap: 10px 20px; /* row column */
+```
+
+**CSS Example:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+```
+
+**Result:** 20px space between all grid cells.
+
+## Item Properties - Detailed Explanation
+
+### 6. grid-column
+
+**What it does:**
+Specifies which columns an item spans.
+
+**Syntax:**
+```css
+grid-column: start / end;
+grid-column: span number;
+```
+
+**HTML Example:**
+```html
+<div class="grid">
+    <div class="item-1">Spans 2 columns</div>
+    <div class="item-2">Normal</div>
+    <div class="item-3">Normal</div>
+</div>
+```
+
+**CSS Example 1 - Span specific columns:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.item-1 {
+    grid-column: 1 / 3; /* From line 1 to line 3 (spans 2 columns) */
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+}
+```
+
+**CSS Example 2 - Span number:**
+```css
+.item-1 {
+    grid-column: span 2; /* Span 2 columns from current position */
+}
+```
+
+**CSS Example 3 - Full width:**
+```css
+.item-1 {
+    grid-column: 1 / -1; /* From first to last line (full width) */
+}
+```
+
+---
+
+### 7. grid-row
+
+**What it does:**
+Specifies which rows an item spans.
+
+**Syntax:**
+```css
+grid-row: start / end;
+grid-row: span number;
+```
+
+**CSS Example:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+}
+
+.item-1 {
+    grid-row: 1 / 3; /* Spans rows 1 and 2 */
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+}
+```
+
+## Common Grid Patterns
+
+### Pattern 1: Simple Card Grid
+
+```html
+<div class="card-grid">
+    <div class="card">Card 1</div>
+    <div class="card">Card 2</div>
+    <div class="card">Card 3</div>
+    <div class="card">Card 4</div>
+    <div class="card">Card 5</div>
+    <div class="card">Card 6</div>
+</div>
+```
+
+```css
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+```
+
+---
+
+### Pattern 2: Dashboard Layout
+
+```html
+<div class="dashboard">
+    <header class="header">Header</header>
+    <aside class="sidebar">Sidebar</aside>
+    <main class="main">Main</main>
+    <aside class="widgets">Widgets</aside>
+    <footer class="footer">Footer</footer>
+</div>
+```
+
+```css
+.dashboard {
+    display: grid;
+    grid-template-columns: 200px 1fr 250px;
+    grid-template-rows: 60px 1fr 40px;
+    grid-template-areas:
+        "header header header"
+        "sidebar main widgets"
+        "footer footer footer";
+    gap: 10px;
+    min-height: 100vh;
+}
+
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.widgets { grid-area: widgets; }
+.footer { grid-area: footer; }
+```
+
+---
+
+### Pattern 3: Magazine Layout
+
+```html
+<div class="magazine">
+    <article class="featured">Featured Article</article>
+    <article class="article">Article 1</article>
+    <article class="article">Article 2</article>
+    <article class="article">Article 3</article>
+    <article class="article">Article 4</article>
+</div>
+```
+
+```css
+.magazine {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 200px;
+    gap: 15px;
+}
+
+.featured {
+    grid-column: span 2;
+    grid-row: span 2;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+}
+
+.article {
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+```
+
+---
+
+### Pattern 4: Responsive Grid
+
+```css
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* On mobile, stack in single column */
+@media (max-width: 768px) {
+    .responsive-grid {
+        grid-template-columns: 1fr;
+    }
+}
+```
+
+## Grid vs Flexbox - When to Use Which?
+
+**Use Grid when:**
+- You need two-dimensional layouts (rows AND columns)
+- You have a complex layout structure
+- You want to place items in specific positions
+- You're creating page layouts
+
+**Use Flexbox when:**
+- You need one-dimensional layouts (row OR column)
+- You want items to flow naturally
+- You're creating navigation bars, toolbars
+- You need simple alignment
+
+**Use both together:**
+```css
+.page {
+    display: grid; /* Overall page structure */
+    grid-template-areas: "header" "main" "footer";
+}
+
+.navbar {
+    display: flex; /* Navigation items in a row */
+    justify-content: space-between;
+}
+```
+
+---
+
+
+

@@ -1,0 +1,318 @@
+---
+title: "Forms Advanced - Fieldsets, Output & Custom Controls"
+description: Documentation for Forms Advanced - Fieldsets, Output & Custom Controls.
+---
+
+# Forms Advanced - Fieldsets, Output & Custom Controls
+
+
+
+## Fieldset and Legend
+
+Group related form controls with a visual boundary.
+
+```html
+<form>
+  <fieldset>
+    <legend>Personal Information</legend>
+
+    <label for="fname">First Name:</label>
+    <input type="text" id="fname" name="fname" />
+
+    <label for="lname">Last Name:</label>
+    <input type="text" id="lname" name="lname" />
+  </fieldset>
+
+  <fieldset>
+    <legend>Contact Details</legend>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" />
+
+    <label for="phone">Phone:</label>
+    <input type="tel" id="phone" name="phone" />
+  </fieldset>
+</form>
+```
+
+### Radio Button Groups with Fieldset
+
+```html
+<fieldset>
+  <legend>Payment Method</legend>
+
+  <input type="radio" id="credit" name="payment" value="credit" />
+  <label for="credit">Credit Card</label>
+
+  <input type="radio" id="debit" name="payment" value="debit" />
+  <label for="debit">Debit Card</label>
+
+  <input type="radio" id="paypal" name="payment" value="paypal" />
+  <label for="paypal">PayPal</label>
+</fieldset>
+```
+
+## Output Element
+
+Display calculation results.
+
+```html
+<form oninput="result.value = parseInt(a.value) + parseInt(b.value)">
+  <input type="number" id="a" name="a" value="0" /> +
+  <input type="number" id="b" name="b" value="0" /> =
+  <output name="result" for="a b">0</output>
+</form>
+```
+
+## Meter Element
+
+Display a scalar measurement within a known range.
+
+```html
+<!-- Basic meter -->
+<meter value="0.7">70%</meter>
+
+<!-- With ranges -->
+<label for="disk">Disk Usage:</label>
+<meter
+  id="disk"
+  value="0.85"
+  min="0"
+  max="1"
+  low="0.3"
+  high="0.7"
+  optimum="0.2"
+>
+  85%
+</meter>
+
+<!-- Examples -->
+<meter value="60" min="0" max="100">60/100</meter>
+<meter value="2" min="0" max="10" low="3" high="8" optimum="5">
+  2 out of 10
+</meter>
+```
+
+| Attribute | Purpose        |
+| --------- | -------------- |
+| `value`   | Current value  |
+| `min`     | Minimum value  |
+| `max`     | Maximum value  |
+| `low`     | Low threshold  |
+| `high`    | High threshold |
+| `optimum` | Optimal value  |
+
+## Progress Element
+
+Display task completion progress.
+
+```html
+<!-- Determinate progress -->
+<label for="download">Download:</label>
+<progress id="download" value="70" max="100">70%</progress>
+
+<!-- Indeterminate progress (loading) -->
+<progress>Loading...</progress>
+```
+
+## File Upload
+
+```html
+<!-- Single file -->
+<input type="file" name="document" />
+
+<!-- Multiple files -->
+<input type="file" name="photos" multiple />
+
+<!-- Specific file types -->
+<input type="file" name="image" accept="image/*" />
+<input type="file" name="pdf" accept=".pdf" />
+<input type="file" name="docs" accept=".doc,.docx,.pdf" />
+
+<!-- Media capture on mobile -->
+<input type="file" accept="image/*" capture="environment" />
+<input type="file" accept="video/*" capture="user" />
+```
+
+| accept Value | Allows                  |
+| ------------ | ----------------------- |
+| `image/*`    | Any image format        |
+| `video/*`    | Any video format        |
+| `audio/*`    | Any audio format        |
+| `.pdf`       | PDF files only          |
+| `.jpg,.png`  | Multiple specific types |
+
+## Hidden Inputs
+
+```html
+<!-- Pass data without showing to user -->
+<input type="hidden" name="userId" value="12345" />
+<input type="hidden" name="csrfToken" value="abc123xyz" />
+<input type="hidden" name="action" value="update" />
+```
+
+## Autocomplete Attribute
+
+```html
+<!-- Form-level -->
+<form autocomplete="on">...</form>
+<form autocomplete="off">...</form>
+
+<!-- Input-level -->
+<input type="text" name="fname" autocomplete="given-name" />
+<input type="text" name="lname" autocomplete="family-name" />
+<input type="email" name="email" autocomplete="email" />
+<input type="tel" name="phone" autocomplete="tel" />
+<input type="password" name="password" autocomplete="new-password" />
+<input type="text" name="address" autocomplete="street-address" />
+<input type="text" name="city" autocomplete="address-level2" />
+<input type="text" name="zip" autocomplete="postal-code" />
+<input type="text" name="cc" autocomplete="cc-number" />
+```
+
+| autocomplete Value | Field Type            |
+| ------------------ | --------------------- |
+| `given-name`       | First name            |
+| `family-name`      | Last name             |
+| `email`            | Email address         |
+| `tel`              | Phone number          |
+| `street-address`   | Street address        |
+| `postal-code`      | ZIP/Postal code       |
+| `country`          | Country               |
+| `cc-name`          | Cardholder name       |
+| `cc-number`        | Credit card number    |
+| `new-password`     | New password          |
+| `current-password` | Current password      |
+| `one-time-code`    | OTP/verification code |
+
+## Form States and Attributes
+
+```html
+<!-- Disabled fieldset (disables all contents) -->
+<fieldset disabled>
+  <legend>Unavailable Options</legend>
+  <input type="text" name="disabled" />
+</fieldset>
+
+<!-- Form association outside form -->
+<form id="myform">
+  <input type="text" name="inside" />
+</form>
+<input type="text" name="outside" form="myform" />
+<button type="submit" form="myform">Submit</button>
+
+<!-- Multiple submit buttons with different actions -->
+<form action="/default">
+  <button type="submit">Save</button>
+  <button type="submit" formaction="/draft">Save as Draft</button>
+  <button type="submit" formaction="/preview" formtarget="_blank">
+    Preview
+  </button>
+</form>
+```
+
+## Complete Advanced Form
+
+```html
+<form action="/checkout" method="POST" enctype="multipart/form-data">
+  <fieldset>
+    <legend>Shipping Information</legend>
+
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" name="name" autocomplete="name" required />
+
+    <label for="address">Address:</label>
+    <textarea
+      id="address"
+      name="address"
+      autocomplete="street-address"
+      required
+    ></textarea>
+
+    <label for="city">City:</label>
+    <input
+      type="text"
+      id="city"
+      name="city"
+      autocomplete="address-level2"
+      required
+    />
+
+    <label for="zip">ZIP Code:</label>
+    <input
+      type="text"
+      id="zip"
+      name="zip"
+      autocomplete="postal-code"
+      pattern="[0-9]{5}"
+      required
+    />
+  </fieldset>
+
+  <fieldset>
+    <legend>Payment Method</legend>
+
+    <input type="radio" id="card" name="payment" value="card" checked />
+    <label for="card">Credit Card</label>
+
+    <input type="radio" id="paypal" name="payment" value="paypal" />
+    <label for="paypal">PayPal</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Order Summary</legend>
+
+    <label for="qty">Quantity:</label>
+    <input
+      type="number"
+      id="qty"
+      name="qty"
+      value="1"
+      min="1"
+      max="10"
+      oninput="updateTotal()"
+    />
+
+    <p>Total: $<output id="total">29.99</output></p>
+
+    <progress id="stock" value="7" max="10">7 in stock</progress>
+  </fieldset>
+
+  <input type="hidden" name="productId" value="PROD-123" />
+
+  <button type="submit">Complete Purchase</button>
+  <button type="reset">Clear Form</button>
+</form>
+```
+
+## Interview Questions & Answers
+
+### Q1: What is the purpose of fieldset and legend?
+
+`<fieldset>` groups related form controls together, creating a visual box around them. `<legend>` provides a caption for the group. This is essential for accessibility - screen readers announce the legend when entering the group, giving context to the fields inside. It's particularly important for radio button and checkbox groups. Fieldsets can also be disabled with the `disabled` attribute, which disables all controls inside.
+
+---
+
+### Q2: What's the difference between meter and progress?
+
+`<meter>` represents a scalar measurement within a known range - like disk usage (0-100%), battery level, or test scores. It has low/high/optimum thresholds for color feedback. `<progress>` represents task completion - like file upload or loading. It can be indeterminate (no value, just spinning) for unknown duration. Use meter for static measurements, progress for ongoing tasks.
+
+---
+
+### Q3: How does the autocomplete attribute improve UX?
+
+Autocomplete hints tell browsers what data to suggest from saved information. Using proper values like `autocomplete="email"` or `autocomplete="given-name"` enables: faster form filling with saved data, proper keyboard suggestions on mobile, password manager integration, and address autofill. It significantly reduces friction in checkout and registration forms. Use `autocomplete="off"` only for security-sensitive fields like CAPTCHA.
+
+---
+
+### Q4: When would you use hidden inputs?
+
+Hidden inputs pass data without user interaction: CSRF tokens for security, user IDs for context, form action identifiers, tracking data, or values from previous form steps in multi-page wizards. They're included in form submission but not visible. Never use them for sensitive data you're trying to hide from users - they're visible in page source and developer tools.
+
+---
+
+### Q5: How can form controls exist outside the form element?
+
+Use the `form` attribute with the form's ID: `<input form="myFormId">`. This associates the input with that form even if it's elsewhere in the DOM. Useful for complex layouts, form controls in tables, or buttons in fixed headers. The formaction/formmethod/formtarget attributes on submit buttons can override form defaults for that specific submission.
+
+

@@ -1,0 +1,401 @@
+---
+title: "Text Properties - Advanced Text Styling"
+description: Documentation for Text Properties - Advanced Text Styling.
+---
+
+# Text Properties - Advanced Text Styling
+
+
+
+## What are Text Properties?
+
+Text properties control the appearance and behavior of text beyond basic typography. They include alignment, decoration, transformation, spacing, and text effects.
+
+## Text Properties - Quick Reference
+
+| Property | Description | Example | Default |
+|---|---|---|---|
+| `text-align` | Horizontal alignment | `text-align: center;` | `left` |
+| `text-decoration` | Line decorations | `text-decoration: underline;` | `none` |
+| `text-transform` | Case transformation | `text-transform: uppercase;` | `none` |
+| `text-indent` | First line indent | `text-indent: 20px;` | `0` |
+| `text-shadow` | Text shadow | `text-shadow: 2px 2px 4px black;` | `none` |
+| `text-overflow` | Overflow behavior | `text-overflow: ellipsis;` | `clip` |
+| `white-space` | Whitespace handling | `white-space: nowrap;` | `normal` |
+| `word-wrap` | Word breaking | `word-wrap: break-word;` | `normal` |
+| `word-break` | Break rules | `word-break: break-all;` | `normal` |
+| `line-break` | Line break rules | `line-break: strict;` | `auto` |
+| `vertical-align` | Vertical alignment | `vertical-align: middle;` | `baseline` |
+
+## Detailed Explanation
+
+### 1. text-align
+
+**What it does:**
+Controls horizontal text alignment.
+
+**Syntax:**
+```css
+text-align: left | right | center | justify;
+```
+
+**CSS Example:**
+```css
+.left {
+    text-align: left; /* Default */
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.justify {
+    text-align: justify; /* Stretches lines to fill width */
+}
+```
+
+---
+
+### 2. text-decoration
+
+**What it does:**
+Adds decorative lines to text.
+
+**Syntax:**
+```css
+text-decoration: none | underline | overline | line-through;
+text-decoration: underline wavy red; /* style, line, color */
+```
+
+**CSS Example:**
+```css
+a {
+    text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.fancy-underline {
+    text-decoration: underline wavy #007bff;
+}
+```
+
+---
+
+### 3. text-transform
+
+**What it does:**
+Transforms text case.
+
+**Syntax:**
+```css
+text-transform: none | uppercase | lowercase | capitalize;
+```
+
+**CSS Example:**
+```css
+.uppercase {
+    text-transform: uppercase; /* ALL CAPS */
+}
+
+.lowercase {
+    text-transform: lowercase; /* all lowercase */
+}
+
+.capitalize {
+    text-transform: capitalize; /* First Letter Of Each Word */
+}
+
+.heading {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+```
+
+---
+
+### 4. text-indent
+
+**What it does:**
+Indents the first line of text.
+
+**Syntax:**
+```css
+text-indent: length | percentage;
+```
+
+**CSS Example:**
+```css
+.paragraph {
+    text-indent: 30px; /* Indent first line */
+}
+
+.negative-indent {
+    text-indent: -20px;
+    padding-left: 20px; /* Hanging indent */
+}
+```
+
+---
+
+### 5. text-shadow
+
+**What it does:**
+Adds shadow to text.
+
+**Syntax:**
+```css
+text-shadow: x-offset y-offset blur-radius color;
+```
+
+**CSS Example:**
+```css
+.simple-shadow {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.glow {
+    text-shadow: 0 0 10px #fff,
+                 0 0 20px #fff,
+                 0 0 30px #007bff;
+}
+
+.embossed {
+    text-shadow: 1px 1px 0 #fff,
+                 -1px -1px 0 #000;
+}
+
+.multiple-shadows {
+    text-shadow: 2px 2px 0 #007bff,
+                 4px 4px 0 #0056b3,
+                 6px 6px 0 #003d82;
+}
+```
+
+---
+
+### 6. text-overflow
+
+**What it does:**
+Controls how overflowing text is displayed.
+
+**Syntax:**
+```css
+text-overflow: clip | ellipsis;
+```
+
+**CSS Example:**
+```css
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+```
+
+**HTML:**
+```html
+<p class="truncate">This is a very long text that will be truncated with ellipsis...</p>
+```
+
+**Result:** "This is a very long text..."
+
+---
+
+### 7. white-space
+
+**What it does:**
+Controls how whitespace is handled.
+
+**Syntax:**
+```css
+white-space: normal | nowrap | pre | pre-wrap | pre-line;
+```
+
+**Values:**
+- `normal` - Collapse whitespace, wrap lines
+- `nowrap` - Collapse whitespace, no wrapping
+- `pre` - Preserve whitespace, no wrapping
+- `pre-wrap` - Preserve whitespace, wrap lines
+- `pre-line` - Collapse whitespace, preserve line breaks
+
+**CSS Example:**
+```css
+.nowrap {
+    white-space: nowrap; /* Single line, no wrapping */
+}
+
+.pre {
+    white-space: pre; /* Like <pre> tag */
+}
+
+.pre-wrap {
+    white-space: pre-wrap; /* Preserve spaces but wrap */
+}
+```
+
+---
+
+### 8. word-wrap / overflow-wrap
+
+**What it does:**
+Allows long words to break and wrap.
+
+**Syntax:**
+```css
+word-wrap: normal | break-word;
+overflow-wrap: normal | break-word; /* Modern name */
+```
+
+**CSS Example:**
+```css
+.break-word {
+    word-wrap: break-word;
+    /* or */
+    overflow-wrap: break-word;
+}
+```
+
+**Use case:**
+Breaking long URLs or email addresses.
+
+---
+
+### 9. word-break
+
+**What it does:**
+Controls how words break at line end.
+
+**Syntax:**
+```css
+word-break: normal | break-all | keep-all;
+```
+
+**CSS Example:**
+```css
+.break-all {
+    word-break: break-all; /* Break anywhere */
+}
+
+.keep-all {
+    word-break: keep-all; /* Don't break words */
+}
+```
+
+---
+
+### 10. vertical-align
+
+**What it does:**
+Aligns inline or table-cell elements vertically.
+
+**Syntax:**
+```css
+vertical-align: baseline | top | middle | bottom | text-top | text-bottom;
+```
+
+**CSS Example:**
+```css
+.icon {
+    vertical-align: middle; /* Align with text middle */
+}
+
+.superscript {
+    vertical-align: super;
+    font-size: 0.8em;
+}
+
+.subscript {
+    vertical-align: sub;
+    font-size: 0.8em;
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Truncate Text with Ellipsis
+
+```css
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+```
+
+---
+
+### Pattern 2: Multi-line Truncate
+
+```css
+.truncate-multiline {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Number of lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+```
+
+---
+
+### Pattern 3: Heading with Shadow
+
+```css
+.hero-title {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+}
+```
+
+---
+
+### Pattern 4: Link Styling
+
+```css
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+a:hover {
+    text-decoration: underline;
+    text-decoration-color: #007bff;
+    text-decoration-thickness: 2px;
+}
+```
+
+---
+
+### Pattern 5: Code Block
+
+```css
+code {
+    font-family: monospace;
+    background-color: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+```
+
+---
+
+
+

@@ -1,0 +1,164 @@
+---
+title: "CSS Functions - Built-in Functions"
+description: Documentation for CSS Functions - Built-in Functions.
+---
+
+# CSS Functions - Built-in Functions
+
+
+
+## What are CSS Functions?
+
+CSS functions are built-in operations that perform calculations, transformations, or return values dynamically.
+
+## Common CSS Functions
+
+### 1. calc()
+
+**What it does:** Perform calculations
+
+```css
+.box {
+    width: calc(100% - 50px);
+    height: calc(100vh - 60px);
+    padding: calc(1rem + 5px);
+}
+
+.grid-item {
+    width: calc(33.333% - 20px);
+}
+```
+
+---
+
+### 2. var()
+
+**What it does:** Use CSS variables
+
+```css
+:root {
+    --primary-color: #007bff;
+    --spacing: 20px;
+}
+
+.element {
+    color: var(--primary-color);
+    padding: var(--spacing);
+}
+```
+
+---
+
+### 3. min(), max(), clamp()
+
+```css
+/* min() - smallest value */
+.box {
+    width: min(500px, 100%);
+}
+
+/* max() - largest value */
+.box {
+    width: max(300px, 50%);
+}
+
+/* clamp() - value between min and max */
+.text {
+    font-size: clamp(1rem, 2vw, 2rem);
+    /* min: 1rem, preferred: 2vw, max: 2rem */
+}
+```
+
+---
+
+### 4. rgb(), rgba(), hsl(), hsla()
+
+```css
+.color-rgb {
+    color: rgb(0, 123, 255);
+}
+
+.color-rgba {
+    background: rgba(0, 123, 255, 0.5);
+}
+
+.color-hsl {
+    color: hsl(200, 100%, 50%);
+}
+```
+
+---
+
+### 5. url()
+
+```css
+.background {
+    background-image: url('image.jpg');
+}
+```
+
+---
+
+### 6. linear-gradient(), radial-gradient()
+
+```css
+.linear {
+    background: linear-gradient(to right, #007bff, #6c757d);
+}
+
+.radial {
+    background: radial-gradient(circle, #007bff, #6c757d);
+}
+```
+
+---
+
+### 7. attr()
+
+```css
+/* Use HTML attribute value */
+.tooltip::after {
+    content: attr(data-tooltip);
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Responsive Font Size
+
+```css
+.heading {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+}
+```
+
+---
+
+### Pattern 2: Flexible Width
+
+```css
+.container {
+    width: min(1200px, 100% - 40px);
+    margin: 0 auto;
+}
+```
+
+---
+
+### Pattern 3. Dynamic Spacing
+
+```css
+:root {
+    --gap: 20px;
+}
+
+.grid {
+    gap: var(--gap);
+    padding: calc(var(--gap) * 2);
+}
+```
+
+---
+
+
+

@@ -1,0 +1,572 @@
+---
+title: "This Keyword - Context and Binding"
+description: Documentation for This Keyword - Context and Binding.
+---
+
+# This Keyword - Context and Binding
+
+
+
+## What is `this`?
+
+**`this`** is a keyword that refers to the context in which a function is executed. Its value depends on HOW the function is called, not where it's defined.
+
+> **Definition:** The `this` keyword is a special variable that's automatically created for every execution context (every function). It points to the "owner" of the function being executed. Unlike other languages where `this` always refers to the current instance, JavaScript's `this` is dynamic and determined at runtime based on how a function is invoked.
+
+```javascript
+const user = {
+  name: "John",
+  greet() {
+    console.log(`Hello, ${this.name}`);
+  },
+};
+
+user.greet(); // Hello, John (this = user)
+```
+
+## `this` Binding Rules Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    THIS KEYWORD BINDING RULES                           │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │                    BINDING PRIORITY (High → Low)                 │   │
+│  ├──────────────────────────────────────────────────────────────────┤   │
+│  │                                                                  │   │
+│  │  1. NEW BINDING (Highest Priority)                               │   │
+│  │     ├─ Function called with 'new' keyword                        │   │
+│  │     ├─ this = newly created object                               │   │
+│  │     └─ Example: const obj = new Constructor()                    │   │
+│  │                                                                  │   │
+│  │  2. EXPLICIT BINDING                                             │   │
+│  │     ├─ call(thisArg, arg1, arg2...)                              │   │
+│  │     ├─ apply(thisArg, [args])                                    │   │
+│  │     ├─ bind(thisArg) → returns new function                      │   │
+│  │     └─ this = specified object                                   │   │
+│  │                                                                  │   │
+│  │  3. IMPLICIT BINDING                                             │   │
+│  │     ├─ Method called on object: obj.method()                     │   │
+│  │     ├─ this = object before the dot                              │   │
+│  │     └─ Lost if method is extracted: const fn = obj.method        │   │
+│  │                                                                  │   │
+│  │  4. DEFAULT BINDING (Lowest Priority)                            │   │
+│  │     ├─ Plain function call: func()                               │   │
+│  │     ├─ Non-strict mode: this = global (window/global)            │   │
+│  │     └─ Strict mode: this = undefined                             │   │
+│  │                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │                    SPECIAL CASES                                 │   │
+│  ├──────────────────────────────────────────────────────────────────┤   │
+│  │                                                                  │   │
+│  │  ARROW FUNCTIONS                                                 │   │
+│  │     ├─ NO OWN 'this' binding                                     │   │
+│  │     ├─ Inherits from lexical (enclosing) scope                   │   │
+│  │     ├─ Cannot be changed with call/apply/bind                    │   │
+│  │     └─ Perfect for callbacks that need outer 'this'              │   │
+│  │                                                                  │   │
+│  │  EVENT HANDLERS                                                  │   │
+│  │     ├─ Regular function: this = element                          │   │
+│  │     ├─ Arrow function: this = lexical scope                      │   │
+│  │     └─ Use bind() to preserve object context                     │   │
+│  │                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## `this` in Different Contexts
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                    THIS VALUE BY CONTEXT                               │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  CONTEXT                    │ this VALUE           │ EXAMPLE           │
+│  ───────────────────────────│──────────────────────│─────────────────  │
+│  Global scope (browser)     │ window               │ console.log(this) │
+│  Global scope (Node.js)     │ module.exports       │ console.log(this) │
+│  Global strict mode         │ undefined            │ 'use strict'      │
+│  Object method              │ The object           │ obj.method()      │
+│  Constructor (with new)     │ New instance         │ new Fn()          │
+│  Arrow function             │ Lexical (inherited)  │ () => this        │
+│  Event handler (regular)    │ DOM element          │ btn.onclick       │
+│  Event handler (arrow)      │ Enclosing scope      │ () => {}          │
+│  call/apply                 │ First argument       │ fn.call(obj)      │
+│  bind                       │ Bound object         │ fn.bind(obj)      │
+│  Class method               │ Instance             │ this.prop         │
+│  setTimeout (regular)       │ window/global        │ setTimeout(fn)    │
+│  setTimeout (arrow)         │ Enclosing scope      │ setTimeout(()=>{})│
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+## `this` Binding Quick Reference
+
+| Context          | `this` refers to                        |
+| ---------------- | --------------------------------------- |
+| Global           | `window` (browser) / `global` (Node.js) |
+| Object method    | The object                              |
+| Constructor      | New instance                            |
+| Arrow function   | Lexical scope (inherited)               |
+| Event handler    | Element that triggered event            |
+| Explicit binding | Specified object (call/apply/bind)      |
+
+## Global Context
+
+```javascript
+// In global scope
+console.log(this); // window (browser) or global (Node.js)
+
+function globalFunction() {
+  console.log(this); // window (non-strict) or undefined (strict)
+}
+
+globalFunction();
+
+// Strict mode
+("use strict");
+function strictFunction() {
+  console.log(this); // undefined
+}
+```
+
+## Object Method Context
+
+```javascript
+const user = {
+  name: "John",
+  greet() {
+    console.log(this.name); // this = user
+  },
+};
+
+user.greet(); // 'John'
+
+// ⚠️ Lost context
+const greet = user.greet;
+greet(); // undefined (this = window/undefined)
+
+// Nested objects
+const obj = {
+  name: "Outer",
+  inner: {
+    name: "Inner",
+    greet() {
+      console.log(this.name); // this = inner
+    },
+  },
+};
+
+obj.inner.greet(); // 'Inner'
+```
+
+## Constructor Context
+
+```javascript
+function User(name) {
+  this.name = name; // this = new instance
+  this.greet = function () {
+    console.log(this.name);
+  };
+}
+
+const user = new User("John");
+user.greet(); // 'John'
+
+// Without 'new' (non-strict mode)
+const user2 = User("Jane"); // this = window (bad!)
+console.log(window.name); // 'Jane' (polluted global!)
+
+// Class constructor
+class Person {
+  constructor(name) {
+    this.name = name; // this = new instance
+  }
+}
+```
+
+## Arrow Functions
+
+Arrow functions don't have their own `this` - they inherit from parent scope.
+
+```javascript
+const user = {
+  name: "John",
+
+  // Regular function
+  greet: function () {
+    console.log(this.name); // this = user
+  },
+
+  // Arrow function
+  greetArrow: () => {
+    console.log(this.name); // this = global (inherited)
+  },
+};
+
+user.greet(); // 'John'
+user.greetArrow(); // undefined
+
+// Useful in callbacks
+const user2 = {
+  name: "Jane",
+  hobbies: ["reading", "coding"],
+
+  showHobbies() {
+    // Arrow function inherits 'this' from showHobbies
+    this.hobbies.forEach((hobby) => {
+      console.log(`${this.name} likes ${hobby}`);
+    });
+  },
+};
+
+user2.showHobbies();
+// Jane likes reading
+// Jane likes coding
+```
+
+## Event Handlers
+
+```javascript
+const button = document.querySelector("button");
+
+// Regular function - this = element
+button.addEventListener("click", function () {
+  console.log(this); // <button> element
+});
+
+// Arrow function - this = lexical scope
+button.addEventListener("click", () => {
+  console.log(this); // window or outer scope
+});
+
+// Object method as handler
+const obj = {
+  count: 0,
+  handleClick() {
+    this.count++; // this = obj
+    console.log(this.count);
+  },
+};
+
+// ⚠️ Lost context
+button.addEventListener("click", obj.handleClick); // this = button!
+
+// ✅ Fix with bind
+button.addEventListener("click", obj.handleClick.bind(obj));
+
+// ✅ Fix with arrow function
+button.addEventListener("click", () => obj.handleClick());
+```
+
+## Explicit Binding
+
+### call()
+
+Call function with specific `this` and arguments.
+
+```javascript
+function greet(greeting, punctuation) {
+  console.log(`${greeting}, ${this.name}${punctuation}`);
+}
+
+const user = { name: "John" };
+
+greet.call(user, "Hello", "!"); // Hello, John!
+greet.call(user, "Hi", "."); // Hi, John.
+
+// Borrowing methods
+const person1 = { name: "John" };
+const person2 = { name: "Jane" };
+
+function introduce() {
+  console.log(`I'm ${this.name}`);
+}
+
+introduce.call(person1); // I'm John
+introduce.call(person2); // I'm Jane
+```
+
+### apply()
+
+Like `call()` but arguments as array.
+
+```javascript
+function greet(greeting, punctuation) {
+  console.log(`${greeting}, ${this.name}${punctuation}`);
+}
+
+const user = { name: "John" };
+
+greet.apply(user, ["Hello", "!"]); // Hello, John!
+
+// Useful with arrays
+const numbers = [1, 5, 3, 9, 2];
+console.log(Math.max.apply(null, numbers)); // 9
+
+// Modern alternative: spread
+console.log(Math.max(...numbers)); // 9
+```
+
+### bind()
+
+Create new function with bound `this`.
+
+```javascript
+const user = {
+  name: "John",
+  greet() {
+    console.log(`Hello, ${this.name}`);
+  },
+};
+
+// Create bound function
+const boundGreet = user.greet.bind(user);
+boundGreet(); // Hello, John
+
+// Still works when assigned
+const greet = user.greet.bind(user);
+setTimeout(greet, 1000); // Hello, John (after 1s)
+
+// Partial application
+function multiply(a, b) {
+  return a * b;
+}
+
+const double = multiply.bind(null, 2);
+console.log(double(5)); // 10
+console.log(double(10)); // 20
+```
+
+## call vs apply vs bind
+
+| Method    | Arguments  | Returns      | Executes       |
+| --------- | ---------- | ------------ | -------------- |
+| `call()`  | Individual | Result       | ✅ Immediately |
+| `apply()` | Array      | Result       | ✅ Immediately |
+| `bind()`  | Individual | New function | ❌ Later       |
+
+```javascript
+function greet(greeting) {
+  return `${greeting}, ${this.name}`;
+}
+
+const user = { name: "John" };
+
+// call - executes immediately
+console.log(greet.call(user, "Hello")); // Hello, John
+
+// apply - executes immediately
+console.log(greet.apply(user, ["Hi"])); // Hi, John
+
+// bind - returns function
+const boundGreet = greet.bind(user, "Hey");
+console.log(boundGreet()); // Hey, John
+```
+
+## Common `this` Pitfalls
+
+### 1. Lost Context in Callbacks
+
+```javascript
+const user = {
+  name: "John",
+  greet() {
+    console.log(this.name);
+  },
+};
+
+// ❌ Lost context
+setTimeout(user.greet, 1000); // undefined
+
+// ✅ Fix with bind
+setTimeout(user.greet.bind(user), 1000); // John
+
+// ✅ Fix with arrow function
+setTimeout(() => user.greet(), 1000); // John
+```
+
+### 2. Method Assignment
+
+```javascript
+const user = {
+  name: "John",
+  greet() {
+    console.log(this.name);
+  },
+};
+
+// ❌ Lost context
+const greet = user.greet;
+greet(); // undefined
+
+// ✅ Bind when assigning
+const greet2 = user.greet.bind(user);
+greet2(); // John
+```
+
+### 3. Nested Functions
+
+```javascript
+const user = {
+  name: "John",
+  hobbies: ["reading", "coding"],
+
+  showHobbies() {
+    // ❌ Regular function loses context
+    this.hobbies.forEach(function (hobby) {
+      console.log(this.name); // undefined
+    });
+
+    // ✅ Arrow function inherits context
+    this.hobbies.forEach((hobby) => {
+      console.log(this.name); // John
+    });
+
+    // ✅ Save context
+    const self = this;
+    this.hobbies.forEach(function (hobby) {
+      console.log(self.name); // John
+    });
+  },
+};
+```
+
+## Interview Questions & Answers
+
+### Q1: What is `this` in JavaScript?
+
+The `this` keyword is a special identifier that refers to the execution context of a function - essentially, the object that is currently executing the code. Unlike statically-scoped languages where `this` always refers to the class instance, JavaScript's `this` is dynamically determined at runtime based on how a function is called, not where it's defined. This makes `this` one of the most powerful yet confusing features in JavaScript. The value of `this` can be the global object, an instance, a DOM element, a specific bound object, or undefined, depending entirely on the invocation pattern used.
+
+---
+
+### Q2: What are the four binding rules for `this`?
+
+The four binding rules, in order of precedence, are: New Binding (highest) - when a function is called with `new`, `this` refers to the newly created object. Explicit Binding - when using call, apply, or bind, `this` is explicitly set to the first argument. Implicit Binding - when a function is called as an object method (obj.func()), `this` refers to the object before the dot. Default Binding (lowest) - for plain function calls, `this` is the global object in non-strict mode or undefined in strict mode. When multiple rules could apply, the higher precedence rule wins.
+
+---
+
+### Q3: How does `this` work in arrow functions?
+
+Arrow functions don't have their own `this` binding. Instead, they lexically inherit `this` from the enclosing scope at the time they're created. This means the `this` value inside an arrow function is whatever `this` was in the surrounding code when the arrow function was defined. This behavior is permanent - you cannot change an arrow function's `this` using call, apply, or bind. This makes arrow functions ideal for callbacks where you want to preserve the outer context, but unsuitable for object methods or constructors where you need dynamic `this` binding.
+
+---
+
+### Q4: What's the difference between call, apply, and bind?
+
+All three methods allow explicit `this` binding, but they differ in execution and argument handling. `call()` immediately invokes the function with `this` set to the first argument, and subsequent arguments passed individually. `apply()` also invokes immediately but takes arguments as an array - useful when you have an array to pass. `bind()` doesn't invoke the function but returns a new function with `this` permanently bound to the specified value. Use call/apply for immediate invocation with a specific context, and bind when you need to create a reusable function with a fixed `this`, like for event handlers or callbacks.
+
+---
+
+### Q5: Why does `this` get lost in callbacks?
+
+When you pass a method as a callback, you're passing just the function reference, not the object it belongs to. The function is later invoked without the object context, so JavaScript falls back to default binding, making `this` either the global object or undefined. For example, `setTimeout(user.greet, 1000)` extracts the greet function from user and calls it later as a plain function. The solution is to either use bind to lock in the context (`user.greet.bind(user)`), wrap it in an arrow function (`() => user.greet()`), or use an arrow function method in the first place.
+
+---
+
+### Q6: How do you preserve `this` in event handlers?
+
+There are several approaches: use bind() when attaching the handler (`btn.addEventListener('click', this.handleClick.bind(this))`), use an arrow function wrapper (`btn.addEventListener('click', () => this.handleClick())`), bind methods in the constructor for class components (`this.handleClick = this.handleClick.bind(this)`), use class field arrow functions (`handleClick = () => {}`), or use the older pattern of saving `this` to a variable like `self` or `that`. Each approach has tradeoffs in terms of memory usage, readability, and flexibility.
+
+---
+
+### Q7: What is `this` inside a constructor function?
+
+Inside a constructor function called with `new`, `this` refers to the brand new empty object that JavaScript creates automatically. This object has its prototype set to the constructor's prototype property, and becomes the return value of the constructor call (unless you explicitly return a different object). You use `this` to add properties and methods to the new instance. Without `new`, in non-strict mode, `this` would be the global object, causing properties to be added there instead - a common source of bugs in JavaScript.
+
+---
+
+### Q8: How does `this` work in classes?
+
+In ES6 classes, `this` inside methods refers to the instance, similar to constructor functions. However, class methods aren't bound to the instance by default - extracting a method loses its context. You can solve this by binding in the constructor, using arrow function class fields, or wrapping calls. Static methods have `this` referring to the class itself, not instances. Classes automatically run in strict mode, so `this` will be undefined rather than global when binding is lost. The rules are the same as constructor functions but with stricter behavior.
+
+---
+
+### Q9: What is the value of `this` in strict mode?
+
+In strict mode, the default binding behavior changes significantly. When a function is called without any explicit context (plain function call), `this` is undefined instead of the global object. This is a safety feature that prevents accidental global variable creation and makes binding bugs obvious through errors rather than silent failures. Classes automatically run in strict mode. You can enable strict mode with `'use strict'` at the top of a file or function. Modern JavaScript modules also run in strict mode by default.
+
+---
+
+### Q10: Can you change `this` for an arrow function?
+
+No, arrow functions have a permanently fixed `this` based on their lexical scope. Using call, apply, or bind on an arrow function will not change its `this` value - the first argument is simply ignored. This is because arrow functions don't have their own `this` binding mechanism; they simply use the `this` value from their surrounding scope at creation time. This behavior is by design and makes arrow functions predictable for callbacks. If you need dynamic `this` binding, use a regular function instead.
+
+## Practical Examples
+
+```javascript
+// Example 1: Class with bound methods
+class Counter {
+  constructor() {
+    this.count = 0;
+    // Bind in constructor
+    this.increment = this.increment.bind(this);
+  }
+
+  increment() {
+    this.count++;
+    console.log(this.count);
+  }
+}
+
+const counter = new Counter();
+const inc = counter.increment;
+inc(); // Works! this is bound
+
+// Example 2: Event handling with proper context
+class ClickHandler {
+  constructor() {
+    this.clicks = 0;
+    this.button = document.querySelector("button");
+    // Arrow function preserves this
+    this.button.addEventListener("click", () => this.handleClick());
+  }
+
+  handleClick() {
+    this.clicks++;
+    console.log(`Clicked ${this.clicks} times`);
+  }
+}
+
+// Example 3: Method borrowing
+const calculator = {
+  value: 0,
+  add(n) {
+    this.value += n;
+    return this;
+  },
+  multiply(n) {
+    this.value *= n;
+    return this;
+  },
+};
+
+const counter2 = { value: 10 };
+calculator.add.call(counter2, 5); // counter2.value = 15
+
+// Example 4: Partial application with bind
+function greet(greeting, name) {
+  return `${greeting}, ${name}!`;
+}
+
+const sayHello = greet.bind(null, "Hello");
+console.log(sayHello("John")); // Hello, John!
+console.log(sayHello("Jane")); // Hello, Jane!
+
+// Example 5: Arrow functions in array methods
+const user = {
+  name: "John",
+  scores: [85, 90, 78],
+  showScores() {
+    return this.scores.map((score) => `${this.name}: ${score}`);
+  },
+};
+
+console.log(user.showScores()); // ["John: 85", "John: 90", "John: 78"]
+```
+
+

@@ -1,0 +1,707 @@
+---
+title: "ES6+ Features - Modern JavaScript"
+description: Documentation for ES6+ Features - Modern JavaScript.
+---
+
+# ES6+ Features - Modern JavaScript
+
+
+
+## What is ES6+?
+
+> **Definition:** ES6+ refers to ECMAScript 2015 and all subsequent yearly releases, which have transformed JavaScript from a simple scripting language into a robust, feature-rich programming language suitable for large-scale applications.
+
+### ES6+ Feature Timeline
+
+| Version | Year | Key Features                                           |
+| ------- | ---- | ------------------------------------------------------ |
+| ES6     | 2015 | let/const, arrow functions, classes, modules, promises |
+| ES7     | 2016 | Array.includes(), exponentiation operator              |
+| ES8     | 2017 | async/await, Object.entries/values                     |
+| ES9     | 2018 | Rest/spread for objects, async iteration               |
+| ES10    | 2019 | Array.flat(), Object.fromEntries()                     |
+| ES11    | 2020 | Optional chaining, nullish coalescing                  |
+| ES12    | 2021 | String.replaceAll(), logical assignment                |
+| ES13    | 2022 | Top-level await, Array.at()                            |
+
+## Let and Const
+
+Block-scoped variable declarations replacing `var`.
+
+```javascript
+// let - can be reassigned
+let count = 0;
+count = 1; // ✅ Works
+
+// const - cannot be reassigned
+const PI = 3.14159;
+// PI = 3.14; // ❌ Error!
+
+// const with objects - object is mutable
+const user = { name: "John" };
+user.name = "Jane"; // ✅ Works (modifying property)
+// user = {}; // ❌ Error! (reassigning variable)
+
+// const with arrays - array is mutable
+const arr = [1, 2, 3];
+arr.push(4); // ✅ Works
+// arr = []; // ❌ Error!
+
+// Block scope
+if (true) {
+  let x = 10;
+  const y = 20;
+}
+// console.log(x); // ❌ Error! Not accessible outside block
+```
+
+### var vs let vs const
+
+| Feature       | var             | let       | const     |
+| ------------- | --------------- | --------- | --------- |
+| Scope         | Function        | Block     | Block     |
+| Reassignment  | ✅ Yes          | ✅ Yes    | ❌ No     |
+| Hoisting      | Yes (undefined) | Yes (TDZ) | Yes (TDZ) |
+| Redeclaration | ✅ Yes          | ❌ No     | ❌ No     |
+
+## Template Literals
+
+String interpolation and multi-line strings.
+
+```javascript
+// Old way
+const name = "John";
+const age = 30;
+const message =
+  "Hello, my name is " + name + " and I am " + age + " years old.";
+
+// ✅ Template literals (backticks)
+const message2 = `Hello, my name is ${name} and I am ${age} years old.`;
+
+// Expressions in template literals
+const price = 10;
+const quantity = 3;
+console.log(`Total: $${price * quantity}`); // Total: $30
+
+// Multi-line strings
+const html = `
+    <div>
+        <h1>Title</h1>
+        <p>Content</p>
+    </div>
+`;
+
+// Function calls
+console.log(`Uppercase: ${name.toUpperCase()}`);
+
+// Tagged templates (advanced)
+function highlight(strings, ...values) {
+  return strings.reduce((result, string, i) => {
+    return result + string + (values[i] ? `<mark>${values[i]}</mark>` : "");
+  }, "");
+}
+
+const highlighted = highlight`Hello, ${name}! You are ${age} years old.`;
+```
+
+## Arrow Functions
+
+Shorter syntax for functions with lexical `this` binding.
+
+```javascript
+// Regular function
+function add(a, b) {
+  return a + b;
+}
+
+// Arrow function
+const add = (a, b) => {
+  return a + b;
+};
+
+// Concise arrow function (implicit return)
+const add = (a, b) => a + b;
+
+// Single parameter (parentheses optional)
+const square = (x) => x * x;
+
+// No parameters
+const greet = () => console.log("Hello");
+
+// Returning object (wrap in parentheses)
+const makePerson = (name, age) => ({ name, age });
+
+// Arrow functions don't have their own 'this'
+const obj = {
+  name: "John",
+  regularFunc: function () {
+    console.log(this.name); // 'John'
+  },
+  arrowFunc: () => {
+    console.log(this.name); // undefined (inherits outer this)
+  },
+};
+```
+
+## Default Parameters
+
+```javascript
+// Old way
+function greet(name) {
+  name = name || "Guest";
+  console.log("Hello, " + name);
+}
+
+// ✅ Default parameters
+function greet(name = "Guest") {
+  console.log(`Hello, ${name}`);
+}
+
+greet(); // Hello, Guest
+greet("John"); // Hello, John
+
+// Multiple defaults
+function createUser(name = "Anonymous", role = "user", active = true) {
+  return { name, role, active };
+}
+
+// Expressions as defaults
+function calculate(a, b = a * 2) {
+  return a + b;
+}
+
+// Functions as defaults
+function createId(generator = () => Math.random().toString(36)) {
+  return generator();
+}
+```
+
+## Rest Parameters
+
+Collect remaining arguments into an array.
+
+```javascript
+// Collect all arguments
+function sum(...numbers) {
+  return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
+
+// Rest with other parameters (must be last)
+function greet(greeting, ...names) {
+  return `${greeting}, ${names.join(" and ")}!`;
+}
+
+console.log(greet("Hello", "John", "Jane", "Bob"));
+// Hello, John and Jane and Bob!
+```
+
+## Spread Operator
+
+Expand arrays or objects.
+
+```javascript
+// Spread array
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+
+// Copy array
+const original = [1, 2, 3];
+const copy = [...original];
+
+// Spread in function calls
+const numbers = [1, 2, 3];
+console.log(Math.max(...numbers)); // 3
+
+// Spread object
+const user = { name: "John", age: 30 };
+const updatedUser = { ...user, age: 31 }; // { name: 'John', age: 31 }
+
+// Merge objects
+const obj1 = { a: 1, b: 2 };
+const obj2 = { c: 3, d: 4 };
+const merged = { ...obj1, ...obj2 }; // { a: 1, b: 2, c: 3, d: 4 }
+```
+
+## Destructuring
+
+Extract values from arrays or objects.
+
+```javascript
+// Array destructuring
+const colors = ["red", "green", "blue"];
+const [first, second, third] = colors;
+console.log(first); // 'red'
+
+// Object destructuring
+const user = { name: "John", age: 30, city: "NYC" };
+const { name, age } = user;
+console.log(name); // 'John'
+
+// Rename variables
+const { name: userName, age: userAge } = user;
+
+// Default values
+const { country = "USA" } = user;
+
+// Nested destructuring
+const person = {
+  name: "John",
+  address: {
+    city: "NYC",
+    zip: "10001",
+  },
+};
+const {
+  address: { city, zip },
+} = person;
+```
+
+## Enhanced Object Literals
+
+```javascript
+const name = "John";
+const age = 30;
+
+// Old way
+const user = {
+  name: name,
+  age: age,
+  greet: function () {
+    console.log("Hello");
+  },
+};
+
+// ✅ Enhanced object literals
+const user = {
+  name, // Shorthand property
+  age,
+  greet() {
+    // Shorthand method
+    console.log("Hello");
+  },
+};
+
+// Computed property names
+const key = "dynamicKey";
+const obj = {
+  [key]: "value",
+  ["computed" + "Key"]: "another value",
+  [`template-${key}`]: "template key",
+};
+```
+
+## For...of Loop
+
+Iterate over iterable objects.
+
+```javascript
+// Array
+const colors = ["red", "green", "blue"];
+for (const color of colors) {
+  console.log(color);
+}
+
+// String
+const str = "Hello";
+for (const char of str) {
+  console.log(char); // H, e, l, l, o
+}
+
+// Map
+const map = new Map([
+  ["a", 1],
+  ["b", 2],
+]);
+for (const [key, value] of map) {
+  console.log(key, value);
+}
+
+// Set
+const set = new Set([1, 2, 3]);
+for (const value of set) {
+  console.log(value);
+}
+
+// With entries() for index
+for (const [index, color] of colors.entries()) {
+  console.log(index, color);
+}
+```
+
+## Classes
+
+Syntactic sugar for constructor functions and prototypes.
+
+```javascript
+// ES6 class
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    console.log(`Hello, I'm ${this.name}`);
+  }
+
+  // Static method
+  static create(name, age) {
+    return new Person(name, age);
+  }
+
+  // Getter
+  get info() {
+    return `${this.name} is ${this.age}`;
+  }
+
+  // Setter
+  set info(value) {
+    [this.name, this.age] = value.split(",");
+  }
+}
+
+const john = new Person("John", 30);
+john.greet(); // Hello, I'm John
+
+// Inheritance
+class Student extends Person {
+  constructor(name, age, grade) {
+    super(name, age); // Call parent constructor
+    this.grade = grade;
+  }
+
+  study() {
+    console.log(`${this.name} is studying`);
+  }
+}
+
+const student = new Student("Jane", 20, "A");
+student.greet(); // Inherited method
+student.study(); // Own method
+```
+
+## Promises (Covered in Module 15)
+
+```javascript
+// Create promise
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("Done!"), 1000);
+});
+
+// Use promise
+promise.then((result) => console.log(result));
+
+// Async/await
+async function getData() {
+  const result = await promise;
+  console.log(result);
+}
+```
+
+## Modules (Import/Export)
+
+```javascript
+// math.js - Export
+export const PI = 3.14159;
+export function add(a, b) {
+  return a + b;
+}
+
+// Default export
+export default function multiply(a, b) {
+  return a * b;
+}
+
+// app.js - Import
+import multiply, { PI, add } from "./math.js";
+
+console.log(PI); // 3.14159
+console.log(add(2, 3)); // 5
+console.log(multiply(2, 3)); // 6
+
+// Import all
+import * as math from "./math.js";
+console.log(math.PI);
+console.log(math.add(2, 3));
+```
+
+## Map and Set
+
+### Map - Key-Value Pairs
+
+```javascript
+// Create map
+const map = new Map();
+
+// Set values (any type as key)
+map.set("name", "John");
+map.set(1, "one");
+map.set({ id: 1 }, "object key");
+
+// Get values
+console.log(map.get("name")); // 'John'
+
+// Check if key exists
+console.log(map.has("name")); // true
+
+// Delete key
+map.delete("name");
+
+// Size
+console.log(map.size); // 2
+
+// Iterate
+for (const [key, value] of map) {
+  console.log(key, value);
+}
+
+// Initialize with array
+const map2 = new Map([
+  ["a", 1],
+  ["b", 2],
+  ["c", 3],
+]);
+```
+
+### Set - Unique Values
+
+```javascript
+// Create set
+const set = new Set();
+
+// Add values
+set.add(1);
+set.add(2);
+set.add(2); // Duplicate ignored
+set.add(3);
+
+console.log(set.size); // 3
+
+// Check if value exists
+console.log(set.has(2)); // true
+
+// Delete value
+set.delete(2);
+
+// Iterate
+for (const value of set) {
+  console.log(value);
+}
+
+// Initialize with array
+const set2 = new Set([1, 2, 3, 3, 4]); // [1, 2, 3, 4]
+
+// Remove duplicates from array
+const arr = [1, 2, 2, 3, 3, 4];
+const unique = [...new Set(arr)]; // [1, 2, 3, 4]
+```
+
+## Symbol
+
+Unique and immutable primitive value.
+
+```javascript
+// Create symbol
+const sym1 = Symbol("description");
+const sym2 = Symbol("description");
+
+console.log(sym1 === sym2); // false (always unique)
+
+// Use as object key
+const obj = {
+  [sym1]: "value1",
+  [sym2]: "value2",
+};
+
+console.log(obj[sym1]); // 'value1'
+
+// Symbols are not enumerable
+console.log(Object.keys(obj)); // []
+console.log(Object.getOwnPropertySymbols(obj)); // [sym1, sym2]
+
+// Well-known symbols
+class Collection {
+  *[Symbol.iterator]() {
+    yield 1;
+    yield 2;
+    yield 3;
+  }
+}
+```
+
+## Optional Chaining (?.)
+
+Safely access nested properties.
+
+```javascript
+const user = {
+  name: "John",
+  address: {
+    city: "NYC",
+  },
+};
+
+// Old way
+const zip = user && user.address && user.address.zip;
+
+// ✅ Optional chaining
+const zip = user?.address?.zip; // undefined (no error)
+
+// With arrays
+const firstItem = arr?.[0];
+
+// With functions
+const result = obj.method?.();
+
+// With dynamic properties
+const propName = "email";
+const email = user?.[propName];
+```
+
+## Nullish Coalescing (??)
+
+Default value only for null/undefined.
+
+```javascript
+// || returns right side for any falsy value
+const value1 = 0 || "default"; // 'default' (0 is falsy)
+const value2 = "" || "default"; // 'default' ('' is falsy)
+
+// ?? returns right side only for null/undefined
+const value3 = 0 ?? "default"; // 0
+const value4 = "" ?? "default"; // ''
+const value5 = null ?? "default"; // 'default'
+const value6 = undefined ?? "default"; // 'default'
+
+// Combine with optional chaining
+const city = user?.address?.city ?? "Unknown";
+```
+
+## Logical Assignment Operators (ES2021)
+
+```javascript
+// Logical OR assignment (||=)
+let a = null;
+a ||= "default"; // a = "default"
+
+// Logical AND assignment (&&=)
+let b = "value";
+b &&= "new value"; // b = "new value"
+
+// Nullish coalescing assignment (??=)
+let c = null;
+c ??= "default"; // c = "default"
+
+let d = 0;
+d ??= "default"; // d = 0 (only null/undefined triggers)
+```
+
+## Interview Questions & Answers
+
+### Q1: What are the main differences between var, let, and const?
+
+The main differences involve scope, hoisting, and reassignment. var is function-scoped, meaning it's accessible throughout the entire function where it's declared, while let and const are block-scoped, limited to the block (like if statements or loops) where they're declared. All three are hoisted, but var initializes with undefined while let and const remain in a "temporal dead zone" until their declaration line, causing errors if accessed early. var can be redeclared in the same scope, but let and const cannot. The key difference between let and const is that let allows reassignment while const doesn't. However, const objects and arrays can still have their contents modified - only the reference is immutable.
+
+---
+
+### Q2: What is the difference between Map and Object?
+
+Map and Object are both key-value collections, but Map has several advantages. Map keys can be any type including objects, functions, and primitives, while Object keys are always converted to strings or symbols. Map maintains insertion order of keys and provides a size property to get the count directly. Map has better performance for frequent additions and deletions. However, Objects are better for simple key-value storage with string keys, work naturally with JSON, and have literal syntax for easy creation. Use Map when you need non-string keys, when key order matters, or when you're frequently adding and removing entries.
+
+---
+
+### Q3: What is the spread operator and how is it different from rest parameters?
+
+The spread operator and rest parameters use the same syntax (...) but serve opposite purposes. Spread expands or unpacks an array or object into individual elements, used in array literals, object literals, and function calls. For example, `Math.max(...arr)` spreads array elements as separate arguments. Rest parameters pack multiple elements into a single array, used in function parameters and destructuring. For example, `function sum(...nums)` collects all arguments into the nums array. Think of spread as "unpacking" and rest as "packing." The context determines which operation occurs - in function parameters it's rest, in function calls or literals it's spread.
+
+---
+
+### Q4: What is optional chaining and why use it?
+
+Optional chaining (?.) is a safe way to access nested properties without checking if each level exists. Instead of writing long conditions like `user && user.address && user.address.city`, you can write `user?.address?.city`. If any part in the chain is null or undefined, the expression short-circuits and returns undefined instead of throwing an error. This eliminates "Cannot read property of undefined" errors that are common when working with API responses or optional data. Optional chaining works with properties, array indices with `arr?.[0]`, and function calls with `func?.()`. It makes code cleaner and more readable while being safer.
+
+---
+
+### Q5: What is the difference between == and === in JavaScript?
+
+Double equals (==) performs type coercion before comparison, converting operands to the same type if they differ. This leads to surprising results like `"5" == 5` being true, or `null == undefined` being true. Triple equals (===) is strict equality that compares both value and type without coercion, so `"5" === 5` is false. Always use === in your code to avoid unexpected type coercion bugs. The only common exception is checking for null or undefined together with `value == null`, which is a widely accepted pattern. Understanding coercion rules for == requires memorizing complex conversion tables, while === behavior is predictable.
+
+---
+
+### Q6: What are template literals and tagged templates?
+
+Template literals are strings enclosed in backticks that support embedded expressions with ${} syntax and multi-line strings without escape characters. They're much cleaner than string concatenation for building dynamic strings. Tagged templates are an advanced feature where you prefix a template literal with a function name, and that function receives the string parts and interpolated values as separate arguments. The tag function can then process and transform the template however needed. Tagged templates are used for things like syntax highlighting, internationalization, escaping HTML to prevent XSS, and building SQL queries safely. They give you complete control over how the template is processed.
+
+---
+
+### Q7: What is the Temporal Dead Zone (TDZ)?
+
+The Temporal Dead Zone is the period between entering a scope and the actual declaration of a let or const variable. During this time, the variable exists but cannot be accessed - any attempt throws a ReferenceError. This differs from var, which is hoisted and initialized with undefined, allowing access before declaration. The TDZ exists from the start of the block until the line where the variable is declared. It prevents bugs from using variables before they're properly initialized and enforces better coding practices. The TDZ applies to let, const, and class declarations. Understanding TDZ explains why let and const are considered safer than var.
+
+---
+
+### Q8: What are Symbols and when would you use them?
+
+Symbols are a primitive type introduced in ES6 that creates unique, immutable identifiers. Even two symbols with the same description are different: `Symbol('a') !== Symbol('a')`. Symbols are primarily used as object property keys when you need to guarantee uniqueness and avoid property name collisions, especially in libraries that extend user objects. They're not enumerable by default, making them semi-private. Well-known symbols like Symbol.iterator and Symbol.toStringTag let you customize built-in JavaScript behavior. Use symbols when building libraries that add properties to objects without risking conflicts with user-defined properties, or when implementing protocols like making objects iterable.
+
+---
+
+### Q9: What is the difference between for...in and for...of?
+
+for...in iterates over the enumerable property keys (names) of an object, returning strings. for...of iterates over the values of any iterable object (arrays, strings, Maps, Sets). For arrays, for...in gives you indices as strings ("0", "1", "2") while for...of gives you the actual values. for...in also iterates over inherited enumerable properties, which can cause unexpected behavior. for...of works with any iterable but throws an error on plain objects. Use for...of for arrays and other iterables when you need values, and for...in for objects when you need property names. Modern code often prefers forEach, map, or Object.entries().
+
+---
+
+### Q10: What is nullish coalescing and how does it differ from logical OR?
+
+Nullish coalescing (??) provides a default value only when the left side is null or undefined. Logical OR (||) provides a default for any falsy value, including 0, empty string, false, and NaN. This distinction matters when 0 or empty string are valid values. With `count || 10`, if count is 0, you get 10, which might not be intended. With `count ?? 10`, if count is 0, you get 0 because it's not nullish. Use ?? when you specifically want to handle null/undefined cases while preserving other falsy values. This is especially useful for optional configuration values where 0 or false might be intentional settings.
+
+## Practical Examples
+
+```javascript
+// Example 1: Remove duplicates
+const removeDuplicates = (arr) => [...new Set(arr)];
+console.log(removeDuplicates([1, 2, 2, 3, 3, 4])); // [1, 2, 3, 4]
+
+// Example 2: Merge objects with defaults
+const createUser = (userData) => {
+  const defaults = {
+    role: "user",
+    active: true,
+    notifications: true,
+  };
+  return { ...defaults, ...userData };
+};
+
+// Example 3: Safe property access
+const getCity = (user) => user?.address?.city ?? "Unknown";
+
+// Example 4: Dynamic object keys
+const createObject = (key, value) => ({ [key]: value });
+
+// Example 5: Array operations
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map((n) => n * 2);
+const evens = numbers.filter((n) => n % 2 === 0);
+const sum = numbers.reduce((total, n) => total + n, 0);
+
+// Example 6: Class with private fields (ES2022)
+class Counter {
+  #count = 0; // Private field
+
+  increment() {
+    this.#count++;
+    return this.#count;
+  }
+
+  get value() {
+    return this.#count;
+  }
+}
+```
+
+

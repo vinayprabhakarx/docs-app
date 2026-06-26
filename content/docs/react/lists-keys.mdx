@@ -1,0 +1,124 @@
+---
+title: "Lists & Keys - Rendering Collections"
+description: Documentation for Lists & Keys - Rendering Collections.
+---
+
+# Lists & Keys - Rendering Collections
+
+
+
+## Why Keys Matter
+
+Keys help React identify which items changed, added, or removed for efficient updates.
+
+## Rendering Lists
+
+```jsx
+function UserList({ users }) {
+  return (
+    <ul>
+      {users.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Key Rules
+
+| Rule                          | Explanation                    |
+| ----------------------------- | ------------------------------ |
+| Must be unique among siblings | Not globally unique            |
+| Should be stable              | Same item = same key           |
+| Don't use index               | Unless list is static          |
+| Use from data                 | ID, slug, or unique identifier |
+
+## Good vs Bad Keys
+
+```jsx
+// ✅ Good: Unique, stable ID
+{
+  items.map((item) => <Item key={item.id} />);
+}
+
+// ✅ OK for static lists
+{
+  staticItems.map((item, index) => <Item key={index} />);
+}
+
+// ❌ Bad: Indexes for dynamic lists
+{
+  dynamicItems.map((item, index) => <Item key={index} />);
+}
+
+// ❌ Bad: Random values
+{
+  items.map((item) => <Item key={Math.random()} />);
+}
+```
+
+## Index as Key Problems
+
+```jsx
+// Problem: Adding item at beginning shifts all indices
+const [items, setItems] = useState(["A", "B", "C"]);
+// Keys: 0='A', 1='B', 2='C'
+
+setItems(["X", "A", "B", "C"]);
+// Keys: 0='X', 1='A', 2='B', 3='C'
+// React thinks item at index 0 changed from 'A' to 'X'
+// Causes input values and state to be wrong
+```
+
+## Extracting Components
+
+```jsx
+// Key goes on outermost element in the map
+function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
+    </ul>
+  );
+}
+
+function TodoItem({ todo }) {
+  // No key here - it's on the parent's map
+  return <li>{todo.text}</li>;
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: Why are keys important in React lists?
+
+Keys help React identify which items changed for efficient DOM updates. Without keys, React re-renders all items. With stable keys, React can reorder, add, or remove only affected elements.
+
+---
+
+### Q2: Why shouldn't you use index as key?
+
+Index keys cause issues with dynamic lists: reordering, adding at beginning, or removing items shifts indices. React associates wrong state/inputs with wrong items. Only use for static, never-reordered lists.
+
+---
+
+### Q3: What makes a good key?
+
+Unique among siblings, stable across re-renders, derived from data (ID, slug). Should identify the item itself, not its position.
+
+---
+
+### Q4: Where should keys be placed?
+
+On the outermost element returned from `.map()`. If extracting to component, key goes on the component in the map, not inside the component.
+
+---
+
+### Q5: Can keys be duplicated?
+
+Keys must be unique among siblings only. Different lists can have same keys. React tracks elements within their parent.
+
+

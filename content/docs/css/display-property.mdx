@@ -1,0 +1,340 @@
+---
+title: "Display Property - Controlling Element Behavior"
+description: Documentation for Display Property - Controlling Element Behavior.
+---
+
+# Display Property - Controlling Element Behavior
+
+
+
+## What is the Display Property?
+
+The `display` property is one of the most important CSS properties. It controls **how an element is displayed** and how it interacts with other elements in the layout.
+
+Every HTML element has a default display value (usually `block` or `inline`), but you can change it to control layout behavior.
+
+### Why is Display Important?
+
+The display property determines:
+
+- **Layout behavior** - How elements stack or flow
+- **Box generation** - Whether an element creates a box
+- **Visibility** - Whether an element appears
+- **Layout model** - Block, inline, flex, grid, etc.
+
+## Display Values - Quick Reference
+
+| Value          | Description                              | Example Elements            |
+| -------------- | ---------------------------------------- | --------------------------- |
+| `block`        | Takes full width, starts on new line     | `<div>`, `<p>`, `<h1>`      |
+| `inline`       | Takes only needed width, flows with text | `<span>`, `<a>`, `<strong>` |
+| `inline-block` | Inline flow but block properties         | Custom buttons, icons       |
+| `none`         | Completely hidden (no space)             | Hidden elements             |
+| `flex`         | Flexbox container                        | Flexible layouts            |
+| `inline-flex`  | Inline flexbox container                 | Inline flexible layouts     |
+| `grid`         | Grid container                           | Grid layouts                |
+| `inline-grid`  | Inline grid container                    | Inline grids                |
+| `table`        | Behaves like `<table>`                   | Table-like layouts          |
+| `table-cell`   | Behaves like `<td>`                      | Table cells                 |
+
+## Detailed Explanation
+
+### 1. display: block
+
+**What it does:**
+Element takes the full width available and starts on a new line.
+
+**Characteristics:**
+
+- Takes full width of parent
+- Starts on new line
+- Can set width and height
+- Respects all margins and padding
+
+**HTML Example:**
+
+```html
+<div class="block-element">Block Element 1</div>
+<div class="block-element">Block Element 2</div>
+<span class="inline-to-block">Span made block</span>
+```
+
+**CSS Example:**
+
+```css
+.block-element {
+  display: block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.inline-to-block {
+  display: block; /* Span now behaves like block */
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+}
+```
+
+**Result:** Each element on its own line, taking full width.
+
+**When to use:**
+
+- Containers and sections
+- Headings and paragraphs
+- Making inline elements behave like blocks
+
+---
+
+### 2. display: inline
+
+**What it does:**
+Element flows with text, taking only the width it needs.
+
+**Characteristics:**
+
+- Takes only needed width
+- Flows with text (no line break)
+- **Cannot** set width and height
+- Respects left/right margins, but NOT top/bottom margins
+
+**HTML Example:**
+
+```html
+<p>
+  This is <span class="highlight">inline text</span> that flows with the
+  <a href="#">link</a> naturally.
+</p>
+```
+
+**CSS Example:**
+
+```css
+.highlight {
+  display: inline;
+  background-color: yellow;
+  padding: 2px 5px; /* Only left/right padding works well */
+}
+```
+
+**Result:** Elements flow within the text line.
+
+**When to use:**
+
+- Text styling (bold, italic, highlight)
+- Links within paragraphs
+- Icons within text
+
+---
+
+### 3. display: inline-block
+
+**What it does:**
+Combines inline flow with block properties. Best of both worlds!
+
+**Characteristics:**
+
+- Flows inline (no line break)
+- **Can** set width and height
+- Respects all margins and padding
+- Perfect for buttons and cards in a row
+
+**HTML Example:**
+
+```html
+<div class="button-group">
+  <button class="btn">Button 1</button>
+  <button class="btn">Button 2</button>
+  <button class="btn">Button 3</button>
+</div>
+```
+
+**CSS Example:**
+
+```css
+.btn {
+  display: inline-block;
+  width: 120px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+```
+
+**Result:** Buttons flow horizontally but can have width, height, and all spacing.
+
+**When to use:**
+
+- Buttons in a row
+- Navigation menu items
+- Cards or boxes that should flow inline
+- Icons with specific dimensions
+
+**Real-world scenario:**
+Creating a horizontal navigation menu where each item needs specific width and padding.
+
+---
+
+### 4. display: none
+
+**What it does:**
+Completely removes the element from the page (no space taken).
+
+**HTML Example:**
+
+```html
+<div class="visible">Visible Element</div>
+<div class="hidden">Hidden Element</div>
+<div class="visible">Another Visible Element</div>
+```
+
+**CSS Example:**
+
+```css
+.hidden {
+  display: none; /* Completely removed */
+}
+```
+
+**Result:** Hidden element takes no space, other elements move up.
+
+**Comparison with visibility: hidden:**
+
+```css
+.display-none {
+  display: none; /* No space taken */
+}
+
+.visibility-hidden {
+  visibility: hidden; /* Space still taken, just invisible */
+}
+```
+
+**When to use:**
+
+- Hide/show elements with JavaScript
+- Responsive design (hide on mobile)
+- Dropdown menus
+- Modal dialogs
+
+**JavaScript toggle example:**
+
+```javascript
+element.style.display = "none"; // Hide
+element.style.display = "block"; // Show
+```
+
+---
+
+### 5. display: flex
+
+**What it does:**
+Turns element into a flexbox container. See [[08-Flexbox|Flexbox]] for details.
+
+**CSS Example:**
+
+```css
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+```
+
+---
+
+### 6. display: grid
+
+**What it does:**
+Turns element into a grid container. See [[09-CSS-Grid|CSS Grid]] for details.
+
+**CSS Example:**
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Horizontal Navigation
+
+```html
+<nav class="navbar">
+  <a href="#" class="nav-item">Home</a>
+  <a href="#" class="nav-item">About</a>
+  <a href="#" class="nav-item">Services</a>
+  <a href="#" class="nav-item">Contact</a>
+</nav>
+```
+
+```css
+.nav-item {
+  display: inline-block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-item:hover {
+  background-color: #f0f0f0;
+}
+```
+
+---
+
+### Pattern 2: Hide on Mobile
+
+```css
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+}
+```
+
+---
+
+### Pattern 3: Center with Inline-Block
+
+```html
+<div class="center-container">
+  <div class="centered-box">Centered</div>
+</div>
+```
+
+```css
+.center-container {
+  text-align: center;
+}
+
+.centered-box {
+  display: inline-block;
+  padding: 20px;
+  background-color: #007bff;
+  color: white;
+}
+```
+
+## Related Topics
+
+- [[08-Flexbox|Flexbox]] - display: flex
+- [[09-CSS-Grid|CSS Grid]] - display: grid
+- [[07-Position-Property|Position]] - Element positioning
+
+---
+
+

@@ -1,0 +1,581 @@
+---
+title: "Modules - Import and Export"
+description: Documentation for Modules - Import and Export.
+---
+
+# Modules - Import and Export
+
+
+
+## What are Modules?
+
+**Modules** are reusable pieces of code that can be exported from one file and imported into another. They help organize code, avoid naming conflicts, and improve maintainability.
+
+> **Definition:** ES Modules are the official JavaScript standard for organizing code into separate files with explicit imports and exports. They provide encapsulation, prevent global scope pollution, and enable better tooling like tree-shaking.
+
+```javascript
+// math.js - Export functions
+export function add(a, b) {
+  return a + b;
+}
+
+// app.js - Import and use
+import { add } from "./math.js";
+console.log(add(2, 3)); // 5
+```
+
+## Module Benefits
+
+| Benefit                   | Description                              |
+| ------------------------- | ---------------------------------------- |
+| **Encapsulation**         | Keep code private by default             |
+| **Reusability**           | Share code across files and projects     |
+| **Maintainability**       | Organize code into logical units         |
+| **Namespace**             | Avoid naming conflicts                   |
+| **Dependency Management** | Clear dependencies between files         |
+| **Tree-shaking**          | Remove unused code during bundling       |
+| **Lazy Loading**          | Load code on demand with dynamic imports |
+
+## Named Exports
+
+Export multiple items from a module.
+
+```javascript
+// utils.js - Inline named exports
+export const PI = 3.14159;
+
+export function square(x) {
+  return x * x;
+}
+
+export class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+}
+
+// Alternative: Export at end (export list)
+const PI = 3.14159;
+function square(x) {
+  return x * x;
+}
+class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+}
+
+export { PI, square, Calculator };
+
+// Export with renaming
+export { square as sq, Calculator as Calc };
+```
+
+### Importing Named Exports
+
+```javascript
+// Import specific items
+import { PI, square } from "./utils.js";
+
+console.log(PI); // 3.14159
+console.log(square(5)); // 25
+
+// Import multiple items
+import { PI, square, Calculator } from "./utils.js";
+
+// Import all as namespace
+import * as utils from "./utils.js";
+console.log(utils.PI);
+console.log(utils.square(5));
+const calc = new utils.Calculator();
+
+// Rename imports
+import { PI as pi, square as sq } from "./utils.js";
+console.log(pi);
+console.log(sq(5));
+```
+
+## Default Exports
+
+Export a single main value from a module.
+
+```javascript
+// calculator.js - Default export class
+export default class Calculator {
+    add(a, b) {
+        return a + b;
+    }
+}
+
+// multiply.js - Default export function
+export default function multiply(a, b) {
+    return a * b;
+}
+
+// config.js - Default export value
+const config = { theme: 'dark', language: 'en' };
+export default config;
+
+// Anonymous default export
+export default function(a, b) {
+    return a + b;
+}
+
+export default class {
+    // ...
+}
+```
+
+### Importing Default Exports
+
+```javascript
+// Import default (any name works)
+import Calculator from "./calculator.js";
+import multiply from "./multiply.js";
+import config from "./config.js";
+
+// Can name it anything
+import Calc from "./calculator.js";
+import MyCalculator from "./calculator.js";
+import whatever from "./config.js";
+
+// Default with named imports
+import Calculator, { PI, square } from "./utils.js";
+```
+
+## Mixing Default and Named Exports
+
+```javascript
+// math.js
+export const PI = 3.14159;
+
+export function square(x) {
+  return x * x;
+}
+
+export default function multiply(a, b) {
+  return a * b;
+}
+
+// Import both
+import multiply, { PI, square } from "./math.js";
+
+console.log(multiply(2, 3)); // 6
+console.log(PI); // 3.14159
+console.log(square(5)); // 25
+
+// Alternative with alias
+import { default as multiply, PI } from "./math.js";
+```
+
+## Export Syntax Comparison
+
+| Syntax                    | Type    | Import Name | Use Case             |
+| ------------------------- | ------- | ----------- | -------------------- |
+| `export const x = 1`      | Named   | Must match  | Utilities, constants |
+| `export { x }`            | Named   | Must match  | Export list at end   |
+| `export { x as y }`       | Named   | Use y       | Rename on export     |
+| `export default x`        | Default | Any name    | Main export          |
+| `export { x as default }` | Default | Any name    | Named to default     |
+
+## Re-exporting
+
+Export items from another module.
+
+```javascript
+// shapes/index.js - Barrel export
+export { Circle } from "./circle.js";
+export { Square } from "./square.js";
+export { Triangle } from "./triangle.js";
+
+// Re-export all named exports
+export * from "./circle.js";
+export * from "./square.js";
+
+// Re-export default as named
+export { default as Circle } from "./circle.js";
+
+// Re-export with renaming
+export { Circle as Round } from "./circle.js";
+
+// app.js - Import from single file
+import { Circle, Square, Triangle } from "./shapes/index.js";
+// Or shorter path
+import { Circle, Square, Triangle } from "./shapes";
+```
+
+## Dynamic Imports
+
+Load modules conditionally or on-demand.
+
+```javascript
+// Static import (always loaded)
+import { heavy } from "./heavy.js";
+
+// Dynamic import (loaded when needed)
+button.addEventListener("click", async () => {
+  const module = await import("./heavy.js");
+  module.heavy();
+});
+
+// Conditional import
+if (condition) {
+  const module = await import("./feature.js");
+  module.init();
+}
+
+// Dynamic import returns a promise
+import("./math.js")
+  .then((module) => {
+    console.log(module.add(2, 3));
+    console.log(module.default(2, 3)); // Default export
+  })
+  .catch((error) => {
+    console.error("Failed to load module:", error);
+  });
+
+// With destructuring
+const { add, multiply } = await import("./math.js");
+
+// Dynamic path
+const modulePath = `./locales/${language}.js`;
+const translations = await import(modulePath);
+```
+
+## Module Patterns
+
+### 1. Barrel Exports
+
+```javascript
+// components/index.js
+export { Button } from "./Button.js";
+export { Input } from "./Input.js";
+export { Card } from "./Card.js";
+export { default as Modal } from "./Modal.js";
+
+// app.js - Clean imports from single entry
+import { Button, Input, Card, Modal } from "./components";
+```
+
+### 2. Singleton Pattern
+
+```javascript
+// database.js
+class Database {
+  constructor() {
+    this.connection = null;
+  }
+
+  connect() {
+    if (!this.connection) {
+      this.connection = "Connected";
+    }
+    return this.connection;
+  }
+}
+
+// Export single instance
+export default new Database();
+
+// app.js - Same instance everywhere
+import db from "./database.js";
+db.connect();
+
+// other.js - Same instance!
+import database from "./database.js";
+database.connect(); // Uses same connection
+```
+
+### 3. Factory Pattern
+
+```javascript
+// userFactory.js
+export function createUser(name, role = "user") {
+  return {
+    id: Math.random().toString(36),
+    name,
+    role,
+    createdAt: new Date(),
+  };
+}
+
+export function createAdmin(name) {
+  return createUser(name, "admin");
+}
+
+// app.js
+import { createUser, createAdmin } from "./userFactory.js";
+const user = createUser("John");
+const admin = createAdmin("Jane");
+```
+
+### 4. Configuration Pattern
+
+```javascript
+// config.js
+const config = {
+  development: {
+    apiUrl: "http://localhost:3000",
+    debug: true,
+  },
+  production: {
+    apiUrl: "https://api.example.com",
+    debug: false,
+  },
+};
+
+export default config[process.env.NODE_ENV || "development"];
+
+// app.js
+import config from "./config.js";
+console.log(config.apiUrl);
+```
+
+## Module Scope
+
+Each module has its own scope.
+
+```javascript
+// module1.js
+const secret = "private"; // Not accessible outside
+let counter = 0; // Private state
+
+export const public = "accessible";
+export function increment() {
+  counter++;
+  return counter;
+}
+
+// module2.js
+import { public, increment } from "./module1.js";
+console.log(public); // Works
+// console.log(secret); // Error! Not exported
+// console.log(counter); // Error! Not exported
+
+increment(); // 1
+increment(); // 2 (state is preserved)
+```
+
+## CommonJS vs ES Modules
+
+| Feature         | CommonJS                       | ES Modules          |
+| --------------- | ------------------------------ | ------------------- |
+| Syntax          | `require()` / `module.exports` | `import` / `export` |
+| Loading         | Synchronous                    | Asynchronous        |
+| Environment     | Node.js (original)             | Browser & Node.js   |
+| Tree-shaking    | ❌ No                          | ✅ Yes              |
+| Top-level await | ❌ No                          | ✅ Yes              |
+| Static analysis | ❌ No                          | ✅ Yes              |
+| Hoisting        | No                             | Yes (imports hoist) |
+
+```javascript
+// CommonJS (Node.js traditional)
+const math = require("./math.js");
+const { add } = require("./math.js");
+module.exports = { add, subtract };
+module.exports.add = add;
+
+// ES Modules (Modern standard)
+import { add } from "./math.js";
+import math from "./math.js";
+export { add, subtract };
+export default add;
+```
+
+## Using Modules in HTML
+
+```html
+<!-- Regular script (global scope) -->
+<script src="app.js"></script>
+
+<!-- Module script -->
+<script type="module" src="app.js"></script>
+
+<!-- Inline module -->
+<script type="module">
+  import { greet } from "./utils.js";
+  greet("World");
+</script>
+
+<!-- Fallback for browsers without module support -->
+<script nomodule src="fallback.js"></script>
+```
+
+### Module Script Features
+
+```javascript
+// Modules are deferred by default (like defer attribute)
+// Modules are executed in strict mode automatically
+// Modules have their own scope (no global pollution)
+// Modules can use import/export
+// Modules are only executed once (cached)
+// Modules support top-level await
+```
+
+## Top-Level Await (ES2022)
+
+```javascript
+// data.js - Await at module level
+const response = await fetch("/api/config");
+export const config = await response.json();
+
+// app.js - Config is ready when imported
+import { config } from "./data.js";
+console.log(config); // Already resolved!
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between named and default exports?
+
+Named exports allow multiple exports per module and require importing with the exact name in curly braces. You can have as many named exports as you want, and they're great for utility functions, constants, and when a module provides multiple features. Default exports allow one main export per module and can be imported with any name without curly braces. They're ideal for modules with a single primary purpose, like a class or main function. You can combine both in one module. Named exports make refactoring safer since the import name must match, while default exports offer naming flexibility.
+
+---
+
+### Q2: What's the difference between ES Modules and CommonJS?
+
+ES Modules use import/export syntax and are the JavaScript standard, working in both browsers and Node.js. CommonJS uses require()/module.exports and was created for Node.js. ES Modules load asynchronously and are statically analyzable, meaning imports and exports are determined at compile time. This enables tree-shaking to remove unused code. CommonJS loads synchronously and is dynamic, so imports can be conditional but can't be optimized as well. ES Modules support top-level await and run in strict mode automatically. Modern projects prefer ES Modules for their benefits and cross-platform compatibility.
+
+---
+
+### Q3: What is tree-shaking and why is it important?
+
+Tree-shaking is dead code elimination that removes unused exports from the final bundle. Bundlers like Webpack and Rollup can analyze ES Module imports statically and exclude functions or values you never actually use. This significantly reduces bundle size and improves load times. Tree-shaking only works with ES Modules because import/export statements are static and can be analyzed at build time. CommonJS require() is dynamic and can't be tree-shaken. To benefit from tree-shaking, use named exports, avoid side effects in modules, and ensure your dependencies use ES Modules.
+
+---
+
+### Q4: When should you use dynamic imports?
+
+Dynamic imports are best for code that isn't needed immediately: route-based code splitting in SPAs, heavy libraries that are only used in specific features, components that display after user interaction, and features based on user permissions or device capabilities. Dynamic imports return Promises and load modules asynchronously, reducing initial bundle size. They're essential for performance optimization in large applications. Common use cases include loading chart libraries only when viewing analytics, loading admin panels only for admin users, or loading localization files based on user language preference.
+
+---
+
+### Q5: What are barrel exports and why use them?
+
+Barrel exports are index files that re-export from multiple modules, creating a single entry point for a folder. Instead of importing from deep paths like `./components/Button/Button.js`, you can import from `./components`. This simplifies imports, reduces repetition, and makes refactoring easier since you can move files without updating every import. Create an index.js that exports from each module: `export { Button } from './Button'`. The downside is that barrels can hurt tree-shaking if they cause unused modules to be imported. Use them thoughtfully in component libraries and utility collections.
+
+---
+
+### Q6: How do modules differ from regular scripts?
+
+Modules run in strict mode automatically, have their own scope instead of polluting global scope, are deferred by default (execute after DOM is parsed), are only executed once regardless of how many times they're imported, and can use import/export syntax. Regular scripts run in sloppy mode by default, share global scope, execute immediately when encountered, and can run multiple times if included multiple times. In HTML, you specify modules with `<script type="module">`. Modules also support top-level await and have different CORS behavior.
+
+---
+
+### Q7: What is a singleton module pattern?
+
+The singleton pattern ensures only one instance exists, and modules naturally support this because they're cached after first import. Export an instance instead of a class: `export default new Database()`. Every file that imports this module gets the same instance, not a new one. This is useful for shared state like configuration, database connections, logging services, or event buses. Unlike explicitly coded singletons, module singletons work automatically through JavaScript's module caching. The instance is created once when first imported and reused for all subsequent imports.
+
+---
+
+### Q8: What happens when you import the same module multiple times?
+
+JavaScript caches module exports after the first import, so all subsequent imports receive the same cached values. The module code only executes once, regardless of how many files import it. This ensures consistency and enables the singleton pattern. If the module exports mutable state, changes are visible to all importers. For example, a counter module that exports an increment function will maintain shared state across all files. This caching happens per JavaScript realm (global context), so different iframes or workers have separate caches.
+
+---
+
+### Q9: How do you handle circular dependencies in modules?
+
+Circular dependencies occur when module A imports B and B imports A. JavaScript handles this by returning partial exports - if A imports B before A finishes executing, B gets an incomplete version of A's exports. To avoid issues: move shared code to a third module that both can import, use function declarations (hoisted) instead of expressions, access exports inside functions rather than at top level, or restructure to break the cycle. Good architecture usually avoids circular dependencies through proper layering and separation of concerns.
+
+---
+
+### Q10: What is the difference between import and import()
+
+Static import is a declaration at the top of files that is hoisted and executed before any code runs. It's synchronous in terms of module resolution (though loading may be async), and the imported values are live bindings that update if the source changes. Dynamic import() is a function that returns a Promise resolving to the module's namespace object. It can be called anywhere in code, including conditionally or in loops. Use static import for dependencies you always need, and dynamic import() for conditional loading, code splitting, or when the module path is computed at runtime.
+
+## Practical Examples
+
+```javascript
+// Example 1: API module
+// api.js
+const API_URL = 'https://api.example.com';
+
+export async function getUsers() {
+    const response = await fetch(`${API_URL}/users`);
+    return response.json();
+}
+
+export async function createUser(userData) {
+    const response = await fetch(`${API_URL}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+    });
+    return response.json();
+}
+
+// app.js
+import { getUsers, createUser } from './api.js';
+
+// Example 2: Configuration module
+// config.js
+const config = {
+    apiUrl: process.env.API_URL || 'http://localhost:3000',
+    timeout: 5000,
+    retries: 3
+};
+
+export default config;
+
+// app.js
+import config from './config.js';
+console.log(config.apiUrl);
+
+// Example 3: Utility barrel export
+// utils/index.js
+export { formatDate, parseDate } from './date.js';
+export { validateEmail, validatePhone } from './validation.js';
+export { debounce, throttle } from './performance.js';
+
+// app.js
+import { formatDate, validateEmail, debounce } from './utils';
+
+// Example 4: Dynamic feature loading
+// app.js
+async function loadFeature(featureName) {
+    try {
+        const module = await import(`./features/${featureName}.js`);
+        module.init();
+    } catch (error) {
+        console.error(`Failed to load ${featureName}:`, error);
+    }
+}
+
+// Load based on user role
+if (user.role === 'admin') {
+    loadFeature('admin-panel');
+}
+
+// Example 5: Singleton service
+// logger.js
+class Logger {
+    constructor() {
+        this.logs = [];
+    }
+
+    log(message) {
+        this.logs.push({ message, timestamp: new Date() });
+        console.log(message);
+    }
+
+    getLogs() {
+        return this.logs;
+    }
+}
+
+export default new Logger();
+
+// Multiple files use same instance
+import logger from './logger.js';
+logger.log('App started');
+
+// Example 6: Lazy loading components
+async function showModal() {
+    const { Modal } = await import('./components/Modal.js');
+    const modal = new Modal();
+    modal.show();
+}
+```
+
+

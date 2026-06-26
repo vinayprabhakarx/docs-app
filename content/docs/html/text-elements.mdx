@@ -1,0 +1,361 @@
+---
+title: "Text Elements - Formatting Content"
+description: Documentation for Text Elements - Formatting Content.
+---
+
+# Text Elements - Formatting Content
+
+
+
+## What are Text Elements?
+
+Text elements are HTML tags used to structure and format textual content on web pages.
+
+> **Definition:** Text elements define the purpose and visual presentation of text. They range from structural elements like headings and paragraphs to semantic elements like emphasis and abbreviations. Using the right text element improves accessibility, SEO, and code readability.
+
+## Headings
+
+HTML provides six levels of headings, `<h1>` through `<h6>`.
+
+```html
+<h1>Main Page Title</h1>
+<!-- One per page, most important -->
+<h2>Section Heading</h2>
+<!-- Major sections -->
+<h3>Subsection Heading</h3>
+<!-- Subsections -->
+<h4>Sub-subsection</h4>
+<!-- Further divisions -->
+<h5>Minor Heading</h5>
+<!-- Rarely needed -->
+<h6>Smallest Heading</h6>
+<!-- Rarely needed -->
+```
+
+### Heading Best Practices
+
+| Rule                | Correct                      | Incorrect             |
+| ------------------- | ---------------------------- | --------------------- |
+| One h1 per page     | Single `<h1>` for main title | Multiple `<h1>` tags  |
+| Don't skip levels   | h1 → h2 → h3                 | h1 → h3 (skipping h2) |
+| Use for structure   | Logical hierarchy            | Only for styling      |
+| Keep h1 descriptive | `<h1>Product Details</h1>`   | `<h1>Page</h1>`       |
+
+```html
+<!-- ✅ CORRECT hierarchy -->
+<h1>HTML Tutorial</h1>
+<h2>Chapter 1: Basics</h2>
+<h3>What is HTML?</h3>
+<h3>History</h3>
+<h2>Chapter 2: Elements</h2>
+<h3>Block Elements</h3>
+<h3>Inline Elements</h3>
+
+<!-- ❌ INCORRECT - skipping levels -->
+<h1>HTML Tutorial</h1>
+<h3>Chapter 1</h3>
+<!-- Skipped h2 -->
+<h4>What is HTML?</h4>
+```
+
+## Paragraphs
+
+```html
+<p>
+  This is a paragraph. Paragraphs are block elements that create vertical
+  spacing.
+</p>
+
+<p>This is another paragraph. Multiple paragraphs are separated by margin.</p>
+
+<!-- Paragraphs automatically collapse whitespace -->
+<p>Multiple spaces become one.</p>
+```
+
+## Text Formatting Elements
+
+### Semantic Formatting (Preferred)
+
+| Element    | Purpose              | Renders As        | Example                     |
+| ---------- | -------------------- | ----------------- | --------------------------- |
+| `<strong>` | Strong importance    | **Bold**          | `<strong>Critical</strong>` |
+| `<em>`     | Emphasis             | _Italic_          | `<em>emphasized</em>`       |
+| `<mark>`   | Highlighted/relevant | Highlighted       | `<mark>highlighted</mark>`  |
+| `<small>`  | Side comments        | Smaller text      | `<small>fine print</small>` |
+| `<del>`    | Deleted text         | ~~Strikethrough~~ | `<del>removed</del>`        |
+| `<ins>`    | Inserted text        | Underline         | `<ins>added</ins>`          |
+| `<sub>`    | Subscript            | Below line        | H`<sub>`2`</sub>`O          |
+| `<sup>`    | Superscript          | Above line        | E=mc`<sup>`2`</sup>`        |
+
+```html
+<!-- Semantic usage -->
+<p><strong>Warning:</strong> This action cannot be undone.</p>
+<p>The word <em>literally</em> is often misused.</p>
+<p>Search results: Found <mark>JavaScript</mark> in 5 files.</p>
+<p>Price: $99 <small>(plus tax)</small></p>
+<p>Original: <del>$150</del> Now: <ins>$99</ins></p>
+<p>H<sub>2</sub>O is water. E=mc<sup>2</sup></p>
+```
+
+### Visual Formatting (Use When No Semantic Meaning)
+
+| Element | Purpose       | Use Case                             |
+| ------- | ------------- | ------------------------------------ |
+| `<b>`   | Bold          | Keywords, product names              |
+| `<i>`   | Italic        | Technical terms, foreign words       |
+| `<u>`   | Underline     | Proper nouns (Chinese), misspellings |
+| `<s>`   | Strikethrough | No longer accurate                   |
+
+```html
+<!-- Visual-only formatting -->
+<p>The <b>iPhone 15</b> features a new design.</p>
+<p>The <i>mise en place</i> is ready.</p>
+<p>Product: <s>In Stock</s> Out of Stock</p>
+```
+
+### Strong vs B, Em vs I
+
+| Element    | Use When                               | Example                           |
+| ---------- | -------------------------------------- | --------------------------------- |
+| `<strong>` | Text is important (warning, urgent)    | `<strong>Do not delete!</strong>` |
+| `<b>`      | Stylistically different, not important | `<b>Product Name</b>`             |
+| `<em>`     | Text has stress emphasis               | `<em>Don't</em> click that`       |
+| `<i>`      | Different voice/mood, no emphasis      | `<i>Carpe diem</i>`               |
+
+## Quotations
+
+### Block Quote
+
+```html
+<blockquote cite="https://source.com/article">
+  <p>The only way to do great work is to love what you do.</p>
+  <footer>— Steve Jobs</footer>
+</blockquote>
+```
+
+### Inline Quote
+
+```html
+<p>Einstein said <q>Imagination is more important than knowledge.</q></p>
+<!-- Browser adds quotation marks automatically -->
+```
+
+### Citation
+
+```html
+<p>My favorite book is <cite>The Great Gatsby</cite> by F. Scott Fitzgerald.</p>
+```
+
+| Element        | Purpose                | Display         |
+| -------------- | ---------------------- | --------------- |
+| `<blockquote>` | Long quotation         | Block, indented |
+| `<q>`          | Short inline quotation | Adds " " marks  |
+| `<cite>`       | Title of work          | Italic          |
+
+## Code and Preformatted Text
+
+```html
+<!-- Inline code -->
+<p>Use the <code>console.log()</code> function to debug.</p>
+
+<!-- Keyboard input -->
+<p>Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy.</p>
+
+<!-- Variable -->
+<p>The variable <var>x</var> represents the width.</p>
+
+<!-- Sample output -->
+<p>The command outputs: <samp>Hello World</samp></p>
+
+<!-- Preformatted text -->
+<pre>
+function hello() {
+    console.log("Hello!");
+}
+</pre>
+
+<!-- Code block (common pattern) -->
+<pre><code>
+const arr = [1, 2, 3];
+arr.map(x =&gt; x * 2);
+</code></pre>
+```
+
+| Element  | Purpose           | Example                    |
+| -------- | ----------------- | -------------------------- |
+| `<code>` | Code snippet      | `<code>const x = 1</code>` |
+| `<kbd>`  | Keyboard input    | `<kbd>Enter</kbd>`         |
+| `<var>`  | Variable          | `<var>count</var>`         |
+| `<samp>` | Computer output   | `<samp>Error 404</samp>`   |
+| `<pre>`  | Preformatted text | Preserves whitespace       |
+
+## Abbreviations and Definitions
+
+```html
+<!-- Abbreviation with expansion -->
+<p>
+  The <abbr title="HyperText Markup Language">HTML</abbr> standard is maintained
+  by the <abbr title="World Wide Web Consortium">W3C</abbr>.
+</p>
+
+<!-- Definition -->
+<p>A <dfn>viewport</dfn> is the visible area of a web page.</p>
+
+<!-- Definition with abbr -->
+<p>
+  <dfn><abbr title="HyperText Markup Language">HTML</abbr></dfn> is a markup
+  language for creating web pages.
+</p>
+```
+
+## Other Text Elements
+
+### Address
+
+```html
+<address>
+  Written by <a href="mailto:author@example.com">Author Name</a><br />
+  123 Main Street<br />
+  City, Country
+</address>
+```
+
+### Time
+
+```html
+<p>Event on <time datetime="2024-07-15">July 15th</time>.</p>
+<p>Opens at <time datetime="09:00">9:00 AM</time>.</p>
+<p>
+  Published
+  <time datetime="2024-07-15T14:30:00Z">July 15, 2024 at 2:30 PM</time>
+</p>
+
+<!-- Machine-readable formats -->
+<time datetime="2024-07-15">July 15, 2024</time>
+<time datetime="14:30">2:30 PM</time>
+<time datetime="P3D">3 days</time>
+<time datetime="PT2H30M">2 hours 30 minutes</time>
+```
+
+### Data
+
+```html
+<!-- Machine-readable value -->
+<p>Stock: <data value="AAPL">Apple Inc.</data></p>
+```
+
+### Line Breaks and Horizontal Rules
+
+```html
+<!-- Line break (within text) -->
+<address>
+  123 Main Street<br />
+  City, State 12345
+</address>
+
+<!-- Horizontal rule (thematic break) -->
+<p>First section content...</p>
+<hr />
+<p>Second section content...</p>
+
+<!-- Word break opportunity -->
+<p>supercalifragilistic<wbr />expialidocious</p>
+```
+
+## Semantic Text Summary
+
+```
+Text Elements
+├── Headings
+│   └── h1, h2, h3, h4, h5, h6
+├── Paragraphs
+│   └── p
+├── Emphasis & Importance
+│   ├── strong (important)
+│   ├── em (emphasis)
+│   ├── mark (highlight)
+│   └── small (side comment)
+├── Quotations
+│   ├── blockquote (long quote)
+│   ├── q (inline quote)
+│   └── cite (work title)
+├── Code
+│   ├── code (code snippet)
+│   ├── pre (preformatted)
+│   ├── kbd (keyboard)
+│   ├── var (variable)
+│   └── samp (output)
+├── References
+│   ├── abbr (abbreviation)
+│   ├── dfn (definition)
+│   ├── time (date/time)
+│   └── address (contact)
+├── Edits
+│   ├── del (deleted)
+│   └── ins (inserted)
+└── Formatting
+    ├── sub (subscript)
+    └── sup (superscript)
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between `<strong>` and `<b>`?
+
+Both render as bold text, but they have different semantic meanings. `<strong>` indicates that the content has strong importance, urgency, or seriousness - screen readers may emphasize it. Use it for warnings, important instructions, or critical information. `<b>` is purely for stylistic purposes without adding importance - use it for keywords, product names, or lead sentences where you want visual distinction without semantic weight. When in doubt, prefer `<strong>` if the text is actually important, or use CSS for purely visual bolding.
+
+---
+
+### Q2: How should headings be used properly?
+
+Headings should form a logical outline of the page, like a table of contents. Use only one `<h1>` per page for the main title. Don't skip heading levels (h1 → h3) as this confuses screen readers and hurts accessibility. Use headings for structure, not styling - if you want smaller text that looks like a heading, use CSS instead. Each heading should be descriptive of the content that follows. Proper heading hierarchy improves SEO, accessibility, and makes content easier to navigate.
+
+---
+
+### Q3: What is the purpose of the `<mark>` element?
+
+The `<mark>` element highlights text that is relevant in a particular context, typically rendered with a yellow background. Common uses include highlighting search terms in search results, marking important passages in quoted text, or indicating text that has been brought to the reader's attention. It doesn't indicate importance (use `<strong>` for that) but rather relevance or reference in the current context. Screen readers may announce marked text differently.
+
+---
+
+### Q4: When should you use `<blockquote>` vs `<q>`?
+
+Use `<blockquote>` for longer quotations that should be visually separated from the main text - typically indented as a block. Use `<q>` for short inline quotations within a sentence - browsers automatically add quotation marks. Both should include the `cite` attribute with a URL to the source when available. `<blockquote>` can contain multiple paragraphs and other elements, while `<q>` is for inline content only.
+
+---
+
+### Q5: What's the difference between `<pre>` and `<code>`?
+
+`<code>` is for inline code snippets and represents computer code, rendering in a monospace font. `<pre>` is for preformatted text where whitespace and line breaks should be preserved exactly as written. They're often used together: `<pre>` wraps `<code>` when displaying multi-line code blocks. Use `<code>` alone for inline mentions of functions or variables, and `<pre><code>` for larger code examples. Neither provides syntax highlighting - that requires CSS or JavaScript libraries.
+
+---
+
+### Q6: What is the `<abbr>` element used for?
+
+The `<abbr>` element marks up abbreviations and acronyms, with the `title` attribute providing the full expansion. Hovering over it typically shows the full text as a tooltip. This improves accessibility by helping screen readers and users understand abbreviations. It's especially useful for technical documents with many acronyms. Style `<abbr>` with CSS to indicate it has a tooltip (commonly a dotted underline). The first occurrence of an abbreviation should usually have the title attribute.
+
+---
+
+### Q7: What is the semantic difference between `<em>` and `<i>`?
+
+`<em>` indicates stress emphasis - changing where emphasis falls changes the meaning of the sentence. Screen readers may pronounce it differently. Use it when you'd naturally stress the word while speaking. `<i>` represents text in an alternate voice or mood without emphasis - use it for technical terms, thoughts, foreign words, or taxonomic names. The distinction matters for accessibility: `<em>I love you</em>` (emphasizing love) differs from `<i>Homo sapiens</i>` (taxonomic name, no emphasis).
+
+---
+
+### Q8: What is the `<time>` element and why use it?
+
+The `<time>` element represents a specific period in time, with the `datetime` attribute providing a machine-readable format. It helps search engines understand dates, enables native browser features, and improves accessibility. The visible text can be human-friendly ("July 15th") while datetime uses ISO format ("2024-07-15"). It's useful for publication dates, event times, durations, and historical dates. Search engines may use this information for rich results.
+
+---
+
+### Q9: Should you use `<br>` to create space between elements?
+
+No, `<br>` should only be used for line breaks that are part of the content itself - like in addresses, poems, or song lyrics where the break is meaningful. For spacing between paragraphs or elements, use CSS margin or padding instead. Using multiple `<br>` tags to create visual spacing is bad practice because it mixes content with presentation. Proper HTML separates structure from styling.
+
+---
+
+### Q10: What elements should be used for displaying code?
+
+Use `<code>` for inline code mentions like function names or variables. For multi-line code blocks, wrap `<pre>` around `<code>` to preserve whitespace and formatting. Use `<kbd>` for keyboard input (shortcuts like Ctrl+C), `<var>` for variables in mathematical or programming expressions, and `<samp>` for sample output from programs. Remember to escape HTML characters (`<` becomes `&lt;`) inside code elements, or the browser will interpret them as HTML.
+
+

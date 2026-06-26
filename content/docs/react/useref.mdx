@@ -1,0 +1,514 @@
+---
+title: "useRef - References and Mutable Values"
+description: Documentation for useRef - References and Mutable Values.
+---
+
+# useRef - References and Mutable Values
+
+
+
+## What is useRef?
+
+useRef creates a mutable reference that persists across renders without causing re-renders.
+
+> **Definition:** useRef returns a mutable ref object with a `.current` property. Unlike state, changing `.current` doesn't trigger a re-render. It's commonly used for accessing DOM elements directly and storing mutable values that need to persist between renders.
+
+## Why Use useRef?
+
+| Use Case                 | Explanation                           |
+| ------------------------ | ------------------------------------- |
+| **DOM Access**           | Focus input, scroll, measure elements |
+| **Persist Values**       | Store values that don't affect render |
+| **Previous Value**       | Track previous state/prop values      |
+| **Interval/Timeout IDs** | Store IDs without re-renders          |
+| **Instance Variables**   | Class instance variable equivalent    |
+
+## useRef vs useState
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                  useRef vs useState                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│   useState:                                             │
+│   - Changes trigger re-render                           │
+│   - Value accessible in next render                     │
+│   - For data that affects UI                            │
+│                                                         │
+│   useRef:                                               │
+│   - Changes DON'T trigger re-render                     │
+│   - Value accessible immediately                        │
+│   - For data that doesn't affect UI                     │
+│   - For DOM element references                          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+| Feature       | useState          | useRef                  |
+| ------------- | ----------------- | ----------------------- |
+| Re-renders    | Yes, on change    | No                      |
+| Update timing | Async (batched)   | Immediate               |
+| Primary use   | UI data           | DOM refs / mutable data |
+| Persistence   | Yes               | Yes                     |
+| Initial value | Used first render | Used first render       |
+
+## Basic Syntax
+
+```jsx
+import { useRef } from "react";
+
+function Component() {
+  // Create a ref with initial value
+  const myRef = useRef(initialValue);
+
+  // Access the value
+  console.log(myRef.current); // initialValue
+
+  // Update the value (no re-render)
+  myRef.current = newValue;
+
+  return <div>{/* ... */}</div>;
+}
+```
+
+## DOM Element Access
+
+### Focus an Input
+
+```jsx
+function TextInput() {
+  const inputRef = useRef(null);
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={focusInput}>Focus Input</button>
+    </div>
+  );
+}
+```
+
+### Scroll to Element
+
+```jsx
+function ScrollToSection() {
+  const sectionRef = useRef(null);
+
+  const scrollToSection = () => {
+    sectionRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div>
+      <button onClick={scrollToSection}>Scroll to Section</button>
+      {/* ... lots of content ... */}
+      <section ref={sectionRef}>
+        <h2>Target Section</h2>
+      </section>
+    </div>
+  );
+}
+```
+
+### Measure Element
+
+```jsx
+function MeasuredBox() {
+  const boxRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (boxRef.current) {
+      const { width, height } = boxRef.current.getBoundingClientRect();
+      setDimensions({ width, height });
+    }
+  }, []);
+
+  return (
+    <div ref={boxRef}>
+      Box dimensions: {dimensions.width}px × {dimensions.height}px
+    </div>
+  );
+}
+```
+
+### Video/Audio Control
+
+```jsx
+function VideoPlayer({ src }) {
+  const videoRef = useRef(null);
+
+  const play = () => videoRef.current.play();
+  const pause = () => videoRef.current.pause();
+  const seek = (time) => {
+    videoRef.current.currentTime = time;
+  };
+
+  return (
+    <div>
+      <video ref={videoRef} src={src} />
+      <div>
+        <button onClick={play}>Play</button>
+        <button onClick={pause}>Pause</button>
+        <button onClick={() => seek(0)}>Restart</button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Mutable Values (Non-DOM)
+
+### Storing Interval ID
+
+```jsx
+function Timer() {
+  const [count, setCount] = useState(0);
+  const intervalRef = useRef(null);
+
+  const start = () => {
+    if (intervalRef.current) return; // Prevent multiple intervals
+
+    intervalRef.current = setInterval(() => {
+      setCount((c) => c + 1);
+    }, 1000);
+  };
+
+  const stop = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={start}>Start</button>
+      <button onClick={stop}>Stop</button>
+    </div>
+  );
+}
+```
+
+### Tracking Previous Value
+
+```jsx
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current; // Returns previous render's value
+}
+
+// Usage
+function Counter() {
+  const [count, setCount] = useState(0);
+  const previousCount = usePrevious(count);
+
+  return (
+    <div>
+      <p>
+        Current: {count}, Previous: {previousCount}
+      </p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+### Tracking Render Count
+
+```jsx
+function RenderCounter() {
+  const renderCount = useRef(0);
+
+  // Increment on every render
+  renderCount.current += 1;
+
+  return <p>This component rendered {renderCount.current} times</p>;
+}
+```
+
+### Storing Latest Value (for Closures)
+
+```jsx
+function SearchComponent() {
+  const [query, setQuery] = useState("");
+  const latestQuery = useRef(query);
+
+  // Keep ref updated
+  useEffect(() => {
+    latestQuery.current = query;
+  }, [query]);
+
+  const fetchResults = useCallback(async () => {
+    // Simulating delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Use ref to get latest value, avoiding stale closure
+    console.log("Searching for:", latestQuery.current);
+  }, []); // No deps needed
+
+  return (
+    <div>
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      <button onClick={fetchResults}>Search</button>
+    </div>
+  );
+}
+```
+
+## Callback Ref
+
+When you need to run code when a ref is attached/detached.
+
+```jsx
+function MeasureOnMount() {
+  const [height, setHeight] = useState(0);
+
+  // Callback ref - called when ref changes
+  const measuredRef = useCallback((node) => {
+    if (node !== null) {
+      setHeight(node.getBoundingClientRect().height);
+    }
+  }, []);
+
+  return <div ref={measuredRef}>Height: {height}px</div>;
+}
+```
+
+## forwardRef
+
+Pass refs to child components.
+
+```jsx
+import { forwardRef, useRef } from "react";
+
+// Child component wrapped with forwardRef
+const FancyInput = forwardRef((props, ref) => {
+  return <input ref={ref} className="fancy-input" {...props} />;
+});
+
+// Parent component
+function Form() {
+  const inputRef = useRef(null);
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <FancyInput ref={inputRef} placeholder="Enter text" />
+      <button onClick={focusInput}>Focus</button>
+    </div>
+  );
+}
+```
+
+## useImperativeHandle
+
+Customize the ref value exposed to parent components.
+
+```jsx
+import { forwardRef, useImperativeHandle, useRef } from "react";
+
+const FancyInput = forwardRef((props, ref) => {
+  const inputRef = useRef(null);
+
+  // Expose only specific methods
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    },
+    scrollIntoView: () => {
+      inputRef.current.scrollIntoView();
+    },
+    // Don't expose the actual DOM node
+  }));
+
+  return <input ref={inputRef} {...props} />;
+});
+
+// Parent
+function Form() {
+  const inputRef = useRef(null);
+
+  const handleClick = () => {
+    inputRef.current.focus(); // Works
+    // inputRef.current.value - undefined (not exposed)
+  };
+
+  return <FancyInput ref={inputRef} />;
+}
+```
+
+## Common Mistakes & Exceptions
+
+### 1. Using Ref Value During Render
+
+```jsx
+// ❌ Reading ref during render - unreliable
+function Component() {
+  const ref = useRef(0);
+  ref.current += 1; // Mutation during render
+
+  return <p>{ref.current}</p>; // Works, but not recommended
+}
+
+// ✅ Read/write refs in effects or event handlers
+function Component() {
+  const ref = useRef(0);
+
+  useEffect(() => {
+    ref.current += 1;
+    console.log("Render count:", ref.current);
+  });
+
+  return <p>Check console</p>;
+}
+```
+
+### 2. Expecting Re-render on Ref Change
+
+```jsx
+// ❌ UI won't update when ref changes
+function Counter() {
+  const countRef = useRef(0);
+
+  const increment = () => {
+    countRef.current += 1; // Updates, but no re-render
+    console.log(countRef.current); // Shows updated value
+  };
+
+  return (
+    <div>
+      <p>Count: {countRef.current}</p> {/* Stays at 0! */}
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+}
+
+// ✅ Use state for UI updates
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <p>{count}</p>;
+}
+```
+
+### 3. Not Checking for Null
+
+```jsx
+// ❌ May crash if ref not yet attached
+function Component() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    ref.current.focus(); // Error if null!
+  }, []);
+}
+
+// ✅ Always check
+useEffect(() => {
+  if (ref.current) {
+    ref.current.focus();
+  }
+}, []);
+
+// ✅ Or use optional chaining
+useEffect(() => {
+  ref.current?.focus();
+}, []);
+```
+
+### 4. Ref on Functional Component
+
+```jsx
+// ❌ Can't attach ref to function component
+function ChildComponent() {
+  return <input />;
+}
+
+function Parent() {
+  const ref = useRef();
+  return <ChildComponent ref={ref} />; // Warning!
+}
+
+// ✅ Use forwardRef
+const ChildComponent = forwardRef((props, ref) => {
+  return <input ref={ref} />;
+});
+```
+
+## Interview Questions & Answers
+
+### Q1: What is useRef and how does it differ from useState?
+
+`useRef` returns a mutable object `{ current: value }` that persists across renders. Unlike useState, changing `.current` does NOT trigger a re-render, and changes are immediate (not batched). Use useState for data that affects the UI; use useRef for DOM access, instance variables, timers, or any value that shouldn't cause re-renders when changed. The ref object remains the same reference across renders.
+
+---
+
+### Q2: When should you use useRef vs useState?
+
+Use **useRef** when: you need DOM element access, storing values that don't affect rendering (timer IDs, previous values), or avoiding stale closures. Use **useState** when: the value should trigger UI updates when changed. Rule of thumb: if changing the value should update the screen, use state. If it's a "silent" value or DOM reference, use ref. Overusing state for everything causes unnecessary re-renders.
+
+---
+
+### Q3: How do you access DOM elements with useRef?
+
+Create a ref with `useRef(null)`, attach it to an element via the `ref` attribute, then access the DOM node via `refVariable.current`. Example: `const inputRef = useRef(null)` → `<input ref={inputRef} />` → `inputRef.current.focus()`. The ref is available after mount, so access it in useEffect or event handlers, not during render. Always check if `.current` is null before using.
+
+---
+
+### Q4: What is forwardRef and why is it needed?
+
+`forwardRef` lets a component forward a ref to a child. By default, refs don't pass through function components. Wrap the child: `const Child = forwardRef((props, ref) => <input ref={ref} />)`. Now parent can do `<Child ref={myRef} />`. Used for: reusable input components, component libraries, accessing child DOM nodes. It creates a "hole" that passes the ref through to the actual DOM element.
+
+---
+
+### Q5: What is useImperativeHandle?
+
+`useImperativeHandle` customizes what the ref exposes to parent components. Used with `forwardRef`, it lets you expose specific methods instead of the raw DOM node. Example: expose only `focus()` and `reset()` methods, not the entire input element. This provides better encapsulation, prevents parents from accessing unintended properties, and creates a cleaner API for component communication.
+
+---
+
+### Q6: Why shouldn't you read/write refs during render?
+
+Refs are mutable and reading/writing during render can cause unpredictable behavior. React may render multiple times before committing, or bail out of renders. If you mutate refs during render, you can't predict the final value. Additionally, it breaks the expectation that render is a pure function. Read refs in effects (for initial DOM access) or event handlers (for user interactions). Write refs in effects or handlers, not during render.
+
+---
+
+### Q7: How do you track previous state/prop values with useRef?
+
+Create a custom hook: store the value in a ref, update it in useEffect. The ref holds the previous value because useEffect runs after render: `function usePrevious(value) { const ref = useRef(); useEffect(() => { ref.current = value; }, [value]); return ref.current; }`. This works because the ref update happens after render but before the next render, so on the next render, ref.current holds the previous value.
+
+---
+
+### Q8: What is a callback ref?
+
+A callback ref is a function passed to the `ref` attribute instead of a ref object. React calls it with the DOM node when mounted and `null` when unmounted: `<div ref={(node) => { if (node) measure(node); }} />`. Use when you need to act immediately when a ref is attached/detached, measure dynamic elements, or handle multiple refs. For stable references, wrap in useCallback to prevent recreation every render.
+
+---
+
+### Q9: How do you use refs to avoid stale closures?
+
+Store the latest value in a ref and update it in useEffect: `latestValueRef.current = value`. In callbacks/effects with stale closures (like setTimeout handlers or event listeners with empty deps), read from `latestValueRef.current` instead of the captured variable. The ref always has the latest value because updating it doesn't require re-running the effect/callback. This pattern bridges closure scoping with current values.
+
+---
+
+### Q10: Can you store multiple DOM refs in one useRef?
+
+Yes, use a ref to hold an object or array of refs. For dynamic lists: `const itemRefs = useRef({})` → `ref={(el) => { itemRefs.current[id] = el }}`. Or use an array: `const refs = useRef([])` → `ref={(el) => { refs.current[index] = el }}`. Cleanup by setting to null when items are removed. Alternatively, use `useRef(new Map())` for easier addition/deletion. This is useful for scrolling to items in lists.
+
+

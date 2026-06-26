@@ -1,0 +1,128 @@
+---
+title: "Responsive Images - Image Optimization"
+description: Documentation for Responsive Images - Image Optimization.
+---
+
+# Responsive Images - Image Optimization
+
+
+
+## What are Responsive Images?
+
+Responsive images adapt to different screen sizes and resolutions, ensuring optimal display and performance across devices.
+
+## Basic Responsive Image
+
+```css
+img {
+    max-width: 100%;
+    height: auto;
+}
+```
+
+This ensures images never overflow their container and maintain aspect ratio.
+
+## Techniques
+
+### 1. CSS max-width
+
+```css
+.responsive-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+```
+
+---
+
+### 2. object-fit
+
+```css
+.cover-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover; /* Fill container, may crop */
+}
+
+.contain-img {
+    width: 100%;
+    height: 300px;
+    object-fit: contain; /* Fit inside, may have gaps */
+}
+```
+
+---
+
+### 3. Background Images
+
+```css
+.hero {
+    background-image: url('hero.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        background-image: url('hero-mobile.jpg');
+    }
+}
+```
+
+---
+
+### 4. Picture Element (HTML)
+
+```html
+<picture>
+    <source media="(min-width: 1200px)" srcset="large.jpg">
+    <source media="(min-width: 768px)" srcset="medium.jpg">
+    <img src="small.jpg" alt="Responsive image">
+</picture>
+```
+
+## Common Patterns
+
+### Pattern 1: Card Image
+
+```css
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+```
+
+---
+
+### Pattern 2: Avatar
+
+```css
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+```
+
+---
+
+### Pattern 3: Hero Image
+
+```css
+.hero-img {
+    width: 100%;
+    height: 60vh;
+    object-fit: cover;
+    object-position: center;
+}
+```
+
+---
+
+
+

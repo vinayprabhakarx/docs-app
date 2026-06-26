@@ -1,0 +1,126 @@
+---
+title: "React Router Advanced - Protected Routes & Lazy Loading"
+description: Documentation for React Router Advanced - Protected Routes & Lazy Loading.
+---
+
+# React Router Advanced - Protected Routes & Lazy Loading
+
+
+
+## Protected Routes
+
+```jsx
+import { Navigate, Outlet } from "react-router-dom";
+
+function ProtectedRoute({ isAuthenticated }) {
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return <Outlet />;
+}
+
+// Usage
+<Routes>
+  <Route path="/login" element={<Login />} />
+
+  <Route element={<ProtectedRoute isAuthenticated={isLoggedIn} />}>
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/profile" element={<Profile />} />
+  </Route>
+</Routes>;
+```
+
+## Lazy Loading Routes
+
+```jsx
+import { lazy, Suspense } from "react";
+
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Settings = lazy(() => import("./pages/Settings"));
+
+function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+## Data Loading with Loaders (v6.4+)
+
+```jsx
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/users/:id",
+    element: <UserDetail />,
+    loader: async ({ params }) => {
+      return fetch(`/api/users/${params.id}`);
+    },
+    errorElement: <ErrorPage />,
+  },
+]);
+
+// Access loaded data
+import { useLoaderData } from "react-router-dom";
+
+function UserDetail() {
+  const user = useLoaderData();
+  return <div>{user.name}</div>;
+}
+
+// Render
+<RouterProvider router={router} />;
+```
+
+## Route Guards with Context
+
+```jsx
+const AuthContext = createContext();
+
+function RequireAuth({ children, redirectTo }) {
+  const { user } = useContext(AuthContext);
+  return user ? children : <Navigate to={redirectTo} />;
+}
+
+// Usage
+<Route
+  path="/admin"
+  element={
+    <RequireAuth redirectTo="/login">
+      <AdminPanel />
+    </RequireAuth>
+  }
+/>;
+```
+
+## Interview Questions & Answers
+
+### Q1: How do you protect routes?
+
+Create wrapper component checking auth, return Navigate to login if not authenticated, Outlet to render children if authenticated.
+
+---
+
+### Q2: What is lazy loading routes?
+
+Use React.lazy() with dynamic import to load route components only when needed. Wrap in Suspense with fallback.
+
+---
+
+### Q3: What are loaders in React Router v6.4?
+
+Data loading functions that run before route renders. Access with useLoaderData. Enables parallel data fetching.
+
+---
+
+### Q4: How to handle 404 pages?
+
+Add `<Route path="*" element={<NotFound />} />` at end of Routes. The \* matches any unmatched path.
+
+

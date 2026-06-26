@@ -1,0 +1,982 @@
+---
+title: "Pseudo-Classes - Interactive States"
+description: Documentation for Pseudo-Classes - Interactive States.
+---
+
+# Pseudo-Classes - Interactive States
+
+
+
+## What are Pseudo-classes?
+
+Pseudo-classes are keywords added to selectors that specify a **special state** of the selected element. They let you style elements based on:
+
+- User interaction (hover, click, focus)
+- Position in the document (first child, last child)
+- Form states (checked, disabled)
+
+Think of pseudo-classes as "conditions" - they style elements **when** something is true.
+
+### Why Use Pseudo-classes?
+
+Before pseudo-classes, creating interactive effects required JavaScript. Pseudo-classes solve this by:
+
+- **Adding interactivity with CSS alone** - No JavaScript needed for hover effects
+- **Improving accessibility** - Focus states help keyboard navigation
+- **Better user experience** - Visual feedback for user actions
+- **Cleaner code** - One CSS rule instead of multiple JavaScript event listeners
+
+## Pseudo-class Selectors - Quick Reference
+
+| Pseudo-class      | Syntax                   | Description             | Example                                       |
+| ----------------- | ------------------------ | ----------------------- | --------------------------------------------- |
+| `:hover`          | `element:hover`          | Mouse hover state       | `a:hover { color: red; }`                     |
+| `:active`         | `element:active`         | Being clicked/activated | `button:active { transform: scale(0.98); }`   |
+| `:focus`          | `element:focus`          | Has keyboard focus      | `input:focus { border-color: blue; }`         |
+| `:visited`        | `a:visited`              | Visited links           | `a:visited { color: purple; }`                |
+| `:first-child`    | `element:first-child`    | First child of parent   | `li:first-child { font-weight: bold; }`       |
+| `:last-child`     | `element:last-child`     | Last child of parent    | `li:last-child { margin-bottom: 0; }`         |
+| `:nth-child(n)`   | `element:nth-child(n)`   | Nth child element       | `tr:nth-child(even) { background: #f0f0f0; }` |
+| `:nth-of-type(n)` | `element:nth-of-type(n)` | Nth of same type        | `p:nth-of-type(2) { color: blue; }`           |
+| `:not(selector)`  | `element:not(selector)`  | Negation                | `div:not(.special) { opacity: 0.5; }`         |
+| `:checked`        | `input:checked`          | Checked inputs          | `input:checked + label { color: green; }`     |
+| `:disabled`       | `input:disabled`         | Disabled inputs         | `input:disabled { background: #ddd; }`        |
+| `:enabled`        | `input:enabled`          | Enabled inputs          | `input:enabled { background: white; }`        |
+
+## Detailed Explanation of Each Pseudo-class
+
+### 1. :hover Pseudo-class
+
+**What it does:**
+Applies styles when the user **hovers** their mouse pointer over an element. Creates interactive feedback.
+
+**Syntax:**
+
+```css
+selector:hover {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<button class="btn">Click Me</button>
+<a href="#" class="link">Hover over me</a>
+<div class="card">
+  <h3>Product Card</h3>
+  <p>Hover to see effect</p>
+</div>
+```
+
+**CSS Example 1 - Button hover:**
+
+```css
+.btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+```
+
+**Result:** When you hover over the button, it gets darker, slightly larger, and gains a shadow.
+
+**CSS Example 2 - Link hover:**
+
+```css
+.link {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+```
+
+**CSS Example 3 - Card hover:**
+
+```css
+.card {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: box-shadow 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+```
+
+**When to use:**
+
+- Interactive feedback on buttons and links
+- Show that an element is clickable
+- Image galleries and product cards
+- Navigation menus
+
+**Real-world scenario:**
+You have a navigation menu and want links to change color when users hover over them, showing which link they're about to click.
+
+**Best Practice:** Always use with `transition` for smooth effects instead of instant changes.
+
+---
+
+### 2. :active Pseudo-class
+
+**What it does:**
+Applies styles when an element is being **activated** (clicked/pressed). The state is very brief - only while the mouse button is down.
+
+**Syntax:**
+
+```css
+selector:active {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<button class="btn-press">Press Me</button>
+<a href="#" class="link-press">Click Me</a>
+```
+
+**CSS Example 1 - Button press effect:**
+
+```css
+.btn-press {
+  background-color: #28a745;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.btn-press:active {
+  background-color: #1e7e34;
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+```
+
+**Result:** When you click the button, it gets darker, slightly smaller, and has an inset shadow (looks pressed).
+
+**CSS Example 2 - Link click:**
+
+```css
+.link-press {
+  color: #007bff;
+}
+
+.link-press:active {
+  color: #d32f2f;
+}
+```
+
+**When to use:**
+
+- Visual feedback during click action
+- Buttons and interactive elements
+- Show the element is being pressed
+
+**Real-world scenario:**
+You want buttons to look like they're being physically pressed when clicked, giving tactile feedback to users.
+
+**Note:** The `:active` state is very brief (only while clicking). For longer-lasting states, use classes toggled with JavaScript.
+
+---
+
+### 3. :focus Pseudo-class
+
+**What it does:**
+Applies styles when an element has **keyboard focus** (selected via Tab key or clicked). Critical for accessibility.
+
+**Syntax:**
+
+```css
+selector:focus {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<form>
+  <input type="text" placeholder="Name" />
+  <input type="email" placeholder="Email" />
+  <textarea placeholder="Message"></textarea>
+  <button type="submit">Submit</button>
+</form>
+```
+
+**CSS Example 1 - Input focus:**
+
+```css
+input,
+textarea {
+  border: 2px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+```
+
+**Result:** When you click or tab into an input, it gets a blue border and a subtle blue glow.
+
+**CSS Example 2 - Button focus (accessibility):**
+
+```css
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+}
+
+button:focus {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}
+```
+
+**When to use:**
+
+- Form fields to show which field is active
+- Accessibility (keyboard navigation)
+- Improve user experience
+
+**Real-world scenario:**
+Users navigating your form with the Tab key need to see which field is currently selected. Use `:focus` to highlight the active field.
+
+**CRITICAL:** Never remove `:focus` styles without providing an alternative! This breaks accessibility for keyboard users.
+
+**Bad:**
+
+```css
+input:focus {
+  outline: none; /* DON'T DO THIS without replacement */
+}
+```
+
+**Good:**
+
+```css
+input:focus {
+  outline: none;
+  border-color: blue;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+```
+
+---
+
+### 4. :visited Pseudo-class
+
+**What it does:**
+Styles links that the user has **already visited**. Helps users track where they've been.
+
+**Syntax:**
+
+```css
+a:visited {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<nav>
+  <a href="page1.html">Page 1</a>
+  <a href="page2.html">Page 2</a>
+  <a href="page3.html">Page 3</a>
+</nav>
+```
+
+**CSS Example:**
+
+```css
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #6c757d;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+```
+
+**Result:** Unvisited links are blue, visited links are gray.
+
+**When to use:**
+
+- Show which links have been clicked
+- Better user navigation
+- Help users track their browsing history
+
+**Real-world scenario:**
+On a documentation site with many pages, users need to see which pages they've already read. Visited links appear in a different color.
+
+**Privacy Note:** For security reasons, only limited CSS properties can be used with `:visited` (mainly color-related properties).
+
+**Allowed:**
+
+```css
+a:visited {
+  color: purple;
+  background-color: #f0f0f0;
+}
+```
+
+**Not allowed (for privacy):**
+
+```css
+a:visited {
+  font-size: 20px; /* Not allowed */
+  border: 2px solid red; /* Not allowed */
+}
+```
+
+---
+
+### 5. :first-child Pseudo-class
+
+**What it does:**
+Selects an element that is the **first child** of its parent.
+
+**Syntax:**
+
+```css
+selector:first-child {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<ul class="menu">
+  <li>Home</li>
+  <!-- First child ✓ -->
+  <li>About</li>
+  <li>Services</li>
+  <li>Contact</li>
+</ul>
+```
+
+**CSS Example 1 - First list item:**
+
+```css
+.menu li:first-child {
+  font-weight: bold;
+  color: #007bff;
+  border-left: 3px solid #007bff;
+  padding-left: 10px;
+}
+```
+
+**Result:** Only "Home" (first li) is bold, blue, and has a left border.
+
+**CSS Example 2 - Remove top margin:**
+
+```html
+<div class="container">
+  <p>First paragraph</p>
+  <p>Second paragraph</p>
+  <p>Third paragraph</p>
+</div>
+```
+
+```css
+.container p {
+  margin-top: 20px;
+}
+
+.container p:first-child {
+  margin-top: 0;
+}
+```
+
+**Result:** All paragraphs have top margin except the first one.
+
+**When to use:**
+
+- Style the first element differently
+- Remove spacing from the first item
+- Special styling for the first list item
+
+**Real-world scenario:**
+You have a list of blog posts and want the first (most recent) post to stand out with a different background color.
+
+---
+
+### 6. :last-child Pseudo-class
+
+**What it does:**
+Selects an element that is the **last child** of its parent.
+
+**Syntax:**
+
+```css
+selector:last-child {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<div class="menu-items">
+  <div class="item">Item 1</div>
+  <div class="item">Item 2</div>
+  <div class="item">Item 3</div>
+  <!-- Last child ✓ -->
+</div>
+```
+
+**CSS Example 1 - Remove bottom border:**
+
+```css
+.item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+```
+
+**Result:** All items have a bottom border except the last one.
+
+**CSS Example 2 - Remove bottom margin:**
+
+```css
+.container p {
+  margin-bottom: 20px;
+}
+
+.container p:last-child {
+  margin-bottom: 0;
+}
+```
+
+**When to use:**
+
+- Remove spacing or borders from the last element
+- Special styling for the last item
+- Prevent extra spacing at the end of containers
+
+**Real-world scenario:**
+You have a list of items separated by borders. You don't want a border after the last item, so use `:last-child` to remove it.
+
+---
+
+### 7. :nth-child(n) Pseudo-class
+
+**What it does:**
+Selects elements based on their **position** in a parent using a formula. Very powerful for creating patterns.
+
+**Syntax:**
+
+```css
+selector:nth-child(n) {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<table>
+  <tr>
+    <td>Row 1</td>
+  </tr>
+  <tr>
+    <td>Row 2</td>
+  </tr>
+  <tr>
+    <td>Row 3</td>
+  </tr>
+  <tr>
+    <td>Row 4</td>
+  </tr>
+  <tr>
+    <td>Row 5</td>
+  </tr>
+</table>
+```
+
+**Example 1 - Zebra striping (alternating colors):**
+
+```css
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(odd) {
+  background-color: white;
+}
+```
+
+**Result:** Rows alternate between white and gray (zebra stripes).
+
+**Example 2 - Every third element:**
+
+```html
+<div class="grid">
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+  <!-- Selected -->
+  <div class="item">4</div>
+  <div class="item">5</div>
+  <div class="item">6</div>
+  <!-- Selected -->
+</div>
+```
+
+```css
+.item:nth-child(3n) {
+  background-color: #007bff;
+  color: white;
+}
+```
+
+**Result:** Every 3rd item (3, 6, 9...) is blue.
+
+**Example 3 - Specific element:**
+
+```css
+li:nth-child(2) {
+  font-weight: bold;
+}
+```
+
+**Result:** Only the 2nd list item is bold.
+
+**Example 4 - First 3 elements:**
+
+```css
+li:nth-child(-n + 3) {
+  color: red;
+}
+```
+
+**Result:** First 3 items are red.
+
+**Example 5 - All except first 3:**
+
+```css
+li:nth-child(n + 4) {
+  opacity: 0.5;
+}
+```
+
+**Result:** Items from 4th onwards have reduced opacity.
+
+**Formula Guide:**
+
+- `odd` or `2n+1`: 1st, 3rd, 5th, 7th...
+- `even` or `2n`: 2nd, 4th, 6th, 8th...
+- `3n`: Every 3rd (3, 6, 9, 12...)
+- `3n+1`: 1st, 4th, 7th, 10th...
+- `n+4`: 4th element onwards
+- `-n+3`: First 3 elements only
+
+**When to use:**
+
+- Creating patterns (zebra stripes, grids)
+- Styling specific positions
+- Alternating colors
+
+**Real-world scenario:**
+You have a table with many rows and want to make it easier to read by alternating row colors. Use `:nth-child(even)` and `:nth-child(odd)`.
+
+---
+
+### 8. :nth-of-type(n) Pseudo-class
+
+**What it does:**
+Selects elements based on their position among **siblings of the same type**. More specific than `:nth-child`.
+
+**Syntax:**
+
+```css
+selector:nth-of-type(n) {
+  property: value;
+}
+```
+
+**Difference from :nth-child:**
+
+- `:nth-child` counts ALL children
+- `:nth-of-type` counts only elements of the same type
+
+**HTML Example:**
+
+```html
+<div class="content">
+  <h2>Heading</h2>
+  <p>First paragraph</p>
+  <!-- p:nth-of-type(1) ✓ -->
+  <p>Second paragraph</p>
+  <!-- p:nth-of-type(2) ✓ -->
+  <div>Some div</div>
+  <p>Third paragraph</p>
+  <!-- p:nth-of-type(3) ✓ -->
+</div>
+```
+
+**CSS Example:**
+
+```css
+p:nth-of-type(1) {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+```
+
+**Result:** The first `<p>` is bold and larger, even though it's the 2nd child overall.
+
+**Comparison:**
+
+```css
+/* This would select the h2 (first child) */
+.content :nth-child(1) {
+  color: red;
+}
+
+/* This selects the first p (second child overall) */
+.content p:nth-of-type(1) {
+  color: blue;
+}
+```
+
+**When to use:**
+
+- When you want to count only specific element types
+- More precise than `:nth-child`
+- When elements are mixed types
+
+**Real-world scenario:**
+You have a blog post with headings and paragraphs mixed together. You want to style the first paragraph after each heading differently, regardless of other elements in between.
+
+---
+
+### 9. :not() Pseudo-class
+
+**What it does:**
+Selects elements that **do NOT match** the given selector (negation/exclusion).
+
+**Syntax:**
+
+```css
+selector:not(excluded-selector) {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<div class="box">Regular box</div>
+<div class="box special">Special box</div>
+<div class="box">Regular box</div>
+<div class="box">Regular box</div>
+```
+
+**CSS Example 1 - Exclude one class:**
+
+```css
+.box:not(.special) {
+  background-color: #f0f0f0;
+  opacity: 0.7;
+}
+
+.box.special {
+  background-color: #ffd700;
+  font-weight: bold;
+}
+```
+
+**Result:** All boxes except `.special` have gray background and reduced opacity.
+
+**Example 2 - All inputs except submit:**
+
+```html
+<form>
+  <input type="text" placeholder="Name" />
+  <input type="email" placeholder="Email" />
+  <input type="submit" value="Submit" />
+</form>
+```
+
+```css
+input:not([type="submit"]) {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+}
+```
+
+**Result:** Text and email inputs are styled, but the submit button is not.
+
+**Example 3 - All list items except first:**
+
+```css
+li:not(:first-child) {
+  margin-top: 10px;
+}
+```
+
+**Result:** All list items have top margin except the first one.
+
+**Example 4 - Multiple exclusions:**
+
+```css
+button:not(.primary):not(.secondary) {
+  background-color: #6c757d;
+  color: white;
+}
+```
+
+**Result:** All buttons except those with `.primary` or `.secondary` classes get gray background.
+
+**When to use:**
+
+- Exclude specific elements from styling
+- Create exceptions in your styles
+- Avoid writing multiple selectors
+
+**Real-world scenario:**
+You have a form with many inputs and want to style all of them except the submit button. Use `input:not([type="submit"])` instead of listing every input type.
+
+---
+
+### 10. :checked Pseudo-class
+
+**What it does:**
+Selects **checked** checkboxes or radio buttons. Enables custom form styling without JavaScript.
+
+**Syntax:**
+
+```css
+input:checked {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<label>
+  <input type="checkbox" id="terms" />
+  <span>I agree to terms</span>
+</label>
+
+<input type="checkbox" id="toggle" />
+<label for="toggle">Show Details</label>
+<div class="details">Hidden details here</div>
+```
+
+**CSS Example 1 - Custom checkbox:**
+
+```css
+input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+input[type="checkbox"]:checked {
+  outline: 2px solid green;
+}
+
+input[type="checkbox"]:checked + span {
+  color: green;
+  font-weight: bold;
+}
+```
+
+**Result:** When checkbox is checked, it gets a green outline and the label turns green and bold.
+
+**CSS Example 2 - Toggle content (no JavaScript!):**
+
+```css
+.details {
+  display: none;
+  padding: 10px;
+  background-color: #f0f0f0;
+  margin-top: 10px;
+}
+
+#toggle:checked ~ .details {
+  display: block;
+}
+```
+
+**Result:** Checking the checkbox shows the hidden details.
+
+**CSS Example 3 - Custom radio buttons:**
+
+```html
+<label>
+  <input type="radio" name="plan" value="basic" />
+  <span class="radio-label">Basic Plan</span>
+</label>
+<label>
+  <input type="radio" name="plan" value="pro" />
+  <span class="radio-label">Pro Plan</span>
+</label>
+```
+
+```css
+input[type="radio"]:checked + .radio-label {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+```
+
+**When to use:**
+
+- Custom checkbox/radio styling
+- Toggle switches
+- Show/hide content without JavaScript
+- Form validation feedback
+
+**Real-world scenario:**
+You want to create a toggle switch that shows/hides additional form fields when checked, all with pure CSS.
+
+---
+
+### 11. :disabled Pseudo-class
+
+**What it does:**
+Selects **disabled** form elements (inputs, buttons, etc.).
+
+**Syntax:**
+
+```css
+input:disabled {
+  property: value;
+}
+```
+
+**HTML Example:**
+
+```html
+<input type="text" value="Enabled field" />
+<input type="text" value="Disabled field" disabled />
+<button>Enabled Button</button>
+<button disabled>Disabled Button</button>
+```
+
+**CSS Example:**
+
+```css
+input,
+button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input:disabled,
+button:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+```
+
+**Result:** Disabled fields have gray background, gray text, and show a "not-allowed" cursor.
+
+**When to use:**
+
+- Visually indicate disabled form fields
+- Show that an element cannot be interacted with
+- Better user experience
+
+**Real-world scenario:**
+You have a form where certain fields are disabled until the user completes previous steps. Disabled fields should look visually different to show they can't be edited yet.
+
+---
+
+### 12. :enabled Pseudo-class
+
+**What it does:**
+Selects **enabled** (not disabled) form elements. Usually the default state.
+
+**Syntax:**
+
+```css
+input:enabled {
+  property: value;
+}
+```
+
+**CSS Example:**
+
+```css
+input:enabled {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+input:enabled:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+```
+
+**When to use:**
+
+- Style active form fields
+- Differentiate from disabled fields
+- Usually the default state
+
+**Real-world scenario:**
+You want to ensure only enabled fields have focus states and interactive styling.
+
+## Related Topics
+
+- [[01-CSS-Selectors|CSS Selectors]] - Learn about basic selectors
+- [[03-Pseudo-Elements|Pseudo-Elements]] - Learn about ::before, ::after
+- [[19-Transitions|Transitions]] - Smooth hover effects
+
+---
+
+

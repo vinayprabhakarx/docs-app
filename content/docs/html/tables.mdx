@@ -1,0 +1,208 @@
+---
+title: "Tables - Structured Data"
+description: Documentation for Tables - Structured Data.
+---
+
+# Tables - Structured Data
+
+
+
+## What are Tables?
+
+Tables organize data into rows and columns for easy comparison and reading.
+
+> **Definition:** HTML tables (`<table>`) are used for displaying tabular data - information that naturally exists in a grid format. Tables should NOT be used for page layout (use CSS Grid/Flexbox instead). They consist of rows (`<tr>`), header cells (`<th>`), and data cells (`<td>`).
+
+## Table Structure
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Data 1</td>
+      <td>Data 2</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>Footer 1</td>
+      <td>Footer 2</td>
+    </tr>
+  </tfoot>
+</table>
+```
+
+## Table Elements
+
+| Element      | Purpose          | Required |
+| ------------ | ---------------- | -------- |
+| `<table>`    | Table container  | ✅ Yes   |
+| `<tr>`       | Table row        | ✅ Yes   |
+| `<th>`       | Header cell      | No       |
+| `<td>`       | Data cell        | ✅ Yes   |
+| `<thead>`    | Header row group | No       |
+| `<tbody>`    | Body row group   | No       |
+| `<tfoot>`    | Footer row group | No       |
+| `<caption>`  | Table title      | No       |
+| `<colgroup>` | Column group     | No       |
+| `<col>`      | Column styling   | No       |
+
+## Complete Table Example
+
+```html
+<table>
+  <caption>
+    Monthly Sales Report
+  </caption>
+
+  <thead>
+    <tr>
+      <th>Month</th>
+      <th>Revenue</th>
+      <th>Growth</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>January</td>
+      <td>$10,000</td>
+      <td>+5%</td>
+    </tr>
+    <tr>
+      <td>February</td>
+      <td>$12,000</td>
+      <td>+20%</td>
+    </tr>
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td>Total</td>
+      <td>$22,000</td>
+      <td>+12.5%</td>
+    </tr>
+  </tfoot>
+</table>
+```
+
+## Spanning Cells
+
+```html
+<!-- Colspan - merge cells horizontally -->
+<tr>
+  <td colspan="2">Spans two columns</td>
+</tr>
+
+<!-- Rowspan - merge cells vertically -->
+<tr>
+  <td rowspan="3">Spans three rows</td>
+  <td>Row 1</td>
+</tr>
+<tr>
+  <td>Row 2</td>
+</tr>
+<tr>
+  <td>Row 3</td>
+</tr>
+
+<!-- Combined example -->
+<table>
+  <tr>
+    <th colspan="2">Name</th>
+    <th rowspan="2">Age</th>
+  </tr>
+  <tr>
+    <th>First</th>
+    <th>Last</th>
+  </tr>
+  <tr>
+    <td>John</td>
+    <td>Doe</td>
+    <td>30</td>
+  </tr>
+</table>
+```
+
+## Table Headers Scope
+
+```html
+<!-- Column headers -->
+<th scope="col">Product</th>
+<th scope="col">Price</th>
+
+<!-- Row headers -->
+<tr>
+  <th scope="row">Widget A</th>
+  <td>$10</td>
+</tr>
+
+<!-- Column group headers -->
+<th scope="colgroup" colspan="2">Sales Data</th>
+
+<!-- Row group headers -->
+<th scope="rowgroup" rowspan="3">Q1</th>
+```
+
+| scope Value | Use For                       |
+| ----------- | ----------------------------- |
+| `col`       | Header for a column           |
+| `row`       | Header for a row              |
+| `colgroup`  | Header for a group of columns |
+| `rowgroup`  | Header for a group of rows    |
+
+## Column Styling
+
+```html
+<table>
+  <colgroup>
+    <col style="background-color: #f0f0f0" />
+    <col span="2" style="background-color: #e0e0e0" />
+    <col style="background-color: #d0d0d0" />
+  </colgroup>
+  <tr>
+    <th>A</th>
+    <th>B</th>
+    <th>C</th>
+    <th>D</th>
+  </tr>
+</table>
+```
+
+## Interview Questions & Answers
+
+### Q1: When should you use HTML tables?
+
+Use tables only for tabular data - information that naturally exists in rows and columns like spreadsheets, schedules, comparison charts, or data reports. Never use tables for page layout - that's what CSS Grid and Flexbox are for. Layout tables break accessibility (screen readers announce table structure), make maintenance difficult, and don't adapt well to different screen sizes. If your content isn't truly tabular data, use other semantic elements instead.
+
+---
+
+### Q2: What's the difference between th and td?
+
+`<th>` (table header) represents header cells that label rows or columns, while `<td>` (table data) contains actual data. Headers are bold and centered by default. More importantly, `<th>` has semantic meaning - screen readers use it to announce column/row context. Use `scope` attribute on `<th>` to specify if it heads a column (`scope="col"`) or row (`scope="row"`) for accessibility. Headers improve both visual clarity and accessibility.
+
+---
+
+### Q3: What is the purpose of thead, tbody, and tfoot?
+
+These elements group table rows: `<thead>` for header rows, `<tbody>` for data rows, and `<tfoot>` for footer rows (like totals). Benefits include: better semantics for screen readers, ability to style each section differently, and with long tables, browsers can scroll tbody while keeping thead/tfoot visible. Even if you omit tbody, browsers implicitly create one. You can have multiple tbody elements to group related rows.
+
+---
+
+### Q4: How do colspan and rowspan work?
+
+`colspan` makes a cell span multiple columns horizontally; `rowspan` makes it span multiple rows vertically. The spanning cell takes the place of cells it covers, so those cells shouldn't exist in the HTML. For example, `colspan="3"` means the cell occupies three column positions. Plan your table structure carefully when using spans - it's easy to miscount and create invalid tables. Screen readers can handle spans but complex tables may confuse users.
+
+---
+
+### Q5: How do you make tables accessible?
+
+Include `<caption>` to describe the table's purpose. Use `<th>` elements with `scope` attribute (`col` or `row`) so screen readers can announce context. For complex tables with multi-level headers, use `headers` attribute on `<td>` referencing `<th>` IDs. Use semantic grouping with thead/tbody/tfoot. Don't use layout tables. Ensure sufficient color contrast. Consider providing a text summary for very complex tables. Test with screen readers.
+
+

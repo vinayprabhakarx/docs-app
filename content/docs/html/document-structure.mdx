@@ -1,0 +1,398 @@
+---
+title: "Document Structure - Building the HTML Skeleton"
+description: Documentation for Document Structure - Building the HTML Skeleton.
+---
+
+# Document Structure - Building the HTML Skeleton
+
+
+
+## What is Document Structure?
+
+Every HTML document follows a standard structure that tells browsers how to interpret and display the content.
+
+> **Definition:** The document structure is the required framework of elements that every valid HTML page must have. It includes the DOCTYPE declaration, html root element, head section for metadata, and body section for visible content.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Title</title>
+  </head>
+  <body>
+    <!-- Visible content goes here -->
+  </body>
+</html>
+```
+
+## Document Structure Overview
+
+```
+HTML Document
+    │
+    ├── <!DOCTYPE html>          ─── Declaration (not an element)
+    │
+    └── <html lang="en">         ─── Root element
+            │
+            ├── <head>           ─── Document metadata
+            │     ├── <meta charset="UTF-8">
+            │     ├── <meta name="viewport"...>
+            │     ├── <title>Page Title</title>
+            │     ├── <meta name="description"...>
+            │     ├── <link rel="stylesheet"...>
+            │     └── <script src="..."></script>
+            │
+            └── <body>           ─── Visible content
+                  ├── <header>
+                  ├── <nav>
+                  ├── <main>
+                  ├── <aside>
+                  └── <footer>
+```
+
+## DOCTYPE Declaration
+
+The DOCTYPE tells the browser which version of HTML to use.
+
+```html
+<!-- HTML5 DOCTYPE (use this) -->
+<!DOCTYPE html>
+
+<!-- Old DOCTYPEs (historical reference only) -->
+<!-- HTML 4.01 Strict -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<!-- XHTML 1.0 Strict -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+```
+
+| Aspect       | HTML5                   | Previous Versions    |
+| ------------ | ----------------------- | -------------------- |
+| **Syntax**   | `<!DOCTYPE html>`       | Long DTD reference   |
+| **Case**     | Case-insensitive        | Case-sensitive       |
+| **Required** | Yes                     | Yes                  |
+| **Purpose**  | Triggers standards mode | Specify HTML version |
+
+## The `<html>` Element
+
+The root element that contains all HTML content.
+
+```html
+<html lang="en">
+  <!-- Everything else goes here -->
+</html>
+
+<!-- Specify language for accessibility and SEO -->
+<html lang="en">
+  <!-- English -->
+  <html lang="es">
+    <!-- Spanish -->
+    <html lang="fr">
+      <!-- French -->
+      <html lang="zh-CN">
+        <!-- Chinese (Simplified) -->
+        <html lang="ar" dir="rtl">
+          <!-- Arabic (right-to-left) -->
+        </html>
+      </html>
+    </html>
+  </html>
+</html>
+```
+
+## The `<head>` Element
+
+Contains metadata about the document (not visible on page).
+
+### Essential Head Elements
+
+```html
+<head>
+  <!-- Character encoding (must be first) -->
+  <meta charset="UTF-8" />
+
+  <!-- Viewport for responsive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Page title (required, shows in browser tab) -->
+  <title>My Website - Home</title>
+
+  <!-- Description for search engines -->
+  <meta name="description" content="A brief description of the page content" />
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+</head>
+```
+
+### Complete Head Example
+
+```html
+<head>
+  <!-- Character encoding -->
+  <meta charset="UTF-8" />
+
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Title -->
+  <title>My Website - Best Products Online</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Discover the best products..." />
+  <meta name="keywords" content="products, shopping, deals" />
+  <meta name="author" content="Your Name" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph (Social Media) -->
+  <meta property="og:title" content="My Website" />
+  <meta property="og:description" content="Discover the best..." />
+  <meta property="og:image" content="https://example.com/image.jpg" />
+  <meta property="og:url" content="https://example.com" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="My Website" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="normalize.css" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Preload critical assets -->
+  <link
+    rel="preload"
+    href="font.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://example.com/page" />
+</head>
+```
+
+## Meta Tags Reference
+
+| Meta Tag               | Purpose                        | Example                                    |
+| ---------------------- | ------------------------------ | ------------------------------------------ |
+| `charset`              | Character encoding             | `<meta charset="UTF-8">`                   |
+| `viewport`             | Mobile responsiveness          | `<meta name="viewport" content="...">`     |
+| `description`          | SEO page description           | `<meta name="description" content="...">`  |
+| `keywords`             | SEO keywords (less useful now) | `<meta name="keywords" content="...">`     |
+| `author`               | Page author                    | `<meta name="author" content="Name">`      |
+| `robots`               | Search engine instructions     | `<meta name="robots" content="noindex">`   |
+| `http-equiv="refresh"` | Auto redirect                  | `<meta http-equiv="refresh" content="5">`  |
+| `theme-color`          | Browser theme color            | `<meta name="theme-color" content="#fff">` |
+
+### Viewport Meta Tag
+
+```html
+<!-- Standard responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Viewport options -->
+<meta
+  name="viewport"
+  content="
+  width=device-width,    /* Width matches device */
+  initial-scale=1.0,     /* Initial zoom level */
+  maximum-scale=5.0,     /* Max zoom (accessibility) */
+  user-scalable=yes      /* Allow pinch zoom */
+"
+/>
+
+<!-- ❌ Bad: Prevents zooming (accessibility issue) -->
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+```
+
+## The `<body>` Element
+
+Contains all visible content.
+
+```html
+<body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Welcome</h1>
+    <p>Main content goes here.</p>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 My Website</p>
+  </footer>
+
+  <!-- Scripts at end for performance -->
+  <script src="app.js"></script>
+</body>
+```
+
+## Link Element Types
+
+| `rel` Value    | Purpose                      | Example                                    |
+| -------------- | ---------------------------- | ------------------------------------------ |
+| `stylesheet`   | External CSS                 | `<link rel="stylesheet" href="style.css">` |
+| `icon`         | Favicon                      | `<link rel="icon" href="favicon.ico">`     |
+| `preload`      | Preload resource             | `<link rel="preload" href="..." as="...">` |
+| `prefetch`     | Prefetch for next navigation | `<link rel="prefetch" href="page2.html">`  |
+| `canonical`    | Preferred URL                | `<link rel="canonical" href="...">`        |
+| `alternate`    | Alternative version          | `<link rel="alternate" hreflang="es">`     |
+| `manifest`     | Web app manifest             | `<link rel="manifest" href="...">`         |
+| `dns-prefetch` | DNS resolution hint          | `<link rel="dns-prefetch" href="...">`     |
+
+## Script Placement
+
+```html
+<!-- In <head> with defer (recommended for external) -->
+<head>
+  <script src="app.js" defer></script>
+</head>
+
+<!-- At end of <body> (traditional) -->
+<body>
+  <!-- content -->
+  <script src="app.js"></script>
+</body>
+
+<!-- Async (loads independently, any order) -->
+<script src="analytics.js" async></script>
+
+<!-- Inline script -->
+<script>
+  console.log("Hello World");
+</script>
+
+<!-- Module script -->
+<script type="module" src="app.mjs"></script>
+```
+
+| Attribute | Execution                        | Use Case                        |
+| --------- | -------------------------------- | ------------------------------- |
+| None      | Blocks parsing, runs immediately | Inline critical scripts         |
+| `defer`   | After HTML parsed, in order      | Main application scripts        |
+| `async`   | When loaded, any order           | Independent scripts (analytics) |
+| `module`  | Deferred by default              | ES6 modules                     |
+
+## Complete Template
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Page description for SEO" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <title>Page Title - Site Name</title>
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <script src="/js/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <nav aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <article>
+        <h1>Page Heading</h1>
+        <p>Content goes here...</p>
+      </article>
+    </main>
+
+    <aside>
+      <h2>Related Links</h2>
+    </aside>
+
+    <footer>
+      <p>&copy; 2024 Your Name</p>
+    </footer>
+  </body>
+</html>
+```
+
+## Interview Questions & Answers
+
+### Q1: What is DOCTYPE and why is it required?
+
+DOCTYPE (Document Type Declaration) is a required preamble at the very beginning of an HTML document. It tells the browser which version of HTML the page is written in, ensuring the browser renders the page in standards mode rather than quirks mode. In HTML5, the DOCTYPE is simply `<!DOCTYPE html>` - much simpler than previous versions which required long DTD references. Without a DOCTYPE, browsers may enter quirks mode where they emulate old, non-standard behavior for backward compatibility, causing layout inconsistencies. Always include it as the first line.
+
+---
+
+### Q2: What's the difference between the head and body elements?
+
+The `<head>` element contains metadata about the document - information that isn't displayed on the page but is used by browsers, search engines, and other services. This includes the title, meta tags, CSS links, and scripts. The `<body>` element contains all the visible content that users see and interact with - text, images, links, forms, etc. Think of head as the document's configuration and body as the document's actual content. Both are required children of the html element.
+
+---
+
+### Q3: What are meta tags and why are they important?
+
+Meta tags provide metadata about the HTML document within the head element. They're crucial for: character encoding (`charset="UTF-8"` ensures proper text display), responsive design (`viewport` meta tag), SEO (description, keywords, robots), social media sharing (Open Graph, Twitter Cards), and browser behavior (theme-color, http-equiv). While users don't see meta tags directly, they significantly affect how pages are indexed by search engines, shared on social media, and displayed on different devices. Some meta tags are required for proper page rendering.
+
+---
+
+### Q4: What does the viewport meta tag do?
+
+The viewport meta tag controls how the page is displayed on mobile devices. `width=device-width` sets the viewport width to match the device's screen width rather than defaulting to a desktop width (typically 980px). `initial-scale=1.0` sets the initial zoom level. Without this tag, mobile browsers render pages at desktop width and scale them down, making text tiny and requiring users to zoom. It's essential for responsive design. Avoid disabling zoom with `user-scalable=no` as it creates accessibility issues.
+
+---
+
+### Q5: Where should CSS and JavaScript be placed?
+
+CSS should be in the head element so styles load before content renders, preventing flash of unstyled content (FOUC). Use `<link rel="stylesheet">` for external files. JavaScript traditionally goes at the end of body to not block HTML parsing, but modern best practice is to place scripts in head with the `defer` attribute - this downloads in parallel while parsing continues and executes after parsing completes, in order. Use `async` for independent scripts like analytics that don't depend on DOM or other scripts.
+
+---
+
+### Q6: What is the difference between defer and async?
+
+Both attributes allow scripts to download without blocking HTML parsing, but they differ in execution: `defer` scripts execute after HTML is fully parsed and in the order they appear in the document - ideal for scripts that depend on the DOM or each other. `async` scripts execute as soon as they finish downloading, regardless of order or DOM state - ideal for independent scripts like analytics that don't depend on anything. Without either attribute, scripts block parsing and execute immediately, which hurts performance.
+
+---
+
+### Q7: What is the lang attribute and why is it important?
+
+The `lang` attribute on the html element specifies the primary language of the document's content (e.g., `lang="en"` for English). It's important for accessibility - screen readers use it to pronounce text correctly with the right accent. Search engines use it for language-specific results. Browsers use it for auto-translation features and spell-check language selection. It also helps with proper hyphenation and quotation mark styles in CSS. You can also use lang on individual elements for content in different languages.
+
+---
+
+### Q8: What are some essential meta tags for SEO?
+
+Essential SEO meta tags include: `title` (the most important, shows in search results and browser tabs), `meta description` (summary shown in search results, should be 150-160 characters), `robots` (controls indexing with values like "index, follow" or "noindex"), `canonical` (specifies preferred URL to prevent duplicate content issues), and `viewport` (required for mobile-friendliness which is a ranking factor). Open Graph and Twitter Card meta tags help when content is shared on social media. Keywords meta was important historically but is now largely ignored by search engines.
+
+---
+
+### Q9: What is the purpose of the link element?
+
+The link element defines relationships between the current document and external resources. Most commonly, it links to stylesheets (`rel="stylesheet"`), favicon icons (`rel="icon"`), and web app manifests (`rel="manifest"`). It's also used for performance hints like preloading critical assets (`rel="preload"`), prefetching resources for next navigation (`rel="prefetch"`), and DNS prefetching (`rel="dns-prefetch"`). The canonical link specifies the preferred URL for SEO. Link elements are void elements, only appearing in the head, and have no closing tag.
+
+---
+
+### Q10: What is the difference between `<script>` in head vs body?
+
+Scripts in the head block HTML parsing until they download and execute, delaying content display - bad for performance. Scripts at the end of body allow HTML to parse first, improving perceived load time. However, modern best practice is putting scripts in head with `defer` - they download in parallel with HTML parsing (faster than body placement) but execute after parsing in document order. Use `async` in head for independent scripts. The key factors are: don't block rendering, ensure DOM is ready before DOM-dependent scripts run, and maintain script execution order when needed.
+
+

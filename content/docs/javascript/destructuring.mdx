@@ -1,0 +1,594 @@
+---
+title: "Destructuring - Extracting Values Elegantly"
+description: Documentation for Destructuring - Extracting Values Elegantly.
+---
+
+# Destructuring - Extracting Values Elegantly
+
+
+
+## What is Destructuring?
+
+**Destructuring** is a syntax that allows you to unpack values from arrays or properties from objects into distinct variables. It makes code cleaner and more readable.
+
+> **Definition:** Destructuring is an ES6 feature that provides a concise way to extract multiple values from arrays and objects into separate variables in a single statement, reducing repetitive code and improving readability.
+
+```javascript
+// Without destructuring
+const user = { name: "John", age: 30 };
+const name = user.name;
+const age = user.age;
+
+// ✅ With destructuring
+const { name, age } = user;
+```
+
+## Array Destructuring
+
+### Basic Array Destructuring
+
+```javascript
+const colors = ["red", "green", "blue"];
+
+// Extract values
+const [first, second, third] = colors;
+console.log(first); // 'red'
+console.log(second); // 'green'
+console.log(third); // 'blue'
+
+// Skip elements
+const [primary, , tertiary] = colors;
+console.log(primary); // 'red'
+console.log(tertiary); // 'blue'
+
+// Rest of array
+const [head, ...tail] = colors;
+console.log(head); // 'red'
+console.log(tail); // ['green', 'blue']
+```
+
+### Default Values
+
+```javascript
+const colors = ["red"];
+
+// Without default
+const [first, second] = colors;
+console.log(second); // undefined
+
+// With default
+const [first2, second2 = "green"] = colors;
+console.log(second2); // 'green'
+
+// Multiple defaults
+const [a = 1, b = 2, c = 3] = [10];
+console.log(a, b, c); // 10, 2, 3
+
+// Default only applies if undefined
+const [x = 5] = [null];
+console.log(x); // null (not 5, because null !== undefined)
+```
+
+### Swapping Variables
+
+```javascript
+let a = 1;
+let b = 2;
+
+// Old way
+let temp = a;
+a = b;
+b = temp;
+
+// ✅ With destructuring
+[a, b] = [b, a];
+console.log(a, b); // 2, 1
+
+// Swap multiple
+let x = 1,
+  y = 2,
+  z = 3;
+[x, y, z] = [z, x, y];
+console.log(x, y, z); // 3, 1, 2
+```
+
+### Nested Array Destructuring
+
+```javascript
+const nested = [1, [2, 3], 4];
+
+const [first, [second, third], fourth] = nested;
+console.log(first); // 1
+console.log(second); // 2
+console.log(third); // 3
+console.log(fourth); // 4
+
+// More complex nesting
+const matrix = [
+  [1, 2],
+  [3, 4],
+];
+const [[a, b], [c, d]] = matrix;
+console.log(a, b, c, d); // 1, 2, 3, 4
+```
+
+## Object Destructuring
+
+### Basic Object Destructuring
+
+```javascript
+const user = {
+  name: "John",
+  age: 30,
+  city: "NYC",
+};
+
+// Extract properties
+const { name, age, city } = user;
+console.log(name); // 'John'
+console.log(age); // 30
+console.log(city); // 'NYC'
+
+// Order doesn't matter (uses property names)
+const { city: c, name: n, age: a } = user;
+console.log(c); // 'NYC'
+```
+
+### Renaming Variables
+
+```javascript
+const user = { name: "John", age: 30 };
+
+// Rename during destructuring
+const { name: userName, age: userAge } = user;
+console.log(userName); // 'John'
+console.log(userAge); // 30
+
+// Useful for avoiding conflicts
+const { name: firstName } = { name: "John" };
+const { name: lastName } = { name: "Doe" };
+
+// Rename with default
+const { email: userEmail = "no-email" } = user;
+console.log(userEmail); // 'no-email'
+```
+
+### Default Values
+
+```javascript
+const user = { name: "John" };
+
+// Without default
+const { name, age } = user;
+console.log(age); // undefined
+
+// With default
+const { name: n, age: a = 25 } = user;
+console.log(a); // 25
+
+// Default with rename
+const { name: userName = "Guest", age: userAge = 0 } = user;
+
+// Default functions (called only if needed)
+const { id = generateId() } = user;
+```
+
+### Nested Object Destructuring
+
+```javascript
+const user = {
+  name: "John",
+  address: {
+    city: "NYC",
+    zip: "10001",
+  },
+};
+
+// Nested destructuring
+const {
+  name,
+  address: { city, zip },
+} = user;
+
+console.log(name); // 'John'
+console.log(city); // 'NYC'
+console.log(zip); // '10001'
+
+// Note: address variable is not created
+// console.log(address); // ❌ Error!
+
+// To get both address and nested values
+const {
+  address,
+  address: { city: userCity },
+} = user;
+console.log(address); // { city: 'NYC', zip: '10001' }
+console.log(userCity); // 'NYC'
+
+// Deep nesting with defaults
+const { profile: { settings: { theme = "light" } = {} } = {} } = user; // Works even if profile doesn't exist
+```
+
+### Rest in Objects
+
+```javascript
+const user = {
+  name: "John",
+  age: 30,
+  city: "NYC",
+  country: "USA",
+};
+
+// Extract some, rest in object
+const { name, age, ...rest } = user;
+console.log(name); // 'John'
+console.log(age); // 30
+console.log(rest); // { city: 'NYC', country: 'USA' }
+
+// Useful for removing properties
+const { password, ...safeUser } = userWithPassword;
+```
+
+## Function Parameter Destructuring
+
+### Array Parameters
+
+```javascript
+// Without destructuring
+function printCoordinates(point) {
+  console.log(`x: ${point[0]}, y: ${point[1]}`);
+}
+
+// ✅ With destructuring
+function printCoordinates([x, y]) {
+  console.log(`x: ${x}, y: ${y}`);
+}
+
+printCoordinates([10, 20]); // x: 10, y: 20
+
+// With defaults
+function printPoint([x = 0, y = 0] = []) {
+  console.log(`x: ${x}, y: ${y}`);
+}
+
+printPoint(); // x: 0, y: 0
+printPoint([5]); // x: 5, y: 0
+```
+
+### Object Parameters
+
+```javascript
+// Without destructuring
+function createUser(options) {
+  const name = options.name;
+  const age = options.age;
+  const role = options.role || "user";
+}
+
+// ✅ With destructuring
+function createUser({ name, age, role = "user" }) {
+  console.log(name, age, role);
+}
+
+createUser({ name: "John", age: 30 }); // John 30 user
+
+// With default object
+function createUser({ name, age, role = "user" } = {}) {
+  console.log(name, age, role);
+}
+
+createUser(); // undefined undefined user
+```
+
+### Complex Parameter Destructuring
+
+```javascript
+function displayUser({
+  name,
+  age,
+  address: { city, country = "USA" } = {},
+  preferences: { theme = "light" } = {},
+} = {}) {
+  console.log(name, age, city, country, theme);
+}
+
+displayUser({
+  name: "John",
+  age: 30,
+  address: { city: "NYC" },
+  preferences: { theme: "dark" },
+});
+// John 30 NYC USA dark
+```
+
+## Destructuring in Loops
+
+```javascript
+// Array of arrays
+const coordinates = [
+  [0, 0],
+  [10, 20],
+  [30, 40],
+];
+
+for (const [x, y] of coordinates) {
+  console.log(`x: ${x}, y: ${y}`);
+}
+
+// Array of objects
+const users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 },
+];
+
+for (const { name, age } of users) {
+  console.log(`${name} is ${age} years old`);
+}
+
+// Map entries
+const map = new Map([
+  ["a", 1],
+  ["b", 2],
+]);
+
+for (const [key, value] of map) {
+  console.log(key, value);
+}
+
+// Object.entries
+const obj = { a: 1, b: 2, c: 3 };
+for (const [key, value] of Object.entries(obj)) {
+  console.log(key, value);
+}
+```
+
+## Practical Use Cases
+
+### 1. API Response Handling
+
+```javascript
+// API returns complex object
+const response = {
+    data: {
+        user: {
+            id: 1,
+            name: 'John',
+            email: 'john@example.com'
+        },
+        posts: [...]
+    },
+    status: 200
+};
+
+// Extract what you need
+const {
+    data: {
+        user: { name, email },
+        posts
+    },
+    status
+} = response;
+
+console.log(name, email, status);
+```
+
+### 2. Function Return Values
+
+```javascript
+// Return multiple values
+function getMinMax(arr) {
+  return {
+    min: Math.min(...arr),
+    max: Math.max(...arr),
+  };
+}
+
+// Destructure return value
+const { min, max } = getMinMax([1, 2, 3, 4, 5]);
+console.log(min, max); // 1, 5
+
+// Return as array
+function getRange(arr) {
+  return [Math.min(...arr), Math.max(...arr)];
+}
+
+const [minimum, maximum] = getRange([1, 2, 3, 4, 5]);
+```
+
+### 3. Importing Modules
+
+```javascript
+// Import specific exports
+import { useState, useEffect } from "react";
+
+// Rename imports
+import { longFunctionName as short } from "./utils";
+```
+
+### 4. Configuration Objects
+
+```javascript
+function initializeApp({
+  apiUrl = "https://api.example.com",
+  timeout = 5000,
+  retries = 3,
+  debug = false,
+} = {}) {
+  console.log("Initializing with:", apiUrl, timeout, retries, debug);
+}
+
+// Use defaults
+initializeApp();
+
+// Override some
+initializeApp({ apiUrl: "https://custom.com", debug: true });
+```
+
+## Common Patterns
+
+### Extracting Specific Properties
+
+```javascript
+const user = {
+  id: 1,
+  name: "John",
+  email: "john@example.com",
+  password: "secret",
+  role: "admin",
+};
+
+// Extract only what you need
+const { password, ...publicUser } = user;
+console.log(publicUser); // No password property
+```
+
+### Combining Arrays
+
+```javascript
+const [first, ...rest] = [1, 2, 3, 4, 5];
+const combined = [0, first, ...rest, 6];
+console.log(combined); // [0, 1, 2, 3, 4, 5, 6]
+```
+
+### Dynamic Property Names
+
+```javascript
+const key = "name";
+const { [key]: value } = { name: "John" };
+console.log(value); // 'John'
+
+// With default
+const prop = "email";
+const { [prop]: email = "no-email" } = user;
+```
+
+## Interview Questions & Answers
+
+### Q1: What is destructuring and why use it?
+
+Destructuring is an ES6 syntax for extracting values from arrays or properties from objects into distinct variables in a single statement. It makes code more concise and readable by avoiding repetitive property access. Instead of writing `const name = user.name; const age = user.age;`, you write `const { name, age } = user;`. It's especially useful for function parameters where you can extract exactly what you need, for API response handling where data is often deeply nested, and for working with arrays where you need specific elements. Destructuring also supports default values and renaming, making it versatile for many scenarios.
+
+---
+
+### Q2: What's the difference between array and object destructuring?
+
+Array destructuring uses square brackets and extracts values by position - the order of variables matters because it maps to array indices. Object destructuring uses curly braces and extracts values by property name - order doesn't matter but names must match. With array destructuring you can skip elements with commas like `[first, , third]`, while with object destructuring you simply omit properties you don't need. Array destructuring is ideal for ordered data like coordinates or function returns, while object destructuring is better for named properties. Both support rest syntax, default values, and nesting.
+
+---
+
+### Q3: How do you set default values in destructuring?
+
+Use the assignment operator after the variable name: `const { name = 'Guest' } = user;` or `const [first = 1, second = 2] = array;`. Defaults only apply when the value is undefined, not for null or other falsy values. This distinction is important: `const [x = 5] = [null]` gives x as null, not 5. You can combine defaults with renaming: `const { name: userName = 'Guest' } = user;`. For function parameters, you should also provide a default for the entire parameter: `function fn({ x = 0 } = {})` handles being called with no arguments. Default values can be expressions or function calls, which are only evaluated if needed.
+
+---
+
+### Q4: What is the rest operator in destructuring?
+
+The rest operator (...) collects remaining elements into a new array or object. In arrays: `const [first, ...rest] = [1, 2, 3, 4];` gives rest as [2, 3, 4]. In objects: `const { name, ...rest } = user;` gives rest as an object with all properties except name. The rest element must be the last element in destructuring - you can't have anything after it. It's commonly used to extract some values while keeping others grouped, like separating sensitive data from public data, or removing specific properties from an object while keeping the rest.
+
+---
+
+### Q5: Can you explain nested destructuring?
+
+Nested destructuring lets you extract values from deeply nested structures in one statement. For objects: `const { address: { city, zip } } = user;` extracts city and zip from the nested address object. Note that address itself isn't created as a variable. For arrays: `const [[a, b], [c, d]] = matrix;` extracts values from a 2D array. You can combine both: `const { users: [firstUser] } = data;` extracts the first element from a nested array. Nested destructuring with defaults like `{ profile: { theme = 'light' } = {} } = {}` handles missing intermediate levels gracefully.
+
+---
+
+### Q6: How does destructuring work with function parameters?
+
+Destructuring in function parameters lets you extract values directly in the function signature. Instead of `function fn(user) { const name = user.name; }`, use `function fn({ name }) {}`. This makes it clear what properties the function uses and provides built-in documentation. You can add defaults: `function fn({ name = 'Guest', age = 0 } = {})`. The `= {}` default handles calling the function with no arguments. Array destructuring works similarly: `function fn([x, y])` for coordinate pairs. This pattern is heavily used in modern JavaScript, especially with React hooks and configuration objects.
+
+---
+
+### Q7: What happens if you try to destructure null or undefined?
+
+Destructuring null or undefined throws a TypeError because JavaScript tries to access properties or iterate over something that doesn't exist. `const { name } = null;` throws "Cannot destructure property 'name' of 'null'." This is why default parameters are important: `function fn({ name } = {})` handles undefined arguments, but `function fn({ name })` crashes if called with no arguments. Similarly, `const { address: { city } } = user;` crashes if address is undefined. Use optional chaining with defaults or guard against nullish values before destructuring to avoid these errors.
+
+---
+
+### Q8: What is the difference between renaming and aliasing in destructuring?
+
+Renaming in destructuring uses the colon syntax: `const { name: userName } = user;` extracts the name property but assigns it to a variable called userName. This is useful to avoid naming conflicts, use more descriptive names, or match your coding conventions. The original property name comes first, then the colon, then the new variable name. You can combine renaming with defaults: `const { name: userName = 'Guest' }`. In imports, aliasing uses 'as': `import { useState as state }`. Both achieve the same goal of using a different variable name than the source property.
+
+---
+
+### Q9: How do you destructure from already declared variables?
+
+When destructuring into existing variables (not declaring new ones), you must wrap the expression in parentheses for objects: `let name, age; ({ name, age } = user);`. Without parentheses, JavaScript interprets the curly braces as a block statement. Arrays don't have this problem: `let first; [first] = array;` works without parentheses. This is needed when you want to conditionally assign values or when variables are declared earlier in the code. The parentheses tell JavaScript this is an expression, not a block. This syntax is valid but less common than declaring and destructuring in one statement.
+
+---
+
+### Q10: What are some common destructuring mistakes to avoid?
+
+The most common mistakes include forgetting defaults for nested destructuring, which causes crashes on missing intermediate properties. Using the wrong brackets - curly for objects, square for arrays - is another frequent error. Forgetting that object destructuring uses property names, not positions, leads to undefined values. Not providing a default for function parameter destructuring causes errors when called without arguments. Trying to use rest in a position other than last throws a syntax error. Confusing the renaming syntax `{ name: newName }` with default values `{ name = 'default' }` is also common. Understanding that defaults only trigger for undefined, not null, prevents bugs.
+
+## Practical Examples
+
+```javascript
+// Example 1: Swap without temp variable
+let x = 10,
+  y = 20;
+[x, y] = [y, x];
+console.log(x, y); // 20, 10
+
+// Example 2: Extract from function return
+function getUserData() {
+  return {
+    user: { name: "John", age: 30 },
+    posts: [],
+    settings: { theme: "dark" },
+  };
+}
+
+const {
+  user: { name, age },
+  settings: { theme },
+} = getUserData();
+
+// Example 3: Clean function parameters
+function sendEmail({
+  to,
+  subject = "No Subject",
+  body = "",
+  cc = [],
+  bcc = [],
+} = {}) {
+  console.log(`Sending to ${to}: ${subject}`);
+}
+
+// Example 4: Extract from nested API response
+const apiResponse = {
+  data: {
+    results: [
+      { id: 1, title: "Post 1" },
+      { id: 2, title: "Post 2" },
+    ],
+  },
+};
+
+const {
+  data: {
+    results: [firstPost, secondPost],
+  },
+} = apiResponse;
+
+// Example 5: Remove sensitive data
+function sanitizeUser(user) {
+  const { password, ssn, ...publicData } = user;
+  return publicData;
+}
+
+// Example 6: Transform array data
+const people = [
+  ["John", 30, "NYC"],
+  ["Jane", 25, "LA"],
+];
+
+const formatted = people.map(([name, age, city]) => ({
+  name,
+  age,
+  city,
+}));
+```
+
+

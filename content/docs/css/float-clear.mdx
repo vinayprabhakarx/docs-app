@@ -1,0 +1,367 @@
+---
+title: "Float & Clear - Traditional Layout Techniques"
+description: Documentation for Float & Clear - Traditional Layout Techniques.
+---
+
+# Float & Clear - Traditional Layout Techniques
+
+
+
+## What are Float and Clear?
+
+`float` and `clear` are CSS properties that were originally designed for wrapping text around images, but became the primary method for creating layouts before Flexbox and Grid existed.
+
+**Note:** While floats are mostly replaced by Flexbox and Grid for layouts, they're still useful for text wrapping around images.
+
+### Why Learn Float and Clear?
+
+- **Legacy code** - Understanding older codebases
+- **Text wrapping** - Still the best method for wrapping text around images
+- **Browser support** - Works in all browsers
+- **Foundation knowledge** - Understanding CSS layout evolution
+
+## Float Property
+
+**Syntax:**
+```css
+float: none | left | right;
+```
+
+**Values:**
+- `none` - Default, no floating
+- `left` - Element floats to the left
+- `right` - Element floats to the right
+
+## Detailed Examples
+
+### 1. Float Left
+
+**HTML:**
+```html
+<div class="container">
+    <img src="image.jpg" class="float-left" alt="Image">
+    <p>This text wraps around the floated image on the left...</p>
+</div>
+```
+
+**CSS:**
+```css
+.float-left {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+```
+
+**Result:** Image floats to the left, text wraps around it on the right.
+
+---
+
+### 2. Float Right
+
+**HTML:**
+```html
+<div class="container">
+    <img src="image.jpg" class="float-right" alt="Image">
+    <p>This text wraps around the floated image on the right...</p>
+</div>
+```
+
+**CSS:**
+```css
+.float-right {
+    float: right;
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+```
+
+**Result:** Image floats to the right, text wraps around it on the left.
+
+---
+
+### 3. Multiple Floats (Old Grid System)
+
+**HTML:**
+```html
+<div class="row">
+    <div class="col">Column 1</div>
+    <div class="col">Column 2</div>
+    <div class="col">Column 3</div>
+</div>
+```
+
+**CSS:**
+```css
+.row {
+    width: 100%;
+}
+
+.col {
+    float: left;
+    width: 33.33%;
+    padding: 15px;
+    box-sizing: border-box;
+}
+```
+
+**Result:** Three columns side by side.
+
+## Clear Property
+
+**What it does:**
+Prevents elements from wrapping around floated elements.
+
+**Syntax:**
+```css
+clear: none | left | right | both;
+```
+
+**Values:**
+- `none` - Default, allows floating
+- `left` - No floating elements on the left
+- `right` - No floating elements on the right
+- `both` - No floating elements on either side
+
+---
+
+### Clear Examples
+
+**HTML:**
+```html
+<div class="container">
+    <img src="image.jpg" class="float-left" alt="Image">
+    <p>This text wraps around the image...</p>
+    <p class="clear">This text appears below the image.</p>
+</div>
+```
+
+**CSS:**
+```css
+.float-left {
+    float: left;
+}
+
+.clear {
+    clear: both; /* Clears all floats */
+}
+```
+
+## The Clearfix Problem
+
+**Problem:**
+Floated children don't contribute to parent height.
+
+**HTML:**
+```html
+<div class="parent">
+    <div class="float-left">Floated child</div>
+</div>
+```
+
+**CSS:**
+```css
+.parent {
+    border: 2px solid black;
+    /* Parent collapses to 0 height! */
+}
+
+.float-left {
+    float: left;
+    width: 200px;
+    height: 100px;
+}
+```
+
+**Result:** Parent has 0 height because floated child is removed from normal flow.
+
+## Clearfix Solutions
+
+### Solution 1: Clearfix Class (Classic)
+
+```css
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+```
+
+**Usage:**
+```html
+<div class="parent clearfix">
+    <div class="float-left">Floated child</div>
+</div>
+```
+
+---
+
+### Solution 2: Overflow Method
+
+```css
+.parent {
+    overflow: auto; /* or overflow: hidden; */
+}
+```
+
+---
+
+### Solution 3: Modern - Use Flexbox/Grid Instead
+
+```css
+.parent {
+    display: flex; /* Much better! */
+}
+```
+
+## Common Float Patterns
+
+### Pattern 1: Image with Text Wrap
+
+```html
+<article>
+    <img src="author.jpg" class="author-img" alt="Author">
+    <h2>Article Title</h2>
+    <p>Article content wraps around the author image...</p>
+</article>
+```
+
+```css
+.author-img {
+    float: left;
+    width: 100px;
+    height: 100px;
+    margin: 0 15px 10px 0;
+    border-radius: 50%;
+}
+```
+
+---
+
+### Pattern 2: Two-Column Layout (Legacy)
+
+```html
+<div class="container clearfix">
+    <aside class="sidebar">Sidebar</aside>
+    <main class="content">Main Content</main>
+</div>
+```
+
+```css
+.sidebar {
+    float: left;
+    width: 250px;
+}
+
+.content {
+    float: right;
+    width: calc(100% - 270px);
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+```
+
+---
+
+### Pattern 3: Pull Quote
+
+```html
+<article>
+    <p>Article text...</p>
+    <blockquote class="pull-quote">
+        "Important quote here"
+    </blockquote>
+    <p>More article text...</p>
+</article>
+```
+
+```css
+.pull-quote {
+    float: right;
+    width: 40%;
+    margin: 0 0 20px 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    font-size: 1.2em;
+    font-style: italic;
+}
+```
+
+## Float vs Modern Layouts
+
+### Use Float For:
+- Text wrapping around images
+- Pull quotes in articles
+- Small decorative elements
+
+### Use Flexbox/Grid For:
+- Page layouts
+- Navigation menus
+- Card grids
+- Responsive designs
+
+## Common Float Issues
+
+### Issue 1: Parent Collapse
+
+**Problem:**
+```css
+.parent {
+    /* Parent has 0 height */
+}
+
+.child {
+    float: left;
+}
+```
+
+**Solution:**
+```css
+.parent::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+```
+
+---
+
+### Issue 2: Margin Collapse
+
+**Problem:**
+Margins don't work as expected with floats.
+
+**Solution:**
+Use padding instead, or add clearfix.
+
+---
+
+### Issue 3: Stacking Issues
+
+**Problem:**
+Floated elements can overlap.
+
+**Solution:**
+```css
+.float-element {
+    position: relative;
+    z-index: 1;
+}
+```
+
+## Best Practices
+
+1. **Use for text wrapping** - Not for layouts
+2. **Always clear floats** - Use clearfix
+3. **Prefer Flexbox/Grid** - For modern layouts
+4. **Add margins** - Space around floated elements
+5. **box-sizing: border-box** - Makes width calculations easier
+
+---
+
+
+

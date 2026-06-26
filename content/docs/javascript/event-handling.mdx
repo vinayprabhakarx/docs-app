@@ -1,0 +1,735 @@
+---
+title: "Event Handling - Responding to User Actions"
+description: Documentation for Event Handling - Responding to User Actions.
+---
+
+# Event Handling - Responding to User Actions
+
+
+
+## What are Events?
+
+**Events** are actions or occurrences that happen in the browser, such as clicks, key presses, mouse movements, or page loads. JavaScript can "listen" for these events and respond to them.
+
+> **Definition:** Events are signals that something has happened in the browser. They can be triggered by user actions (clicks, typing), browser actions (page load, resize), or programmatically. Event handling is the process of detecting these events and executing code in response.
+
+```javascript
+// Listen for click event
+button.addEventListener("click", function () {
+  console.log("Button clicked!");
+});
+```
+
+### Why Events Matter
+
+| Benefit             | Description                                    |
+| ------------------- | ---------------------------------------------- |
+| **Interactivity**   | Respond to user actions in real-time           |
+| **User experience** | Create dynamic, responsive interfaces          |
+| **Form validation** | Validate input before submission               |
+| **Navigation**      | Handle routing and page transitions            |
+| **Accessibility**   | Support keyboard navigation and screen readers |
+
+## Common Event Types
+
+| Category     | Events                                                                            | Description        |
+| ------------ | --------------------------------------------------------------------------------- | ------------------ |
+| **Mouse**    | `click`, `dblclick`, `mousedown`, `mouseup`, `mousemove`, `mouseover`, `mouseout` | Mouse interactions |
+| **Keyboard** | `keydown`, `keyup`, `keypress` (deprecated)                                       | Keyboard input     |
+| **Form**     | `submit`, `change`, `input`, `focus`, `blur`, `reset`                             | Form interactions  |
+| **Window**   | `load`, `DOMContentLoaded`, `resize`, `scroll`, `beforeunload`                    | Window events      |
+| **Touch**    | `touchstart`, `touchmove`, `touchend`, `touchcancel`                              | Touch screen       |
+| **Drag**     | `drag`, `dragstart`, `dragend`, `dragover`, `drop`                                | Drag and drop      |
+
+## Adding Event Listeners
+
+### addEventListener() - Modern Method
+
+```javascript
+const button = document.querySelector("#myButton");
+
+// Add event listener
+button.addEventListener("click", function () {
+  console.log("Clicked!");
+});
+
+// With arrow function
+button.addEventListener("click", () => {
+  console.log("Clicked!");
+});
+
+// Named function (can be removed later)
+function handleClick() {
+  console.log("Clicked!");
+}
+button.addEventListener("click", handleClick);
+
+// Multiple listeners on same event
+button.addEventListener("click", function () {
+  console.log("First listener");
+});
+button.addEventListener("click", function () {
+  console.log("Second listener");
+});
+// Both execute!
+```
+
+### Inline Event Handlers (Avoid!)
+
+```html
+<!-- ❌ Not recommended - mixing HTML and JavaScript -->
+<button onclick="alert('Clicked!')">Click Me</button>
+
+<!-- ❌ Not recommended -->
+<button onclick="handleClick()">Click Me</button>
+```
+
+```javascript
+// ❌ Not recommended - can only have one handler
+button.onclick = function () {
+  console.log("Clicked!");
+};
+
+// This overwrites the previous handler!
+button.onclick = function () {
+  console.log("Different handler");
+};
+```
+
+### addEventListener vs onclick
+
+| Feature           | addEventListener | onclick            |
+| ----------------- | ---------------- | ------------------ |
+| Multiple handlers | ✅ Yes           | ❌ No (overwrites) |
+| Remove listener   | ✅ Yes           | ❌ Difficult       |
+| Event options     | ✅ Yes           | ❌ No              |
+| Recommended       | ✅ Yes           | ❌ No              |
+
+## Removing Event Listeners
+
+```javascript
+// Must use named function to remove
+function handleClick() {
+  console.log("Clicked!");
+}
+
+// Add listener
+button.addEventListener("click", handleClick);
+
+// Remove listener
+button.removeEventListener("click", handleClick);
+
+// ❌ This won't work - different function reference
+button.addEventListener("click", function () {
+  console.log("Click");
+});
+button.removeEventListener("click", function () {
+  console.log("Click");
+}); // Doesn't remove! Different function
+
+// AbortController for cleanup (modern)
+const controller = new AbortController();
+
+button.addEventListener("click", handleClick, {
+  signal: controller.signal,
+});
+
+// Later, remove all listeners attached with this controller
+controller.abort();
+```
+
+## The Event Object
+
+Event listeners receive an event object with information about the event.
+
+```javascript
+button.addEventListener("click", function (event) {
+  console.log(event.type); // 'click'
+  console.log(event.target); // Element that triggered event
+  console.log(event.currentTarget); // Element listener is attached to
+  console.log(event.timeStamp); // When event occurred
+});
+
+// Common event properties
+element.addEventListener("click", (e) => {
+  // Event info
+  console.log(e.type); // Event type ('click', 'keydown', etc.)
+  console.log(e.target); // Element that triggered event
+  console.log(e.currentTarget); // Element with listener
+
+  // Mouse position
+  console.log(e.clientX, e.clientY); // Relative to viewport
+  console.log(e.pageX, e.pageY); // Relative to document
+  console.log(e.offsetX, e.offsetY); // Relative to target element
+
+  // Methods
+  e.preventDefault(); // Prevent default action
+  e.stopPropagation(); // Stop event bubbling
+  e.stopImmediatePropagation(); // Stop all listeners
+});
+```
+
+## Mouse Events
+
+```javascript
+const element = document.querySelector("#myElement");
+
+// Click events
+element.addEventListener("click", (e) => {
+  console.log("Single click");
+  console.log("Button:", e.button); // 0=left, 1=middle, 2=right
+});
+
+element.addEventListener("dblclick", (e) => {
+  console.log("Double click");
+});
+
+// Mouse button events
+element.addEventListener("mousedown", (e) => {
+  console.log("Mouse button pressed");
+});
+
+element.addEventListener("mouseup", (e) => {
+  console.log("Mouse button released");
+});
+
+// Mouse movement
+element.addEventListener("mousemove", (e) => {
+  console.log(`Mouse at: ${e.clientX}, ${e.clientY}`);
+});
+
+// Mouse enter/leave (don't bubble)
+element.addEventListener("mouseenter", (e) => {
+  console.log("Mouse entered");
+});
+
+element.addEventListener("mouseleave", (e) => {
+  console.log("Mouse left");
+});
+
+// Mouse over/out (bubble)
+element.addEventListener("mouseover", (e) => {
+  console.log("Mouse over");
+});
+
+element.addEventListener("mouseout", (e) => {
+  console.log("Mouse out");
+});
+
+// Context menu (right-click)
+element.addEventListener("contextmenu", (e) => {
+  e.preventDefault(); // Disable default menu
+  console.log("Right-clicked");
+});
+```
+
+### mouseenter vs mouseover
+
+| Feature              | mouseenter    | mouseover  |
+| -------------------- | ------------- | ---------- |
+| Bubbles              | ❌ No         | ✅ Yes     |
+| Triggers on children | ❌ No         | ✅ Yes     |
+| Use case             | Hover effects | Delegation |
+
+## Keyboard Events
+
+```javascript
+// Keydown - when key is pressed
+document.addEventListener("keydown", (e) => {
+  console.log("Key pressed:", e.key); // 'a', 'Enter', 'ArrowUp'
+  console.log("Key code:", e.code); // 'KeyA', 'Enter', 'ArrowUp'
+  console.log("Ctrl pressed:", e.ctrlKey);
+  console.log("Shift pressed:", e.shiftKey);
+  console.log("Alt pressed:", e.altKey);
+  console.log("Meta pressed:", e.metaKey); // Cmd on Mac
+});
+
+// Keyup - when key is released
+document.addEventListener("keyup", (e) => {
+  console.log("Key released:", e.key);
+});
+
+// Specific key detection
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    console.log("Enter pressed");
+  }
+
+  if (e.key === "Escape") {
+    console.log("Escape pressed");
+  }
+
+  // Arrow keys
+  if (e.key === "ArrowUp") {
+    console.log("Up arrow pressed");
+  }
+
+  // Keyboard shortcuts
+  if (e.ctrlKey && e.key === "s") {
+    e.preventDefault(); // Prevent browser save
+    console.log("Ctrl+S pressed");
+  }
+
+  // Cmd+S on Mac, Ctrl+S on Windows
+  if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+    e.preventDefault();
+    saveDocument();
+  }
+});
+```
+
+## Form Events
+
+```javascript
+const form = document.querySelector("#myForm");
+const input = document.querySelector("#myInput");
+
+// Submit event
+form.addEventListener("submit", (e) => {
+  e.preventDefault(); // Prevent form submission
+  console.log("Form submitted");
+
+  // Get form data
+  const formData = new FormData(form);
+  console.log(formData.get("username"));
+
+  // Get all entries
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+});
+
+// Input event (fires on every change)
+input.addEventListener("input", (e) => {
+  console.log("Current value:", e.target.value);
+  // Use for real-time validation/search
+});
+
+// Change event (fires when input loses focus after change)
+input.addEventListener("change", (e) => {
+  console.log("Final value:", e.target.value);
+  // Use for saving data
+});
+
+// Focus events
+input.addEventListener("focus", (e) => {
+  console.log("Input focused");
+  e.target.style.borderColor = "blue";
+});
+
+input.addEventListener("blur", (e) => {
+  console.log("Input lost focus");
+  e.target.style.borderColor = "";
+});
+
+// Focus in/out (bubble)
+input.addEventListener("focusin", (e) => {
+  console.log("Focus in (bubbles)");
+});
+
+input.addEventListener("focusout", (e) => {
+  console.log("Focus out (bubbles)");
+});
+```
+
+## Event Bubbling and Capturing
+
+Events propagate through the DOM in two phases: capturing (down) and bubbling (up).
+
+```
+Capturing Phase (down):  window → document → html → body → div → button
+Bubbling Phase (up):     button → div → body → html → document → window
+```
+
+### Event Bubbling (Default)
+
+```javascript
+// HTML: <div id="parent"><button id="child">Click</button></div>
+
+const parent = document.querySelector("#parent");
+const child = document.querySelector("#child");
+
+parent.addEventListener("click", () => {
+  console.log("Parent clicked");
+});
+
+child.addEventListener("click", () => {
+  console.log("Child clicked");
+});
+
+// Click on button outputs:
+// Child clicked
+// Parent clicked (bubbles up!)
+```
+
+### Stopping Propagation
+
+```javascript
+child.addEventListener("click", (e) => {
+  console.log("Child clicked");
+  e.stopPropagation(); // Stop bubbling
+});
+
+// Now clicking button only outputs:
+// Child clicked
+
+// stopImmediatePropagation - stops all handlers on current element too
+child.addEventListener("click", (e) => {
+  console.log("First handler");
+  e.stopImmediatePropagation();
+});
+
+child.addEventListener("click", (e) => {
+  console.log("Second handler"); // Never executes!
+});
+```
+
+### Event Capturing
+
+```javascript
+// Use third parameter: true for capturing phase
+parent.addEventListener(
+  "click",
+  () => {
+    console.log("Parent (capturing)");
+  },
+  true,
+); // Capturing phase
+
+child.addEventListener("click", () => {
+  console.log("Child");
+});
+
+// Click on button outputs:
+// Parent (capturing)  (captures first)
+// Child
+```
+
+## Event Delegation
+
+Handle events on parent instead of individual children (efficient for dynamic content).
+
+```javascript
+// ❌ Bad - add listener to each item
+const items = document.querySelectorAll(".item");
+items.forEach((item) => {
+  item.addEventListener("click", handleClick);
+});
+
+// ✅ Good - single listener on parent
+const list = document.querySelector("#list");
+list.addEventListener("click", (e) => {
+  // Use closest() for reliable delegation
+  const item = e.target.closest(".item");
+  if (item) {
+    console.log("Item clicked:", item);
+  }
+});
+
+// Works for dynamically added items!
+const newItem = document.createElement("li");
+newItem.className = "item";
+newItem.textContent = "New item";
+list.appendChild(newItem); // Click handler works automatically!
+```
+
+### Benefits of Event Delegation
+
+| Benefit             | Description                    |
+| ------------------- | ------------------------------ |
+| **Performance**     | One listener instead of many   |
+| **Dynamic content** | Works for elements added later |
+| **Memory**          | Less memory usage              |
+| **Simpler code**    | Easier to maintain             |
+
+## Preventing Default Behavior
+
+```javascript
+// Prevent link navigation
+const link = document.querySelector("a");
+link.addEventListener("click", (e) => {
+  e.preventDefault();
+  console.log("Link clicked but not followed");
+});
+
+// Prevent form submission
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  console.log("Form not submitted");
+});
+
+// Prevent context menu
+document.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  console.log("Right-click disabled");
+});
+
+// Conditional prevention
+link.addEventListener("click", (e) => {
+  if (!confirm("Navigate away?")) {
+    e.preventDefault();
+  }
+});
+```
+
+## Event Options
+
+```javascript
+// Third parameter can be object with options
+element.addEventListener("click", handleClick, {
+  capture: false, // Use capturing phase
+  once: true, // Remove after first trigger
+  passive: true, // Won't call preventDefault()
+  signal: controller.signal, // For removal with AbortController
+});
+
+// Once option - auto-removes after first trigger
+button.addEventListener(
+  "click",
+  () => {
+    console.log("Clicked once!");
+  },
+  { once: true },
+);
+
+// Passive option - improves scroll performance
+element.addEventListener("scroll", handleScroll, {
+  passive: true, // Can't preventDefault()
+});
+
+// Touch events - passive by default in modern browsers
+element.addEventListener("touchstart", handleTouch, {
+  passive: false, // Explicitly allow preventDefault
+});
+```
+
+## Custom Events
+
+```javascript
+// Create custom event
+const myEvent = new CustomEvent("myCustomEvent", {
+  detail: { message: "Hello!", data: { id: 1 } },
+  bubbles: true,
+  cancelable: true,
+});
+
+// Listen for custom event
+element.addEventListener("myCustomEvent", (e) => {
+  console.log("Custom event received:", e.detail.message);
+  console.log("Data:", e.detail.data);
+});
+
+// Dispatch custom event
+element.dispatchEvent(myEvent);
+
+// Practical example: Component communication
+class ShoppingCart {
+  addItem(item) {
+    this.items.push(item);
+
+    // Notify other parts of the app
+    document.dispatchEvent(
+      new CustomEvent("cart:updated", {
+        detail: { items: this.items, count: this.items.length },
+      }),
+    );
+  }
+}
+
+// Listen anywhere in the app
+document.addEventListener("cart:updated", (e) => {
+  updateCartIcon(e.detail.count);
+});
+```
+
+## Interview Questions & Answers
+
+### Q1: What is event bubbling?
+
+Event bubbling is the propagation mechanism where an event triggered on a child element travels upward through its ancestors in the DOM tree. When you click a button inside a div, the click event first fires on the button, then bubbles up to the div, then to body, html, document, and finally window. This happens by default for most events and is why clicking a child can trigger handlers on parent elements. You can stop bubbling with event.stopPropagation(). Event bubbling is the foundation for event delegation, a powerful pattern for handling dynamic content efficiently.
+
+---
+
+### Q2: What is event delegation and why use it?
+
+Event delegation is a technique where you attach a single event listener to a parent element to handle events from its children. Instead of attaching listeners to many child elements, you attach one to the parent and use event.target or closest() to determine which child was clicked. The benefits are significant: better performance with fewer listeners, lower memory usage, and automatic handling of dynamically added elements. It works because of event bubbling - events from children bubble up to the parent. This pattern is especially valuable for lists, tables, or any container with many interactive children.
+
+---
+
+### Q3: What's the difference between event.target and event.currentTarget?
+
+| Property              | Description                        | Example            |
+| --------------------- | ---------------------------------- | ------------------ |
+| `event.target`        | Element that triggered the event   | The clicked button |
+| `event.currentTarget` | Element with the listener attached | The parent div     |
+
+event.target is the actual element that triggered the event - where the click or action occurred. event.currentTarget is the element that has the event listener attached to it. In event delegation, if you click a button inside a div that has the listener, target is the button and currentTarget is the div. They're the same when you click directly on the element with the listener. Understanding this difference is crucial for event delegation, where you typically use target or closest() to identify which child was clicked while the listener is on the parent.
+
+---
+
+### Q4: Why should you use addEventListener over onclick?
+
+addEventListener is superior for several reasons. It allows multiple handlers on the same event - onclick overwrites previous handlers. It enables you to remove listeners later using named functions. It supports event options like once, capture, and passive. It separates JavaScript from HTML, following best practices. It supports the capturing phase of events. The onclick property can only hold one handler and doesn't offer any of these features. While onclick is simpler for basic cases, addEventListener is the professional choice that every modern JavaScript developer should use.
+
+---
+
+### Q5: What is the difference between capturing and bubbling?
+
+Capturing and bubbling are the two phases of event propagation. Capturing happens first, where the event travels from window down through ancestors to the target element. Bubbling happens second, where the event travels back up from the target to window. By default, event listeners fire during the bubbling phase. To listen during capturing, pass true as the third parameter or use `{ capture: true }`. Capturing is rarely used in practice, but understanding it helps explain why parent handlers sometimes fire before or after child handlers depending on configuration.
+
+---
+
+### Q6: What does preventDefault() do?
+
+preventDefault() stops the browser's default behavior for an event. For links, it prevents navigation. For forms, it prevents submission. For right-click, it prevents the context menu. For keyboard shortcuts, it prevents the browser action. This is different from stopPropagation() which stops event bubbling but not the default behavior. You typically use preventDefault() when you want to handle something custom instead of the browser's default. For example, preventing form submission to validate with JavaScript first, or preventing link clicks to use client-side routing.
+
+---
+
+### Q7: What is the difference between input and change events?
+
+The input event fires immediately every time the value changes - every keystroke, paste, or programmatic change. The change event fires only when the element loses focus (blur) after its value has changed. Use input for real-time features like live search, character counters, or instant validation feedback. Use change for operations that should happen after the user finishes editing, like saving data or more expensive validations. For checkboxes and radio buttons, change fires immediately when clicked because there's no "ongoing" input.
+
+---
+
+### Q8: What are passive event listeners?
+
+Passive event listeners are an optimization hint telling the browser that the handler won't call preventDefault(). This allows the browser to start default actions like scrolling immediately without waiting for JavaScript to run. When you add `{ passive: true }`, you promise not to prevent default behavior. This significantly improves scroll performance on touch devices because the browser doesn't have to wait for your touchstart or touchmove handlers. Modern browsers make touch and wheel events passive by default. If you need to prevent default in these handlers, you must explicitly set `{ passive: false }`.
+
+---
+
+### Q9: How do you remove event listeners?
+
+To remove an event listener, use removeEventListener with the exact same function reference, event type, and options. This only works with named functions - if you used an anonymous function, you can't remove it. Store the function in a variable before adding, then pass that same reference to removeEventListener. The modern approach is using AbortController: create a controller, pass its signal in the options, and call controller.abort() to remove all listeners attached with that signal. This is especially useful for cleanup in frameworks or when removing multiple listeners at once.
+
+---
+
+### Q10: What are custom events and when would you use them?
+
+Custom events let you create your own event types that work just like native events, complete with bubbling and the ability to carry custom data. You create them with new CustomEvent(), passing your event name and a detail object with any data you want. Then dispatch them with element.dispatchEvent(). Custom events are useful for communication between components without tight coupling, implementing a pub/sub pattern, or creating reusable widgets that notify parents of state changes. Frameworks use similar patterns internally, but custom events work in vanilla JavaScript too.
+
+## Practical Examples
+
+```javascript
+// Example 1: Todo list with delegation
+const todoList = document.querySelector("#todoList");
+
+todoList.addEventListener("click", (e) => {
+  // Delete button clicked
+  const deleteBtn = e.target.closest(".delete-btn");
+  if (deleteBtn) {
+    deleteBtn.closest(".todo-item").remove();
+    return;
+  }
+
+  // Checkbox clicked
+  if (e.target.type === "checkbox") {
+    e.target.closest(".todo-item").classList.toggle("completed");
+  }
+});
+
+// Example 2: Form validation
+const form = document.querySelector("#signupForm");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const email = form.querySelector("#email").value;
+  const password = form.querySelector("#password").value;
+  const errors = [];
+
+  if (!email.includes("@")) {
+    errors.push("Invalid email");
+  }
+
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+
+  if (errors.length > 0) {
+    alert(errors.join("\n"));
+    return;
+  }
+
+  // Submit form
+  console.log("Form valid, submitting...");
+});
+
+// Example 3: Keyboard shortcuts
+document.addEventListener("keydown", (e) => {
+  // Ctrl/Cmd+S to save
+  if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+    e.preventDefault();
+    saveDocument();
+  }
+
+  // Escape to close modal
+  if (e.key === "Escape") {
+    closeModal();
+  }
+
+  // Arrow key navigation
+  if (e.key === "ArrowLeft") {
+    navigatePrevious();
+  }
+  if (e.key === "ArrowRight") {
+    navigateNext();
+  }
+});
+
+// Example 4: Debounced search
+let searchTimeout;
+const searchInput = document.querySelector("#search");
+
+searchInput.addEventListener("input", (e) => {
+  clearTimeout(searchTimeout);
+
+  searchTimeout = setTimeout(() => {
+    performSearch(e.target.value);
+  }, 300); // Wait 300ms after typing stops
+});
+
+// Example 5: Drag and drop
+const draggable = document.querySelector(".draggable");
+draggable.setAttribute("draggable", "true");
+
+draggable.addEventListener("dragstart", (e) => {
+  e.dataTransfer.setData("text/plain", e.target.id);
+  e.target.classList.add("dragging");
+});
+
+draggable.addEventListener("dragend", (e) => {
+  e.target.classList.remove("dragging");
+});
+
+const dropzone = document.querySelector(".dropzone");
+
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault(); // Allow drop
+  dropzone.classList.add("drag-over");
+});
+
+dropzone.addEventListener("dragleave", (e) => {
+  dropzone.classList.remove("drag-over");
+});
+
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("drag-over");
+
+  const id = e.dataTransfer.getData("text/plain");
+  const element = document.getElementById(id);
+  dropzone.appendChild(element);
+});
+
+// Example 6: One-time event
+button.addEventListener(
+  "click",
+  () => {
+    console.log("This only runs once!");
+    initializeApp();
+  },
+  { once: true },
+);
+```
+
+

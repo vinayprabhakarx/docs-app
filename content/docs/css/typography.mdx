@@ -1,0 +1,456 @@
+---
+title: "Typography - Text Styling and Fonts"
+description: Documentation for Typography - Text Styling and Fonts.
+---
+
+# Typography - Text Styling and Fonts
+
+
+
+## What is Typography in CSS?
+
+Typography refers to the styling and appearance of text on your webpage. It includes fonts, sizes, weights, spacing, and text effects.
+
+Good typography makes content readable, accessible, and visually appealing.
+
+### Why is Typography Important?
+
+Typography affects:
+- **Readability** - How easy text is to read
+- **Hierarchy** - Visual importance of content
+- **Brand identity** - Consistent look and feel
+- **User experience** - Comfortable reading experience
+
+## Typography Properties - Quick Reference
+
+| Property | Description | Example | Default |
+|---|---|---|---|
+| `font-family` | Font typeface | `font-family: Arial, sans-serif;` | Browser default |
+| `font-size` | Text size | `font-size: 16px;` | `16px` (usually) |
+| `font-weight` | Text thickness | `font-weight: bold;` | `400` (normal) |
+| `font-style` | Italic or normal | `font-style: italic;` | `normal` |
+| `line-height` | Space between lines | `line-height: 1.6;` | `normal` (~1.2) |
+| `letter-spacing` | Space between letters | `letter-spacing: 1px;` | `normal` |
+| `word-spacing` | Space between words | `word-spacing: 2px;` | `normal` |
+| `text-align` | Horizontal alignment | `text-align: center;` | `left` |
+| `text-decoration` | Underline, etc. | `text-decoration: underline;` | `none` |
+| `text-transform` | Case transformation | `text-transform: uppercase;` | `none` |
+| `text-indent` | First line indent | `text-indent: 20px;` | `0` |
+| `color` | Text color | `color: #333;` | `black` |
+
+## Detailed Explanation
+
+### 1. font-family
+
+**What it does:**
+Specifies the typeface for text. Always provide fallbacks!
+
+**Syntax:**
+```css
+font-family: "Preferred Font", "Fallback Font", generic-family;
+```
+
+**Generic families:**
+- `serif` - Fonts with serifs (e.g., Times New Roman)
+- `sans-serif` - Fonts without serifs (e.g., Arial, Helvetica)
+- `monospace` - Fixed-width fonts (e.g., Courier)
+- `cursive` - Handwriting-style fonts
+- `fantasy` - Decorative fonts
+
+**CSS Example 1 - System fonts:**
+```css
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+code {
+    font-family: "Courier New", Courier, monospace;
+}
+```
+
+**CSS Example 2 - Google Fonts:**
+```html
+<!-- In HTML head -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+```
+
+```css
+body {
+    font-family: 'Roboto', sans-serif;
+}
+```
+
+**CSS Example 3 - Modern system font stack:**
+```css
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                 "Helvetica Neue", Arial, sans-serif;
+}
+```
+
+**When to use:**
+- Set body font for entire site
+- Different fonts for headings vs body text
+- Monospace for code blocks
+
+---
+
+### 2. font-size
+
+**What it does:**
+Controls the size of text.
+
+**Syntax:**
+```css
+font-size: value;
+```
+
+**Units:**
+- `px` - Fixed pixels: `font-size: 16px;`
+- `em` - Relative to parent: `font-size: 1.5em;` (1.5× parent size)
+- `rem` - Relative to root: `font-size: 1.5rem;` (1.5× root size)
+- `%` - Percentage of parent: `font-size: 150%;`
+- `vw/vh` - Viewport units: `font-size: 5vw;`
+
+**CSS Example:**
+```css
+html {
+    font-size: 16px; /* Base size */
+}
+
+body {
+    font-size: 1rem; /* 16px */
+}
+
+h1 {
+    font-size: 2.5rem; /* 40px */
+}
+
+h2 {
+    font-size: 2rem; /* 32px */
+}
+
+p {
+    font-size: 1rem; /* 16px */
+}
+
+small {
+    font-size: 0.875rem; /* 14px */
+}
+```
+
+**Best practice - Use rem:**
+```css
+html {
+    font-size: 16px;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+p { font-size: 1rem; }
+```
+
+---
+
+### 3. font-weight
+
+**What it does:**
+Controls the thickness/boldness of text.
+
+**Syntax:**
+```css
+font-weight: normal | bold | bolder | lighter | 100-900;
+```
+
+**Values:**
+- `100` - Thin
+- `200` - Extra Light
+- `300` - Light
+- `400` - Normal (default)
+- `500` - Medium
+- `600` - Semi Bold
+- `700` - Bold
+- `800` - Extra Bold
+- `900` - Black
+
+**CSS Example:**
+```css
+.thin {
+    font-weight: 300;
+}
+
+.normal {
+    font-weight: 400; /* or font-weight: normal; */
+}
+
+.bold {
+    font-weight: 700; /* or font-weight: bold; */
+}
+
+.extra-bold {
+    font-weight: 900;
+}
+```
+
+**Real-world scenario:**
+```css
+h1 {
+    font-weight: 700; /* Bold headings */
+}
+
+p {
+    font-weight: 400; /* Normal body text */
+}
+
+.highlight {
+    font-weight: 600; /* Semi-bold for emphasis */
+}
+```
+
+---
+
+### 4. line-height
+
+**What it does:**
+Controls the space between lines of text. Critical for readability!
+
+**Syntax:**
+```css
+line-height: number | length | percentage;
+```
+
+**CSS Example:**
+```css
+body {
+    line-height: 1.6; /* 1.6× font size (recommended) */
+}
+
+h1 {
+    line-height: 1.2; /* Tighter for headings */
+}
+
+code {
+    line-height: 1.4;
+}
+```
+
+**Best practices:**
+- Body text: `1.5` to `1.8`
+- Headings: `1.1` to `1.3`
+- Use unitless numbers (they multiply with font-size)
+
+**Real-world scenario:**
+```css
+.article-content {
+    font-size: 18px;
+    line-height: 1.7; /* 30.6px between lines */
+}
+```
+
+---
+
+### 5. letter-spacing
+
+**What it does:**
+Controls space between characters.
+
+**Syntax:**
+```css
+letter-spacing: normal | length;
+```
+
+**CSS Example:**
+```css
+.spaced-out {
+    letter-spacing: 2px;
+}
+
+.tight {
+    letter-spacing: -0.5px;
+}
+
+.uppercase-heading {
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Uppercase often needs more spacing */
+}
+```
+
+---
+
+### 6. text-align
+
+**What it does:**
+Controls horizontal alignment of text.
+
+**Syntax:**
+```css
+text-align: left | right | center | justify;
+```
+
+**CSS Example:**
+```css
+.left {
+    text-align: left; /* Default */
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.justify {
+    text-align: justify; /* Stretches lines to fill width */
+}
+```
+
+---
+
+### 7. text-decoration
+
+**What it does:**
+Adds decorative lines to text.
+
+**Syntax:**
+```css
+text-decoration: none | underline | overline | line-through;
+```
+
+**CSS Example:**
+```css
+a {
+    text-decoration: none; /* Remove underline from links */
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.fancy {
+    text-decoration: underline wavy red;
+}
+```
+
+---
+
+### 8. text-transform
+
+**What it does:**
+Transforms the case of text.
+
+**Syntax:**
+```css
+text-transform: none | uppercase | lowercase | capitalize;
+```
+
+**CSS Example:**
+```css
+.uppercase {
+    text-transform: uppercase; /* ALL CAPS */
+}
+
+.lowercase {
+    text-transform: lowercase; /* all lowercase */
+}
+
+.capitalize {
+    text-transform: capitalize; /* First Letter Of Each Word */
+}
+```
+
+## Common Typography Patterns
+
+### Pattern 1: Article Typography
+
+```css
+.article {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #333;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.article h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.article h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.article p {
+    margin-bottom: 1.5rem;
+}
+```
+
+---
+
+### Pattern 2: Modern Sans-Serif
+
+```css
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+}
+```
+
+---
+
+### Pattern 3: Code Block Typography
+
+```css
+code {
+    font-family: "Fira Code", "Courier New", monospace;
+    font-size: 0.9em;
+    background-color: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+pre code {
+    display: block;
+    padding: 1rem;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+```
+
+## Related Topics
+
+- [[13-Colors|Colors]] - Text colors
+- [[12-Text-Properties|Text Properties]] - More text styling
+- [[05-Box-Model|Box Model]] - Text spacing
+
+---
+

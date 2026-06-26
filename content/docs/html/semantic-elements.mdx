@@ -1,0 +1,339 @@
+---
+title: "Semantic Elements - Meaningful HTML"
+description: Documentation for Semantic Elements - Meaningful HTML.
+---
+
+# Semantic Elements - Meaningful HTML
+
+
+
+## What are Semantic Elements?
+
+Semantic elements clearly describe their meaning to browsers, developers, and assistive technologies.
+
+> **Definition:** Semantic HTML uses elements that convey meaning about the content they contain, rather than just presentation. Instead of using generic `<div>` and `<span>`, semantic elements like `<header>`, `<nav>`, `<article>`, and `<footer>` tell browsers and screen readers what role each section plays.
+
+## Semantic vs Non-Semantic
+
+| Non-Semantic              | Semantic    |
+| ------------------------- | ----------- |
+| `<div class="header">`    | `<header>`  |
+| `<div class="nav">`       | `<nav>`     |
+| `<div class="main">`      | `<main>`    |
+| `<div class="article">`   | `<article>` |
+| `<div class="sidebar">`   | `<aside>`   |
+| `<div class="footer">`    | `<footer>`  |
+| `<span class="emphasis">` | `<em>`      |
+| `<b>`                     | `<strong>`  |
+
+## Page Structure Elements
+
+```html
+<body>
+  <header>
+    <nav>...</nav>
+  </header>
+
+  <main>
+    <article>
+      <section>...</section>
+      <section>...</section>
+    </article>
+    <aside>...</aside>
+  </main>
+
+  <footer>...</footer>
+</body>
+```
+
+## Semantic Elements Reference
+
+| Element        | Purpose                              | Can Contain       |
+| -------------- | ------------------------------------ | ----------------- |
+| `<header>`     | Introductory content, logos, nav     | Any flow content  |
+| `<nav>`        | Navigation links                     | Links, lists      |
+| `<main>`       | Main content (one per page)          | Any flow content  |
+| `<article>`    | Self-contained, reusable content     | Sections, headers |
+| `<section>`    | Thematic grouping of content         | Any flow content  |
+| `<aside>`      | Sidebar, related content             | Any flow content  |
+| `<footer>`     | Footer information, links, copyright | Any flow content  |
+| `<figure>`     | Self-contained media                 | Media, figcaption |
+| `<figcaption>` | Caption for figure                   | Text, inline      |
+| `<details>`    | Expandable content                   | summary + content |
+| `<summary>`    | Heading for details                  | Text, inline      |
+| `<mark>`       | Highlighted/relevant text            | Text              |
+| `<time>`       | Date/time                            | Text              |
+| `<address>`    | Contact information                  | Contact details   |
+
+## Header
+
+```html
+<!-- Page header -->
+<header>
+  <h1>Site Name</h1>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+  </nav>
+</header>
+
+<!-- Article header -->
+<article>
+  <header>
+    <h2>Article Title</h2>
+    <p>By Author Name | <time datetime="2024-01-15">Jan 15, 2024</time></p>
+  </header>
+  <p>Article content...</p>
+</article>
+```
+
+## Nav
+
+```html
+<!-- Main navigation -->
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+</nav>
+
+<!-- Breadcrumb navigation -->
+<nav aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+    <li aria-current="page">Current Product</li>
+  </ol>
+</nav>
+```
+
+## Main
+
+```html
+<!-- Only ONE main element per page -->
+<main id="main-content">
+  <h1>Page Title</h1>
+  <p>Primary content goes here...</p>
+</main>
+
+<!-- Skip link target -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+```
+
+## Article vs Section
+
+```html
+<!-- Article: Self-contained, could be syndicated -->
+<article>
+  <h2>Blog Post Title</h2>
+  <p>This content makes sense on its own.</p>
+</article>
+
+<!-- Section: Thematic grouping within a page -->
+<section>
+  <h2>About Our Team</h2>
+  <p>Team description...</p>
+</section>
+
+<!-- Section inside Article -->
+<article>
+  <h2>Complete Guide to HTML</h2>
+
+  <section>
+    <h3>Chapter 1: Basics</h3>
+    <p>Basic content...</p>
+  </section>
+
+  <section>
+    <h3>Chapter 2: Forms</h3>
+    <p>Forms content...</p>
+  </section>
+</article>
+```
+
+| Use Article When                | Use Section When                  |
+| ------------------------------- | --------------------------------- |
+| Content is self-contained       | Grouping related content          |
+| Could be republished standalone | Content needs surrounding context |
+| Blog posts, news articles       | Chapters, tabs, page sections     |
+| Comments, forum posts           | Different parts of a form         |
+
+## Aside
+
+```html
+<!-- Sidebar -->
+<aside>
+  <h2>Related Articles</h2>
+  <ul>
+    <li><a href="#">Article 1</a></li>
+    <li><a href="#">Article 2</a></li>
+  </ul>
+</aside>
+
+<!-- Pull quote -->
+<article>
+  <p>Main content...</p>
+
+  <aside>
+    <blockquote>"This is a highlighted quote from the article."</blockquote>
+  </aside>
+
+  <p>More content...</p>
+</article>
+```
+
+## Footer
+
+```html
+<!-- Page footer -->
+<footer>
+  <nav>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+  </nav>
+  <p>&copy; 2024 Company Name</p>
+</footer>
+
+<!-- Article footer -->
+<article>
+  <p>Article content...</p>
+
+  <footer>
+    <p>Written by: <a href="/author">Author Name</a></p>
+    <p>Tags: HTML, Web Development</p>
+  </footer>
+</article>
+```
+
+## Details and Summary
+
+```html
+<!-- Accordion/collapsible -->
+<details>
+  <summary>Click to expand</summary>
+  <p>Hidden content that appears when expanded.</p>
+</details>
+
+<!-- FAQ pattern -->
+<details>
+  <summary>What is HTML?</summary>
+  <p>HTML is the standard markup language for creating web pages.</p>
+</details>
+
+<details>
+  <summary>What is CSS?</summary>
+  <p>CSS is used for styling HTML elements.</p>
+</details>
+
+<!-- Open by default -->
+<details open>
+  <summary>Already expanded</summary>
+  <p>This content is visible initially.</p>
+</details>
+```
+
+## Complete Page Structure
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semantic HTML Example</title>
+  </head>
+  <body>
+    <header>
+      <h1>My Website</h1>
+      <nav aria-label="Main">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header>
+          <h2>Article Title</h2>
+          <p>By Author | <time datetime="2024-01-15">January 15, 2024</time></p>
+        </header>
+
+        <section>
+          <h3>Introduction</h3>
+          <p>First section content...</p>
+        </section>
+
+        <section>
+          <h3>Main Points</h3>
+          <p>Second section content...</p>
+
+          <figure>
+            <img src="diagram.png" alt="Diagram description" />
+            <figcaption>Figure 1: Explanatory diagram</figcaption>
+          </figure>
+        </section>
+
+        <footer>
+          <p>Tags: HTML, Semantic, Web Development</p>
+        </footer>
+      </article>
+
+      <aside>
+        <h2>Related Posts</h2>
+        <ul>
+          <li><a href="#">Related Post 1</a></li>
+          <li><a href="#">Related Post 2</a></li>
+        </ul>
+      </aside>
+    </main>
+
+    <footer>
+      <nav aria-label="Footer">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+      </nav>
+      <address>
+        Contact: <a href="mailto:info@example.com">info@example.com</a>
+      </address>
+      <p>&copy; 2024 My Website</p>
+    </footer>
+  </body>
+</html>
+```
+
+## Interview Questions & Answers
+
+### Q1: Why is semantic HTML important?
+
+Semantic HTML improves accessibility by helping screen readers understand page structure and navigate content. It enhances SEO as search engines better understand content hierarchy and importance. It makes code more readable and maintainable for developers. Semantic elements have implicit ARIA roles, reducing the need for explicit accessibility attributes. It also future-proofs content as browsers and tools can better interpret meaning.
+
+---
+
+### Q2: What's the difference between article and section?
+
+`<article>` represents self-contained content that could be independently distributed or reused - like blog posts, news articles, or comments. `<section>` represents a thematic grouping of content, typically with a heading, that's part of something larger. Articles can contain sections (chapters of a post), and sections can contain articles (a blog section with multiple posts). Key test: would this content make sense on its own? Yes = article.
+
+---
+
+### Q3: Can a page have multiple headers and footers?
+
+Yes. While there should be only one `<main>`, headers and footers can appear multiple times. A page typically has one main header/footer, but each `<article>` and `<section>` can have its own header and footer for local context like article titles or article metadata. The main page header usually contains the site logo and primary navigation, while article headers contain titles and bylines.
+
+---
+
+### Q4: When should you use aside vs a regular div?
+
+Use `<aside>` for content that is tangentially related to the surrounding content - sidebars, pull quotes, advertising, related links, or author bios. Screen readers announce it as complementary content. If content is purely for layout/styling with no semantic meaning, use `<div>`. If it's the main content, use `<main>` or `<article>`. Choose based on content relationship, not visual appearance.
+
+---
+
+### Q5: What are the benefits of using details and summary?
+
+`<details>` and `<summary>` provide native HTML accordion/disclosure functionality without JavaScript. Benefits: built-in keyboard accessibility (Space/Enter to toggle), semantic meaning for assistive technologies, works without JavaScript, print-friendly (content is visible in print), and requires minimal code. Use for FAQs, expandable sections, additional information, and progressive disclosure. The `open` attribute controls initial state.
+
+

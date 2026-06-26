@@ -1,0 +1,609 @@
+---
+title: "CSS Troubleshooting Guide - Common Issues and Solutions"
+description: Documentation for CSS Troubleshooting Guide - Common Issues and Solutions.
+---
+
+# CSS Troubleshooting Guide - Common Issues and Solutions
+
+[[00-CSS-Index|← Back to CSS Index]]
+
+
+
+## Layout Issues
+
+### Issue 1: Element Not Centering
+
+**Problem:**
+```css
+.box {
+    margin: 0 auto; /* Doesn't work! */
+}
+```
+
+**Solution:**
+```css
+.box {
+    margin: 0 auto;
+    width: 500px; /* Must have a width! */
+}
+
+/* OR use Flexbox */
+.container {
+    display: flex;
+    justify-content: center;
+}
+```
+
+
+
+### Issue 2: Parent Collapsing with Floated Children
+
+**Problem:**
+```css
+.parent {
+    /* Height is 0! */
+}
+
+.child {
+    float: left;
+}
+```
+
+**Solution:**
+```css
+/* Clearfix */
+.parent::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* OR use overflow */
+.parent {
+    overflow: auto;
+}
+
+/* OR use Flexbox instead */
+.parent {
+    display: flex;
+}
+```
+
+
+
+### Issue 3: Margin Collapse
+
+**Problem:**
+```css
+.box1 {
+    margin-bottom: 20px;
+}
+
+.box2 {
+    margin-top: 30px;
+}
+/* Gap is 30px, not 50px! */
+```
+
+**Solution:**
+```css
+/* Use padding instead */
+.box1 {
+    padding-bottom: 20px;
+}
+
+/* OR use flexbox with gap */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+```
+
+
+
+### Issue 4: Flexbox Items Not Wrapping
+
+**Problem:**
+```css
+.container {
+    display: flex;
+    /* Items overflow! */
+}
+```
+
+**Solution:**
+```css
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Add this */
+}
+```
+
+
+
+## Sizing Issues
+
+### Issue 5: Box-Sizing Problems
+
+**Problem:**
+```css
+.box {
+    width: 200px;
+    padding: 20px;
+    border: 2px solid black;
+    /* Actual width is 244px! */
+}
+```
+
+**Solution:**
+```css
+.box {
+    width: 200px;
+    padding: 20px;
+    border: 2px solid black;
+    box-sizing: border-box; /* Width includes padding and border */
+}
+
+/* Apply globally */
+* {
+    box-sizing: border-box;
+}
+```
+
+
+
+### Issue 6: 100vh on Mobile
+
+**Problem:**
+```css
+.hero {
+    height: 100vh;
+    /* Address bar causes overflow on mobile! */
+}
+```
+
+**Solution:**
+```css
+.hero {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+}
+
+/* OR use JavaScript */
+.hero {
+    height: calc(var(--vh, 1vh) * 100);
+}
+```
+
+
+
+## Z-Index Issues
+
+### Issue 7: Z-Index Not Working
+
+**Problem:**
+```css
+.element {
+    z-index: 9999; /* Doesn't work! */
+}
+```
+
+**Solution:**
+```css
+.element {
+    position: relative; /* Must have position! */
+    z-index: 9999;
+}
+```
+
+
+
+### Issue 8: Z-Index Stacking Context
+
+**Problem:**
+```css
+.parent {
+    z-index: 1;
+}
+
+.child {
+    z-index: 9999; /* Still behind other elements! */
+}
+```
+
+**Solution:**
+```css
+/* Child can't escape parent's stacking context */
+/* Move z-index to parent or restructure HTML */
+.parent {
+    z-index: 9999;
+}
+```
+
+
+
+## Flexbox Issues
+
+### Issue 9: Flex Items Not Equal Height
+
+**Problem:**
+```css
+.container {
+    display: flex;
+}
+/* Items have different heights */
+```
+
+**Solution:**
+```css
+.container {
+    display: flex;
+    align-items: stretch; /* Default, ensures equal height */
+}
+
+.item {
+    /* Don't set height */
+}
+```
+
+
+
+### Issue 10: Flex Item Overflow
+
+**Problem:**
+```css
+.flex-item {
+    /* Text overflows! */
+}
+```
+
+**Solution:**
+```css
+.flex-item {
+    min-width: 0; /* Allow shrinking below content size */
+    overflow: hidden;
+}
+```
+
+
+
+## Grid Issues
+
+### Issue 11: Grid Items Not Filling Container
+
+**Problem:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    /* Items don't fill height */
+}
+```
+
+**Solution:**
+```css
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: 1fr; /* Equal height rows */
+}
+```
+
+
+
+## Positioning Issues
+
+### Issue 12: Absolute Positioning Relative to Wrong Parent
+
+**Problem:**
+```css
+.child {
+    position: absolute;
+    top: 0;
+    /* Positioned relative to body, not parent! */
+}
+```
+
+**Solution:**
+```css
+.parent {
+    position: relative; /* Create positioning context */
+}
+
+.child {
+    position: absolute;
+    top: 0;
+}
+```
+
+
+
+### Issue 13: Fixed Element Jumping on Scroll
+
+**Problem:**
+```css
+.fixed-header {
+    position: fixed;
+    /* Jumps when scrollbar appears */
+}
+```
+
+**Solution:**
+```css
+html {
+    overflow-y: scroll; /* Always show scrollbar */
+}
+
+/* OR */
+.fixed-header {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+```
+
+
+
+## Text Issues
+
+### Issue 14: Text Overflow
+
+**Problem:**
+```css
+.text {
+    width: 200px;
+    /* Long text overflows! */
+}
+```
+
+**Solution:**
+```css
+.text {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+```
+
+
+
+### Issue 15: Vertical Align Not Working
+
+**Problem:**
+```css
+.text {
+    vertical-align: middle; /* Doesn't work on block elements! */
+}
+```
+
+**Solution:**
+```css
+/* Only works on inline/inline-block/table-cell */
+.text {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* OR use Flexbox */
+.container {
+    display: flex;
+    align-items: center;
+}
+```
+
+
+
+## Specificity Issues
+
+### Issue 16: Styles Not Applying
+
+**Problem:**
+```css
+.button {
+    background: blue; /* Doesn't apply! */
+}
+
+#header .button {
+    background: red; /* Higher specificity wins */
+}
+```
+
+**Solution:**
+```css
+/* Increase specificity */
+.header .button.primary {
+    background: blue;
+}
+
+/* OR use !important (last resort) */
+.button {
+    background: blue !important;
+}
+```
+
+
+
+## Image Issues
+
+### Issue 17: Image Not Responsive
+
+**Problem:**
+```css
+img {
+    /* Overflows container on small screens */
+}
+```
+
+**Solution:**
+```css
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+```
+
+
+
+### Issue 18: Image White Space Below
+
+**Problem:**
+```html
+<div>
+    <img src="image.jpg">
+    <!-- Mysterious white space below! -->
+</div>
+```
+
+**Solution:**
+```css
+img {
+    display: block; /* Remove inline spacing */
+}
+
+/* OR */
+img {
+    vertical-align: top;
+}
+```
+
+
+
+## Animation Issues
+
+### Issue 19: Animation Not Smooth
+
+**Problem:**
+```css
+.box {
+    transition: width 0.3s, height 0.3s;
+    /* Janky animation */
+}
+```
+
+**Solution:**
+```css
+/* Use transform and opacity for 60fps */
+.box {
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.box:hover {
+    transform: scale(1.1);
+}
+```
+
+
+
+### Issue 20: Transition Not Working
+
+**Problem:**
+```css
+.box {
+    display: none;
+    transition: all 0.3s;
+}
+
+.box.show {
+    display: block; /* Can't transition display! */
+}
+```
+
+**Solution:**
+```css
+.box {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.box.show {
+    opacity: 1;
+    visibility: visible;
+}
+```
+
+
+
+## Browser Compatibility Issues
+
+### Issue 21: CSS Not Working in Old Browsers
+
+**Problem:**
+```css
+.box {
+    display: grid; /* Doesn't work in IE */
+}
+```
+
+**Solution:**
+```css
+/* Feature detection */
+@supports (display: grid) {
+    .box {
+        display: grid;
+    }
+}
+
+@supports not (display: grid) {
+    .box {
+        display: flex; /* Fallback */
+    }
+}
+```
+
+
+
+## Performance Issues
+
+### Issue 22: Slow Rendering
+
+**Problem:**
+```css
+* {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    /* Applied to every element! */
+}
+```
+
+**Solution:**
+```css
+/* Be specific */
+.card {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* Avoid universal selector for expensive properties */
+```
+
+
+
+## Debugging Tips
+
+### 1. Use Browser DevTools
+
+```css
+/* Add temporary borders to see layout */
+* {
+    outline: 1px solid red;
+}
+```
+
+### 2. Check Specificity
+
+Use DevTools to see which styles are being overridden.
+
+### 3. Validate CSS
+
+Use W3C CSS Validator to catch syntax errors.
+
+### 4. Test in Multiple Browsers
+
+Don't assume it works everywhere if it works in one browser.
+
+
+
+[[00-CSS-Index|← Back to CSS Index]]

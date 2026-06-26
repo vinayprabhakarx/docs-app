@@ -1,0 +1,746 @@
+---
+title: "Flexbox - One-Dimensional Flexible Layouts"
+description: Documentation for Flexbox - One-Dimensional Flexible Layouts.
+---
+
+# Flexbox - One-Dimensional Flexible Layouts
+
+
+
+## What is Flexbox?
+
+Flexbox (Flexible Box Layout) is a CSS layout model designed for **one-dimensional layouts** - either in a row or a column. It makes it easy to align, distribute, and size elements within a container, even when their size is unknown or dynamic.
+
+Think of Flexbox as a smart container that automatically arranges its children in the best way possible.
+
+### Why Use Flexbox?
+
+Before Flexbox, creating flexible layouts required floats, positioning, and complex calculations. Flexbox solves this by:
+- **Easy alignment** - Center elements vertically and horizontally with ease
+- **Flexible sizing** - Elements grow and shrink to fill available space
+- **Order control** - Change visual order without changing HTML
+- **Responsive** - Automatically adapts to different screen sizes
+- **Less code** - Simpler than float-based layouts
+
+## Flexbox Properties - Quick Reference
+
+### Container Properties (Parent)
+
+| Property | Description | Values | Default |
+|---|---|---|---|
+| `display` | Enable flexbox | `flex`, `inline-flex` | - |
+| `flex-direction` | Main axis direction | `row`, `row-reverse`, `column`, `column-reverse` | `row` |
+| `flex-wrap` | Wrap items | `nowrap`, `wrap`, `wrap-reverse` | `nowrap` |
+| `flex-flow` | Shorthand for direction + wrap | `row wrap`, etc. | `row nowrap` |
+| `justify-content` | Align along main axis | `flex-start`, `flex-end`, `center`, `space-between`, `space-around`, `space-evenly` | `flex-start` |
+| `align-items` | Align along cross axis | `stretch`, `flex-start`, `flex-end`, `center`, `baseline` | `stretch` |
+| `align-content` | Align multiple lines | `flex-start`, `flex-end`, `center`, `space-between`, `space-around`, `stretch` | `stretch` |
+| `gap` | Space between items | `10px`, `1rem`, etc. | `0` |
+
+### Item Properties (Children)
+
+| Property | Description | Values | Default |
+|---|---|---|---|
+| `order` | Visual order | Any integer | `0` |
+| `flex-grow` | Grow factor | Number (0+) | `0` |
+| `flex-shrink` | Shrink factor | Number (0+) | `1` |
+| `flex-basis` | Initial size | `auto`, `px`, `%`, etc. | `auto` |
+| `flex` | Shorthand for grow/shrink/basis | `1`, `1 1 auto`, etc. | `0 1 auto` |
+| `align-self` | Override align-items | Same as `align-items` | `auto` |
+
+## Container Properties - Detailed Explanation
+
+### 1. display: flex
+
+**What it does:**
+Turns an element into a flex container, making its direct children flex items.
+
+**Syntax:**
+```css
+.container {
+    display: flex; /* Block-level flex container */
+}
+
+.container {
+    display: inline-flex; /* Inline-level flex container */
+}
+```
+
+**HTML Example:**
+```html
+<div class="flex-container">
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+</div>
+```
+
+**CSS Example:**
+```css
+.flex-container {
+    display: flex;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.item {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    margin: 5px;
+}
+```
+
+**Result:** Items are laid out in a row by default.
+
+---
+
+### 2. flex-direction
+
+**What it does:**
+Defines the main axis direction (row or column).
+
+**Syntax:**
+```css
+flex-direction: row | row-reverse | column | column-reverse;
+```
+
+**HTML Example:**
+```html
+<div class="row-container">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+</div>
+```
+
+**CSS Example 1 - Row (default):**
+```css
+.row-container {
+    display: flex;
+    flex-direction: row; /* Left to right → */
+}
+```
+
+**Result:** `[1] [2] [3]`
+
+**CSS Example 2 - Row Reverse:**
+```css
+.row-reverse-container {
+    display: flex;
+    flex-direction: row-reverse; /* Right to left ← */
+}
+```
+
+**Result:** `[3] [2] [1]`
+
+**CSS Example 3 - Column:**
+```css
+.column-container {
+    display: flex;
+    flex-direction: column; /* Top to bottom ↓ */
+}
+```
+
+**Result:**
+```
+[1]
+[2]
+[3]
+```
+
+**CSS Example 4 - Column Reverse:**
+```css
+.column-reverse-container {
+    display: flex;
+    flex-direction: column-reverse; /* Bottom to top ↑ */
+}
+```
+
+**Result:**
+```
+[3]
+[2]
+[1]
+```
+
+**When to use:**
+- `row` - Horizontal navigation menus
+- `column` - Vertical sidebars, mobile layouts
+- `row-reverse` / `column-reverse` - RTL languages, special layouts
+
+---
+
+### 3. justify-content
+
+**What it does:**
+Aligns items along the **main axis** (horizontal if row, vertical if column).
+
+**Syntax:**
+```css
+justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly;
+```
+
+**HTML Example:**
+```html
+<div class="container">
+    <div class="box">1</div>
+    <div class="box">2</div>
+    <div class="box">3</div>
+</div>
+```
+
+**CSS Example 1 - flex-start (default):**
+```css
+.container {
+    display: flex;
+    justify-content: flex-start;
+}
+```
+
+**Result:** `[1][2][3]___________` (items at start)
+
+**CSS Example 2 - flex-end:**
+```css
+.container {
+    display: flex;
+    justify-content: flex-end;
+}
+```
+
+**Result:** `___________[1][2][3]` (items at end)
+
+**CSS Example 3 - center:**
+```css
+.container {
+    display: flex;
+    justify-content: center;
+}
+```
+
+**Result:** `_____[1][2][3]_____` (items centered)
+
+**CSS Example 4 - space-between:**
+```css
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+```
+
+**Result:** `[1]_____[2]_____[3]` (equal space between)
+
+**CSS Example 5 - space-around:**
+```css
+.container {
+    display: flex;
+    justify-content: space-around;
+}
+```
+
+**Result:** `__[1]____[2]____[3]__` (equal space around each)
+
+**CSS Example 6 - space-evenly:**
+```css
+.container {
+    display: flex;
+    justify-content: space-evenly;
+}
+```
+
+**Result:** `___[1]___[2]___[3]___` (perfectly equal spacing)
+
+**Real-world scenario:**
+Center a navigation menu horizontally: `justify-content: center;`
+
+---
+
+### 4. align-items
+
+**What it does:**
+Aligns items along the **cross axis** (vertical if row, horizontal if column).
+
+**Syntax:**
+```css
+align-items: stretch | flex-start | flex-end | center | baseline;
+```
+
+**HTML Example:**
+```html
+<div class="container">
+    <div class="tall">Tall</div>
+    <div class="short">Short</div>
+    <div class="medium">Medium</div>
+</div>
+```
+
+**CSS Example 1 - stretch (default):**
+```css
+.container {
+    display: flex;
+    align-items: stretch;
+    height: 200px;
+}
+```
+
+**Result:** All items stretch to fill the container height.
+
+**CSS Example 2 - flex-start:**
+```css
+.container {
+    display: flex;
+    align-items: flex-start;
+    height: 200px;
+}
+```
+
+**Result:** Items align to the top.
+
+**CSS Example 3 - flex-end:**
+```css
+.container {
+    display: flex;
+    align-items: flex-end;
+    height: 200px;
+}
+```
+
+**Result:** Items align to the bottom.
+
+**CSS Example 4 - center:**
+```css
+.container {
+    display: flex;
+    align-items: center;
+    height: 200px;
+}
+```
+
+**Result:** Items are vertically centered.
+
+**CSS Example 5 - baseline:**
+```css
+.container {
+    display: flex;
+    align-items: baseline;
+}
+```
+
+**Result:** Items align based on their text baseline.
+
+**Real-world scenario:**
+Vertically center items in a navigation bar:
+```css
+.navbar {
+    display: flex;
+    align-items: center;
+    height: 60px;
+}
+```
+
+---
+
+### 5. flex-wrap
+
+**What it does:**
+Controls whether items wrap to new lines when they don't fit.
+
+**Syntax:**
+```css
+flex-wrap: nowrap | wrap | wrap-reverse;
+```
+
+**HTML Example:**
+```html
+<div class="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+    <div class="item">5</div>
+    <div class="item">6</div>
+</div>
+```
+
+**CSS Example 1 - nowrap (default):**
+```css
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 300px;
+}
+
+.item {
+    width: 100px;
+}
+```
+
+**Result:** Items shrink to fit in one line (may overflow).
+
+**CSS Example 2 - wrap:**
+```css
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 300px;
+}
+
+.item {
+    width: 100px;
+}
+```
+
+**Result:**
+```
+[1] [2] [3]
+[4] [5] [6]
+```
+
+**CSS Example 3 - wrap-reverse:**
+```css
+.container {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    width: 300px;
+}
+```
+
+**Result:**
+```
+[4] [5] [6]
+[1] [2] [3]
+```
+
+**Real-world scenario:**
+Responsive grid that wraps on smaller screens:
+```css
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.grid-item {
+    flex: 1 1 300px; /* Grow, shrink, min 300px */
+}
+```
+
+---
+
+### 6. gap (row-gap, column-gap)
+
+**What it does:**
+Creates space between flex items (modern property, very useful!).
+
+**Syntax:**
+```css
+gap: 20px; /* Both row and column */
+row-gap: 10px; /* Vertical spacing */
+column-gap: 20px; /* Horizontal spacing */
+gap: 10px 20px; /* row column */
+```
+
+**HTML Example:**
+```html
+<div class="container">
+    <div class="box">1</div>
+    <div class="box">2</div>
+    <div class="box">3</div>
+</div>
+```
+
+**CSS Example:**
+```css
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.box {
+    width: 100px;
+    height: 100px;
+    background-color: #007bff;
+}
+```
+
+**Result:** 20px space between all items (no margin needed!).
+
+**Real-world scenario:**
+Create spacing in a card grid without worrying about margins:
+```css
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+```
+
+## Item Properties - Detailed Explanation
+
+### 7. flex-grow
+
+**What it does:**
+Controls how much an item grows relative to others when there's extra space.
+
+**Syntax:**
+```css
+flex-grow: number; /* Default: 0 (don't grow) */
+```
+
+**HTML Example:**
+```html
+<div class="container">
+    <div class="item-1">Item 1</div>
+    <div class="item-2">Item 2</div>
+    <div class="item-3">Item 3</div>
+</div>
+```
+
+**CSS Example:**
+```css
+.container {
+    display: flex;
+    width: 600px;
+}
+
+.item-1 {
+    flex-grow: 1; /* Takes 1 part */
+}
+
+.item-2 {
+    flex-grow: 2; /* Takes 2 parts (twice as much) */
+}
+
+.item-3 {
+    flex-grow: 1; /* Takes 1 part */
+}
+```
+
+**Result:** Item 2 is twice as wide as Items 1 and 3.
+
+**Real-world scenario:**
+Make a search input grow to fill available space:
+```css
+.search-bar {
+    display: flex;
+}
+
+.search-input {
+    flex-grow: 1; /* Takes all available space */
+}
+
+.search-button {
+    flex-grow: 0; /* Stays at its natural size */
+}
+```
+
+---
+
+### 8. flex-shrink
+
+**What it does:**
+Controls how much an item shrinks when there's not enough space.
+
+**Syntax:**
+```css
+flex-shrink: number; /* Default: 1 (can shrink) */
+```
+
+**CSS Example:**
+```css
+.container {
+    display: flex;
+    width: 300px;
+}
+
+.item-1 {
+    flex-shrink: 1; /* Can shrink */
+    width: 200px;
+}
+
+.item-2 {
+    flex-shrink: 0; /* Won't shrink */
+    width: 200px;
+}
+```
+
+**Result:** Item 1 shrinks, Item 2 stays at 200px.
+
+---
+
+### 9. flex-basis
+
+**What it does:**
+Sets the initial size of an item before growing/shrinking.
+
+**Syntax:**
+```css
+flex-basis: auto | px | % | rem;
+```
+
+**CSS Example:**
+```css
+.item {
+    flex-basis: 200px; /* Start at 200px */
+    flex-grow: 1; /* Then grow if space available */
+}
+```
+
+---
+
+### 10. flex (Shorthand)
+
+**What it does:**
+Shorthand for `flex-grow`, `flex-shrink`, and `flex-basis`.
+
+**Syntax:**
+```css
+flex: grow shrink basis;
+flex: 1; /* Same as: 1 1 0% */
+flex: 1 1 auto; /* Grow, shrink, auto basis */
+flex: 0 0 200px; /* Don't grow/shrink, fixed 200px */
+```
+
+**Common patterns:**
+```css
+.item {
+    flex: 1; /* Equal width items */
+}
+
+.item {
+    flex: 0 0 auto; /* Don't grow or shrink */
+}
+
+.item {
+    flex: 1 1 300px; /* Grow/shrink, min 300px */
+}
+```
+
+## Common Flexbox Patterns
+
+### Pattern 1: Perfect Centering
+
+```html
+<div class="center-container">
+    <div class="centered">Perfectly Centered!</div>
+</div>
+```
+
+```css
+.center-container {
+    display: flex;
+    justify-content: center; /* Horizontal center */
+    align-items: center; /* Vertical center */
+    height: 400px;
+}
+```
+
+---
+
+### Pattern 2: Navigation Bar
+
+```html
+<nav class="navbar">
+    <div class="logo">Logo</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </div>
+</nav>
+```
+
+```css
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+```
+
+---
+
+### Pattern 3: Card Grid
+
+```html
+<div class="card-grid">
+    <div class="card">Card 1</div>
+    <div class="card">Card 2</div>
+    <div class="card">Card 3</div>
+    <div class="card">Card 4</div>
+</div>
+```
+
+```css
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    flex: 1 1 300px; /* Grow, shrink, min 300px */
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+```
+
+---
+
+### Pattern 4: Holy Grail Layout
+
+```html
+<div class="holy-grail">
+    <header>Header</header>
+    <div class="content">
+        <aside class="sidebar">Sidebar</aside>
+        <main>Main Content</main>
+        <aside class="ads">Ads</aside>
+    </div>
+    <footer>Footer</footer>
+</div>
+```
+
+```css
+.holy-grail {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    flex: 0 0 200px;
+}
+
+main {
+    flex: 1;
+}
+
+.ads {
+    flex: 0 0 150px;
+}
+```
+
+## Related Topics
+
+- [[09-CSS-Grid|CSS Grid]] - Two-dimensional layouts
+- [[05-Box-Model|Box Model]] - Understanding element sizing
+- [[22-Media-Queries|Media Queries]] - Responsive flexbox
+
+---
+

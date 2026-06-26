@@ -1,0 +1,282 @@
+---
+title: "JSX & Rendering - Writing React UI"
+description: Documentation for JSX & Rendering - Writing React UI.
+---
+
+# JSX & Rendering - Writing React UI
+
+
+
+## What is JSX?
+
+JSX is a syntax extension for JavaScript that looks like HTML.
+
+> **Definition:** JSX (JavaScript XML) allows you to write HTML-like syntax in JavaScript. It's not a string or HTML - it's a syntax extension that gets transpiled to `React.createElement()` calls. JSX makes React components more readable by visually representing the UI structure.
+
+## JSX vs JavaScript
+
+```jsx
+// JSX (what you write)
+const element = <h1>Hello, World!</h1>;
+
+// Transpiled JavaScript (what browser sees)
+const element = React.createElement("h1", null, "Hello, World!");
+```
+
+## JSX Rules
+
+### 1. Single Root Element
+
+```jsx
+// ❌ Error: Adjacent elements
+return (
+  <h1>Title</h1>
+  <p>Paragraph</p>
+);
+
+// ✅ Wrap in a parent element
+return (
+  <div>
+    <h1>Title</h1>
+    <p>Paragraph</p>
+  </div>
+);
+
+// ✅ Or use Fragment (no extra DOM node)
+return (
+  <>
+    <h1>Title</h1>
+    <p>Paragraph</p>
+  </>
+);
+```
+
+### 2. Close All Tags
+
+```jsx
+// ❌ Error
+<img src="photo.jpg">
+<input type="text">
+<br>
+
+// ✅ Self-closing tags
+<img src="photo.jpg" />
+<input type="text" />
+<br />
+```
+
+### 3. Use camelCase for Attributes
+
+| HTML        | JSX         |
+| ----------- | ----------- |
+| `class`     | `className` |
+| `for`       | `htmlFor`   |
+| `onclick`   | `onClick`   |
+| `tabindex`  | `tabIndex`  |
+| `readonly`  | `readOnly`  |
+| `maxlength` | `maxLength` |
+
+```jsx
+// JSX attributes
+<div className="container">
+  <label htmlFor="name">Name:</label>
+  <input id="name" tabIndex={1} readOnly />
+</div>
+```
+
+## JavaScript Expressions in JSX
+
+Use curly braces `{}` to embed JavaScript expressions.
+
+```jsx
+function Greeting() {
+  const name = "Alice";
+  const age = 25;
+
+  return (
+    <div>
+      {/* Variables */}
+      <h1>Hello, {name}!</h1>
+
+      {/* Expressions */}
+      <p>Age: {age}</p>
+      <p>Next year: {age + 1}</p>
+
+      {/* Function calls */}
+      <p>Uppercase: {name.toUpperCase()}</p>
+
+      {/* Ternary operator */}
+      <p>{age >= 18 ? "Adult" : "Minor"}</p>
+
+      {/* Template literals */}
+      <p>{`${name} is ${age} years old`}</p>
+    </div>
+  );
+}
+```
+
+## Conditional Rendering
+
+### Using Ternary Operator
+
+```jsx
+function Status({ isLoggedIn }) {
+  return <div>{isLoggedIn ? <LogoutButton /> : <LoginButton />}</div>;
+}
+```
+
+### Using Logical AND (&&)
+
+```jsx
+function Notification({ hasMessages, count }) {
+  return <div>{hasMessages && <p>You have {count} messages</p>}</div>;
+}
+```
+
+### Using Variables
+
+```jsx
+function Greeting({ isLoggedIn, name }) {
+  let content;
+
+  if (isLoggedIn) {
+    content = <h1>Welcome back, {name}!</h1>;
+  } else {
+    content = <h1>Please sign in</h1>;
+  }
+
+  return <div>{content}</div>;
+}
+```
+
+## Rendering Lists
+
+```jsx
+function TodoList() {
+  const todos = [
+    { id: 1, text: "Learn React" },
+    { id: 2, text: "Build project" },
+    { id: 3, text: "Deploy app" },
+  ];
+
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>{todo.text}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Inline Styles
+
+```jsx
+function StyledComponent() {
+  // Style object (camelCase properties)
+  const styles = {
+    backgroundColor: "blue",
+    color: "white",
+    padding: "10px",
+    borderRadius: "5px",
+  };
+
+  return <div style={styles}>Styled with inline styles</div>;
+
+  // Or inline
+  return (
+    <div style={{ color: "red", fontSize: "20px" }}>Inline style object</div>
+  );
+}
+```
+
+## Comments in JSX
+
+```jsx
+function Component() {
+  return (
+    <div>
+      {/* This is a JSX comment */}
+      <h1>Title</h1>
+
+      {/* 
+        Multi-line 
+        comment 
+      */}
+      <p>Paragraph</p>
+    </div>
+  );
+}
+```
+
+## Fragments
+
+```jsx
+import { Fragment } from "react";
+
+// Long syntax
+function List() {
+  return (
+    <Fragment>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </Fragment>
+  );
+}
+
+// Short syntax (preferred)
+function List() {
+  return (
+    <>
+      <li>Item 1</li>
+      <li>Item 2</li>
+    </>
+  );
+}
+
+// With key (requires Fragment)
+function List({ items }) {
+  return (
+    <>
+      {items.map((item) => (
+        <Fragment key={item.id}>
+          <dt>{item.term}</dt>
+          <dd>{item.definition}</dd>
+        </Fragment>
+      ))}
+    </>
+  );
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What is JSX and is it mandatory in React?
+
+JSX is a syntax extension that allows writing HTML-like code in JavaScript. It gets transpiled to `React.createElement()` calls by Babel. JSX is not mandatory - you can write React without it using `createElement` directly, but JSX is much more readable and is the standard practice. It's syntactic sugar that makes component structure clear and allows embedding JavaScript expressions with curly braces.
+
+---
+
+### Q2: Why does JSX require a single root element?
+
+JSX expressions must have one parent element because they transpile to `React.createElement()` calls, which return a single React element. Multiple adjacent elements would mean multiple return values, which isn't valid. Use a wrapper `<div>`, or better yet, use React Fragments (`<>...</>` or `<Fragment>`) which group elements without adding extra DOM nodes. Fragments are preferred when you don't need a wrapper for styling.
+
+---
+
+### Q3: Why use className instead of class in JSX?
+
+Since JSX is JavaScript, and `class` is a reserved keyword in JavaScript (for class declarations), React uses `className` for CSS classes. Similarly, `for` becomes `htmlFor` because `for` is used in loops. All DOM attributes in JSX use camelCase naming: `onclick` → `onClick`, `tabindex` → `tabIndex`. This aligns with JavaScript conventions while avoiding conflicts with reserved words.
+
+---
+
+### Q4: What are React Fragments and when should you use them?
+
+Fragments let you group elements without adding extra nodes to the DOM. Use them when you need to return multiple elements but don't want a wrapper `<div>` that might break CSS layouts or add unnecessary elements. Short syntax: `<>...</>`. When you need a key (in lists), use the explicit `<Fragment key={id}>` syntax. Fragments keep the DOM cleaner and prevent styling issues from extra wrapper elements.
+
+---
+
+### Q5: How do you render content conditionally in JSX?
+
+Three main patterns: (1) Ternary operator for if/else: `{condition ? <A /> : <B />}`, (2) Logical AND for if-only: `{condition && <Component />}`, (3) Store JSX in variables using regular if/else before the return statement. Avoid complex nested ternaries - extract logic to variables or separate components for readability. The && pattern can cause issues with falsy values like 0, so use explicit boolean checks.
+
+

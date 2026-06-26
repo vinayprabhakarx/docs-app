@@ -1,0 +1,164 @@
+---
+title: "Event Handling - User Interactions"
+description: Documentation for Event Handling - User Interactions.
+---
+
+# Event Handling - User Interactions
+
+
+
+## What is Event Handling?
+
+React uses synthetic events to handle user interactions consistently across browsers.
+
+## Synthetic Events
+
+React wraps native events in SyntheticEvent for cross-browser compatibility. Same API as native events.
+
+```jsx
+function Button() {
+  const handleClick = (event) => {
+    console.log(event.type); // 'click'
+    console.log(event.target); // DOM element
+    console.log(event.currentTarget); // Element with handler
+  };
+
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+## Event Handler Syntax
+
+```jsx
+// Inline function (creates new function each render)
+<button onClick={() => console.log('clicked')}>Click</button>
+
+// Reference to function (preferred)
+<button onClick={handleClick}>Click</button>
+
+// Passing arguments
+<button onClick={() => handleClick(id)}>Click</button>
+<button onClick={handleClick.bind(null, id)}>Click</button>
+```
+
+## Common Events
+
+| Event          | Trigger                |
+| -------------- | ---------------------- |
+| `onClick`      | Mouse click            |
+| `onChange`     | Input value changes    |
+| `onSubmit`     | Form submission        |
+| `onFocus`      | Element receives focus |
+| `onBlur`       | Element loses focus    |
+| `onKeyDown`    | Key pressed            |
+| `onKeyUp`      | Key released           |
+| `onMouseEnter` | Mouse enters element   |
+| `onMouseLeave` | Mouse leaves element   |
+| `onScroll`     | Element scrolled       |
+
+## Preventing Default Behavior
+
+```jsx
+function Form() {
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Stop page reload
+    // Handle form
+  };
+
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+
+function Link() {
+  const handleClick = (e) => {
+    e.preventDefault(); // Stop navigation
+    // Custom logic
+  };
+
+  return (
+    <a href="/page" onClick={handleClick}>
+      Link
+    </a>
+  );
+}
+```
+
+## Event Propagation
+
+```jsx
+function Parent() {
+  const handleParentClick = () => console.log("parent");
+  const handleChildClick = (e) => {
+    e.stopPropagation(); // Stop bubbling to parent
+    console.log("child");
+  };
+
+  return (
+    <div onClick={handleParentClick}>
+      <button onClick={handleChildClick}>Click</button>
+    </div>
+  );
+}
+```
+
+## Keyboard Events
+
+```jsx
+function SearchInput() {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+    if (e.key === "Escape") {
+      clearInput();
+    }
+  };
+
+  return <input onKeyDown={handleKeyDown} />;
+}
+```
+
+## Event Handler with useCallback
+
+```jsx
+function TodoItem({ id, onDelete }) {
+  // Stable reference for memoized children
+  const handleDelete = useCallback(() => {
+    onDelete(id);
+  }, [id, onDelete]);
+
+  return <button onClick={handleDelete}>Delete</button>;
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What are synthetic events in React?
+
+Synthetic events are React's cross-browser wrapper around native events. They have the same interface as native events but work identically across browsers. React pools and reuses synthetic events for performance.
+
+---
+
+### Q2: How do you pass arguments to event handlers?
+
+Use arrow function: `onClick={() => handler(id)}` or bind: `onClick={handler.bind(null, id)}`. Arrow function is preferred for readability.
+
+---
+
+### Q3: What's the difference between e.preventDefault() and e.stopPropagation()?
+
+`preventDefault()` stops default browser behavior (form submit, link navigation). `stopPropagation()` stops event from bubbling to parent elements.
+
+---
+
+### Q4: Why use useCallback for event handlers?
+
+To maintain stable function references when passing handlers to memoized child components, preventing unnecessary re-renders.
+
+---
+
+### Q5: How does event delegation work in React?
+
+React attaches event listeners to the root, not individual elements. Events bubble up and React determines the target. This is efficient and automatic.
+
+

@@ -1,0 +1,116 @@
+---
+title: "Conditional Rendering - Dynamic UI"
+description: Documentation for Conditional Rendering - Dynamic UI.
+---
+
+# Conditional Rendering - Dynamic UI
+
+
+
+## Conditional Rendering Patterns
+
+### Ternary Operator
+
+```jsx
+function Greeting({ isLoggedIn }) {
+  return isLoggedIn ? <UserDashboard /> : <LoginPage />;
+}
+```
+
+### Logical AND (&&)
+
+```jsx
+function Notification({ hasMessages, count }) {
+  return <div>{hasMessages && <Badge count={count} />}</div>;
+}
+
+// ⚠️ Watch out for 0 being rendered
+{
+  count && <span>{count}</span>;
+} // Renders '0'
+{
+  count > 0 && <span>{count}</span>;
+} // Correct
+```
+
+### Early Return
+
+```jsx
+function UserProfile({ user }) {
+  if (!user) return <LoginPrompt />;
+  if (user.loading) return <Spinner />;
+  if (user.error) return <Error message={user.error} />;
+
+  return <Profile data={user} />;
+}
+```
+
+### Variable Assignment
+
+```jsx
+function Status({ status }) {
+  let content;
+
+  switch (status) {
+    case "loading":
+      content = <Spinner />;
+      break;
+    case "error":
+      content = <Error />;
+      break;
+    case "success":
+      content = <Success />;
+      break;
+    default:
+      content = null;
+  }
+
+  return <div>{content}</div>;
+}
+```
+
+### Object Mapping
+
+```jsx
+const statusComponents = {
+  loading: <Spinner />,
+  error: <Error />,
+  success: <Success />,
+};
+
+function Status({ status }) {
+  return statusComponents[status] || null;
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What are the ways to do conditional rendering?
+
+Ternary (`a ? b : c`), Logical AND (`a && b`), if/else with early returns, switch statements, object mapping. Choose based on complexity.
+
+---
+
+### Q2: What's the danger with && operator?
+
+Falsy values like 0 or '' render. `{count && <span>Count</span>}` renders '0' when count is 0. Use explicit boolean: `{count > 0 && ...}`.
+
+---
+
+### Q3: When to use ternary vs AND?
+
+Ternary for if/else (show A or B). AND for if-only (show A or nothing). Don't nest ternaries deeply.
+
+---
+
+### Q4: How to handle multiple conditions?
+
+Early returns for guards, switch/object mapping for multiple cases. Keep render logic readable.
+
+---
+
+### Q5: What does null return do?
+
+Returning null renders nothing but component still mounts. Useful for conditional visibility.
+
+

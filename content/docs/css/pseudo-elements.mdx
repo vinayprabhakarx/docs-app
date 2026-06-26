@@ -1,0 +1,399 @@
+---
+title: "Pseudo-Elements - Adding Content & Styling Parts"
+description: Documentation for Pseudo-Elements - Adding Content & Styling Parts.
+---
+
+# Pseudo-Elements - Adding Content & Styling Parts
+
+
+
+## What are Pseudo-elements?
+
+Pseudo-elements allow you to style **specific parts** of an element or **insert content** before/after elements. They use double colons `::` (though single `:` still works for backwards compatibility).
+
+Think of pseudo-elements as "virtual elements" that don't exist in the HTML but can be styled with CSS.
+
+### Why Use Pseudo-elements?
+
+Before pseudo-elements, adding decorative content or styling specific parts required extra HTML markup. Pseudo-elements solve this by:
+- **Adding content without HTML** - Insert icons, quotes, decorations with CSS
+- **Styling specific parts** - First letter, first line without wrapping in spans
+- **Cleaner HTML** - Less markup, more semantic code
+- **Easier maintenance** - Change decorations in CSS, not HTML
+
+## Pseudo-element Selectors - Quick Reference
+
+| Pseudo-element | Syntax | Description | Example |
+|---|---|---|---|
+| `::before` | `element::before` | Inserts content before element | `p::before { content: "→ "; }` |
+| `::after` | `element::after` | Inserts content after element | `p::after { content: " ←"; }` |
+| `::first-line` | `element::first-line` | Styles first line of text | `p::first-line { font-weight: bold; }` |
+| `::first-letter` | `element::first-letter` | Styles first letter | `p::first-letter { font-size: 2em; }` |
+| `::selection` | `element::selection` | Styles selected text | `::selection { background: yellow; }` |
+| `::placeholder` | `input::placeholder` | Styles placeholder text | `input::placeholder { color: #999; }` |
+
+## Detailed Explanation of Each Pseudo-element
+
+### 1. ::before Pseudo-element
+
+**What it does:**
+Inserts content **before** an element's actual content. Creates a virtual element that can be styled.
+
+**Syntax:**
+```css
+element::before {
+    content: "text or icon";
+    /* other styles */
+}
+```
+
+**HTML Example:**
+```html
+<p class="note">This is an important note</p>
+<a href="https://example.com" class="external">External Link</a>
+<blockquote>Famous quote here</blockquote>
+```
+
+**CSS Example 1 - Add icon before note:**
+```css
+.note::before {
+    content: "ℹ ";
+    font-weight: bold;
+    color: #007bff;
+}
+```
+
+**Result:** "ℹ This is an important note"
+
+**CSS Example 2 - Add icon to external links:**
+```css
+.external::before {
+    content: "🔗 ";
+}
+```
+
+**Result:** "🔗 External Link"
+
+**CSS Example 3 - Decorative quote marks:**
+```css
+blockquote {
+    position: relative;
+    padding-left: 30px;
+}
+
+blockquote::before {
+    content: """;
+    font-size: 3em;
+    color: #ccc;
+    position: absolute;
+    left: -20px;
+    top: -10px;
+}
+```
+
+**CSS Example 4 - Counter/numbering:**
+```css
+.steps {
+    counter-reset: step;
+}
+
+.step::before {
+    counter-increment: step;
+    content: "Step " counter(step) ": ";
+    font-weight: bold;
+    color: #007bff;
+}
+```
+
+**When to use:**
+- Adding icons or symbols before elements
+- Decorative elements
+- Counters and numbering
+- Quotation marks
+
+**Real-world scenario:**
+You want to add a warning icon before all warning messages without editing the HTML. Use `::before` to insert the icon with CSS.
+
+**Important:** The `content` property is **required** for `::before` to work, even if empty (`content: "";`).
+
+---
+
+### 2. ::after Pseudo-element
+
+**What it does:**
+Inserts content **after** an element's actual content. Works exactly like `::before` but at the end.
+
+**Syntax:**
+```css
+element::after {
+    content: "text or icon";
+    /* other styles */
+}
+```
+
+**HTML Example:**
+```html
+<a href="document.pdf" class="pdf-link">Download PDF</a>
+<a href="https://external.com" class="external">External Site</a>
+<button class="btn-arrow">Next</button>
+```
+
+**CSS Example 1 - Add file type indicator:**
+```css
+.pdf-link::after {
+    content: " (PDF)";
+    color: #d32f2f;
+    font-size: 0.8em;
+}
+```
+
+**Result:** "Download PDF (PDF)"
+
+**CSS Example 2 - External link icon:**
+```css
+.external::after {
+    content: " ↗";
+    font-size: 0.8em;
+}
+```
+
+**Result:** "External Site ↗"
+
+**CSS Example 3 - Button arrow:**
+```css
+.btn-arrow::after {
+    content: " →";
+    transition: transform 0.3s;
+    display: inline-block;
+}
+
+.btn-arrow:hover::after {
+    transform: translateX(5px);
+}
+```
+
+**Result:** Arrow moves right on hover.
+
+**CSS Example 4 - Clearfix (classic use):**
+```css
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+```
+
+**When to use:**
+- Adding indicators after links
+- Decorative elements
+- Clearfix for floats
+- Arrows and icons
+
+**Real-world scenario:**
+You want all PDF links to show "(PDF)" after them so users know they're downloading a file. Use `::after` to add this automatically.
+
+---
+
+### 3. ::first-line Pseudo-element
+
+**What it does:**
+Styles the **first line** of text in an element. The line length changes with screen size.
+
+**Syntax:**
+```css
+element::first-line {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<p class="intro">
+    This is the first line of the paragraph and it will be styled differently.
+    The rest of the paragraph continues normally with regular styling.
+    This makes the opening more prominent.
+</p>
+```
+
+**CSS Example:**
+```css
+.intro::first-line {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #007bff;
+    text-transform: uppercase;
+}
+```
+
+**Result:** Only the first line (however much fits on one line) is bold, larger, blue, and uppercase. As you resize the window, different words may be on the first line.
+
+**When to use:**
+- Emphasize the opening of articles
+- Magazine-style layouts
+- Drop caps and fancy typography
+
+**Real-world scenario:**
+In a blog post, you want the first line to be bold and slightly larger to draw readers in, like in print magazines.
+
+**Limited properties:** Only certain CSS properties work with `::first-line` (font, color, background, text properties).
+
+---
+
+### 4. ::first-letter Pseudo-element
+
+**What it does:**
+Styles the **first letter** of an element. Perfect for drop caps.
+
+**Syntax:**
+```css
+element::first-letter {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<p class="article">
+    Once upon a time, in a land far away, there lived a brave knight.
+    This is the beginning of our story.
+</p>
+```
+
+**CSS Example 1 - Drop cap:**
+```css
+.article::first-letter {
+    font-size: 3em;
+    font-weight: bold;
+    float: left;
+    line-height: 1;
+    margin-right: 5px;
+    color: #007bff;
+}
+```
+
+**Result:** The "O" in "Once" is 3 times larger and floated left, creating a classic drop cap effect.
+
+**CSS Example 2 - Fancy first letter:**
+```css
+.fancy::first-letter {
+    font-size: 2.5em;
+    font-family: 'Georgia', serif;
+    color: #d32f2f;
+    background-color: #fff3cd;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+```
+
+**When to use:**
+- Drop caps in articles
+- Magazine-style typography
+- Fancy chapter beginnings
+
+**Real-world scenario:**
+You're creating a digital magazine and want each article to start with a large, decorative first letter like in print magazines.
+
+---
+
+### 5. ::selection Pseudo-element
+
+**What it does:**
+Styles the portion of text that the user **selects/highlights** with their mouse.
+
+**Syntax:**
+```css
+::selection {
+    background-color: color;
+    color: color;
+}
+```
+
+**HTML Example:**
+```html
+<p>Try selecting this text with your mouse!</p>
+<div class="special">This has custom selection styling</div>
+```
+
+**CSS Example 1 - Global selection:**
+```css
+::selection {
+    background-color: #ffeb3b;
+    color: #000;
+}
+```
+
+**Result:** All selected text has yellow background and black text.
+
+**CSS Example 2 - Specific element:**
+```css
+.special::selection {
+    background-color: #007bff;
+    color: white;
+}
+```
+
+**Result:** Text selected in `.special` has blue background and white text.
+
+**When to use:**
+- Brand consistency (use brand colors)
+- Better readability
+- Unique user experience
+
+**Real-world scenario:**
+You want selected text on your website to match your brand colors instead of the default blue.
+
+**Limited properties:** Only `color`, `background-color`, `text-decoration`, and `text-shadow` work with `::selection`.
+
+---
+
+### 6. ::placeholder Pseudo-element
+
+**What it does:**
+Styles the **placeholder text** in input fields and textareas.
+
+**Syntax:**
+```css
+input::placeholder {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<input type="text" placeholder="Enter your name">
+<input type="email" placeholder="your@email.com">
+<textarea placeholder="Write your message here..."></textarea>
+```
+
+**CSS Example:**
+```css
+input::placeholder,
+textarea::placeholder {
+    color: #999;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+input:focus::placeholder {
+    opacity: 0.4;
+}
+```
+
+**Result:** Placeholder text is gray, italic, and semi-transparent. When focused, it becomes more transparent.
+
+**When to use:**
+- Consistent placeholder styling
+- Better visual hierarchy
+- Accessibility improvements
+
+**Real-world scenario:**
+You want placeholder text to be lighter and italic to clearly distinguish it from actual user input.
+
+## Related Topics
+
+- [[01-CSS-Selectors|CSS Selectors]] - Learn about basic selectors
+- [[02-Pseudo-Classes|Pseudo-Classes]] - Learn about :hover, :focus
+- [[11-Typography|Typography]] - Text styling
+
+---
+

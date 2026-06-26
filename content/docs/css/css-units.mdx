@@ -1,0 +1,207 @@
+---
+title: "CSS Units - Measurement Units"
+description: Documentation for CSS Units - Measurement Units.
+---
+
+# CSS Units - Measurement Units
+
+
+
+## What are CSS Units?
+
+CSS units are used to specify lengths, sizes, and other measurements. They're divided into absolute units (fixed) and relative units (based on other values).
+
+## Unit Types - Quick Reference
+
+### Absolute Units
+
+| Unit | Name | Description | Example |
+|---|---|---|---|
+| `px` | Pixels | Fixed pixels | `font-size: 16px;` |
+| `pt` | Points | Print (1pt = 1/72 inch) | `font-size: 12pt;` |
+| `cm` | Centimeters | Physical measurement | `width: 10cm;` |
+| `mm` | Millimeters | Physical measurement | `width: 100mm;` |
+| `in` | Inches | Physical measurement | `width: 2in;` |
+
+### Relative Units
+
+| Unit | Name | Relative To | Example |
+|---|---|---|---|
+| `%` | Percentage | Parent element | `width: 50%;` |
+| `em` | Em | Parent font-size | `font-size: 1.5em;` |
+| `rem` | Root em | Root font-size | `font-size: 1.5rem;` |
+| `vw` | Viewport width | 1% of viewport width | `width: 50vw;` |
+| `vh` | Viewport height | 1% of viewport height | `height: 100vh;` |
+| `vmin` | Viewport minimum | 1% of smaller dimension | `font-size: 5vmin;` |
+| `vmax` | Viewport maximum | 1% of larger dimension | `font-size: 5vmax;` |
+| `ch` | Character | Width of "0" character | `width: 40ch;` |
+| `ex` | X-height | Height of "x" character | `line-height: 2ex;` |
+
+## Detailed Examples
+
+### 1. Pixels (px)
+
+```css
+.box {
+    width: 200px;
+    height: 100px;
+    font-size: 16px;
+}
+```
+
+**When to use:** Fixed sizes, borders, small measurements
+
+---
+
+### 2. Percentage (%)
+
+```css
+.container {
+    width: 100%; /* Full width of parent */
+}
+
+.half {
+    width: 50%; /* Half width of parent */
+}
+```
+
+**When to use:** Responsive widths, flexible layouts
+
+---
+
+### 3. em
+
+```css
+.parent {
+    font-size: 16px;
+}
+
+.child {
+    font-size: 1.5em; /* 24px (1.5 × 16px) */
+    padding: 1em; /* 24px (1 × 24px, based on own font-size) */
+}
+```
+
+**When to use:** Component-based sizing, scalable spacing
+
+---
+
+### 4. rem
+
+```css
+html {
+    font-size: 16px; /* Root font-size */
+}
+
+.heading {
+    font-size: 2rem; /* 32px (2 × 16px) */
+}
+
+.text {
+    font-size: 1rem; /* 16px (1 × 16px) */
+}
+```
+
+**When to use:** Consistent sizing across site, preferred for modern development
+
+---
+
+### 5. Viewport Units (vw, vh)
+
+```css
+.hero {
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+}
+
+.half-screen {
+    height: 50vh;
+}
+
+.responsive-text {
+    font-size: 5vw; /* Scales with viewport */
+}
+```
+
+**When to use:** Full-screen sections, responsive typography
+
+---
+
+### 6. ch (Character Unit)
+
+```css
+.readable-text {
+    max-width: 60ch; /* Optimal reading width (60 characters) */
+}
+```
+
+**When to use:** Text containers, optimal line length
+
+## Common Patterns
+
+### Pattern 1: Responsive Typography
+
+```css
+html {
+    font-size: 16px;
+}
+
+h1 { font-size: 2.5rem; } /* 40px */
+h2 { font-size: 2rem; } /* 32px */
+h3 { font-size: 1.75rem; } /* 28px */
+p { font-size: 1rem; } /* 16px */
+small { font-size: 0.875rem; } /* 14px */
+```
+
+---
+
+### Pattern 2: Spacing System
+
+```css
+:root {
+    --space-1: 0.25rem; /* 4px */
+    --space-2: 0.5rem; /* 8px */
+    --space-3: 0.75rem; /* 12px */
+    --space-4: 1rem; /* 16px */
+    --space-5: 1.5rem; /* 24px */
+    --space-6: 2rem; /* 32px */
+}
+```
+
+---
+
+### Pattern 3: Full-Screen Hero
+
+```css
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+```
+
+---
+
+### Pattern 4: Responsive Container
+
+```css
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+```
+
+## Best Practices
+
+1. **Use rem for font-sizes** - Consistent and accessible
+2. **Use % for widths** - Flexible layouts
+3. **Use px for borders** - Precise control
+4. **Use vh/vw for full-screen** - Viewport-based layouts
+5. **Avoid em for complex nesting** - Can compound unexpectedly
+
+---
+
+
+

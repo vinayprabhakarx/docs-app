@@ -1,0 +1,799 @@
+---
+title: "Control Flow - Making Decisions in Code"
+description: Documentation for Control Flow - Making Decisions in Code.
+---
+
+# Control Flow - Making Decisions in Code
+
+
+
+## What is Control Flow?
+
+**Control flow** determines the order in which code executes. By default, code runs line by line from top to bottom. Control flow statements let you:
+
+- Make decisions (if/else)
+- Choose between options (switch)
+- Execute code conditionally
+
+## Control Flow Statements - Quick Reference
+
+| Statement             | Purpose                           | Use When             |
+| --------------------- | --------------------------------- | -------------------- |
+| `if`                  | Execute code if condition is true | Single condition     |
+| `if...else`           | Choose between two options        | Two alternatives     |
+| `if...else if...else` | Choose between multiple options   | Multiple conditions  |
+| `switch`              | Match value against cases         | Many specific values |
+| Ternary `? :`         | Short conditional assignment      | Simple if/else       |
+
+## 1. if Statement
+
+Execute code only if condition is true.
+
+### Syntax
+
+```javascript
+if (condition) {
+  // Code executes if condition is true
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Simple condition
+let age = 20;
+
+if (age >= 18) {
+  console.log("You are an adult"); // Executes
+}
+
+// Example 2: Multiple statements
+let score = 85;
+
+if (score >= 60) {
+  console.log("You passed!");
+  console.log("Congratulations!");
+  // Both execute if condition is true
+}
+
+// Example 3: Without braces (single statement only)
+if (age >= 18) console.log("Adult"); // Works but not recommended
+```
+
+**Best Practice:** Always use braces `{}` even for single statements.
+
+## 2. if...else Statement
+
+Choose between two alternatives.
+
+### Syntax
+
+```javascript
+if (condition) {
+  // Code if condition is true
+} else {
+  // Code if condition is false
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Basic if-else
+let age = 15;
+
+if (age >= 18) {
+  console.log("You can vote");
+} else {
+  console.log("You cannot vote yet"); // Executes
+}
+
+// Example 2: With variables
+let temperature = 25;
+let weather;
+
+if (temperature > 30) {
+  weather = "Hot";
+} else {
+  weather = "Pleasant"; // Assigned
+}
+console.log(weather); // 'Pleasant'
+```
+
+## 3. if...else if...else Statement
+
+Choose between multiple conditions.
+
+### Syntax
+
+```javascript
+if (condition1) {
+  // Code if condition1 is true
+} else if (condition2) {
+  // Code if condition2 is true
+} else if (condition3) {
+  // Code if condition3 is true
+} else {
+  // Code if all conditions are false
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Grade system
+let score = 85;
+let grade;
+
+if (score >= 90) {
+  grade = "A";
+} else if (score >= 80) {
+  grade = "B"; // This executes
+} else if (score >= 70) {
+  grade = "C";
+} else if (score >= 60) {
+  grade = "D";
+} else {
+  grade = "F";
+}
+console.log(grade); // 'B'
+
+// Example 2: Time of day
+let hour = 14;
+let greeting;
+
+if (hour < 12) {
+  greeting = "Good morning";
+} else if (hour < 18) {
+  greeting = "Good afternoon"; // Executes
+} else {
+  greeting = "Good evening";
+}
+console.log(greeting); // 'Good afternoon'
+```
+
+**Important:** Only the FIRST true condition executes, then it exits.
+
+## 4. Nested if Statements
+
+if statements inside other if statements.
+
+### Example
+
+```javascript
+let age = 25;
+let hasLicense = true;
+
+if (age >= 18) {
+  // First condition: age check
+  if (hasLicense) {
+    // Second condition: license check
+    console.log("You can drive"); // Executes
+  } else {
+    console.log("You need a license");
+  }
+} else {
+  console.log("You are too young");
+}
+```
+
+**Best Practice:** Avoid deep nesting (max 2-3 levels). Use logical operators instead:
+
+```javascript
+// Better approach
+if (age >= 18 && hasLicense) {
+  console.log("You can drive");
+} else if (age >= 18) {
+  console.log("You need a license");
+} else {
+  console.log("You are too young");
+}
+```
+
+## 5. switch Statement
+
+Match a value against multiple cases.
+
+### Syntax
+
+```javascript
+switch (expression) {
+  case value1:
+    // Code if expression === value1
+    break;
+  case value2:
+    // Code if expression === value2
+    break;
+  default:
+  // Code if no case matches
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Day of week
+let day = 3;
+let dayName;
+
+switch (day) {
+  case 1:
+    dayName = "Monday";
+    break;
+  case 2:
+    dayName = "Tuesday";
+    break;
+  case 3:
+    dayName = "Wednesday"; // Matches
+    break;
+  case 4:
+    dayName = "Thursday";
+    break;
+  case 5:
+    dayName = "Friday";
+    break;
+  case 6:
+  case 7:
+    dayName = "Weekend"; // Multiple cases
+    break;
+  default:
+    dayName = "Invalid day";
+}
+console.log(dayName); // 'Wednesday'
+
+// Example 2: Grade feedback
+let grade = "B";
+
+switch (grade) {
+  case "A":
+    console.log("Excellent!");
+    break;
+  case "B":
+    console.log("Good job!"); // Executes
+    break;
+  case "C":
+    console.log("You passed");
+    break;
+  case "D":
+  case "F":
+    console.log("Need improvement");
+    break;
+  default:
+    console.log("Invalid grade");
+}
+```
+
+### Fall-Through Behavior (Important!)
+
+```javascript
+let num = 2;
+
+switch (num) {
+  case 1:
+    console.log("One");
+  // No break - falls through!
+  case 2:
+    console.log("Two"); // Executes
+  // No break - falls through!
+  case 3:
+    console.log("Three"); // Also executes!
+    break;
+}
+
+// Output:
+// Two
+// Three
+```
+
+**Interview Tip:** Always use `break` unless you intentionally want fall-through.
+
+## 6. Ternary Operator (Conditional Operator)
+
+Shorthand for simple if-else.
+
+### Syntax
+
+```javascript
+condition ? valueIfTrue : valueIfFalse;
+```
+
+### Examples
+
+```javascript
+// Example 1: Simple condition
+let age = 20;
+let status = age >= 18 ? "Adult" : "Minor";
+console.log(status); // 'Adult'
+
+// Example 2: Inline usage
+console.log(age >= 18 ? "Can vote" : "Cannot vote");
+
+// Example 3: Nested ternary (use sparingly!)
+let score = 85;
+let grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "F";
+console.log(grade); // 'B'
+```
+
+**Best Practice:** Use ternary for simple conditions. Use if-else for complex logic.
+
+## Comparison: if vs switch vs ternary
+
+| Feature         | if/else                    | switch                | Ternary                |
+| --------------- | -------------------------- | --------------------- | ---------------------- |
+| **Best for**    | Ranges, complex conditions | Specific values       | Simple conditions      |
+| **Readability** | Good for 2-3 conditions    | Good for many values  | Good for one condition |
+| **Performance** | Slower for many conditions | Faster for many cases | Fastest for simple     |
+| **Flexibility** | Most flexible              | Limited to equality   | Very limited           |
+
+### When to Use What?
+
+```javascript
+// Use if-else for ranges
+let age = 25;
+if (age < 18) {
+  console.log("Minor");
+} else if (age < 65) {
+  console.log("Adult");
+} else {
+  console.log("Senior");
+}
+
+// Use switch for specific values
+let color = "red";
+switch (color) {
+  case "red":
+    console.log("Stop");
+    break;
+  case "yellow":
+    console.log("Slow");
+    break;
+  case "green":
+    console.log("Go");
+    break;
+}
+
+// Use ternary for simple assignment
+let status = age >= 18 ? "Adult" : "Minor";
+```
+
+## Truthy and Falsy Values (Interview Topic!)
+
+In conditions, values are converted to boolean.
+
+### Falsy Values (Become false)
+
+```javascript
+if (false) {
+} // false
+if (0) {
+} // false
+if (-0) {
+} // false
+if ("") {
+} // false (empty string)
+if (null) {
+} // false
+if (undefined) {
+} // false
+if (NaN) {
+} // false
+```
+
+### Truthy Values (Become true)
+
+```javascript
+if (true) {
+} // true
+if (1) {
+} // true
+if (-1) {
+} // true
+if ("hello") {
+} // true
+if (" ") {
+} // true (space is not empty)
+if ([]) {
+} // true (empty array)
+if ({}) {
+} // true (empty object)
+```
+
+### Practical Example
+
+```javascript
+let userName = "";
+
+// Checks if userName is truthy
+if (userName) {
+  console.log("Welcome " + userName);
+} else {
+  console.log("Welcome Guest"); // Executes ('' is falsy)
+}
+
+// Better: explicit check
+if (userName !== "") {
+  console.log("Welcome " + userName);
+} else {
+  console.log("Welcome Guest");
+}
+```
+
+## Common Interview Questions
+
+### Q1: What's the difference between if-else and switch?
+
+| Feature     | if-else                    | switch                |
+| ----------- | -------------------------- | --------------------- |
+| Comparison  | Any condition              | Strict equality (===) |
+| Use case    | Ranges, complex logic      | Specific values       |
+| Performance | Slower for many conditions | Faster for many cases |
+
+### Q2: What happens without break in switch?
+
+```javascript
+let x = 1;
+switch (x) {
+  case 1:
+    console.log("One"); // Executes
+  case 2:
+    console.log("Two"); // Also executes (fall-through)
+    break;
+}
+// Output: One, Two
+```
+
+### Q3: What are falsy values?
+
+`false`, `0`, `-0`, `''`, `null`, `undefined`, `NaN`
+
+### Q4: Ternary vs if-else?
+
+```javascript
+// Ternary: for simple assignment
+let status = age >= 18 ? "Adult" : "Minor";
+
+// if-else: for complex logic
+if (age >= 18 && hasID && !isBanned) {
+  status = "Can enter";
+} else {
+  status = "Cannot enter";
+}
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: Login validation
+let username = "john";
+let password = "1234";
+
+if (username === "john" && password === "1234") {
+  console.log("Login successful");
+} else {
+  console.log("Invalid credentials");
+}
+
+// Example 2: Discount calculator
+let price = 100;
+let isMember = true;
+let discount;
+
+if (isMember) {
+  discount = price >= 100 ? 0.2 : 0.1; // 20% or 10%
+} else {
+  discount = 0;
+}
+
+let finalPrice = price - price * discount;
+console.log(finalPrice); // 80
+
+// Example 3: Traffic light
+let light = "green";
+
+switch (light) {
+  case "red":
+    console.log("Stop");
+    break;
+  case "yellow":
+    console.log("Slow down");
+    break;
+  case "green":
+    console.log("Go"); // Executes
+    break;
+  default:
+    console.log("Invalid light");
+}
+```
+
+---
+
+## Theory
+
+### How JavaScript Actually Evaluates Conditions
+
+Every condition inside an `if`, `while`, or ternary is not required to be a boolean value. JavaScript takes whatever expression you pass and internally converts it to `true` or `false` through a process called **type coercion**. This is why values like `0`, `""`, `null`, `undefined`, and `NaN` behave as `false` even though they are not the boolean `false` itself. The engine runs the expression through the abstract `ToBoolean` operation before deciding which branch to execute.
+
+This is the exact reason why `[]` and `{}` are truthy — they are objects in memory. An object reference always coerces to `true`, regardless of whether it is empty or holds data. Only the seven specific falsy values (`false`, `0`, `-0`, `""`, `null`, `undefined`, `NaN`) coerce to `false`. Everything else is truthy.
+
+### Why `switch` Uses Strict Equality (`===`)
+
+When you write a `switch` statement, JavaScript does not use loose comparison (`==`) to match the `case` values. It uses **strict equality (`===`)**, which means both the value and the data type must match exactly. This is a common source of bugs.
+
+For example, if your switch expression evaluates to the number `1`, a `case "1":` will NOT match because `1 === "1"` is `false`. The types are different (number vs. string). This is why it is important to ensure your case values have the same type as the expression you are switching on.
+
+### The Mechanics of Fall-Through
+
+Fall-through in `switch` is not a bug — it is a deliberate design decision inherited from C-style languages. Once a matching `case` is found, the JavaScript engine begins executing every statement from that point onward, regardless of which `case` they belong to, until it encounters a `break` or the `switch` block ends.
+
+This happens because `case` labels are essentially just jump targets. The engine jumps to the matching label and then continues executing sequentially. A `break` statement exits the `switch` block entirely. Without it, execution simply continues into the next case. This is why grouping multiple cases together (like `case 6:` followed by `case 7:` with a single shared block) works — both labels jump to the same block of code.
+
+### How `if...else if` Chains Are Evaluated
+
+An `if...else if...else` chain is evaluated strictly from top to bottom, one condition at a time. The moment the engine finds a condition that evaluates to `true`, it executes that block and then **skips the entire rest of the chain**. No further conditions are checked.
+
+This has two important consequences. First, the order of your conditions matters. If you write a broader condition before a more specific one, the specific one will never be reached. For example, checking `score >= 60` before `score >= 90` means any score of 90 or above will be caught by the first condition and labeled incorrectly.
+
+Second, because evaluation stops at the first match, `else if` chains are more efficient than multiple independent `if` statements when the conditions are mutually exclusive. Independent `if` blocks all run their checks every time, even after a match is already found.
+
+### The Ternary Operator Under the Hood
+
+The ternary operator (`condition ? exprA : exprB`) is an **expression**, not a statement. This is a critical distinction. Statements perform actions (like `if` blocks), but expressions return a value. Because the ternary returns a value, you can use it anywhere an expression is expected — inside variable assignments, function arguments, template literals, or even nested inside another ternary.
+
+However, only one of the two branches (`exprA` or `exprB`) is ever evaluated. JavaScript uses **short-circuit evaluation** here: it evaluates the condition first, then evaluates only the branch that corresponds to the result. The other branch is completely skipped. This matters for performance and for avoiding side effects in the unused branch.
+
+### Why Nested `if` Statements Should Be Avoided
+
+Deep nesting creates what is commonly called the **"Pyramid of Doom"** — code that keeps indenting further and further to the right with each new condition. This makes code harder to read, harder to maintain, and more error-prone.
+
+The underlying issue is that nesting tightly couples conditions together. When you flatten nested conditions using logical operators (`&&`, `||`) or early returns, each condition becomes independent and easier to reason about individually. Linters and code review tools often flag nesting depth beyond two or three levels as a warning for this exact reason.
+
+### Short-Circuit Evaluation in Conditions
+
+JavaScript's logical operators (`&&` and `||`) use **short-circuit evaluation**, which directly affects how conditions behave. With `&&`, if the left operand is falsy, the right operand is never evaluated — the engine already knows the result is `false`. With `||`, if the left operand is truthy, the right operand is skipped because the result is already `true`.
+
+This is not just a performance optimization — it is a feature that developers rely on intentionally. A common pattern is using `&&` to conditionally execute code:
+
+```javascript
+let user = { name: "Alice" };
+
+// Only access .name if user is truthy (not null/undefined)
+user && console.log(user.name); // "Alice"
+
+let guest = null;
+guest && console.log(guest.name); // Nothing happens — short-circuits at guest
+```
+
+Without short-circuit evaluation, the second example would throw a `TypeError` when trying to access `.name` on `null`.
+
+### The `default` Case in `switch`
+
+The `default` case in a `switch` statement acts as a fallback when none of the `case` values match. It is functionally similar to the `else` block in an `if...else` chain. An important detail that often surprises developers is that `default` does not have to be the last case in the block. It can be placed anywhere, and fall-through rules still apply to it.
+
+```javascript
+let val = 5;
+
+switch (val) {
+  default:
+    console.log("default"); // Executes because no case matches
+  case 1:
+    console.log("one");     // Also executes due to fall-through
+    break;
+  case 2:
+    console.log("two");
+    break;
+}
+// Output:
+// default
+// one
+```
+
+In this example, `default` matches first, but because there is no `break`, execution falls through into `case 1`. This is valid JavaScript, though placing `default` at the end is a widely recommended best practice to avoid exactly this kind of confusion.
+
+---
+
+## Interview Questions
+
+### Q1: What is the difference between `if...else` and `switch`?
+
+`if...else` evaluates conditions using any kind of expression — comparisons, ranges, logical combinations, or even function calls. `switch` only works with strict equality (`===`) against fixed case values. Because of this, `if...else` is better suited for range-based logic (like age checks or score thresholds), while `switch` is better suited for matching against a known set of discrete values (like day names or HTTP status codes). When there are many specific values to check, `switch` is generally faster because the engine can optimize the lookup internally, whereas `if...else` evaluates each condition one by one.
+
+### Q2: What happens when you forget `break` in a `switch` statement?
+
+Without `break`, execution **falls through** into the next `case` regardless of whether it matches. The engine does not stop at the matching case — it continues executing every statement below it until it hits a `break` or reaches the end of the `switch` block. This is often a bug, but it can also be used intentionally to group multiple cases into one shared block of logic.
+
+```javascript
+let grade = "B";
+
+switch (grade) {
+  case "A":
+  case "B":
+    console.log("Good"); // Executes for both A and B
+    break;
+  case "C":
+    console.log("Average");
+    break;
+}
+```
+
+### Q3: List all falsy values in JavaScript and explain why they are falsy.
+
+There are exactly **seven falsy values**: `false`, `0`, `-0`, `""` (empty string), `null`, `undefined`, and `NaN`.
+
+- `false` is the boolean false itself.
+- `0` and `-0` represent the numeric zero — no value, no quantity.
+- `""` is an empty string — it contains no characters, so it represents "nothing" in a string context.
+- `null` is an intentional absence of a value. A developer explicitly assigns it to mean "no value here."
+- `undefined` means a variable has been declared but has never been assigned any value.
+- `NaN` stands for "Not a Number" and is the result of an invalid or failed numeric operation (like `parseInt("hello")`).
+
+Everything else in JavaScript is truthy, including `[]`, `{}`, `"0"`, `" "`, and `-1`.
+
+### Q4: When should you use a ternary operator vs. an `if...else` statement?
+
+Use the ternary when you need a **simple, single-line conditional expression** that assigns or returns one of two values. It is clean and readable for straightforward cases like `let label = isActive ? "Active" : "Inactive"`.
+
+Use `if...else` when the logic involves multiple conditions, side effects (like function calls or variable mutations), or when readability would suffer from compressing it into one line. Nested ternaries (ternaries inside ternaries) are almost always harder to read than an equivalent `if...else if...else` chain and should be avoided in production code.
+
+### Q5: What is the difference between `null` and `undefined` in the context of conditions?
+
+Both `null` and `undefined` are **falsy**, so they behave the same way inside an `if` condition — both evaluate to `false`. However, they represent different things semantically. `undefined` means a variable exists but has never been given a value. `null` means a value was intentionally set to represent "no value." In practice, when writing conditions, both are caught by a simple truthy check, but when you need to distinguish between them, you must use strict equality:
+
+```javascript
+let a = null;
+let b = undefined;
+
+console.log(a == b);  // true  (loose equality treats them as the same)
+console.log(a === b); // false (strict equality — different types)
+```
+
+### Q6: Why are empty arrays `[]` and empty objects `{}` truthy?
+
+In JavaScript, **any object reference is truthy**, without exception. Arrays and objects are reference types — when they exist in memory, they have a valid reference, and any valid reference coerces to `true`. The engine does not look inside the array or object to check if it is empty. It only checks whether the reference itself exists.
+
+This is a frequent source of bugs. Developers often write `if (myArray)` expecting it to be `false` when the array is empty, but it will always be `true` as long as the variable holds an array. The correct way to check for an empty array is `if (myArray.length === 0)`.
+
+### Q7: What is short-circuit evaluation, and how does it apply to control flow?
+
+Short-circuit evaluation means that logical operators (`&&` and `||`) stop evaluating as soon as the final result is determined, without looking at the remaining operands.
+
+- With `&&`: if the left side is falsy, the result is already `false`, so the right side is **never evaluated**.
+- With `||`: if the left side is truthy, the result is already `true`, so the right side is **never evaluated**.
+
+This is commonly used as a guard pattern:
+
+```javascript
+let obj = null;
+
+// Without short-circuit, this would crash with TypeError
+let name = obj && obj.name; // null — stops at obj, never touches obj.name
+
+let user = { name: "Alice" };
+let userName = user && user.name; // "Alice" — both sides evaluated
+```
+
+### Q8: Can the `default` case in a `switch` be placed anywhere, not just at the end?
+
+Yes. The `default` case is not required to be the last case in a `switch` block. It can be placed at the beginning, in the middle, or at the end. However, fall-through rules still apply. If `default` is not at the end and does not have a `break`, execution will fall through into the cases below it.
+
+```javascript
+let x = 99;
+
+switch (x) {
+  default:
+    console.log("default");
+  case 1:
+    console.log("one");     // Also prints due to fall-through
+    break;
+  case 2:
+    console.log("two");
+}
+// Output: default, one
+```
+
+Placing `default` at the end is a best practice because it avoids accidental fall-through and makes the code's intent clearer.
+
+### Q9: What is the "Pyramid of Doom" and how do you avoid it?
+
+The Pyramid of Doom refers to deeply nested `if` statements that push code further and further to the right, making it visually difficult to follow and logically hard to debug:
+
+```javascript
+// Pyramid of Doom
+if (user) {
+  if (user.isLoggedIn) {
+    if (user.hasPermission) {
+      if (user.isActive) {
+        console.log("Access granted");
+      }
+    }
+  }
+}
+```
+
+You can flatten this using logical operators or **early returns**:
+
+```javascript
+// Flattened with early returns (in a function)
+function checkAccess(user) {
+  if (!user) return "No user";
+  if (!user.isLoggedIn) return "Not logged in";
+  if (!user.hasPermission) return "No permission";
+  if (!user.isActive) return "Account inactive";
+  return "Access granted";
+}
+
+// Flattened with && operator
+if (user && user.isLoggedIn && user.hasPermission && user.isActive) {
+  console.log("Access granted");
+}
+```
+
+### Q10: What is the difference between `==` and `===` when used inside conditions, and why does it matter for `switch`?
+
+`==` (loose equality) performs **type coercion** before comparing — it tries to convert the two values into the same type. So `1 == "1"` is `true` because the string `"1"` is converted to the number `1`.
+
+`===` (strict equality) does **no type coercion**. Both the value and the type must match exactly. So `1 === "1"` is `false`.
+
+`switch` uses `===` internally. This means:
+
+```javascript
+let input = "1"; // string
+
+switch (input) {
+  case 1:           // number — does NOT match "1"
+    console.log("number one");
+    break;
+  case "1":         // string — matches
+    console.log("string one"); // This executes
+    break;
+}
+```
+
+This is why type mismatches in `switch` cases are one of the most common bugs developers encounter. Always ensure your case values have the same type as the expression being switched on.
+
+### Q11: How does the ternary operator differ from `if...else` in terms of what it returns?
+
+The ternary operator is an **expression** — it evaluates to a value. You can assign its result to a variable, pass it as a function argument, or use it inside a template literal. The `if...else` statement is a **statement** — it does not return or evaluate to anything. It can only execute blocks of code.
+
+```javascript
+// Ternary — returns a value (expression)
+let message = true ? "yes" : "no";       // "yes"
+console.log(true ? "yes" : "no");         // "yes"
+let arr = [true ? 1 : 0, false ? 1 : 0]; // [1, 0]
+
+// if...else — cannot be used where a value is expected
+// let message = if (true) { "yes" } else { "no" }; // SyntaxError
+```
+
+### Q12: Write a function that takes a number and returns its category using control flow.
+
+```javascript
+function categorize(num) {
+  if (typeof num !== "number" || isNaN(num)) {
+    return "Invalid input";
+  }
+
+  if (num < 0) {
+    return "Negative";
+  } else if (num === 0) {
+    return "Zero";
+  } else if (num > 0 && num <= 10) {
+    return "Small positive";
+  } else if (num > 10 && num <= 100) {
+    return "Medium positive";
+  } else {
+    return "Large positive";
+  }
+}
+
+console.log(categorize(-5));    // "Negative"
+console.log(categorize(0));     // "Zero"
+console.log(categorize(7));     // "Small positive"
+console.log(categorize(50));    // "Medium positive"
+console.log(categorize(200));   // "Large positive"
+console.log(categorize("abc")); // "Invalid input"
+```
+
+This example combines input validation, range checking with `if...else if`, and early returns to keep the logic flat and readable.
+
+---
+

@@ -1,0 +1,556 @@
+---
+title: "JavaScript Cheat Sheet - Quick Reference"
+description: Documentation for JavaScript Cheat Sheet - Quick Reference.
+---
+
+# JavaScript Cheat Sheet - Quick Reference
+
+
+
+## Variables & Data Types
+
+```javascript
+// Variables
+const name = "John"; // Constant (cannot reassign)
+let age = 30; // Variable (can reassign)
+var old = "avoid"; // Old way (avoid)
+
+// Primitive Types
+const str = "text"; // String
+const num = 42; // Number
+const bool = true; // Boolean
+const nothing = null; // Null
+const undef = undefined; // Undefined
+const sym = Symbol("id"); // Symbol
+const big = 123n; // BigInt
+
+// Reference Types
+const arr = [1, 2, 3];
+const obj = { key: "value" };
+const func = () => {};
+```
+
+## Operators
+
+```javascript
+// Arithmetic
++ - * / % **                // Add, subtract, multiply, divide, modulo, power
+
+// Assignment
+= += -= *= /= %=            // Assign, add-assign, etc.
+
+// Comparison
+== === != !== > < >= <=     // Equal, strict equal, not equal, etc.
+
+// Logical
+&& || !                     // AND, OR, NOT
+
+// Ternary
+condition ? true : false
+
+// Nullish coalescing
+value ?? 'default'          // Returns right if left is null/undefined
+
+// Optional chaining
+obj?.prop?.method?.()       // Safe property access
+```
+
+## Strings
+
+```javascript
+// Template literals
+`Hello ${name}`;
+
+// Methods
+str.length; // Length
+str.toUpperCase(); // UPPERCASE
+str.toLowerCase(); // lowercase
+str.trim(); // Remove whitespace
+str.split(","); // Split to array
+str.includes("text"); // Check if contains
+str.startsWith("H"); // Starts with
+str.endsWith("o"); // Ends with
+str.slice(0, 5); // Extract substring
+str.replace("old", "new"); // Replace
+str.repeat(3); // Repeat
+```
+
+## Arrays
+
+```javascript
+// Creation
+const arr = [1, 2, 3];
+const arr2 = new Array(5);
+const arr3 = Array.from("hello");
+
+// Common methods
+arr.push(4); // Add to end
+arr.pop(); // Remove from end
+arr.unshift(0); // Add to start
+arr.shift(); // Remove from start
+arr.splice(1, 2); // Remove/insert
+arr.slice(1, 3); // Extract portion
+arr.concat([4, 5]); // Merge arrays
+arr.join(", "); // Join to string
+arr.reverse(); // Reverse
+arr.sort(); // Sort
+
+// Iteration methods
+arr.forEach((item) => {}); // Loop
+arr.map((x) => x * 2); // Transform
+arr.filter((x) => x > 2); // Filter
+arr.reduce((sum, x) => sum + x, 0); // Reduce
+arr.find((x) => x > 2); // Find first
+arr.findIndex((x) => x > 2); // Find index
+arr.some((x) => x > 2); // Any match
+arr.every((x) => x > 0); // All match
+arr.includes(2); // Contains value
+```
+
+## Objects
+
+```javascript
+// Creation
+const obj = { key: "value" };
+const obj2 = new Object();
+const obj3 = Object.create(proto);
+
+// Access
+obj.key; // Dot notation
+obj["key"]; // Bracket notation
+
+// Methods
+Object.keys(obj); // Get keys
+Object.values(obj); // Get values
+Object.entries(obj); // Get [key, value] pairs
+Object.assign({}, obj); // Copy/merge
+Object.freeze(obj); // Make immutable
+Object.seal(obj); // Prevent add/delete
+Object.hasOwn(obj, "key"); // Check property
+```
+
+## Functions
+
+```javascript
+// Function declaration
+function name(params) {
+  return value;
+}
+
+// Function expression
+const func = function (params) {
+  return value;
+};
+
+// Arrow function
+const func = (params) => value;
+const func = (params) => value; // Single param
+const func = () => value; // No params
+const func = (a, b) => ({ a, b }); // Return object
+
+// Default parameters
+function greet(name = "Guest") {}
+
+// Rest parameters
+function sum(...numbers) {}
+
+// IIFE
+(function () {
+  // Runs immediately
+})();
+```
+
+## Control Flow
+
+```javascript
+// If/else
+if (condition) {
+  // code
+} else if (condition2) {
+  // code
+} else {
+  // code
+}
+
+// Switch
+switch (value) {
+  case 1:
+    // code
+    break;
+  case 2:
+    // code
+    break;
+  default:
+  // code
+}
+
+// Ternary
+const result = condition ? true : false;
+```
+
+## Loops
+
+```javascript
+// For loop
+for (let i = 0; i < 10; i++) {}
+
+// While loop
+while (condition) {}
+
+// Do-while
+do {} while (condition);
+
+// For...of (values)
+for (const item of array) {
+}
+
+// For...in (keys)
+for (const key in object) {
+}
+
+// forEach
+array.forEach((item, index) => {});
+```
+
+## Destructuring
+
+```javascript
+// Array destructuring
+const [a, b, c] = [1, 2, 3];
+const [first, ...rest] = [1, 2, 3, 4];
+
+// Object destructuring
+const { name, age } = user;
+const { name: userName } = user; // Rename
+const { city = "NYC" } = user; // Default
+const {
+  address: { city },
+} = user; // Nested
+```
+
+## Spread & Rest
+
+```javascript
+// Spread array
+const arr = [...arr1, ...arr2];
+const copy = [...original];
+
+// Spread object
+const obj = { ...obj1, ...obj2 };
+const copy = { ...original };
+
+// Rest parameters
+function sum(...numbers) {}
+
+// Rest in destructuring
+const { name, ...rest } = user;
+const [first, ...rest] = array;
+```
+
+## Promises
+
+```javascript
+// Create promise
+const promise = new Promise((resolve, reject) => {
+  if (success) resolve(value);
+  else reject(error);
+});
+
+// Use promise
+promise
+  .then((result) => {})
+  .catch((error) => {})
+  .finally(() => {});
+
+// Promise combinators
+Promise.all([p1, p2]); // All must resolve
+Promise.race([p1, p2]); // First to settle
+Promise.allSettled([p1, p2]); // All settle
+Promise.any([p1, p2]); // First to resolve
+```
+
+## Async/Await
+
+```javascript
+// Async function
+async function fetchData() {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Parallel execution
+const [data1, data2] = await Promise.all([fetch(url1), fetch(url2)]);
+```
+
+## Classes
+
+```javascript
+// Class definition
+class User {
+  #privateField; // Private field
+
+  constructor(name) {
+    this.name = name;
+  }
+
+  method() {} // Instance method
+
+  static staticMethod() {} // Static method
+
+  get fullName() {} // Getter
+  set fullName(value) {} // Setter
+}
+
+// Inheritance
+class Admin extends User {
+  constructor(name, role) {
+    super(name);
+    this.role = role;
+  }
+}
+
+// Create instance
+const user = new User("John");
+```
+
+## Modules
+
+```javascript
+// Export
+export const value = 42;
+export function func() {}
+export default class {}
+
+// Import
+import { value, func } from "./module.js";
+import DefaultExport from "./module.js";
+import * as module from "./module.js";
+
+// Dynamic import
+const module = await import("./module.js");
+```
+
+## DOM Manipulation
+
+```javascript
+// Selection
+document.querySelector(".class");
+document.querySelectorAll(".class");
+document.getElementById("id");
+document.getElementsByClassName("class");
+
+// Creation
+const div = document.createElement("div");
+
+// Modification
+element.textContent = "text";
+element.innerHTML = "<p>HTML</p>";
+element.setAttribute("class", "active");
+element.classList.add("class");
+element.classList.remove("class");
+element.classList.toggle("class");
+element.style.color = "red";
+
+// Insertion
+parent.appendChild(child);
+parent.insertBefore(child, reference);
+parent.append(child1, child2);
+parent.prepend(child);
+
+// Removal
+element.remove();
+parent.removeChild(child);
+```
+
+## Event Handling
+
+```javascript
+// Add event listener
+element.addEventListener("click", (event) => {
+  event.preventDefault(); // Prevent default
+  event.stopPropagation(); // Stop bubbling
+});
+
+// Remove event listener
+element.removeEventListener("click", handler);
+
+// Event delegation
+parent.addEventListener("click", (e) => {
+  if (e.target.matches(".child")) {
+    // Handle child click
+  }
+});
+```
+
+## Local Storage
+
+```javascript
+// Set item
+localStorage.setItem("key", "value");
+localStorage.setItem("user", JSON.stringify(obj));
+
+// Get item
+const value = localStorage.getItem("key");
+const obj = JSON.parse(localStorage.getItem("user"));
+
+// Remove item
+localStorage.removeItem("key");
+
+// Clear all
+localStorage.clear();
+
+// Check length
+localStorage.length;
+```
+
+## Regular Expressions
+
+```javascript
+// Create regex
+const regex = /pattern/flags;
+const regex = new RegExp('pattern', 'flags');
+
+// Flags
+/pattern/g                  // Global
+/pattern/i                  // Case-insensitive
+/pattern/m                  // Multiline
+
+// Common patterns
+/\d/                        // Digit
+/\w/                        // Word character
+/\s/                        // Whitespace
+/./                         // Any character
+/^start/                    // Start of string
+/end$/                      // End of string
+/[abc]/                     // Any of a, b, c
+/[0-9]/                     // Range
+/a+/                        // One or more
+/a*/                        // Zero or more
+/a?/                        // Zero or one
+/a{3}/                      // Exactly 3
+/(abc)/                     // Capturing group
+
+// Methods
+regex.test(str)             // Returns boolean
+str.match(regex)            // Returns matches
+str.replace(regex, 'new')   // Replace
+str.split(regex)            // Split
+```
+
+## Error Handling
+
+```javascript
+// Try-catch
+try {
+  // Code that might throw
+} catch (error) {
+  console.error(error.message);
+} finally {
+  // Always runs
+}
+
+// Throw error
+throw new Error("Message");
+
+// Custom error
+class CustomError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "CustomError";
+  }
+}
+```
+
+## Common Utilities
+
+```javascript
+// Type checking
+typeof value;
+Array.isArray(value);
+value instanceof Class;
+
+// Conversion
+Number(str);
+String(num);
+Boolean(value);
+parseInt(str);
+parseFloat(str);
+
+// Math
+Math.round(4.5); // 5
+Math.floor(4.9); // 4
+Math.ceil(4.1); // 5
+Math.max(1, 2, 3); // 3
+Math.min(1, 2, 3); // 1
+Math.random(); // 0 to 1
+Math.abs(-5); // 5
+
+// Date
+new Date();
+Date.now();
+date.getFullYear();
+date.getMonth();
+date.getDate();
+date.getTime();
+
+// JSON
+JSON.stringify(obj);
+JSON.parse(str);
+
+// Console
+console.log();
+console.error();
+console.warn();
+console.table();
+console.time() / console.timeEnd();
+```
+
+## ES6+ Features
+
+```javascript
+// Template literals
+`Hello ${name}`
+
+// Arrow functions
+const func = () => {}
+
+// Destructuring
+const { a, b } = obj;
+const [x, y] = arr;
+
+// Spread
+[...arr]
+{ ...obj }
+
+// Rest
+function(...args) {}
+
+// Default parameters
+function(a = 1) {}
+
+// Optional chaining
+obj?.prop
+
+// Nullish coalescing
+value ?? default
+
+// Classes
+class Name {}
+
+// Modules
+import/export
+
+// Promises
+async/await
+
+// Map & Set
+new Map()
+new Set()
+```
+
+

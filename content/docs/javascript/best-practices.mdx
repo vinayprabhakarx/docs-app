@@ -1,0 +1,545 @@
+---
+title: "Best Practices & Patterns - Writing Quality JavaScript"
+description: Documentation for Best Practices & Patterns - Writing Quality JavaScript.
+---
+
+# Best Practices & Patterns - Writing Quality JavaScript
+
+
+
+## Code Quality Principles
+
+### 1. Use Strict Mode
+
+```javascript
+"use strict";
+
+// Prevents common mistakes
+// x = 10; // Error! Variable not declared
+
+// Prevents accidental globals
+function example() {
+  "use strict";
+  y = 20; // Error!
+}
+```
+
+### 2. Use const and let, Avoid var
+
+```javascript
+// ❌ Avoid var
+var x = 10;
+
+// ✅ Use const for constants
+const PI = 3.14159;
+
+// ✅ Use let for variables
+let count = 0;
+count++;
+```
+
+### 3. Meaningful Names
+
+```javascript
+// ❌ Poor names
+const d = new Date();
+const x = users.filter((u) => u.a > 18);
+
+// ✅ Descriptive names
+const currentDate = new Date();
+const adults = users.filter((user) => user.age > 18);
+```
+
+## Naming Conventions
+
+| Type           | Convention       | Example                             |
+| -------------- | ---------------- | ----------------------------------- |
+| Variables      | camelCase        | `userName`, `totalCount`            |
+| Constants      | UPPER_SNAKE_CASE | `MAX_SIZE`, `API_URL`               |
+| Functions      | camelCase        | `getUserData()`, `calculateTotal()` |
+| Classes        | PascalCase       | `UserProfile`, `ShoppingCart`       |
+| Private fields | #camelCase       | `#password`, `#balance`             |
+| Boolean        | is/has prefix    | `isActive`, `hasPermission`         |
+
+```javascript
+// Variables and functions
+const userName = "John";
+function calculateTotal() {}
+
+// Constants
+const MAX_RETRIES = 3;
+const API_URL = "https://api.example.com";
+
+// Classes
+class UserProfile {}
+
+// Booleans
+const isActive = true;
+const hasPermission = false;
+```
+
+## Function Best Practices
+
+### 1. Single Responsibility
+
+```javascript
+// ❌ Function does too much
+function processUser(user) {
+  validateUser(user);
+  saveToDatabase(user);
+  sendEmail(user);
+  logActivity(user);
+}
+
+// ✅ Separate concerns
+function processUser(user) {
+  if (!isValidUser(user)) return false;
+  saveUser(user);
+  notifyUser(user);
+  return true;
+}
+```
+
+### 2. Keep Functions Small
+
+```javascript
+// ❌ Too long
+function createOrder(items, user, payment) {
+  // 100+ lines of code...
+}
+
+// ✅ Break into smaller functions
+function createOrder(items, user, payment) {
+  const validatedItems = validateItems(items);
+  const total = calculateTotal(validatedItems);
+  const processedPayment = processPayment(payment, total);
+  return saveOrder(validatedItems, user, processedPayment);
+}
+```
+
+### 3. Use Default Parameters
+
+```javascript
+// ❌ Manual defaults
+function greet(name) {
+  name = name || "Guest";
+  console.log(`Hello, ${name}`);
+}
+
+// ✅ Default parameters
+function greet(name = "Guest") {
+  console.log(`Hello, ${name}`);
+}
+```
+
+### 4. Avoid Side Effects
+
+```javascript
+// ❌ Modifies external state
+let total = 0;
+function addToTotal(value) {
+  total += value; // Side effect!
+}
+
+// ✅ Pure function
+function add(a, b) {
+  return a + b; // No side effects
+}
+```
+
+## Error Handling
+
+### 1. Always Handle Errors
+
+```javascript
+// ❌ Unhandled errors
+async function fetchData() {
+  const response = await fetch("/api/data");
+  return response.json();
+}
+
+// ✅ Proper error handling
+async function fetchData() {
+  try {
+    const response = await fetch("/api/data");
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+    throw error;
+  }
+}
+```
+
+### 2. Use Custom Errors
+
+```javascript
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+function validateEmail(email) {
+  if (!email.includes("@")) {
+    throw new ValidationError("Invalid email format");
+  }
+}
+```
+
+## Async Best Practices
+
+### 1. Use Async/Await
+
+```javascript
+// ❌ Promise chains
+function getData() {
+  return fetch("/api/data")
+    .then((response) => response.json())
+    .then((data) => processData(data))
+    .then((result) => saveResult(result));
+}
+
+// ✅ Async/await
+async function getData() {
+  const response = await fetch("/api/data");
+  const data = await response.json();
+  const result = await processData(data);
+  return await saveResult(result);
+}
+```
+
+### 2. Parallel When Possible
+
+```javascript
+// ❌ Sequential (slow)
+async function getData() {
+  const users = await fetchUsers();
+  const posts = await fetchPosts();
+  const comments = await fetchComments();
+  return { users, posts, comments };
+}
+
+// ✅ Parallel (fast)
+async function getData() {
+  const [users, posts, comments] = await Promise.all([
+    fetchUsers(),
+    fetchPosts(),
+    fetchComments(),
+  ]);
+  return { users, posts, comments };
+}
+```
+
+## Code Organization
+
+### 1. Module Pattern
+
+```javascript
+// user.js
+export class User {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+export function createUser(name) {
+  return new User(name);
+}
+
+// app.js
+import { User, createUser } from "./user.js";
+```
+
+### 2. Separation of Concerns
+
+```javascript
+// ❌ Mixed concerns
+class UserComponent {
+  constructor() {
+    this.data = [];
+    this.element = document.querySelector("#users");
+  }
+
+  fetchData() {
+    /* API call */
+  }
+  render() {
+    /* DOM manipulation */
+  }
+  validate() {
+    /* Validation */
+  }
+}
+
+// ✅ Separated concerns
+class UserService {
+  fetchUsers() {
+    /* API call */
+  }
+}
+
+class UserValidator {
+  validate(user) {
+    /* Validation */
+  }
+}
+
+class UserView {
+  render(users) {
+    /* DOM manipulation */
+  }
+}
+```
+
+## Performance Best Practices
+
+### 1. Avoid Unnecessary DOM Access
+
+```javascript
+// ❌ Multiple DOM queries
+for (let i = 0; i < 100; i++) {
+  document.querySelector("#container").innerHTML += `<div>${i}</div>`;
+}
+
+// ✅ Cache and batch
+const container = document.querySelector("#container");
+const fragment = document.createDocumentFragment();
+
+for (let i = 0; i < 100; i++) {
+  const div = document.createElement("div");
+  div.textContent = i;
+  fragment.appendChild(div);
+}
+
+container.appendChild(fragment);
+```
+
+### 2. Debounce and Throttle
+
+```javascript
+// Debounce - wait until user stops typing
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+// Usage
+const searchInput = document.querySelector("#search");
+searchInput.addEventListener("input", debounce(search, 300));
+
+// Throttle - limit execution rate
+function throttle(func, limit) {
+  let inThrottle;
+  return function (...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+}
+
+// Usage
+window.addEventListener("scroll", throttle(handleScroll, 100));
+```
+
+## Security Best Practices
+
+### 1. Avoid eval()
+
+```javascript
+// ❌ Never use eval
+const code = userInput;
+eval(code); // Dangerous!
+
+// ✅ Use safe alternatives
+const data = JSON.parse(jsonString);
+```
+
+### 2. Sanitize User Input
+
+```javascript
+// ❌ Direct innerHTML with user input
+element.innerHTML = userInput; // XSS risk!
+
+// ✅ Use textContent
+element.textContent = userInput; // Safe
+
+// ✅ Or sanitize HTML
+import DOMPurify from "dompurify";
+element.innerHTML = DOMPurify.sanitize(userInput);
+```
+
+### 3. Use HTTPS
+
+```javascript
+// ❌ HTTP
+fetch("http://api.example.com/data");
+
+// ✅ HTTPS
+fetch("https://api.example.com/data");
+```
+
+## Common Patterns
+
+### 1. Singleton Pattern
+
+```javascript
+class Database {
+  constructor() {
+    if (Database.instance) {
+      return Database.instance;
+    }
+    this.connection = null;
+    Database.instance = this;
+  }
+
+  connect() {
+    if (!this.connection) {
+      this.connection = "Connected";
+    }
+    return this.connection;
+  }
+}
+
+const db1 = new Database();
+const db2 = new Database();
+console.log(db1 === db2); // true
+```
+
+### 2. Factory Pattern
+
+```javascript
+class UserFactory {
+  static createUser(type, name) {
+    switch (type) {
+      case "admin":
+        return new Admin(name);
+      case "guest":
+        return new Guest(name);
+      default:
+        return new User(name);
+    }
+  }
+}
+
+const admin = UserFactory.createUser("admin", "John");
+```
+
+### 3. Observer Pattern
+
+```javascript
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+
+  on(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+  }
+
+  emit(event, data) {
+    if (this.events[event]) {
+      this.events[event].forEach((callback) => callback(data));
+    }
+  }
+}
+
+const emitter = new EventEmitter();
+emitter.on("userLogin", (user) => console.log(`${user} logged in`));
+emitter.emit("userLogin", "John");
+```
+
+## Testing Best Practices
+
+```javascript
+// Write testable code
+// ❌ Hard to test
+function processData() {
+  const data = fetch("/api/data");
+  const processed = complexLogic(data);
+  updateDOM(processed);
+}
+
+// ✅ Easy to test
+function processData(data) {
+  return complexLogic(data);
+}
+
+// Pure functions are easiest to test
+function add(a, b) {
+  return a + b;
+}
+
+// Test
+console.assert(add(2, 3) === 5);
+```
+
+## Documentation
+
+```javascript
+/**
+ * Calculates the total price including tax
+ * @param {number} price - The base price
+ * @param {number} taxRate - Tax rate as decimal (e.g., 0.1 for 10%)
+ * @returns {number} Total price with tax
+ * @example
+ * calculateTotal(100, 0.1); // Returns 110
+ */
+function calculateTotal(price, taxRate) {
+  return price * (1 + taxRate);
+}
+```
+
+## Common Interview Questions
+
+### Q1: What are JavaScript best practices for performance?
+
+Key performance practices include minimizing DOM manipulation by batching updates and using DocumentFragment, caching DOM queries instead of repeated lookups, using event delegation instead of multiple listeners, debouncing/throttling expensive operations like scroll and resize handlers, loading scripts asynchronously, lazy loading images and components, using Web Workers for heavy computations, and avoiding memory leaks by cleaning up event listeners and timers. Always measure performance with browser DevTools before optimizing.
+
+### Q2: What is the difference between debounce and throttle?
+
+Debounce delays function execution until after a specified time has passed since the last invocation, useful for search inputs where you wait until the user stops typing. Throttle limits function execution to once per specified time period, useful for scroll handlers where you want regular updates but not on every pixel. Debounce resets the timer on each call, while throttle ensures execution at regular intervals. Use debounce for actions that should happen after user input stops, and throttle for continuous events that need rate limiting.
+
+### Q3: What are pure functions and why are they important?
+
+Pure functions always return the same output for the same input and have no side effects (don't modify external state or perform I/O). They're important because they're predictable, easy to test, enable memoization for performance, support functional programming patterns, and make code easier to reason about and debug. Pure functions are the foundation of functional programming and make concurrent programming safer since they don't share state.
+
+### Q4: How do you prevent XSS attacks in JavaScript?
+
+Prevent XSS by never using `eval()` or `innerHTML` with user input, using `textContent` instead of `innerHTML` for plain text, sanitizing HTML with libraries like DOMPurify before inserting, validating and escaping user input on both client and server, using Content Security Policy headers, encoding output based on context (HTML, JavaScript, URL), and using modern frameworks that escape by default. Always treat user input as untrusted and validate/sanitize everything.
+
+## Checklist for Quality Code
+
+- [ ] Use strict mode
+- [ ] Prefer const/let over var
+- [ ] Use meaningful variable names
+- [ ] Write small, focused functions
+- [ ] Handle all errors properly
+- [ ] Use async/await for async code
+- [ ] Avoid global variables
+- [ ] Comment complex logic
+- [ ] Use consistent formatting
+- [ ] Validate user input
+- [ ] Avoid eval() and innerHTML with user data
+- [ ] Cache DOM queries
+- [ ] Use event delegation
+- [ ] Debounce/throttle expensive operations
+- [ ] Write testable code
+- [ ] Keep functions pure when possible
+- [ ] Use modules for organization
+- [ ] Follow naming conventions
+- [ ] Document public APIs
+- [ ] Test edge cases
+
+

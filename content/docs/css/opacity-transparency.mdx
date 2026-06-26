@@ -1,0 +1,117 @@
+---
+title: "Opacity & Transparency - Controlling Element Transparency"
+description: Documentation for Opacity & Transparency - Controlling Element Transparency.
+---
+
+# Opacity & Transparency - Controlling Element Transparency
+
+
+
+## What is Opacity?
+
+Opacity controls the transparency level of an entire element and its children. Values range from 0 (fully transparent) to 1 (fully opaque).
+
+## Opacity Property
+
+**Syntax:**
+```css
+opacity: value; /* 0 to 1 */
+```
+
+**CSS Example:**
+```css
+.transparent {
+    opacity: 0; /* Invisible */
+}
+
+.semi-transparent {
+    opacity: 0.5; /* 50% transparent */
+}
+
+.opaque {
+    opacity: 1; /* Fully visible (default) */
+}
+```
+
+## Opacity vs RGBA
+
+### opacity - Affects entire element
+
+```css
+.box {
+    opacity: 0.5; /* Everything inside is 50% transparent */
+}
+```
+
+### RGBA - Affects only background
+
+```css
+.box {
+    background-color: rgba(0, 123, 255, 0.5); /* Only background is transparent */
+    color: black; /* Text stays fully opaque */
+}
+```
+
+## Common Patterns
+
+### Pattern 1: Hover Fade
+
+```css
+.image {
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.image:hover {
+    opacity: 0.7;
+}
+```
+
+---
+
+### Pattern 2: Disabled State
+
+```css
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+```
+
+---
+
+### Pattern 3: Overlay
+
+```css
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: 0.7;
+}
+```
+
+---
+
+### Pattern 4: Fade In Animation
+
+```css
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+```
+
+---
+
+
+

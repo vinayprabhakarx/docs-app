@@ -1,0 +1,665 @@
+---
+title: "Async/Await - Modern Asynchronous JavaScript"
+description: Documentation for Async/Await - Modern Asynchronous JavaScript.
+---
+
+# Async/Await - Modern Asynchronous JavaScript
+
+
+
+## What is Async/Await?
+
+**Async/Await** is syntactic sugar built on top of Promises that makes asynchronous code look and behave more like synchronous code. It was introduced in ES2017 (ES8).
+
+> **Definition:** Async/await is a modern JavaScript feature that allows you to write asynchronous code in a synchronous-looking manner. The `async` keyword marks a function as asynchronous, and `await` pauses execution until a Promise resolves.
+
+```javascript
+// Promise way
+function getData() {
+  return fetch("/api/data")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+}
+
+// Async/Await way (cleaner!)
+async function getData() {
+  const response = await fetch("/api/data");
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+```
+
+### Why Use Async/Await?
+
+| Benefit             | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| **Readability**     | Code looks synchronous and is easier to follow  |
+| **Error handling**  | Use familiar try/catch instead of .catch()      |
+| **Debugging**       | Easier to set breakpoints and step through code |
+| **Less nesting**    | Avoid .then() chains and callback hell          |
+| **Variable access** | Easier to access intermediate values            |
+
+## The `async` Keyword
+
+The `async` keyword makes a function return a Promise.
+
+```javascript
+// Regular function
+function regularFunc() {
+  return "Hello";
+}
+console.log(regularFunc()); // 'Hello'
+
+// Async function
+async function asyncFunc() {
+  return "Hello";
+}
+console.log(asyncFunc()); // Promise { 'Hello' }
+
+// Using the returned promise
+asyncFunc().then((result) => console.log(result)); // 'Hello'
+
+// Async function always returns a Promise
+async function example() {
+  return 42; // Automatically wrapped in Promise.resolve(42)
+}
+
+// Equivalent to:
+function example() {
+  return Promise.resolve(42);
+}
+
+// Various async function syntaxes
+// Function declaration
+async function fetchData() {}
+
+// Arrow function
+const fetchData = async () => {};
+
+// Method in object
+const obj = {
+  async fetchData() {},
+};
+
+// Method in class
+class API {
+  async fetchData() {}
+}
+```
+
+## The `await` Keyword
+
+The `await` keyword pauses execution until a Promise resolves.
+
+```javascript
+// Can only use await inside async functions
+async function fetchUser() {
+  const response = await fetch("/api/user"); // Wait for promise
+  const user = await response.json(); // Wait for another promise
+  return user;
+}
+
+// ❌ Cannot use await outside async function
+// const data = await fetch('/api/data'); // SyntaxError!
+
+// ✅ Must be inside async function
+async function getData() {
+  const data = await fetch("/api/data"); // Works!
+}
+
+// Top-level await (ES2022+ in modules)
+// await fetch('/api/data'); // Works in modules
+
+// Await with non-promise values (just returns the value)
+async function example() {
+  const value = await 42; // Same as await Promise.resolve(42)
+  console.log(value); // 42
+}
+```
+
+## Async/Await vs Promises
+
+| Feature        | Promises         | Async/Await     |
+| -------------- | ---------------- | --------------- |
+| Syntax         | `.then()` chains | Sequential code |
+| Readability    | Can be complex   | More readable   |
+| Error handling | `.catch()`       | `try/catch`     |
+| Debugging      | Harder           | Easier          |
+| Compatibility  | ES6+             | ES2017+         |
+
+```javascript
+// Promise chain
+function getUser() {
+  return fetch("/api/user")
+    .then((response) => response.json())
+    .then((user) => fetch(`/api/posts?userId=${user.id}`))
+    .then((response) => response.json())
+    .then((posts) => {
+      console.log(posts);
+      return posts;
+    })
+    .catch((error) => console.error(error));
+}
+
+// Async/Await (much cleaner!)
+async function getUser() {
+  try {
+    const userResponse = await fetch("/api/user");
+    const user = await userResponse.json();
+
+    const postsResponse = await fetch(`/api/posts?userId=${user.id}`);
+    const posts = await postsResponse.json();
+
+    console.log(posts);
+    return posts;
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+## Error Handling with Try/Catch
+
+```javascript
+// Basic error handling
+async function fetchData() {
+  try {
+    const response = await fetch("/api/data");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; // Re-throw if needed
+  }
+}
+
+// Multiple try/catch blocks for different error handling
+async function processData() {
+  let data;
+
+  try {
+    const response = await fetch("/api/data");
+    data = await response.json();
+  } catch (error) {
+    console.error("Fetch error:", error);
+    data = getDefaultData(); // Fallback
+  }
+
+  try {
+    const result = await processComplexData(data);
+    return result;
+  } catch (error) {
+    console.error("Processing error:", error);
+    throw error;
+  }
+}
+
+// Finally block for cleanup
+async function fetchWithCleanup() {
+  try {
+    showLoadingSpinner();
+    const response = await fetch("/api/data");
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  } finally {
+    hideLoadingSpinner(); // Always executes
+  }
+}
+
+// Handling HTTP errors (fetch doesn't reject on 404/500)
+async function fetchWithHttpErrors() {
+  try {
+    const response = await fetch("/api/data");
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+```
+
+## Sequential vs Parallel Execution
+
+### Sequential Execution (One After Another)
+
+```javascript
+async function sequential() {
+  console.time("Sequential");
+
+  const user = await fetchUser(); // Wait 1s
+  const posts = await fetchPosts(); // Wait 1s
+  const comments = await fetchComments(); // Wait 1s
+
+  console.timeEnd("Sequential"); // ~3 seconds
+  return { user, posts, comments };
+}
+```
+
+### Parallel Execution (All at Once)
+
+```javascript
+// Method 1: Promise.all with await (RECOMMENDED)
+async function parallel() {
+  console.time("Parallel");
+
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(),
+    fetchPosts(),
+    fetchComments(),
+  ]);
+
+  console.timeEnd("Parallel"); // ~1 second (fastest)
+  return { user, posts, comments };
+}
+
+// Method 2: Start all, then await
+async function parallel2() {
+  console.time("Parallel2");
+
+  // Start all promises immediately
+  const userPromise = fetchUser();
+  const postsPromise = fetchPosts();
+  const commentsPromise = fetchComments();
+
+  // Wait for all
+  const user = await userPromise;
+  const posts = await postsPromise;
+  const comments = await commentsPromise;
+
+  console.timeEnd("Parallel2"); // ~1 second
+  return { user, posts, comments };
+}
+```
+
+### When to Use Each
+
+```javascript
+// Use SEQUENTIAL when operations depend on each other
+async function getUserWithPosts(userId) {
+  const user = await fetchUser(userId); // Need user first
+  const posts = await fetchPosts(user.id); // Depends on user.id
+  return { user, posts };
+}
+
+// Use PARALLEL when operations are independent
+async function getDashboardData() {
+  const [users, posts, stats] = await Promise.all([
+    fetchUsers(),
+    fetchPosts(),
+    fetchStats(),
+  ]);
+  return { users, posts, stats };
+}
+
+// MIXED: Some parallel, some sequential
+async function getUserDashboard(userId) {
+  // First get user (required for other calls)
+  const user = await fetchUser(userId);
+
+  // Then fetch user's data in parallel
+  const [posts, comments, followers] = await Promise.all([
+    fetchUserPosts(user.id),
+    fetchUserComments(user.id),
+    fetchUserFollowers(user.id),
+  ]);
+
+  return { user, posts, comments, followers };
+}
+```
+
+## Async/Await Patterns
+
+### 1. Retry Logic
+
+```javascript
+async function fetchWithRetry(url, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      if (i === retries - 1) throw error; // Last attempt
+      console.log(`Retry ${i + 1}/${retries}`);
+      await delay(1000 * (i + 1)); // Exponential backoff
+    }
+  }
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+```
+
+### 2. Timeout Pattern
+
+```javascript
+async function fetchWithTimeout(url, timeout = 5000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    return await response.json();
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("Request timeout");
+    }
+    throw error;
+  }
+}
+
+// Usage
+try {
+  const data = await fetchWithTimeout("/api/data", 3000);
+  console.log(data);
+} catch (error) {
+  console.error("Request timed out or failed:", error);
+}
+```
+
+### 3. Processing Array Items
+
+```javascript
+// Sequential processing (when order matters or operations depend on each other)
+async function processSequential(items) {
+  const results = [];
+  for (const item of items) {
+    const result = await processItem(item);
+    results.push(result);
+  }
+  return results;
+}
+
+// Parallel processing (when operations are independent)
+async function processParallel(items) {
+  const promises = items.map((item) => processItem(item));
+  return await Promise.all(promises);
+}
+
+// Controlled concurrency (limit parallel operations)
+async function processWithLimit(items, limit = 3) {
+  const results = [];
+  for (let i = 0; i < items.length; i += limit) {
+    const batch = items.slice(i, i + limit);
+    const batchResults = await Promise.all(
+      batch.map((item) => processItem(item)),
+    );
+    results.push(...batchResults);
+  }
+  return results;
+}
+```
+
+### 4. Error Recovery with Fallbacks
+
+```javascript
+async function fetchWithFallback(primaryUrl, fallbackUrl) {
+  try {
+    return await fetch(primaryUrl).then((r) => r.json());
+  } catch (error) {
+    console.log("Primary failed, trying fallback");
+    return await fetch(fallbackUrl).then((r) => r.json());
+  }
+}
+
+// Multiple fallbacks
+async function fetchWithMultipleFallbacks(urls) {
+  for (const url of urls) {
+    try {
+      return await fetch(url).then((r) => r.json());
+    } catch (error) {
+      console.log(`Failed: ${url}`);
+      continue; // Try next URL
+    }
+  }
+  throw new Error("All URLs failed");
+}
+```
+
+## Common Mistakes
+
+### 1. Forgetting `await`
+
+```javascript
+// ❌ Wrong - returns Promise, not data
+async function getData() {
+  const data = fetch("/api/data"); // Missing await!
+  console.log(data); // Promise object, not data
+  return data;
+}
+
+// ✅ Correct
+async function getData() {
+  const data = await fetch("/api/data");
+  console.log(data); // Actual response
+  return data;
+}
+```
+
+### 2. Using `await` in Loops Unnecessarily
+
+```javascript
+// ❌ Slow - sequential execution (total: 3 seconds if each takes 1s)
+async function getUsers(ids) {
+  const users = [];
+  for (const id of ids) {
+    const user = await fetchUser(id); // Waits for each
+    users.push(user);
+  }
+  return users;
+}
+
+// ✅ Fast - parallel execution (total: 1 second)
+async function getUsers(ids) {
+  const promises = ids.map((id) => fetchUser(id));
+  return await Promise.all(promises);
+}
+```
+
+### 3. Not Handling Errors
+
+```javascript
+// ❌ Unhandled errors - could crash your app
+async function getData() {
+  const data = await fetch("/api/data"); // Could fail!
+  return data;
+}
+
+// ✅ Proper error handling
+async function getData() {
+  try {
+    const data = await fetch("/api/data");
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; // Or handle appropriately
+  }
+}
+```
+
+### 4. Returning Await Unnecessarily
+
+```javascript
+// ❌ Unnecessary await (adds extra microtask)
+async function getData() {
+  return await fetchData();
+}
+
+// ✅ Just return the promise
+async function getData() {
+  return fetchData();
+}
+
+// Exception: await IS needed in try/catch for error handling
+async function getData() {
+  try {
+    return await fetchData(); // Need await to catch errors
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What is async/await and how does it work?
+
+Async/await is syntactic sugar built on top of Promises that makes asynchronous code easier to write and read. The `async` keyword before a function declaration makes that function automatically return a Promise, even if you return a regular value. The `await` keyword can only be used inside async functions and it pauses the function execution until the Promise it's waiting for resolves, then returns the resolved value. Under the hood, async/await still uses Promises and the event loop, but it provides a cleaner syntax that looks like synchronous code. This makes it much easier to understand the flow of asynchronous operations compared to chaining multiple `.then()` calls.
+
+---
+
+### Q2: What's the difference between Promise.then() and async/await?
+
+| Aspect         | Promise.then()  | Async/Await     |
+| -------------- | --------------- | --------------- |
+| Syntax         | Chaining        | Sequential      |
+| Error handling | `.catch()`      | `try/catch`     |
+| Readability    | Can be complex  | More readable   |
+| Debugging      | Harder to debug | Easier to debug |
+
+Both accomplish the same thing under the hood, but async/await provides cleaner syntax. Promise.then() chains can become difficult to read with multiple operations, while async/await makes the code look synchronous and easier to understand. Error handling is also more intuitive with try/catch blocks instead of .catch() chains. However, async/await requires ES2017+ support while Promises work in ES6+.
+
+### Q3: Can you use await without async?
+
+No, you cannot use `await` outside of an async function in regular scripts. Attempting to do so will result in a SyntaxError saying that await is only valid in async functions. However, there is one exception: ES2022 introduced top-level await, which allows you to use await at the top level of JavaScript modules (not regular scripts). This is useful for module initialization that depends on asynchronous operations, like fetching configuration before the module exports anything. In all other cases, you must wrap your await statements inside an async function.
+
+---
+
+### Q4: How do you handle errors in async/await?
+
+The standard approach for handling errors in async/await is using try/catch blocks, which is more intuitive than Promise .catch() chains. You wrap your await statements inside a try block, and any errors thrown by the awaited promises or by throw statements are caught in the catch block. You can also use a finally block for cleanup operations that should run regardless of success or failure, like hiding a loading spinner. One important detail is that if you need to catch errors from a returned promise, you must await it inside the try block, otherwise the error will not be caught. Additionally, since async functions return promises, you can still use .catch() on the function call if preferred.
+
+---
+
+### Q5: What's the difference between sequential and parallel async operations?
+
+Sequential execution means running async operations one at a time, where each operation waits for the previous one to complete before starting. This is what happens naturally when you use await one after another in a function. Parallel execution means starting all operations at the same time and waiting for all of them to complete, which you achieve using Promise.all(). Sequential is necessary when operations depend on each other, like when you need a user ID before fetching that user's posts. Parallel is preferred when operations are independent because it's much faster - if you have three 1-second operations, sequential takes 3 seconds while parallel takes only 1 second. Always consider whether your operations can run in parallel to optimize performance.
+
+---
+
+### Q6: What happens when you forget to use await?
+
+When you forget to use await before a Promise, you get the Promise object itself instead of the resolved value. This is a very common bug that doesn't throw an error, making it hard to detect. For example, if you write `const data = fetch(url)` without await, data will be a Promise, not the response. If you then try to use data as if it were the actual value, you'll get unexpected behavior - perhaps `undefined` properties or type errors. This is why TypeScript is helpful, as it can warn you when you're trying to use a Promise as its resolved type. Always remember to await any function that returns a Promise when you need its resolved value.
+
+---
+
+### Q7: How do you run multiple async operations in parallel?
+
+To run multiple async operations in parallel, you use Promise.all() which takes an array of promises and returns a single promise that resolves when all input promises have resolved. The result is an array of all the resolved values in the same order as the input promises. You should use this when your operations are independent and don't need each other's results. For example, fetching user data, posts, and comments at the same time instead of one after another. If any promise rejects, Promise.all rejects immediately with that error. If you want to wait for all operations regardless of failures, use Promise.allSettled() instead, which gives you the status and result of each promise.
+
+---
+
+### Q8: What is the purpose of Promise.all with async/await?
+
+Promise.all is essential for achieving parallelism in async/await code. Without it, awaiting promises sequentially means each operation must complete before the next one starts. Promise.all allows you to start multiple operations simultaneously and wait for all of them to finish. You typically use destructuring to extract the results: `const [users, posts] = await Promise.all([fetchUsers(), fetchPosts()])`. This pattern is crucial for performance optimization - if you have three independent API calls that each take 1 second, using Promise.all reduces total time from 3 seconds to 1 second. Remember that Promise.all fails fast, meaning if any promise rejects, the entire operation fails immediately.
+
+---
+
+### Q9: How does top-level await work?
+
+Top-level await was introduced in ES2022 and allows you to use the await keyword at the module level, outside of any async function. This only works in ES modules (files using import/export), not in regular CommonJS scripts. It's useful for module initialization that depends on asynchronous operations, such as fetching configuration, connecting to a database, or loading resources before the module is ready to export. When a module uses top-level await, any module that imports it will wait for the await to complete before executing. This creates a dependency chain where the importing module is blocked until the top-level await resolves, which is important to consider for application startup time.
+
+---
+
+### Q10: What is the difference between async function return and throw?
+
+In an async function, returning a value wraps it in a resolved Promise, while throwing an error wraps it in a rejected Promise. If you `return "hello"`, the promise resolves with "hello". If you `throw new Error("failed")`, the promise rejects with that error. This is important for understanding how errors propagate - a thrown error in an async function can be caught by either a try/catch block in another async function that awaits it, or by a .catch() call on the returned promise. Similarly, you can return a rejected promise with `return Promise.reject()`, which has the same effect as throwing. Understanding this relationship between return/throw and resolve/reject is essential for proper error handling in async code.
+
+## Practical Examples
+
+```javascript
+// Example 1: Fetch user data with posts
+async function getUserDashboard(userId) {
+  try {
+    // Sequential: user first, then posts
+    const userResponse = await fetch(`/api/users/${userId}`);
+    const user = await userResponse.json();
+
+    // Parallel: fetch posts and comments together
+    const [postsResponse, commentsResponse] = await Promise.all([
+      fetch(`/api/posts?userId=${userId}`),
+      fetch(`/api/comments?userId=${userId}`),
+    ]);
+
+    const posts = await postsResponse.json();
+    const comments = await commentsResponse.json();
+
+    return { user, posts, comments };
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    throw error;
+  }
+}
+
+// Example 2: Search with debounce
+async function searchWithDebounce(query) {
+  await delay(300); // Wait for user to stop typing
+
+  try {
+    const response = await fetch(`/api/search?q=${query}`);
+    const results = await response.json();
+    return results;
+  } catch (error) {
+    console.error("Search error:", error);
+    return [];
+  }
+}
+
+// Example 3: Batch processing with progress
+async function processBatch(items, onProgress) {
+  const results = [];
+
+  for (let i = 0; i < items.length; i++) {
+    try {
+      const result = await processItem(items[i]);
+      results.push(result);
+      onProgress(((i + 1) / items.length) * 100);
+    } catch (error) {
+      console.error(`Item ${i} failed:`, error);
+      results.push(null);
+    }
+  }
+
+  return results;
+}
+
+// Usage
+// processBatch(items, progress => {
+//     console.log(`Progress: ${progress}%`);
+// });
+
+// Example 4: Polling with timeout
+async function pollUntilComplete(checkUrl, maxAttempts = 10) {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      const response = await fetch(checkUrl);
+      const status = await response.json();
+
+      if (status.complete) {
+        return status.result;
+      }
+
+      await delay(2000); // Wait 2s between polls
+    } catch (error) {
+      console.error("Poll error:", error);
+    }
+  }
+
+  throw new Error("Polling timeout");
+}
+```
+
+

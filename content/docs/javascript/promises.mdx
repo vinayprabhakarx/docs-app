@@ -1,0 +1,950 @@
+---
+title: "Promises - Handling Asynchronous Operations"
+description: Documentation for Promises - Handling Asynchronous Operations.
+---
+
+# Promises - Handling Asynchronous Operations
+
+
+
+## What are Promises?
+
+**A Promise** is an object representing the eventual completion or failure of an asynchronous operation. It's a better alternative to callbacks for handling async code.
+
+> **Definition:** A Promise is a proxy for a value not necessarily known when the promise is created. It allows you to associate handlers with an asynchronous action's eventual success value or failure reason.
+
+```javascript
+// Creating a promise
+let promise = new Promise(function (resolve, reject) {
+  // Async operation
+  setTimeout(function () {
+    resolve("Success!"); // Operation succeeded
+    // or
+    // reject(new Error('Failed!')); // Operation failed
+  }, 1000);
+});
+
+// Using the promise
+promise
+  .then(function (result) {
+    console.log(result); // 'Success!'
+  })
+  .catch(function (error) {
+    console.error(error);
+  });
+```
+
+### Why Use Promises?
+
+| Benefit                   | Description                              |
+| ------------------------- | ---------------------------------------- |
+| **Avoid callback hell**   | Chain operations instead of nesting      |
+| **Better error handling** | Single `.catch()` handles all errors     |
+| **Composable**            | Combine multiple async operations easily |
+| **State immutability**    | Once settled, state never changes        |
+| **Built-in language**     | Native support, no libraries needed      |
+
+## Promise States
+
+A Promise can be in one of three states:
+
+| State         | Description                                   | Can transition to     |
+| ------------- | --------------------------------------------- | --------------------- |
+| **Pending**   | Initial state, neither fulfilled nor rejected | Fulfilled or Rejected |
+| **Fulfilled** | Operation completed successfully              | None (final state)    |
+| **Rejected**  | Operation failed                              | None (final state)    |
+
+> **Key Concept:** Once a Promise is settled (fulfilled or rejected), it becomes **immutable** - it cannot change to another state or change its result value.
+
+```javascript
+// Pending - operation in progress
+let pending = new Promise((resolve, reject) => {
+  // Still executing...
+});
+
+// Fulfilled - operation succeeded
+let fulfilled = new Promise((resolve, reject) => {
+  resolve("Done!"); // Now fulfilled with value "Done!"
+});
+
+// Rejected - operation failed
+let rejected = new Promise((resolve, reject) => {
+  reject(new Error("Failed!")); // Now rejected with error
+});
+
+// Once settled, calling resolve/reject again has no effect
+let example = new Promise((resolve, reject) => {
+  resolve("First"); // Promise is now fulfilled
+  resolve("Second"); // Ignored
+  reject("Error"); // Ignored
+});
+// example will always resolve with "First"
+```
+
+## Creating Promises
+
+### Basic Promise Creation
+
+```javascript
+// Promise that resolves after delay
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+delay(2000).then(() => console.log("2 seconds later"));
+
+// Promise with condition
+function fetchUser(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (id > 0) {
+        resolve({ id, name: "John", email: "john@example.com" });
+      } else {
+        reject(new Error("Invalid ID"));
+      }
+    }, 1000);
+  });
+}
+
+// Promise wrapping callback-based API
+function readFilePromise(filename) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, "utf8", (error, data) => {
+      if (error) reject(error);
+      else resolve(data);
+    });
+  });
+}
+```
+
+### Promise.resolve() and Promise.reject()
+
+Create immediately settled promises.
+
+```javascript
+// Immediately resolved promise
+let resolved = Promise.resolve("Immediate success");
+resolved.then((result) => console.log(result)); // 'Immediate success'
+
+// Immediately rejected promise
+let rejected = Promise.reject(new Error("Immediate failure"));
+rejected.catch((error) => console.error(error.message)); // 'Immediate failure'
+
+// Useful for wrapping synchronous values as promises
+function getData(useCache) {
+  if (useCache) {
+    return Promise.resolve(cachedData); // Sync data as promise
+  } else {
+    return fetch("/api/data").then((r) => r.json()); // Async fetch
+  }
+}
+
+// Always returns a promise, consistent API
+getData(true).then((data) => console.log(data));
+getData(false).then((data) => console.log(data));
+
+// Promise.resolve with thenable
+let thenable = {
+  then(resolve) {
+    resolve("From thenable");
+  },
+};
+Promise.resolve(thenable).then(console.log); // "From thenable"
+```
+
+## Consuming Promises
+
+### then() Method
+
+The `then()` method returns a new Promise, enabling chaining.
+
+```javascript
+let promise = new Promise((resolve) => {
+  setTimeout(() => resolve("Done!"), 1000);
+});
+
+// Single then
+promise.then((result) => {
+  console.log(result); // 'Done!'
+});
+
+// Chaining - each then returns a new promise
+promise
+  .then((result) => {
+    console.log(result); // 'Done!'
+    return result.toUpperCase();
+  })
+  .then((result) => {
+    console.log(result); // 'DONE!'
+    return result.length;
+  })
+  .then((result) => {
+    console.log(result); // 5
+  });
+
+// Returning a promise from then
+function step1() {
+  return Promise.resolve(1);
+}
+
+function step2(value) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(value + 1), 1000);
+  });
+}
+
+step1()
+  .then(step2) // Wait for step2's promise
+  .then((result) => console.log(result)); // 2 (after 1 second)
+```
+
+### catch() Method
+
+Handles rejected promises and errors thrown in the chain.
+
+```javascript
+let promise = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error("Failed!")), 1000);
+});
+
+// Catch errors
+promise
+  .then((result) => console.log(result))
+  .catch((error) => console.error("Error:", error.message)); // 'Error: Failed!'
+
+// Catch handles errors anywhere in the chain
+fetchData()
+  .then((data) => {
+    if (!data) throw new Error("No data"); // Caught by catch
+    return processData(data);
+  })
+  .then((result) => saveData(result))
+  .catch((error) => {
+    // Catches errors from fetchData, processData, saveData, or throw
+    console.error("Something went wrong:", error);
+  });
+
+// Recovery from errors
+fetchData()
+  .then((data) => processData(data))
+  .catch((error) => {
+    console.error("Error, using default:", error);
+    return defaultData; // Recover with default
+  })
+  .then((data) => {
+    // Continues with either processed data or default
+    console.log("Data:", data);
+  });
+```
+
+### finally() Method
+
+Executes regardless of outcome - useful for cleanup.
+
+```javascript
+let promise = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("Done!"), 1000);
+});
+
+promise
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error))
+  .finally(() => {
+    console.log("Cleanup"); // Always executes
+  });
+
+// Practical use: Loading states
+async function loadData() {
+  showLoadingSpinner();
+
+  try {
+    const data = await fetchData();
+    displayData(data);
+  } catch (error) {
+    showError(error);
+  } finally {
+    hideLoadingSpinner(); // Always hide spinner
+  }
+}
+
+// finally doesn't receive any value
+Promise.resolve("value")
+  .finally(() => {
+    // No access to resolved value
+    console.log("Finally!");
+  })
+  .then((value) => {
+    console.log(value); // "value" - passes through
+  });
+```
+
+## Promise Chaining
+
+Each `.then()` returns a new promise, allowing sequential async operations.
+
+```javascript
+// Example: Sequential API calls
+function getUser(userId) {
+  return fetch(`/api/users/${userId}`).then((r) => r.json());
+}
+
+function getPosts(userId) {
+  return fetch(`/api/users/${userId}/posts`).then((r) => r.json());
+}
+
+function getComments(postId) {
+  return fetch(`/api/posts/${postId}/comments`).then((r) => r.json());
+}
+
+// Chain operations
+getUser(1)
+  .then((user) => {
+    console.log("User:", user.name);
+    return getPosts(user.id);
+  })
+  .then((posts) => {
+    console.log("Posts:", posts.length);
+    return getComments(posts[0].id);
+  })
+  .then((comments) => {
+    console.log("Comments:", comments.length);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
+// More concise chaining
+getUser(1)
+  .then((user) => getPosts(user.id))
+  .then((posts) => getComments(posts[0].id))
+  .then((comments) => console.log(comments))
+  .catch(console.error);
+```
+
+## Promise Combinators
+
+Methods for working with multiple promises.
+
+### Promise.all() - Wait for All
+
+Waits for all promises to fulfill. **Rejects immediately if any fails.**
+
+```javascript
+let promise1 = Promise.resolve(1);
+let promise2 = Promise.resolve(2);
+let promise3 = Promise.resolve(3);
+
+Promise.all([promise1, promise2, promise3]).then((results) => {
+  console.log(results); // [1, 2, 3] - in order!
+});
+
+// Practical: Fetch multiple resources in parallel
+Promise.all([
+  fetch("/api/users").then((r) => r.json()),
+  fetch("/api/posts").then((r) => r.json()),
+  fetch("/api/comments").then((r) => r.json()),
+])
+  .then(([users, posts, comments]) => {
+    console.log("Users:", users.length);
+    console.log("Posts:", posts.length);
+    console.log("Comments:", comments.length);
+  })
+  .catch((error) => {
+    console.error("One request failed:", error);
+  });
+
+// ⚠️ If ANY promise rejects, all results are lost
+Promise.all([
+  Promise.resolve(1),
+  Promise.reject("Error!"), // This rejects everything
+  Promise.resolve(3),
+])
+  .then((results) => {
+    console.log(results); // Never reached
+  })
+  .catch((error) => {
+    console.error(error); // 'Error!'
+  });
+```
+
+### Promise.allSettled() - Wait for All (Never Rejects)
+
+Waits for all promises to settle, regardless of outcome.
+
+```javascript
+Promise.allSettled([
+  Promise.resolve("Success"),
+  Promise.reject("Error!"),
+  Promise.resolve(42),
+]).then((results) => {
+  console.log(results);
+  // [
+  //   { status: 'fulfilled', value: 'Success' },
+  //   { status: 'rejected', reason: 'Error!' },
+  //   { status: 'fulfilled', value: 42 }
+  // ]
+});
+
+// Practical: Try multiple APIs, handle each result
+async function fetchFromMultipleSources(urls) {
+  const results = await Promise.allSettled(
+    urls.map((url) => fetch(url).then((r) => r.json())),
+  );
+
+  const successful = results
+    .filter((r) => r.status === "fulfilled")
+    .map((r) => r.value);
+
+  const failed = results
+    .filter((r) => r.status === "rejected")
+    .map((r) => r.reason);
+
+  console.log(`${successful.length} succeeded, ${failed.length} failed`);
+  return successful;
+}
+```
+
+### Promise.race() - First to Settle
+
+Returns when the first promise settles (fulfills or rejects).
+
+```javascript
+let slow = new Promise((resolve) => setTimeout(() => resolve("Slow"), 2000));
+let fast = new Promise((resolve) => setTimeout(() => resolve("Fast"), 1000));
+
+Promise.race([slow, fast]).then((result) => {
+  console.log(result); // 'Fast' - first to resolve
+});
+
+// Practical: Timeout pattern
+function fetchWithTimeout(url, timeoutMs) {
+  return Promise.race([
+    fetch(url),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Timeout")), timeoutMs),
+    ),
+  ]);
+}
+
+fetchWithTimeout("/api/data", 5000)
+  .then((response) => response.json())
+  .then((data) => console.log(data))
+  .catch((error) => {
+    if (error.message === "Timeout") {
+      console.error("Request timed out!");
+    }
+  });
+
+// ⚠️ Race also races rejections
+Promise.race([
+  new Promise((_, reject) => setTimeout(() => reject("Error"), 100)),
+  new Promise((resolve) => setTimeout(() => resolve("Success"), 200)),
+]).catch((error) => console.error(error)); // 'Error' - faster rejection
+```
+
+### Promise.any() - First to Fulfill
+
+Returns the first promise that **fulfills** (ignores rejections unless all reject).
+
+```javascript
+Promise.any([
+  Promise.reject("Error 1"),
+  Promise.resolve("Success!"), // First fulfillment
+  Promise.reject("Error 2"),
+]).then((result) => {
+  console.log(result); // 'Success!'
+});
+
+// Practical: Try multiple servers, use first successful
+Promise.any([
+  fetch("https://server1.com/api"),
+  fetch("https://server2.com/api"),
+  fetch("https://server3.com/api"),
+])
+  .then((response) => response.json())
+  .then((data) => console.log("Got data from fastest server"))
+  .catch((error) => {
+    // AggregateError - all promises rejected
+    console.error("All servers failed:", error.errors);
+  });
+
+// Only rejects if ALL promises reject
+Promise.any([Promise.reject("Error 1"), Promise.reject("Error 2")]).catch(
+  (error) => {
+    console.log(error instanceof AggregateError); // true
+    console.log(error.errors); // ['Error 1', 'Error 2']
+  },
+);
+```
+
+### Promise Combinators Comparison
+
+| Method                 | Resolves when  | Rejects when  | Use case           |
+| ---------------------- | -------------- | ------------- | ------------------ |
+| `Promise.all()`        | All fulfill    | Any rejects   | Need all results   |
+| `Promise.allSettled()` | All settle     | Never rejects | Want all outcomes  |
+| `Promise.race()`       | First settles  | First rejects | Need fastest (any) |
+| `Promise.any()`        | First fulfills | All reject    | Need first success |
+
+## Error Handling Best Practices
+
+### Proper Error Handling Chain
+
+```javascript
+// Single catch at the end (recommended for simple chains)
+fetchUser(userId)
+  .then((user) => fetchPosts(user.id))
+  .then((posts) => displayPosts(posts))
+  .catch((error) => {
+    // Handles errors from any step
+    showError(error);
+  });
+
+// Multiple catches for specific handling
+fetchUser(userId)
+  .then((user) => {
+    if (!user.active) {
+      throw new Error("Inactive user");
+    }
+    return fetchPosts(user.id);
+  })
+  .catch((error) => {
+    // Handle user/posts errors, recover
+    console.warn("Using cached posts:", error.message);
+    return getCachedPosts(userId);
+  })
+  .then((posts) => displayPosts(posts))
+  .catch((error) => {
+    // Handle display errors
+    console.error("Display failed:", error);
+  });
+
+// Rethrowing errors for outer handling
+fetchData()
+  .then((data) => {
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    return data;
+  })
+  .catch((error) => {
+    logError(error);
+    throw error; // Rethrow for outer catch
+  });
+```
+
+### Common Mistakes to Avoid
+
+```javascript
+// ❌ Forgetting to return in then
+fetchUser(1)
+  .then(user => {
+    fetchPosts(user.id);  // Missing return!
+  })
+  .then(posts => {
+    console.log(posts);  // undefined!
+  });
+
+// ✅ Always return promises
+fetchUser(1)
+  .then(user => {
+    return fetchPosts(user.id);
+  })
+  .then(posts => {
+    console.log(posts);  // Array of posts
+  });
+
+// ❌ Creating a promise in a then without returning
+.then(data => {
+  new Promise(resolve => {
+    // ...
+    resolve(result);
+  });
+  // Returns undefined!
+});
+
+// ❌ Forgetting catch
+fetchData()
+  .then(displayData);  // Unhandled rejection if fails!
+
+// ✅ Always handle errors
+fetchData()
+  .then(displayData)
+  .catch(handleError);
+```
+
+## Interview Questions & Answers
+
+### Q1: What is a Promise and why use it over callbacks?
+
+**Answer:**
+
+A Promise is an object representing the eventual completion or failure of an asynchronous operation. It provides a cleaner alternative to callbacks for handling async code. Promises solve the callback hell problem by allowing you to chain operations with `.then()` instead of nesting callbacks. They also provide better error handling with `.catch()` and make code more readable and maintainable. Promises are the foundation for async/await syntax and are widely used in modern JavaScript for operations like HTTP requests, file I/O, and timers.
+
+| Feature        | Callbacks            | Promises             |
+| -------------- | -------------------- | -------------------- |
+| Syntax         | Nested               | Chained              |
+| Error handling | Per-callback         | Single `.catch()`    |
+| Readability    | Hard (callback hell) | Better (flat chain)  |
+| Composability  | Manual               | Built-in combinators |
+| Return value   | void                 | Returns Promise      |
+
+```javascript
+// Callbacks - nested, hard to read
+getData((err, data) => {
+  if (err) handleError(err);
+  processData(data, (err, result) => {
+    if (err) handleError(err);
+    // More nesting...
+  });
+});
+
+// Promises - flat, readable
+getData().then(processData).then(saveResult).catch(handleError); // Single error handler
+```
+
+---
+
+### Q2: What are the three states of a Promise?
+
+**Answer:**
+A Promise has three states: Pending (initial state, operation is still running), Fulfilled (operation completed successfully with a value), and Rejected (operation failed with an error). Once a Promise transitions from Pending to either Fulfilled or Rejected, it becomes settled and cannot change states again. This immutability ensures predictable behavior and makes Promises reliable for handling asynchronous operations.
+
+1. **Pending** - Initial state, operation in progress
+2. **Fulfilled** - Operation completed successfully with a value
+3. **Rejected** - Operation failed with a reason (error)
+
+```javascript
+// Check state (not directly accessible, but conceptually)
+const pending = new Promise(() => {}); // Pending forever
+const fulfilled = Promise.resolve("value"); // Immediately fulfilled
+const rejected = Promise.reject(new Error()); // Immediately rejected
+```
+
+**Key rules:**
+
+- A promise can only transition from pending to either fulfilled or rejected
+- Once settled (fulfilled/rejected), a promise is **immutable**
+- You can only call `resolve` or `reject` once; further calls are ignored
+
+---
+
+### Q3: What's the difference between Promise.all() and Promise.allSettled()?
+
+**Answer:**
+Promise.all() rejects immediately if any promise rejects, making it suitable when you need all operations to succeed. Promise.allSettled() waits for all promises to settle regardless of outcome and returns an array of objects describing each result, making it useful when you want to know the outcome of all operations even if some fail.
+
+| Feature        | Promise.all()    | Promise.allSettled()    |
+| -------------- | ---------------- | ----------------------- |
+| **Waits for**  | All to fulfill   | All to settle           |
+| **Rejects if** | Any rejects      | Never rejects           |
+| **Returns**    | Array of values  | Array of result objects |
+| **Use when**   | All must succeed | Need all outcomes       |
+
+```javascript
+// Promise.all - fails fast
+Promise.all([Promise.resolve(1), Promise.reject("error")]).catch((e) =>
+  console.log(e),
+); // "error" - immediately
+
+// Promise.allSettled - waits for all
+Promise.allSettled([Promise.resolve(1), Promise.reject("error")]).then(
+  (results) => console.log(results),
+);
+// [{ status: 'fulfilled', value: 1 },
+//  { status: 'rejected', reason: 'error' }]
+```
+
+---
+
+### Q4: How do you convert callback-based code to Promises?
+
+**Answer:**
+
+You wrap the callback-based function in a new Promise, calling `resolve()` when the operation succeeds and `reject()` when it fails. This pattern is called "promisification." For example, to convert a Node.js callback function, you create a new Promise, call the original function inside it, and in the callback, check for errors (calling reject if present) or call resolve with the result. Many libraries provide utility functions like `util.promisify()` in Node.js to automate this conversion.
+
+```javascript
+// Original callback API
+function readFile(path, callback) {
+  // callback(error, data)
+}
+
+// Promisified version
+function readFilePromise(path) {
+  return new Promise((resolve, reject) => {
+    readFile(path, (error, data) => {
+      if (error) reject(error);
+      else resolve(data);
+    });
+  });
+}
+
+// Usage
+readFilePromise("/path/to/file")
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));
+
+// Node.js has built-in util.promisify
+const { promisify } = require("util");
+const readFilePromise = promisify(fs.readFile);
+```
+
+---
+
+### Q5: Explain Promise chaining and how it differs from nesting.
+
+**Answer:**
+
+Promise chaining uses `.then()` to sequence operations. Each `.then()` returns a new Promise, enabling flat chains instead of nested callbacks.
+
+```javascript
+// ❌ Nested (callback style) - pyramid
+fetchUser(1).then((user) => {
+  fetchPosts(user.id).then((posts) => {
+    fetchComments(posts[0].id).then((comments) => {
+      console.log(comments);
+    });
+  });
+});
+
+// ✅ Chained - flat and readable
+fetchUser(1)
+  .then((user) => fetchPosts(user.id))
+  .then((posts) => fetchComments(posts[0].id))
+  .then((comments) => console.log(comments))
+  .catch(handleError); // Single error handler!
+```
+
+**Key:** Always `return` from `.then()` to continue the chain properly.
+
+---
+
+### Q6: What is the purpose of Promise.race() and Promise.any()?
+
+**Answer:**
+
+Both return one result from multiple promises, but differ in what they wait for:
+
+| Method           | Returns when   | Ignores    | Use case                |
+| ---------------- | -------------- | ---------- | ----------------------- |
+| `Promise.race()` | First settles  | Nothing    | Timeout, fastest result |
+| `Promise.any()`  | First fulfills | Rejections | First success           |
+
+```javascript
+// race - first to settle (even rejection)
+await Promise.race([
+  new Promise((_, reject) => setTimeout(() => reject("Fast error"), 100)),
+  new Promise((resolve) => setTimeout(() => resolve("Slow success"), 200)),
+]);
+// Throws "Fast error"
+
+// any - first to fulfill (ignores rejections)
+await Promise.any([
+  Promise.reject("Error 1"),
+  new Promise((resolve) => setTimeout(() => resolve("Success"), 100)),
+  Promise.reject("Error 2"),
+]);
+// Returns "Success"
+```
+
+---
+
+### Q7: How does error handling work in Promise chains?
+
+**Answer:**
+
+Errors propagate down the chain until caught by a `.catch()`:
+
+```javascript
+fetchData()
+  .then(step1)   // If error here...
+  .then(step2)   // ...skipped...
+  .then(step3)   // ...skipped...
+  .catch(handleError);  // ...caught here
+
+// Errors can be thrown in then
+.then(data => {
+  if (!data) throw new Error("No data");  // Caught by next catch
+  return data;
+})
+.catch(error => {
+  console.error(error);
+  return defaultValue;  // Recovery - chain continues
+})
+.then(value => {
+  // Continues with recovered value
+});
+
+// Rethrow to propagate
+.catch(error => {
+  logError(error);
+  throw error;  // Continue propagation
+});
+```
+
+---
+
+### Q8: What is the difference between returning a value and returning a Promise in `.then()`?
+
+**Answer:**
+
+Both work, but returning a Promise makes `.then()` wait for it:
+
+```javascript
+// Return value - next then runs immediately
+.then(x => x + 1)           // Returns 2
+.then(y => console.log(y))  // Logs 2 immediately
+
+// Return Promise - next then waits
+.then(x => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(x + 1), 1000);
+  });
+})
+.then(y => console.log(y))  // Logs 2 after 1 second
+
+// Async function - implicitly returns Promise
+.then(async x => {
+  await delay(1000);
+  return x + 1;
+})
+.then(y => console.log(y))  // Logs after 1 second
+```
+
+---
+
+### Q9: What happens if you don't return a value from `.then()`?
+
+**Answer:**
+
+The next `.then()` receives `undefined`:
+
+```javascript
+Promise.resolve(1)
+  .then((x) => {
+    console.log(x); // 1
+    x + 1; // No return!
+  })
+  .then((y) => {
+    console.log(y); // undefined
+  });
+
+// Common mistake with fetch
+fetch("/api/data")
+  .then((response) => {
+    response.json(); // Missing return!
+  })
+  .then((data) => {
+    console.log(data); // undefined
+  });
+
+// Fix
+fetch("/api/data")
+  .then((response) => response.json()) // Return the promise
+  .then((data) => console.log(data));
+```
+
+---
+
+### Q10: How do you create a Promise-based delay function?
+
+**Answer:**
+
+```javascript
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Usage
+delay(2000).then(() => console.log("2 seconds later"));
+
+// With async/await
+async function example() {
+  console.log("Start");
+  await delay(1000);
+  console.log("1 second later");
+  await delay(1000);
+  console.log("2 seconds total");
+}
+
+// Delay with value
+function delayValue(ms, value) {
+  return new Promise((resolve) => setTimeout(() => resolve(value), ms));
+}
+
+delayValue(1000, "Hello").then(console.log); // "Hello" after 1s
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: Sequential API calls with proper chaining
+function getUserData(userId) {
+  return fetch(`/api/users/${userId}`)
+    .then((response) => {
+      if (!response.ok) throw new Error("User not found");
+      return response.json();
+    })
+    .then((user) => {
+      return fetch(`/api/posts?userId=${user.id}`)
+        .then((response) => response.json())
+        .then((posts) => ({ user, posts }));
+    });
+}
+
+getUserData(1)
+  .then(({ user, posts }) => {
+    console.log(`${user.name} has ${posts.length} posts`);
+  })
+  .catch(console.error);
+
+// Example 2: Retry logic with Promises
+function fetchWithRetry(url, retries = 3, delay = 1000) {
+  return fetch(url).catch((error) => {
+    if (retries > 0) {
+      console.log(`Retrying... (${retries} left)`);
+      return new Promise((resolve) => setTimeout(resolve, delay)).then(() =>
+        fetchWithRetry(url, retries - 1, delay),
+      );
+    }
+    throw error;
+  });
+}
+
+// Example 3: Parallel with individual error handling
+function fetchMultiple(urls) {
+  return Promise.all(
+    urls.map((url) =>
+      fetch(url)
+        .then((r) => r.json())
+        .catch((error) => ({ error: error.message, url })),
+    ),
+  ).then((results) => {
+    const successful = results.filter((r) => !r.error);
+    const failed = results.filter((r) => r.error);
+    return { successful, failed };
+  });
+}
+
+// Example 4: Sequential execution from array
+function executeSequentially(promiseFunctions) {
+  return promiseFunctions.reduce(
+    (chain, fn) =>
+      chain.then((results) => fn().then((result) => [...results, result])),
+    Promise.resolve([]),
+  );
+}
+
+const tasks = [
+  () => delay(1000).then(() => "Task 1"),
+  () => delay(500).then(() => "Task 2"),
+  () => delay(800).then(() => "Task 3"),
+];
+
+executeSequentially(tasks).then(console.log);
+// ["Task 1", "Task 2", "Task 3"] - in order, one at a time
+```
+
+

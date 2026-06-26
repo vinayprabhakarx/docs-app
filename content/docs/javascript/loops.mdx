@@ -1,0 +1,754 @@
+---
+title: "Loops - Repeating Code Efficiently"
+description: Documentation for Loops - Repeating Code Efficiently.
+---
+
+# Loops - Repeating Code Efficiently
+
+
+
+## What are Loops?
+
+**Loops** allow you to execute code repeatedly without writing it multiple times. Instead of:
+
+```javascript
+console.log(1);
+console.log(2);
+console.log(3);
+// ... 100 times
+```
+
+You can write:
+
+```javascript
+for (let i = 1; i <= 100; i++) {
+  console.log(i);
+}
+```
+
+## Types of Loops - Quick Reference
+
+| Loop         | Best For                            | Syntax Complexity |
+| ------------ | ----------------------------------- | ----------------- |
+| `for`        | Known number of iterations          | Medium            |
+| `while`      | Unknown iterations, condition-based | Simple            |
+| `do...while` | Execute at least once               | Simple            |
+| `for...of`   | Iterating arrays (values)           | Simple            |
+| `for...in`   | Iterating objects (keys)            | Simple            |
+| `forEach`    | Array iteration (functional)        | Simple            |
+
+## 1. for Loop
+
+Most common loop. Use when you know how many times to iterate.
+
+### Syntax
+
+```javascript
+for (initialization; condition; increment) {
+  // Code to repeat
+}
+```
+
+### How it Works
+
+```
+1. initialization - Runs once before loop starts
+2. condition - Checked before each iteration
+3. code block - Executes if condition is true
+4. increment - Runs after each iteration
+5. Repeat steps 2-4 until condition is false
+```
+
+### Examples
+
+```javascript
+// Example 1: Count 1 to 5
+for (let i = 1; i <= 5; i++) {
+  console.log(i);
+}
+// Output: 1, 2, 3, 4, 5
+
+// Example 2: Count backwards
+for (let i = 5; i >= 1; i--) {
+  console.log(i);
+}
+// Output: 5, 4, 3, 2, 1
+
+// Example 3: Skip numbers (increment by 2)
+for (let i = 0; i <= 10; i += 2) {
+  console.log(i);
+}
+// Output: 0, 2, 4, 6, 8, 10
+
+// Example 4: Iterate array
+let fruits = ["apple", "banana", "orange"];
+for (let i = 0; i < fruits.length; i++) {
+  console.log(fruits[i]);
+}
+// Output: apple, banana, orange
+```
+
+### Common Patterns
+
+```javascript
+// Pattern 1: Sum of numbers
+let sum = 0;
+for (let i = 1; i <= 10; i++) {
+  sum += i; // sum = sum + i
+}
+console.log(sum); // 55
+
+// Pattern 2: Multiplication table
+let num = 5;
+for (let i = 1; i <= 10; i++) {
+  console.log(`${num} x ${i} = ${num * i}`);
+}
+```
+
+## 2. while Loop
+
+Repeats while condition is true. Use when iterations are unknown.
+
+### Syntax
+
+```javascript
+while (condition) {
+  // Code to repeat
+  // Must update condition to avoid infinite loop!
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Count 1 to 5
+let i = 1;
+while (i <= 5) {
+  console.log(i);
+  i++; // MUST increment to avoid infinite loop
+}
+// Output: 1, 2, 3, 4, 5
+
+// Example 2: User input simulation
+let password = "";
+let attempts = 0;
+
+while (password !== "secret" && attempts < 3) {
+  // In real code, get user input
+  password = "wrong"; // Simulated input
+  attempts++;
+  console.log(`Attempt ${attempts}`);
+}
+
+// Example 3: Find first even number
+let num = 1;
+while (num % 2 !== 0) {
+  num++;
+}
+console.log(`First even: ${num}`); // 2
+```
+
+**Warning:** Always ensure the condition eventually becomes false!
+
+```javascript
+// ❌ Infinite loop - AVOID!
+let x = 1;
+while (x > 0) {
+  console.log(x);
+  // x never changes - infinite loop!
+}
+```
+
+## 3. do...while Loop
+
+Executes at least once, then checks condition.
+
+### Syntax
+
+```javascript
+do {
+  // Code to repeat (runs at least once)
+} while (condition);
+```
+
+### Difference from while
+
+| Loop         | Checks Condition | Minimum Executions   |
+| ------------ | ---------------- | -------------------- |
+| `while`      | Before execution | 0 (may not run)      |
+| `do...while` | After execution  | 1 (always runs once) |
+
+### Examples
+
+```javascript
+// Example 1: Runs at least once
+let i = 10;
+
+do {
+  console.log(i); // Executes once even though condition is false
+  i++;
+} while (i < 5);
+// Output: 10
+
+// Compare with while
+let j = 10;
+while (j < 5) {
+  console.log(j); // Never executes
+  j++;
+}
+// Output: (nothing)
+
+// Example 2: Menu system
+let choice;
+do {
+  console.log("1. Option 1");
+  console.log("2. Option 2");
+  console.log("3. Exit");
+  // In real code: choice = getUserInput();
+  choice = 3; // Simulated input
+} while (choice !== 3);
+```
+
+## 4. for...of Loop (ES6+)
+
+Iterate over array values. Modern and clean.
+
+### Syntax
+
+```javascript
+for (let element of array) {
+  // Use element
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Iterate array
+let fruits = ["apple", "banana", "orange"];
+
+for (let fruit of fruits) {
+  console.log(fruit);
+}
+// Output: apple, banana, orange
+
+// Example 2: Iterate string
+let name = "John";
+
+for (let char of name) {
+  console.log(char);
+}
+// Output: J, o, h, n
+
+// Example 3: With index (using entries())
+let colors = ["red", "green", "blue"];
+
+for (let [index, color] of colors.entries()) {
+  console.log(`${index}: ${color}`);
+}
+// Output: 0: red, 1: green, 2: blue
+```
+
+## 5. for...in Loop
+
+Iterate over object keys (properties).
+
+### Syntax
+
+```javascript
+for (let key in object) {
+  // Use key to access object[key]
+}
+```
+
+### Examples
+
+```javascript
+// Example 1: Iterate object
+let person = {
+  name: "John",
+  age: 25,
+  city: "New York",
+};
+
+for (let key in person) {
+  console.log(`${key}: ${person[key]}`);
+}
+// Output:
+// name: John
+// age: 25
+// city: New York
+
+// Example 2: Iterate array (NOT recommended)
+let arr = ["a", "b", "c"];
+
+for (let index in arr) {
+  console.log(arr[index]);
+}
+// Output: a, b, c
+// But use for...of instead for arrays!
+```
+
+**Best Practice:** Use `for...in` for objects, `for...of` for arrays.
+
+## 6. forEach Method
+
+Array method for iteration. Functional approach.
+
+### Syntax
+
+```javascript
+array.forEach(function (element, index, array) {
+  // Use element
+});
+```
+
+### Examples
+
+```javascript
+// Example 1: Basic iteration
+let numbers = [1, 2, 3, 4, 5];
+
+numbers.forEach(function (num) {
+  console.log(num);
+});
+// Output: 1, 2, 3, 4, 5
+
+// Example 2: With arrow function (modern)
+numbers.forEach((num) => console.log(num));
+
+// Example 3: With index
+let fruits = ["apple", "banana", "orange"];
+
+fruits.forEach((fruit, index) => {
+  console.log(`${index}: ${fruit}`);
+});
+// Output: 0: apple, 1: banana, 2: orange
+
+// Example 4: Modify array elements
+let nums = [1, 2, 3];
+nums.forEach((num, index, arr) => {
+  arr[index] = num * 2;
+});
+console.log(nums); // [2, 4, 6]
+```
+
+## Loop Comparison Table
+
+| Feature            | for              | while           | do...while        | for...of      | for...in    | forEach          |
+| ------------------ | ---------------- | --------------- | ----------------- | ------------- | ----------- | ---------------- |
+| **Use case**       | Known iterations | Condition-based | Run at least once | Array values  | Object keys | Array functional |
+| **Index access**   | ✅ Yes           | Manual          | Manual            | Via entries() | ✅ Yes      | ✅ Yes           |
+| **break/continue** | ✅ Yes           | ✅ Yes          | ✅ Yes            | ✅ Yes        | ✅ Yes      | ❌ No            |
+| **Performance**    | Fast             | Fast            | Fast              | Fast          | Slower      | Slower           |
+
+## Loop Control Statements
+
+### break - Exit loop immediately
+
+```javascript
+// Example: Find first even number
+for (let i = 1; i <= 10; i++) {
+  if (i % 2 === 0) {
+    console.log(`First even: ${i}`);
+    break; // Exits loop
+  }
+}
+// Output: First even: 2
+
+// Example: Search in array
+let numbers = [1, 3, 5, 8, 9];
+for (let num of numbers) {
+  if (num % 2 === 0) {
+    console.log(`Found even: ${num}`);
+    break;
+  }
+}
+// Output: Found even: 8
+```
+
+### continue - Skip current iteration
+
+```javascript
+// Example: Print only odd numbers
+for (let i = 1; i <= 10; i++) {
+  if (i % 2 === 0) {
+    continue; // Skip even numbers
+  }
+  console.log(i);
+}
+// Output: 1, 3, 5, 7, 9
+
+// Example: Skip specific values
+let numbers = [1, 2, 3, 4, 5];
+for (let num of numbers) {
+  if (num === 3) {
+    continue; // Skip 3
+  }
+  console.log(num);
+}
+// Output: 1, 2, 4, 5
+```
+
+## Nested Loops
+
+Loops inside loops.
+
+### Examples
+
+```javascript
+// Example 1: Multiplication table
+for (let i = 1; i <= 3; i++) {
+  for (let j = 1; j <= 3; j++) {
+    console.log(`${i} x ${j} = ${i * j}`);
+  }
+}
+
+// Example 2: 2D array (matrix)
+let matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+
+for (let i = 0; i < matrix.length; i++) {
+  for (let j = 0; j < matrix[i].length; j++) {
+    console.log(matrix[i][j]);
+  }
+}
+// Output: 1, 2, 3, 4, 5, 6, 7, 8, 9
+
+// Example 3: Pattern printing
+for (let i = 1; i <= 5; i++) {
+  let row = "";
+  for (let j = 1; j <= i; j++) {
+    row += "* ";
+  }
+  console.log(row);
+}
+// Output:
+// *
+// * *
+// * * *
+// * * * *
+// * * * * *
+```
+
+## Common Interview Questions
+
+### Q1: Difference between for, while, and do-while?
+
+| Loop         | When to Use           | Minimum Executions |
+| ------------ | --------------------- | ------------------ |
+| `for`        | Known iterations      | 0                  |
+| `while`      | Unknown iterations    | 0                  |
+| `do...while` | Execute at least once | 1                  |
+
+### Q2: for...of vs for...in?
+
+| Feature      | for...of               | for...in               |
+| ------------ | ---------------------- | ---------------------- |
+| **Iterates** | Values                 | Keys                   |
+| **Best for** | Arrays, strings        | Objects                |
+| **Example**  | `for (let val of arr)` | `for (let key in obj)` |
+
+### Q3: break vs continue?
+
+```javascript
+// break: exits loop completely
+for (let i = 1; i <= 5; i++) {
+  if (i === 3) break;
+  console.log(i);
+}
+// Output: 1, 2
+
+// continue: skips current iteration
+for (let i = 1; i <= 5; i++) {
+  if (i === 3) continue;
+  console.log(i);
+}
+// Output: 1, 2, 4, 5
+```
+
+### Q4: Can you use break/continue in forEach?
+
+**No!** `forEach` doesn't support `break` or `continue`. Use regular `for` loop instead.
+
+## Practical Examples
+
+```javascript
+// Example 1: Sum array elements
+let numbers = [10, 20, 30, 40, 50];
+let sum = 0;
+
+for (let num of numbers) {
+  sum += num;
+}
+console.log(sum); // 150
+
+// Example 2: Find maximum
+let nums = [5, 12, 8, 21, 3];
+let max = nums[0];
+
+for (let num of nums) {
+  if (num > max) {
+    max = num;
+  }
+}
+console.log(max); // 21
+
+// Example 3: Reverse string
+let str = "hello";
+let reversed = "";
+
+for (let i = str.length - 1; i >= 0; i--) {
+  reversed += str[i];
+}
+console.log(reversed); // 'olleh'
+
+// Example 4: Count vowels
+let text = "hello world";
+let vowels = "aeiou";
+let count = 0;
+
+for (let char of text.toLowerCase()) {
+  if (vowels.includes(char)) {
+    count++;
+  }
+}
+console.log(count); // 3
+```
+
+---
+
+## Theory
+
+### How the `for` Loop Three-Part Header Actually Executes
+
+The three parts inside a `for` loop header are not treated equally by the engine. The **initialization** runs exactly once, before anything else happens. After that, the engine enters a repeating cycle: check the **condition** → if true, run the **body** → run the **increment** → loop back to condition. The increment does not run before the first iteration — it only runs after each completed iteration.
+
+This order matters when your increment has side effects or when your condition depends on a variable the body also modifies. The engine always follows this exact sequence: condition → body → increment → condition → body → increment → … until the condition evaluates to `false`.
+
+All three parts are also optional. You can write `for (;;)` to create an infinite loop, omit just the initialization if your counter is already declared, or omit the increment if you update the counter manually inside the body.
+
+### Why Infinite Loops Freeze the Browser
+
+JavaScript runs on a **single thread**. There is only one call stack, and it must finish executing the current task before it can move on to anything else — including updating the page, handling user clicks, or running timers. When an infinite loop runs, it occupies that single thread permanently. The engine never gets a chance to process any other events, which is why the browser tab becomes completely unresponsive.
+
+This is directly tied to JavaScript's **event loop** architecture. The event loop picks up tasks from a queue one at a time and hands them to the call stack. But if the call stack never empties because a loop never terminates, the event loop is permanently blocked. No other code in that tab can ever run.
+
+### Why `for...in` Is Slow and Unreliable on Arrays
+
+`for...in` does not simply iterate over the direct properties of an object. It walks up the entire **prototype chain** and includes any enumerable properties it finds along the way. For plain objects this is usually fine, but for arrays it creates two problems.
+
+First, if any library or code has added custom properties to `Array.prototype`, those properties will show up in the loop alongside the actual array indices. Second, the returned keys are **strings**, not numbers — so `index` in `for (let index in arr)` gives you `"0"`, `"1"`, `"2"` instead of `0`, `1`, `2`. This can cause subtle type bugs when you use the index in arithmetic or comparisons.
+
+### How `for...of` Works — The Iterator Protocol
+
+`for...of` does not work on every object. It only works on objects that implement the **Iterator Protocol**. This means the object must have a method keyed to the special symbol `Symbol.iterator`, and that method must return an iterator object with a `next()` method that returns `{ value, done }` on each call.
+
+Arrays, strings, Maps, Sets, and many other built-in types already implement this protocol, which is why `for...of` works on them out of the box. Plain objects do **not** implement it by default, which is why `for (let val of plainObject)` throws a TypeError. You can make any custom object iterable by defining its own `Symbol.iterator` method.
+
+### Why `forEach` Cannot Be Stopped Mid-Way
+
+`forEach` is not a language construct like `for` or `while`. It is a **method on the Array prototype** — a regular function call that internally loops through the array and invokes your callback for each element. Because your callback is just a function being called by `forEach`, using `break` or `continue` inside it is a syntax error. Those keywords only have meaning inside loop statements, not inside function bodies.
+
+There are three common workarounds when you need to stop early. You can `throw` an exception inside the callback and wrap the entire `forEach` in a `try...catch`. You can use a flag variable that you set to `true` when you want to stop, and check it at the start of each callback to skip the remaining work. Or, most cleanly, you can use `Array.prototype.some()` or `Array.prototype.every()`, which are specifically designed to short-circuit based on the callback's return value.
+
+### Labeled Statements — Controlling Nested Loops
+
+By default, `break` and `continue` only affect the **innermost** loop they are placed in. If you have nested loops and need to exit or skip an iteration of an **outer** loop, you can use a **label**. A label is a name followed by a colon, placed directly before the loop you want to target.
+
+```javascript
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (i === 1 && j === 1) {
+      break outer; // Exits the outer loop entirely
+    }
+    console.log(i, j);
+  }
+}
+// Output: 0 0, 0 1, 0 2, 1 0
+// Stops completely at i=1 j=1 — does not continue to i=2
+```
+
+`continue outer` works the same way but skips to the next iteration of the outer loop instead of exiting it. Labels are rarely needed in everyday code, but they are the only mechanism for targeting an outer loop from a nested context.
+
+### The Classic Closure Bug — `var` vs `let` Inside Loops
+
+This is one of the most commonly asked topics in interviews. When you use `var` to declare a loop variable, that variable is **function-scoped** — there is only one single copy shared across every iteration. If you create a function inside the loop that references that variable, every function ends up pointing to the same variable. By the time any of those functions actually execute, the loop has already finished, and the variable holds its final value.
+
+```javascript
+// BUG — using var
+for (var i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i); // All print 3
+  }, 100);
+}
+// Output: 3, 3, 3
+
+// FIX — using let
+for (let i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i); // Prints 0, 1, 2
+  }, 100);
+}
+// Output: 0, 1, 2
+```
+
+`let` is **block-scoped**, so each iteration of the loop gets its own fresh copy of `i`. The closure created inside each iteration captures its own independent variable, so each callback remembers the correct value. This is the single most important reason `let` is preferred over `var` in modern JavaScript.
+
+### Loop Performance and Time Complexity
+
+When you nest loops, the total number of operations multiplies. A single loop over `n` items runs `n` times. Two nested loops each iterating over `n` items run `n × n = n²` times. Three nested loops run `n³` times. This is described using **Big O notation** as O(n), O(n²), and O(n³) respectively.
+
+This matters in practice. A single loop over 10,000 items runs 10,000 operations — fast. Two nested loops over 10,000 items run 100,000,000 operations — noticeably slow. Three nested loops would reach 1,000,000,000,000 — the browser would freeze. Understanding how nesting depth affects performance is the first step in writing efficient code, and it is a standard topic in technical interviews.
+
+---
+
+## Interview Questions
+
+### Q1: What is the difference between `for`, `while`, and `do...while`?
+
+`for` is best when you know exactly how many times to iterate, because you declare the counter, condition, and increment all in one place. `while` is best when the number of iterations is unknown and depends on a condition that changes during execution — it checks the condition before each iteration, so the body may never run at all. `do...while` guarantees the body runs at least once before checking the condition. This makes it useful for scenarios like input validation where you always need to prompt the user at least one time before deciding whether to loop again.
+
+### Q2: What is the difference between `for...of` and `for...in`?
+
+`for...of` iterates over the **values** of an iterable like an array or string. `for...in` iterates over the **keys** (property names) of an object. Using `for...in` on an array gives you the indices as strings (`"0"`, `"1"`, `"2"`), not the values, and it can also pick up inherited prototype properties. For arrays, `for...of` is always the better choice. Reserve `for...in` for iterating over object properties.
+
+### Q3: What is the difference between `break` and `continue`?
+
+`break` **exits the loop entirely** — no further iterations run after it. `continue` **skips only the current iteration** and moves directly to the next one. The loop keeps running after `continue`. Both keywords only affect the innermost loop by default, unless a label is used to target an outer loop.
+
+### Q4: Can you use `break` or `continue` inside `forEach`?
+
+No. `forEach` is a method, not a loop statement. `break` and `continue` are only valid inside `for`, `while`, and `do...while` loops. Inside a `forEach` callback they cause a syntax error. If you need early termination, switch to a `for` or `for...of` loop, or use `Array.prototype.some` / `Array.prototype.every` which short-circuit based on the callback return value.
+
+### Q5: Explain the classic closure bug with `var` inside a `for` loop.
+
+When you use `var` to declare a loop counter, that variable is function-scoped — there is only **one copy** shared across all iterations. If you create closures inside the loop body (like `setTimeout` callbacks or event handlers), they all capture a reference to that same single variable. By the time those closures execute, the loop has already finished and the variable holds its final value, so every closure logs the same number.
+
+```javascript
+// BUG
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100);
+}
+// Output: 3, 3, 3
+
+// FIX — let creates a new scope per iteration
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100);
+}
+// Output: 0, 1, 2
+```
+
+`let` is block-scoped, so each iteration gets its own independent `i`. Each closure captures its own copy and the bug disappears.
+
+### Q6: Why can't you break out of `forEach`, and what are the alternatives?
+
+`forEach` calls your callback as a normal function invocation on each element. `break` and `continue` are loop keywords — they have no meaning inside a function body, only inside loop statements. The engine has no way to tell `forEach` to stop from inside the callback.
+
+The alternatives are: (1) switch to a `for` or `for...of` loop which supports `break` natively, (2) use `Array.prototype.some()` — it stops iterating as soon as the callback returns `true`, or (3) use `Array.prototype.every()` — it stops as soon as the callback returns `false`. Both `some` and `every` are purpose-built for short-circuiting.
+
+### Q7: Why should you avoid using `for...in` to iterate over arrays?
+
+There are three reasons. First, `for...in` iterates over **all enumerable properties**, including any that have been added to `Array.prototype` by third-party libraries — so you might loop over properties that are not actual array elements. Second, the keys returned are **strings** (`"0"`, `"1"`, `"2"`), not numbers, which can cause subtle type bugs in arithmetic or comparisons. Third, `for...in` does not guarantee iteration order for non-integer keys. Use `for...of`, a standard `for` loop, or `forEach` for arrays instead.
+
+### Q8: What are labeled statements, and when do you use them?
+
+A labeled statement is a name placed before a loop followed by a colon. You can then target that specific loop with `break labelName` or `continue labelName` instead of the default innermost loop. This is the only way to control an outer loop from inside a nested loop.
+
+```javascript
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) continue outer; // Skip to next iteration of i
+    console.log(i, j);
+  }
+}
+// Output: 0 0, 1 0, 2 0
+// j never reaches 1 or 2 because the outer loop advances first
+```
+
+Labels are uncommon in everyday code, but understanding them shows deeper knowledge of how loop control actually works.
+
+### Q9: How do you prevent infinite loops, and what happens when one runs?
+
+An infinite loop occurs when the loop condition never becomes `false`. Prevention means ensuring something inside the loop always moves toward terminating — either incrementing a counter, modifying a flag, or consuming input. A common safeguard is adding a **maximum iteration limit**:
+
+```javascript
+let maxIterations = 10000;
+let count = 0;
+
+while (someCondition) {
+  if (count >= maxIterations) {
+    console.warn("Safety limit reached");
+    break;
+  }
+  // ... loop body
+  count++;
+}
+```
+
+When an infinite loop does run, it **freezes the browser tab** entirely. JavaScript is single-threaded, so the loop permanently occupies the call stack. The event loop cannot process any other tasks — no UI updates, no click handlers, no timers — until the loop finishes, which it never does.
+
+### Q10: What is the time complexity impact of nesting loops?
+
+Each level of nesting multiplies total operations by the size of what it iterates over. A single loop over `n` items is O(n). Two nested loops each over `n` items is O(n²). Three nested loops is O(n³). In practice, O(n²) starts to feel slow around tens of thousands of items, and O(n³) becomes unusable much sooner. Recognizing how nesting depth affects performance is essential for writing efficient code and is a standard topic in technical interviews.
+
+### Q11: Write a FizzBuzz solution using a loop.
+
+FizzBuzz is one of the most common interview coding questions. Print numbers from 1 to N, but print "Fizz" for multiples of 3, "Buzz" for multiples of 5, and "FizzBuzz" for multiples of both.
+
+```javascript
+function fizzBuzz(n) {
+  for (let i = 1; i <= n; i++) {
+    if (i % 3 === 0 && i % 5 === 0) {
+      console.log("FizzBuzz");
+    } else if (i % 3 === 0) {
+      console.log("Fizz");
+    } else if (i % 5 === 0) {
+      console.log("Buzz");
+    } else {
+      console.log(i);
+    }
+  }
+}
+
+fizzBuzz(15);
+// Output: 1, 2, Fizz, 4, Buzz, Fizz, 7, 8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz
+```
+
+The key detail is checking for `FizzBuzz` (divisible by both 3 and 5) **first**. If you check for 3 or 5 individually before checking for both, the combined case will never be reached.
+
+### Q12: Write a function that flattens a nested array using loops.
+
+```javascript
+function flatten(arr) {
+  let result = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      // Recursively flatten inner arrays
+      let inner = flatten(arr[i]);
+      for (let j = 0; j < inner.length; j++) {
+        result.push(inner[j]);
+      }
+    } else {
+      result.push(arr[i]);
+    }
+  }
+
+  return result;
+}
+
+console.log(flatten([1, [2, 3], [4, [5, 6]], 7]));
+// Output: [1, 2, 3, 4, 5, 6, 7]
+
+console.log(flatten([1, [2, [3, [4, [5]]]]]));
+// Output: [1, 2, 3, 4, 5]
+```
+
+This combines loops with recursion. The outer `for` loop walks through each element. If an element is itself an array, the function calls itself to flatten that inner array, then loops through the flattened result to push each item into the final output. This handles any depth of nesting.
+
+---
+

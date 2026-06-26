@@ -1,0 +1,141 @@
+---
+title: "Testing React - Jest & React Testing Library"
+description: Documentation for Testing React - Jest & React Testing Library.
+---
+
+# Testing React - Jest & React Testing Library
+
+
+
+## Testing Philosophy
+
+Test behavior, not implementation. Query like users interact.
+
+## Setup
+
+```bash
+npm install --save-dev @testing-library/react @testing-library/jest-dom
+```
+
+## Basic Testing
+
+```jsx
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+test("renders greeting", () => {
+  render(<Greeting name="Alice" />);
+  expect(screen.getByText("Hello, Alice!")).toBeInTheDocument();
+});
+```
+
+## Querying Elements
+
+| Priority | Query                | Use For              |
+| -------- | -------------------- | -------------------- |
+| 1st      | getByRole            | Accessible elements  |
+| 2nd      | getByLabelText       | Form fields          |
+| 3rd      | getByPlaceholderText | Inputs               |
+| 4th      | getByText            | Non-interactive text |
+| 5th      | getByTestId          | Last resort          |
+
+```jsx
+// Best: By role
+screen.getByRole("button", { name: /submit/i });
+screen.getByRole("textbox", { name: /email/i });
+
+// Form fields
+screen.getByLabelText("Email");
+
+// Last resort
+screen.getByTestId("custom-element");
+```
+
+## User Interactions
+
+```jsx
+test("form submission", async () => {
+  const user = userEvent.setup();
+  const handleSubmit = jest.fn();
+
+  render(<Form onSubmit={handleSubmit} />);
+
+  await user.type(screen.getByLabelText("Email"), "test@test.com");
+  await user.click(screen.getByRole("button", { name: /submit/i }));
+
+  expect(handleSubmit).toHaveBeenCalledWith({ email: "test@test.com" });
+});
+```
+
+## Async Testing
+
+```jsx
+test("loads data", async () => {
+  render(<UserList />);
+
+  // Wait for loading to finish
+  expect(screen.getByText("Loading...")).toBeInTheDocument();
+
+  // Wait for data to appear
+  await screen.findByText("John Doe");
+  expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+});
+```
+
+## Mocking
+
+```jsx
+// Mock API
+jest.mock("./api", () => ({
+  fetchUsers: jest.fn(() => Promise.resolve([{ id: 1, name: "John" }])),
+}));
+
+// Mock hook
+jest.mock("./useAuth", () => ({
+  useAuth: () => ({ user: { name: "Test User" }, isLoggedIn: true }),
+}));
+```
+
+## Testing Hooks
+
+```jsx
+import { renderHook, act } from "@testing-library/react";
+
+test("useCounter", () => {
+  const { result } = renderHook(() => useCounter(0));
+
+  expect(result.current.count).toBe(0);
+
+  act(() => {
+    result.current.increment();
+  });
+
+  expect(result.current.count).toBe(1);
+});
+```
+
+## Interview Questions & Answers
+
+### Q1: What is React Testing Library's philosophy?
+
+Test how users interact with app, not implementation details. Query by roles, labels, text - not CSS or component internals.
+
+---
+
+### Q2: What's the difference between getBy, queryBy, findBy?
+
+getBy throws if not found. queryBy returns null if not found (for absence assertions). findBy is async - waits for element.
+
+---
+
+### Q3: How do you test async code?
+
+Use findBy queries (waits automatically), or waitFor for custom conditions. userEvent is async - await all interactions.
+
+---
+
+### Q4: How do you test hooks?
+
+Use renderHook from @testing-library/react. Wrap state updates in act(). Access result.current for values.
+
+

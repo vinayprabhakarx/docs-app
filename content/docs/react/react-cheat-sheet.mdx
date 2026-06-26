@@ -1,0 +1,238 @@
+---
+title: "React Cheat Sheet - Quick Reference"
+description: Documentation for React Cheat Sheet - Quick Reference.
+---
+
+# React Cheat Sheet - Quick Reference
+
+
+[← Back to Index](./index.mdx)
+
+## Create React App
+
+```bash
+# Vite (recommended)
+npm create vite@latest my-app -- --template react
+
+# Create React App
+npx create-react-app my-app
+```
+
+## Components
+
+```jsx
+// Functional Component
+function MyComponent({ prop1, prop2 = "default" }) {
+  return <div>{prop1}</div>;
+}
+
+// Arrow Function
+const MyComponent = ({ children }) => <div>{children}</div>;
+```
+
+## Hooks Quick Reference
+
+| Hook          | Purpose           | Syntax                              |
+| ------------- | ----------------- | ----------------------------------- |
+| `useState`    | State management  | `const [val, setVal] = useState(0)` |
+| `useEffect`   | Side effects      | `useEffect(() => {}, [deps])`       |
+| `useRef`      | Mutable ref / DOM | `const ref = useRef(null)`          |
+| `useContext`  | Consume context   | `const ctx = useContext(MyContext)` |
+| `useReducer`  | Complex state     | `const [s, d] = useReducer(r, i)`   |
+| `useMemo`     | Memoize value     | `useMemo(() => val, [deps])`        |
+| `useCallback` | Memoize function  | `useCallback(fn, [deps])`           |
+
+## useState
+
+```jsx
+const [count, setCount] = useState(0);
+setCount(5); // Direct
+setCount((prev) => prev + 1); // Functional
+
+// Object state
+const [form, setForm] = useState({ name: "", email: "" });
+setForm((prev) => ({ ...prev, name: "John" }));
+```
+
+## useEffect
+
+```jsx
+// Every render
+useEffect(() => {});
+
+// Mount only
+useEffect(() => {}, []);
+
+// On dependency change
+useEffect(() => {}, [value]);
+
+// Cleanup
+useEffect(() => {
+  const id = setInterval(...);
+  return () => clearInterval(id);
+}, []);
+```
+
+## useRef
+
+```jsx
+const inputRef = useRef(null);
+inputRef.current.focus();
+
+// Mutable value (no re-render)
+const countRef = useRef(0);
+countRef.current++;
+```
+
+## Context
+
+```jsx
+const MyContext = createContext(null);
+
+<MyContext.Provider value={data}>
+  <App />
+</MyContext.Provider>;
+
+const data = useContext(MyContext);
+```
+
+## Conditional Rendering
+
+```jsx
+{
+  isLoggedIn ? <Dashboard /> : <Login />;
+}
+{
+  hasError && <Error />;
+}
+{
+  count > 0 && <Badge count={count} />;
+}
+```
+
+## Lists
+
+```jsx
+{
+  items.map((item) => <Item key={item.id} {...item} />);
+}
+```
+
+## Events
+
+```jsx
+<button onClick={handleClick}>Click</button>
+<button onClick={() => handler(id)}>With Args</button>
+<input onChange={(e) => setValue(e.target.value)} />
+<form onSubmit={(e) => { e.preventDefault(); submit(); }}>
+```
+
+## Forms
+
+```jsx
+// Controlled
+<input value={name} onChange={(e) => setName(e.target.value)} />;
+
+// Uncontrolled
+const ref = useRef();
+<input ref={ref} defaultValue="" />;
+// Access: ref.current.value
+```
+
+## React Router
+
+```jsx
+<BrowserRouter>
+  <Link to="/about">About</Link>
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/user/:id" element={<User />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+</BrowserRouter>;
+
+// Hooks
+const { id } = useParams();
+const navigate = useNavigate();
+const [searchParams] = useSearchParams();
+```
+
+## Performance
+
+```jsx
+// Memoize component
+const MemoComp = memo(MyComponent);
+
+// Memoize value
+const sorted = useMemo(() => items.sort(), [items]);
+
+// Stable callback
+const handler = useCallback(() => {}, [deps]);
+
+// Lazy loading
+const Page = lazy(() => import("./Page"));
+<Suspense fallback={<Loading />}>
+  <Page />
+</Suspense>;
+```
+
+## Common Patterns
+
+```jsx
+// Lifting state up
+function Parent() {
+  const [value, setValue] = useState("");
+  return (
+    <>
+      <Child value={value} onChange={setValue} />
+      <Display value={value} />
+    </>
+  );
+}
+
+// Custom Hook
+function useCounter(initial = 0) {
+  const [count, setCount] = useState(initial);
+  const increment = () => setCount((c) => c + 1);
+  return { count, increment };
+}
+
+// Composition
+<Card>
+  <CardHeader />
+  <CardBody>{children}</CardBody>
+</Card>;
+```
+
+## Keyboard Shortcuts
+
+| Shortcut    | For                            |
+| ----------- | ------------------------------ |
+| `rafce`     | React Arrow Function Component |
+| `rfc`       | React Function Component       |
+| `useState`  | Import and use useState        |
+| `useEffect` | Import and use useEffect       |
+
+## Common Imports
+
+```jsx
+import { useState, useEffect, useRef, useContext, useReducer } from "react";
+import { useMemo, useCallback, memo, lazy, Suspense } from "react";
+import { createContext } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useParams,
+} from "react-router-dom";
+import {
+  useNavigate,
+  useSearchParams,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
+```
+
+
+[← Back to Index](./index.mdx)

@@ -1,0 +1,93 @@
+---
+title: "Context API Deep Dive - Global State Patterns"
+description: Documentation for Context API Deep Dive - Global State Patterns.
+---
+
+# Context API Deep Dive - Global State Patterns
+
+
+
+## Context API Pattern
+
+Complete pattern for global state management.
+
+```jsx
+// 1. Create context
+const AppContext = createContext(null);
+
+// 2. Create provider with state
+function AppProvider({ children }) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const value = useMemo(() => ({ state, dispatch }), [state]);
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+// 3. Custom hook with error handling
+function useApp() {
+  const context = useContext(AppContext);
+  if (!context) throw new Error("useApp must be within AppProvider");
+  return context;
+}
+```
+
+## Performance Optimization
+
+```jsx
+// Split contexts to prevent unnecessary re-renders
+const StateContext = createContext();
+const DispatchContext = createContext();
+
+function Provider({ children }) {
+  const [state, dispatch] = useReducer(reducer, initial);
+
+  return (
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        {children}
+      </DispatchContext.Provider>
+    </StateContext.Provider>
+  );
+}
+
+// Components that only dispatch don't re-render on state change
+const useState = () => useContext(StateContext);
+const useDispatch = () => useContext(DispatchContext);
+```
+
+## Multiple Contexts
+
+```jsx
+function App() {
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <CartProvider>
+          <Router />
+        </CartProvider>
+      </ThemeProvider>
+    </AuthProvider>
+  );
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: When to use Context vs Redux?
+
+Context for: simple global state, low-frequency updates, small apps. Redux for: complex state logic, debugging needs, middleware, high-frequency updates.
+
+---
+
+### Q2: How to optimize Context performance?
+
+Split contexts, memoize values with useMemo, separate state from dispatch, use selectors for partial state.
+
+---
+
+### Q3: What causes Context re-renders?
+
+All consumers re-render when provider value changes. Object values create new reference each render unless memoized.
+
+

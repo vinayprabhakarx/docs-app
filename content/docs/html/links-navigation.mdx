@@ -1,0 +1,400 @@
+---
+title: "Links & Navigation - Connecting Web Pages"
+description: Documentation for Links & Navigation - Connecting Web Pages.
+---
+
+# Links & Navigation - Connecting Web Pages
+
+
+
+## What are Links?
+
+Links are the foundation of the web, connecting pages and resources together.
+
+> **Definition:** The anchor element `<a>` creates hyperlinks to other web pages, files, locations within the same page, email addresses, or any URL. Links are inline elements and can wrap around text, images, or other elements.
+
+```html
+<a href="https://example.com">Visit Example</a>
+```
+
+## Link Anatomy
+
+```html
+<a href="url" target="_blank" rel="noopener" title="Description">Link Text</a> │
+│ │ │ │ │ │ │ │ │ │ └── Visible text │ │ │ │ └── Tooltip │ │ │ └── Security/SEO
+relationship │ │ └── Where to open │ └── Destination URL └── Anchor element
+```
+
+## Types of Links
+
+| Type           | href Value                   | Example                             |
+| -------------- | ---------------------------- | ----------------------------------- |
+| Absolute URL   | Full URL with protocol       | `href="https://example.com/page"`   |
+| Relative URL   | Path from current file       | `href="about.html"`                 |
+| Root-relative  | Path from site root          | `href="/images/logo.png"`           |
+| Page anchor    | ID on same page              | `href="#section-id"`                |
+| Anchor on page | Page with ID                 | `href="page.html#section"`          |
+| Email link     | mailto: protocol             | `href="mailto:email@example.com"`   |
+| Phone link     | tel: protocol                | `href="tel:+1234567890"`            |
+| JavaScript     | javascript: protocol         | `href="javascript:void(0)"` (avoid) |
+| Download link  | File path with download attr | `href="file.pdf" download`          |
+
+## URL Examples
+
+```html
+<!-- Absolute URLs -->
+<a href="https://example.com">External Site</a>
+<a href="https://example.com/products/item-1">Specific Page</a>
+
+<!-- Relative URLs -->
+<a href="about.html">Same folder</a>
+<a href="pages/contact.html">Subfolder</a>
+<a href="../index.html">Parent folder</a>
+<a href="../../archive/old.html">Two levels up</a>
+
+<!-- Root-relative URLs (recommended) -->
+<a href="/about">About</a>
+<a href="/products/item-1">Product</a>
+
+<!-- Current page anchors -->
+<a href="#top">Go to top</a>
+<a href="#contact-form">Jump to form</a>
+
+<!-- Anchor on another page -->
+<a href="faq.html#question-5">Specific FAQ</a>
+```
+
+## Link Attributes
+
+| Attribute  | Purpose                      | Values                               |
+| ---------- | ---------------------------- | ------------------------------------ |
+| `href`     | Destination URL              | Any valid URL                        |
+| `target`   | Where to open                | `_blank`, `_self`, `_parent`, `_top` |
+| `rel`      | Link relationship            | `noopener`, `noreferrer`, `nofollow` |
+| `download` | Download instead of navigate | Optional filename                    |
+| `title`    | Tooltip text                 | Description text                     |
+| `hreflang` | Language of linked page      | Language code (e.g., `en`)           |
+| `type`     | MIME type of linked resource | e.g., `application/pdf`              |
+
+### Target Attribute
+
+```html
+<!-- Open in same tab (default) -->
+<a href="page.html" target="_self">Same Tab</a>
+
+<!-- Open in new tab/window -->
+<a href="https://example.com" target="_blank">New Tab</a>
+
+<!-- Open in parent frame -->
+<a href="page.html" target="_parent">Parent Frame</a>
+
+<!-- Open in full window (escape frames) -->
+<a href="page.html" target="_top">Full Window</a>
+
+<!-- Named window/tab -->
+<a href="page1.html" target="myWindow">Link 1</a>
+<a href="page2.html" target="myWindow">Link 2</a>
+<!-- Both open in same window named "myWindow" -->
+```
+
+### Rel Attribute
+
+```html
+<!-- Security for external links (always use with target="_blank") -->
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">
+  External Link
+</a>
+
+<!-- SEO: Don't pass authority -->
+<a href="https://ad.com" rel="nofollow">Paid Link</a>
+
+<!-- Sponsored/advertising link -->
+<a href="https://sponsor.com" rel="sponsored">Sponsor</a>
+
+<!-- User-generated content -->
+<a href="https://user-link.com" rel="ugc">Posted by User</a>
+
+<!-- Alternate version -->
+<a href="page-fr.html" rel="alternate" hreflang="fr">Français</a>
+
+<!-- Next/Previous in sequence -->
+<a href="page-2.html" rel="next">Next</a>
+<a href="page-1.html" rel="prev">Previous</a>
+```
+
+| rel Value    | Purpose                                   |
+| ------------ | ----------------------------------------- |
+| `noopener`   | Prevents new page accessing window.opener |
+| `noreferrer` | Hides referrer info + noopener            |
+| `nofollow`   | Tells search engines not to follow        |
+| `sponsored`  | Marks paid/sponsored links                |
+| `ugc`        | User-generated content link               |
+
+## Email and Phone Links
+
+```html
+<!-- Basic email -->
+<a href="mailto:contact@example.com">Email Us</a>
+
+<!-- Email with subject -->
+<a href="mailto:contact@example.com?subject=Inquiry">Send Inquiry</a>
+
+<!-- Email with subject and body -->
+<a
+  href="mailto:contact@example.com?subject=Hello&body=I%20wanted%20to%20ask..."
+>
+  Contact Us
+</a>
+
+<!-- Multiple recipients -->
+<a href="mailto:sales@example.com,support@example.com">Email Team</a>
+
+<!-- CC and BCC -->
+<a href="mailto:main@example.com?cc=copy@example.com&bcc=hidden@example.com">
+  Email with CC
+</a>
+
+<!-- Phone link -->
+<a href="tel:+12025551234">Call: (202) 555-1234</a>
+
+<!-- SMS link -->
+<a href="sms:+12025551234">Send SMS</a>
+
+<!-- SMS with body -->
+<a href="sms:+12025551234?body=Hello">Send SMS</a>
+```
+
+## Download Links
+
+```html
+<!-- Basic download -->
+<a href="document.pdf" download>Download PDF</a>
+
+<!-- Download with custom filename -->
+<a href="file-v2.3.1.pdf" download="user-manual.pdf"> Download User Manual </a>
+
+<!-- Download multiple formats -->
+<a href="image.png" download="photo.png">PNG</a>
+<a href="image.svg" download="photo.svg">SVG</a>
+```
+
+## Page Anchors (Internal Links)
+
+```html
+<!-- Table of contents with anchors -->
+<nav>
+  <a href="#introduction">Introduction</a>
+  <a href="#features">Features</a>
+  <a href="#conclusion">Conclusion</a>
+</nav>
+
+<!-- Anchor targets -->
+<section id="introduction">
+  <h2>Introduction</h2>
+  <p>Content...</p>
+</section>
+
+<section id="features">
+  <h2>Features</h2>
+  <p>Content...</p>
+</section>
+
+<section id="conclusion">
+  <h2>Conclusion</h2>
+  <p>Content...</p>
+</section>
+
+<!-- Back to top -->
+<a href="#top">Back to Top</a>
+
+<!-- Smooth scrolling (CSS) -->
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+```
+
+## Navigation Patterns
+
+### Basic Navigation
+
+```html
+<nav>
+  <a href="/">Home</a>
+  <a href="/about">About</a>
+  <a href="/products">Products</a>
+  <a href="/contact">Contact</a>
+</nav>
+```
+
+### Navigation with List (Recommended)
+
+```html
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+</nav>
+```
+
+### Breadcrumb Navigation
+
+```html
+<nav aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/products">Products</a></li>
+    <li><a href="/products/electronics">Electronics</a></li>
+    <li aria-current="page">Smartphones</li>
+  </ol>
+</nav>
+```
+
+### Skip Navigation (Accessibility)
+
+```html
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <nav><!-- Navigation --></nav>
+
+  <main id="main-content">
+    <!-- Main content -->
+  </main>
+</body>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+  }
+  .skip-link:focus {
+    left: 10px;
+    top: 10px;
+  }
+</style>
+```
+
+## Links Wrapping Other Elements
+
+```html
+<!-- Link wrapping text -->
+<a href="/product">Buy Now</a>
+
+<!-- Link wrapping block content (HTML5) -->
+<a href="/article">
+  <article>
+    <h2>Article Title</h2>
+    <p>Article description...</p>
+  </article>
+</a>
+
+<!-- Link wrapping image -->
+<a href="/gallery">
+  <img src="thumbnail.jpg" alt="Gallery preview" />
+</a>
+
+<!-- Card as link -->
+<a href="/product/123" class="card">
+  <img src="product.jpg" alt="" />
+  <h3>Product Name</h3>
+  <p>$99.99</p>
+</a>
+```
+
+## Link States (CSS)
+
+```css
+/* Unvisited link */
+a:link {
+  color: blue;
+}
+
+/* Visited link */
+a:visited {
+  color: purple;
+}
+
+/* Hover state */
+a:hover {
+  color: red;
+}
+
+/* Active state (clicking) */
+a:active {
+  color: orange;
+}
+
+/* Focused (keyboard navigation) */
+a:focus {
+  outline: 2px solid blue;
+}
+
+/* Order matters: LVHFA (LoVe HAte Focus After) */
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between absolute and relative URLs?
+
+Absolute URLs include the complete address with protocol, domain, and path (e.g., `https://example.com/page`). They work from anywhere and link to external sites. Relative URLs specify paths relative to the current document (`page.html`, `../folder/file.html`) or the site root (`/about`). Relative URLs are shorter and more maintainable for internal links since they don't need updating if the domain changes. Use absolute URLs for external sites and relative for internal navigation.
+
+---
+
+### Q2: Why should you use `rel="noopener noreferrer"` with `target="_blank"`?
+
+Without `noopener`, the new page can access the opening page via `window.opener`, potentially redirecting it to a malicious site (tabnabbing attack). `noopener` prevents this by setting `window.opener` to null. `noreferrer` does everything noopener does plus hides the referrer header so the destination doesn't know where the user came from. Always use both with `target="_blank"` for security. Modern browsers now implicitly set noopener for cross-origin links, but explicit declaration is still best practice.
+
+---
+
+### Q3: How do anchor links (page jumps) work?
+
+Anchor links use the fragment identifier (hash #) to link to specific sections on a page. The href contains `#` followed by an ID: `href="#section"`. The browser scrolls to the element with the matching ID: `<section id="section">`. For linking to anchors on other pages, combine the URL with the fragment: `href="page.html#section"`. You can add smooth scrolling with CSS `scroll-behavior: smooth`. Anchor links don't reload the page but do update the URL and browser history.
+
+---
+
+### Q4: What is the purpose of the rel attribute?
+
+The `rel` attribute specifies the relationship between the current document and the linked resource. For security, `noopener` and `noreferrer` protect against tabnabbing. For SEO, `nofollow` tells search engines not to pass ranking authority, `sponsored` marks paid links, and `ugc` marks user-generated content. For navigation, `next` and `prev` indicate sequence, `alternate` indicates different versions (language, format). It helps browsers, search engines, and accessibility tools understand the nature of links.
+
+---
+
+### Q5: How do you create a downloadable link?
+
+Add the `download` attribute to an anchor tag: `<a href="file.pdf" download>Download</a>`. The browser will download the file instead of navigating to it. You can specify a custom filename: `<a href="doc-v1.pdf" download="manual.pdf">`. The download attribute only works for same-origin URLs or blob/data URLs. For cross-origin files, the server must send a `Content-Disposition: attachment` header. Note that some browsers may still open certain files (like PDFs) instead of downloading.
+
+---
+
+### Q6: What's the difference between linking via href and clicking buttons?
+
+Links (`<a>`) are for navigation - going to a new page, downloading files, or jumping to page sections. They have browser features like right-click menu, middle-click for new tab, and are crawlable by search engines. Buttons (`<button>`) are for actions - submitting forms, toggling UI, triggering JavaScript. Using links for actions (via JavaScript) or buttons for navigation breaks semantics, accessibility, and expected behavior. Choose based on what happens when clicked: navigation = link, action = button.
+
+---
+
+### Q7: How do email links (mailto) work?
+
+Email links use the `mailto:` protocol: `href="mailto:email@example.com"`. Clicking opens the user's default email client with a new message to that address. You can add query parameters: `subject` for the subject line, `body` for message content, `cc` and `bcc` for copies. Multiple recipients are comma-separated. Special characters in subject/body must be URL-encoded (%20 for space, etc.). Note that mailto links expose email addresses to scrapers and may not work if no email client is configured.
+
+---
+
+### Q8: What are skip links and why are they important?
+
+Skip links allow keyboard users and screen reader users to bypass repetitive content (like navigation) and jump directly to main content. They're typically hidden visually but become visible on focus. Implementation: place a link early in the body pointing to the main content ID, hide it off-screen, and show it on focus. This significantly improves accessibility for users who can't easily scroll past navigation. WCAG accessibility guidelines recommend skip links for pages with repeated navigation.
+
+---
+
+### Q9: Can links wrap block-level elements in HTML5?
+
+Yes, HTML5 allows anchor elements to wrap block-level content like divs, articles, and headings. This is useful for making entire cards or sections clickable. Previous HTML versions only allowed inline content inside links. However, interactive elements like buttons or other links cannot be nested inside links. When wrapping block content, ensure adequate touch/click targets and maintain accessibility. The contained block elements can have their own styling while the link provides the interactive behavior.
+
+---
+
+### Q10: What are the important accessibility considerations for links?
+
+Link text should be descriptive and make sense out of context - avoid "click here" or "read more" without context. Use `aria-label` or `title` when link text alone isn't sufficient. Ensure links are keyboard accessible (can focus and activate with Enter). Provide visible focus indicators in CSS. Use `rel="noopener"` for security with external links. For icons-only links, provide screen reader text via `aria-label`. Don't remove underlines without providing other clear visual distinctions for links. Color alone shouldn't distinguish links.
+
+

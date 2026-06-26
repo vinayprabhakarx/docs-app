@@ -1,0 +1,138 @@
+---
+title: "Redux Toolkit - Modern Redux"
+description: Documentation for Redux Toolkit - Modern Redux.
+---
+
+# Redux Toolkit - Modern Redux
+
+
+
+## Why Redux Toolkit?
+
+Reduces boilerplate, includes best practices, built-in Immer for immutable updates.
+
+## Creating a Slice
+
+```jsx
+import { createSlice, configureStore } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => {
+      state.value += 1; // Immer handles immutability
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    addBy: (state, action) => {
+      state.value += action.payload;
+    },
+  },
+});
+
+export const { increment, decrement, addBy } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+## Configure Store
+
+```jsx
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./counterSlice";
+import todosReducer from "./todosSlice";
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    todos: todosReducer,
+  },
+});
+
+export default store;
+```
+
+## Async Actions with createAsyncThunk
+
+```jsx
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+export const fetchUsers = createAsyncThunk("users/fetch", async () => {
+  const response = await fetch("/api/users");
+  return response.json();
+});
+
+const usersSlice = createSlice({
+  name: "users",
+  initialState: { data: [], loading: false, error: null },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+  },
+});
+
+// Usage
+dispatch(fetchUsers());
+```
+
+## RTK Query (Data Fetching)
+
+```jsx
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const api = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  endpoints: (builder) => ({
+    getUsers: builder.query({ query: () => "/users" }),
+    addUser: builder.mutation({
+      query: (user) => ({ url: "/users", method: "POST", body: user }),
+    }),
+  }),
+});
+
+export const { useGetUsersQuery, useAddUserMutation } = api;
+
+// Usage
+function Users() {
+  const { data, isLoading, error } = useGetUsersQuery();
+  const [addUser] = useAddUserMutation();
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What are advantages of Redux Toolkit over plain Redux?
+
+Less boilerplate, built-in Immer for immutable updates, configureStore with good defaults, createAsyncThunk for async, RTK Query for data fetching.
+
+---
+
+### Q2: How does Immer work in Redux Toolkit?
+
+You write "mutating" code, Immer produces immutable updates under the hood. Only works inside createSlice reducers.
+
+---
+
+### Q3: What is createAsyncThunk?
+
+Creates thunk action creators for async logic. Automatically dispatches pending/fulfilled/rejected actions based on promise state.
+
+---
+
+### Q4: What is RTK Query?
+
+Data fetching and caching library built into RTK. Eliminates need for manual loading/error states, handles caching, invalidation.
+
+

@@ -1,0 +1,198 @@
+---
+title: "HTML5 APIs - Modern Browser Features"
+description: Documentation for HTML5 APIs - Modern Browser Features.
+---
+
+# HTML5 APIs - Modern Browser Features
+
+
+
+## What are HTML5 APIs?
+
+HTML5 introduced JavaScript APIs that enable richer web applications without plugins.
+
+> **Definition:** HTML5 APIs provide JavaScript interfaces for features like geolocation, storage, drag-and-drop, and canvas drawing. While accessed via JavaScript, they're part of the HTML5 specification and work with HTML elements.
+
+## Geolocation API
+
+```javascript
+// Check support
+if ("geolocation" in navigator) {
+  // Get current position
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      console.log("Latitude:", position.coords.latitude);
+      console.log("Longitude:", position.coords.longitude);
+      console.log("Accuracy:", position.coords.accuracy);
+    },
+    (error) => {
+      console.error("Error:", error.message);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    },
+  );
+}
+
+// Watch position changes
+const watchId = navigator.geolocation.watchPosition(
+  (position) => {
+    /* handle position */
+  },
+  (error) => {
+    /* handle error */
+  },
+);
+
+// Stop watching
+navigator.geolocation.clearWatch(watchId);
+```
+
+| Property           | Description                 |
+| ------------------ | --------------------------- |
+| `latitude`         | Decimal degrees             |
+| `longitude`        | Decimal degrees             |
+| `accuracy`         | Meters                      |
+| `altitude`         | Meters (may be null)        |
+| `altitudeAccuracy` | Meters (may be null)        |
+| `heading`          | Degrees (may be null)       |
+| `speed`            | Meters/second (may be null) |
+
+## Web Storage
+
+```javascript
+// localStorage - persists forever
+localStorage.setItem("theme", "dark");
+const theme = localStorage.getItem("theme");
+localStorage.removeItem("theme");
+localStorage.clear();
+
+// sessionStorage - cleared when tab closes
+sessionStorage.setItem("formData", JSON.stringify(data));
+const data = JSON.parse(sessionStorage.getItem("formData"));
+```
+
+## Drag and Drop
+
+```html
+<!-- Draggable element -->
+<div id="drag" draggable="true">Drag me</div>
+
+<!-- Drop zone -->
+<div id="drop">Drop here</div>
+
+<script>
+  const drag = document.getElementById("drag");
+  const drop = document.getElementById("drop");
+
+  drag.addEventListener("dragstart", (e) => {
+    e.dataTransfer.setData("text/plain", e.target.id);
+  });
+
+  drop.addEventListener("dragover", (e) => {
+    e.preventDefault(); // Allow drop
+  });
+
+  drop.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain");
+    drop.appendChild(document.getElementById(id));
+  });
+</script>
+```
+
+| Event       | Fires On     | When               |
+| ----------- | ------------ | ------------------ |
+| `dragstart` | Dragged item | Drag begins        |
+| `drag`      | Dragged item | During drag        |
+| `dragend`   | Dragged item | Drag ends          |
+| `dragover`  | Drop target  | Item over target   |
+| `dragenter` | Drop target  | Item enters target |
+| `dragleave` | Drop target  | Item leaves target |
+| `drop`      | Drop target  | Item dropped       |
+
+## Canvas API
+
+```html
+<canvas id="myCanvas" width="400" height="300"></canvas>
+
+<script>
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Rectangle
+  ctx.fillStyle = "blue";
+  ctx.fillRect(10, 10, 100, 50);
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(10, 80);
+  ctx.lineTo(110, 80);
+  ctx.stroke();
+
+  // Circle
+  ctx.beginPath();
+  ctx.arc(60, 130, 30, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
+
+  // Text
+  ctx.font = "20px Arial";
+  ctx.fillStyle = "black";
+  ctx.fillText("Hello Canvas", 10, 200);
+</script>
+```
+
+## History API
+
+```javascript
+// Add entry to history
+history.pushState({ page: 1 }, "Page 1", "/page-1");
+
+// Replace current entry
+history.replaceState({ page: 2 }, "Page 2", "/page-2");
+
+// Navigate
+history.back();
+history.forward();
+history.go(-2); // Go back 2 entries
+
+// Handle popstate
+window.addEventListener("popstate", (e) => {
+  console.log("State:", e.state);
+});
+```
+
+## Interview Questions & Answers
+
+### Q1: What is the Geolocation API and what permissions does it require?
+
+The Geolocation API allows web apps to access the user's location. It requires explicit user permission - browsers show a prompt asking to allow or deny. Use `navigator.geolocation.getCurrentPosition()` for one-time location or `watchPosition()` for continuous tracking. The API provides latitude, longitude, and accuracy. It only works on HTTPS (for security). Handle permission denials gracefully with error callbacks. Users can revoke permission at any time.
+
+---
+
+### Q2: What's the difference between localStorage and sessionStorage?
+
+Both are Web Storage APIs that store key-value pairs, but they differ in persistence: `localStorage` persists until explicitly cleared (survives browser restarts), while `sessionStorage` is cleared when the tab/window closes. Both are limited to the same origin (domain). Storage limit is typically 5-10MB. Use localStorage for preferences and cached data; use sessionStorage for temporary form data or session-specific state.
+
+---
+
+### Q3: How does the HTML5 drag and drop API work?
+
+Make elements draggable with the `draggable="true"` attribute. Handle events on both the dragged element (`dragstart`, `dragend`) and drop targets (`dragover`, `drop`). Use `e.dataTransfer` to pass data between drag source and drop target. Always call `e.preventDefault()` in `dragover` to allow dropping - the default is to not allow drops. The API works for both DOM elements and files dragged from the desktop.
+
+---
+
+### Q4: What is the Canvas API used for?
+
+The Canvas API provides a 2D drawing surface accessed via JavaScript. Use it for: games, data visualization, image manipulation, animations, and graphics. Get a context with `canvas.getContext("2d")`, then draw shapes, text, and images. Canvas is immediate-mode (draw once, it's pixels) unlike SVG (retained-mode, DOM elements). It's performant for complex animations but not accessible - provide alternatives for screen readers.
+
+---
+
+### Q5: What is the History API for?
+
+The History API enables manipulation of browser history for single-page applications. `pushState()` adds entries without page reload, enabling back/forward navigation in SPAs. `replaceState()` modifies the current entry. Listen to `popstate` events to handle back/forward button clicks. This enables clean URLs in SPAs instead of hash-based routing. Always update page content to match the URL for consistency.
+
+

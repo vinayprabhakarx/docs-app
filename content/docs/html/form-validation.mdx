@@ -1,0 +1,271 @@
+---
+title: "Form Validation - Built-in Validation & Custom Messages"
+description: Documentation for Form Validation - Built-in Validation & Custom Messages.
+---
+
+# Form Validation - Built-in Validation & Custom Messages
+
+
+
+## What is Form Validation?
+
+Form validation ensures user input meets requirements before submission.
+
+> **Definition:** HTML5 provides built-in validation through attributes like `required`, `pattern`, `min/max`, and input types. Browsers display native error messages and prevent form submission until all constraints are met. Custom validation can be added with JavaScript's Constraint Validation API.
+
+## Built-in Validation Attributes
+
+| Attribute   | Purpose               | Valid On                  |
+| ----------- | --------------------- | ------------------------- |
+| `required`  | Field must be filled  | All inputs                |
+| `pattern`   | Must match regex      | text, tel, email, etc.    |
+| `minlength` | Minimum characters    | text, textarea            |
+| `maxlength` | Maximum characters    | text, textarea            |
+| `min`       | Minimum value         | number, date, time, range |
+| `max`       | Maximum value         | number, date, time, range |
+| `step`      | Value increment       | number, date, range       |
+| `type`      | Input type validation | email, url, number        |
+
+```html
+<!-- Required field -->
+<input type="text" required />
+
+<!-- Length constraints -->
+<input type="text" minlength="3" maxlength="20" />
+<textarea minlength="10" maxlength="500"></textarea>
+
+<!-- Number range -->
+<input type="number" min="1" max="100" step="1" />
+
+<!-- Date range -->
+<input type="date" min="2024-01-01" max="2024-12-31" />
+```
+
+## Input Type Validation
+
+```html
+<!-- Email: Must contain @ and domain -->
+<input type="email" required />
+
+<!-- URL: Must be valid URL format -->
+<input type="url" required />
+
+<!-- Number: Must be numeric -->
+<input type="number" required />
+
+<!-- These types have built-in validation -->
+```
+
+## Validation States (CSS)
+
+```css
+/* Valid input */
+input:valid {
+  border-color: green;
+}
+
+/* Invalid input */
+input:invalid {
+  border-color: red;
+}
+
+/* Required field that's empty */
+input:required:invalid {
+  border-color: orange;
+}
+
+/* Optional but invalid */
+input:optional:invalid {
+  border-color: yellow;
+}
+
+/* In range/out of range for numbers */
+input:in-range {
+  border-color: green;
+}
+input:out-of-range {
+  border-color: red;
+}
+
+/* Only show invalid after interaction */
+input:not(:placeholder-shown):invalid {
+  border-color: red;
+}
+```
+
+## Custom Validation Messages
+
+### Using title Attribute
+
+```html
+<input
+  type="text"
+  pattern="[A-Za-z]{3,}"
+  title="Enter at least 3 letters"
+  required
+/>
+```
+
+### Using JavaScript (Constraint Validation API)
+
+```html
+<form id="myForm">
+  <input type="email" id="email" required />
+  <input type="password" id="password" required />
+  <input type="password" id="confirmPassword" required />
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  const form = document.getElementById("myForm");
+  const password = document.getElementById("password");
+  const confirmPassword = document.getElementById("confirmPassword");
+
+  // Custom validation on input
+  confirmPassword.addEventListener("input", function () {
+    if (this.value !== password.value) {
+      this.setCustomValidity("Passwords do not match");
+    } else {
+      this.setCustomValidity(""); // Valid
+    }
+  });
+
+  // Check validity
+  form.addEventListener("submit", function (e) {
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      // Show custom errors
+    }
+  });
+</script>
+```
+
+## Constraint Validation API
+
+| Method/Property       | Purpose                             |
+| --------------------- | ----------------------------------- |
+| `checkValidity()`     | Returns true if valid               |
+| `reportValidity()`    | Returns validity + shows UI message |
+| `setCustomValidity()` | Set custom error message            |
+| `validity`            | ValidityState object                |
+| `validationMessage`   | Current error message               |
+| `willValidate`        | Whether element will be validated   |
+
+### ValidityState Properties
+
+```javascript
+input.validity.valueMissing; // required but empty
+input.validity.typeMismatch; // wrong type (email, url)
+input.validity.patternMismatch; // doesn't match pattern
+input.validity.tooShort; // below minlength
+input.validity.tooLong; // above maxlength
+input.validity.rangeUnderflow; // below min
+input.validity.rangeOverflow; // above max
+input.validity.stepMismatch; // doesn't match step
+input.validity.badInput; // incomplete (e.g., partial number)
+input.validity.customError; // setCustomValidity was called
+input.validity.valid; // passes all validation
+```
+
+## Disabling Validation
+
+```html
+<!-- Disable on entire form -->
+<form novalidate>
+  <input type="email" required />
+  <button type="submit">Submit without validation</button>
+</form>
+
+<!-- Disable for specific submit button -->
+<form>
+  <input type="email" required />
+  <button type="submit">Submit with validation</button>
+  <button type="submit" formnovalidate>Skip validation</button>
+</form>
+```
+
+## Complete Validation Example
+
+```html
+<form id="registrationForm">
+  <div>
+    <label for="username">Username:</label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      pattern="[a-z0-9]{3,15}"
+      title="3-15 lowercase letters or numbers"
+      required
+    />
+  </div>
+
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required />
+  </div>
+
+  <div>
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" min="18" max="120" required />
+  </div>
+
+  <div>
+    <label for="password">Password:</label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+      title="8+ chars with number, lowercase, uppercase"
+      required
+    />
+  </div>
+
+  <button type="submit">Register</button>
+</form>
+
+<style>
+  input:valid {
+    border: 2px solid green;
+  }
+  input:invalid {
+    border: 2px solid red;
+  }
+  input:focus:invalid {
+    outline-color: red;
+  }
+</style>
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between client-side and server-side validation?
+
+Client-side validation (HTML/JavaScript) provides instant feedback and better UX by catching errors before submission. Server-side validation is done on the server after form data is sent. Always do both: client-side for UX and server-side for security. Client-side validation can be bypassed by disabling JavaScript or modifying requests, so never trust it for security. Server validation is the last line of defense against malicious data.
+
+---
+
+### Q2: How does the novalidate attribute work?
+
+The `novalidate` attribute on a form element disables all HTML5 built-in validation. The form will submit regardless of validation constraints like required, pattern, or type. Use it when: implementing custom JavaScript validation, saving drafts, or during development. You can also use `formnovalidate` on a specific submit button to skip validation only for that button while other submit buttons still validate.
+
+---
+
+### Q3: How do you show validation errors only after user interaction?
+
+By default, `:invalid` applies immediately, even before the user types. To show errors only after interaction, use CSS techniques: `:not(:placeholder-shown):invalid` (requires placeholder), `:focus:invalid` for focus state, or add a class via JavaScript on blur/submit. Better UX validates on blur (leaving field) or on submit, not on every keystroke. This prevents overwhelming users with errors before they've even started typing.
+
+---
+
+### Q4: What is the Constraint Validation API?
+
+The Constraint Validation API is a JavaScript interface for HTML5 form validation. Key methods: `checkValidity()` returns boolean validity, `reportValidity()` shows browser's validation UI, `setCustomValidity(message)` sets custom error messages. Properties: `validity` object contains specific constraint states, `validationMessage` is the current error text. It enables programmatic validation, custom cross-field validation, and custom error messages beyond what HTML attributes offer.
+
+---
+
+### Q5: How do you validate that two password fields match?
+
+HTML patterns can't compare fields. Use JavaScript: listen for input events on the confirm field, compare values, use `setCustomValidity('Passwords don't match')` if different or `setCustomValidity('')` if matching. Clear custom validity before comparison to reset state. Check on both fields for thorough validation. This is a common pattern for confirmation fields where HTML alone is insufficient.
+
+

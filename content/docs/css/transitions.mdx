@@ -1,0 +1,417 @@
+---
+title: "Transitions - Smooth Property Changes"
+description: Documentation for Transitions - Smooth Property Changes.
+---
+
+# Transitions - Smooth Property Changes
+
+
+
+## What are CSS Transitions?
+
+CSS Transitions allow you to change property values **smoothly** over a specified duration, instead of having them change instantly. They create smooth animations when elements change state (like hover, focus, or class changes).
+
+### Why Use Transitions?
+
+Transitions improve user experience by:
+- **Visual feedback** - Show that something is happening
+- **Smoother interactions** - Less jarring changes
+- **Professional feel** - Polished, modern interfaces
+- **No JavaScript needed** - Pure CSS animations
+
+## Transition Properties - Quick Reference
+
+| Property | Description | Example | Default |
+|---|---|---|---|
+| `transition-property` | Which property to animate | `transition-property: background-color;` | `all` |
+| `transition-duration` | How long the transition takes | `transition-duration: 0.3s;` | `0s` |
+| `transition-timing-function` | Speed curve | `transition-timing-function: ease;` | `ease` |
+| `transition-delay` | Delay before starting | `transition-delay: 0.1s;` | `0s` |
+| `transition` | Shorthand | `transition: all 0.3s ease;` | - |
+
+## Detailed Explanation
+
+### 1. transition-property
+
+**What it does:**
+Specifies which CSS property should be transitioned.
+
+**Syntax:**
+```css
+transition-property: property-name;
+transition-property: all; /* All animatable properties */
+```
+
+**CSS Example:**
+```css
+.box {
+    background-color: blue;
+    width: 100px;
+    transition-property: background-color; /* Only animate background */
+}
+
+.box:hover {
+    background-color: red;
+    width: 200px; /* This won't animate */
+}
+```
+
+**Multiple properties:**
+```css
+.box {
+    transition-property: background-color, width, transform;
+}
+```
+
+---
+
+### 2. transition-duration
+
+**What it does:**
+Specifies how long the transition takes.
+
+**Syntax:**
+```css
+transition-duration: time;
+```
+
+**Units:**
+- `s` - Seconds: `0.3s`, `1s`, `2.5s`
+- `ms` - Milliseconds: `300ms`, `1000ms`
+
+**CSS Example:**
+```css
+.fast {
+    transition-duration: 0.1s; /* Very fast */
+}
+
+.normal {
+    transition-duration: 0.3s; /* Standard */
+}
+
+.slow {
+    transition-duration: 1s; /* Slow */
+}
+```
+
+**Best practices:**
+- Micro-interactions: `100-200ms`
+- Standard transitions: `200-400ms`
+- Large movements: `400-600ms`
+- Avoid > `600ms` (feels sluggish)
+
+---
+
+### 3. transition-timing-function
+
+**What it does:**
+Controls the speed curve of the transition.
+
+**Syntax:**
+```css
+transition-timing-function: keyword | cubic-bezier();
+```
+
+**Keywords:**
+- `ease` (default) - Slow start, fast middle, slow end
+- `linear` - Constant speed
+- `ease-in` - Slow start, fast end
+- `ease-out` - Fast start, slow end
+- `ease-in-out` - Slow start and end
+
+**CSS Example:**
+```css
+.ease {
+    transition-timing-function: ease;
+}
+
+.linear {
+    transition-timing-function: linear;
+}
+
+.ease-in {
+    transition-timing-function: ease-in;
+}
+
+.ease-out {
+    transition-timing-function: ease-out;
+}
+
+.ease-in-out {
+    transition-timing-function: ease-in-out;
+}
+
+.custom {
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+```
+
+---
+
+### 4. transition-delay
+
+**What it does:**
+Delays the start of the transition.
+
+**Syntax:**
+```css
+transition-delay: time;
+```
+
+**CSS Example:**
+```css
+.delayed {
+    transition-delay: 0.2s; /* Wait 0.2s before starting */
+}
+
+.staggered-1 {
+    transition-delay: 0s;
+}
+
+.staggered-2 {
+    transition-delay: 0.1s;
+}
+
+.staggered-3 {
+    transition-delay: 0.2s;
+}
+```
+
+---
+
+### 5. transition (Shorthand)
+
+**What it does:**
+Combines all transition properties in one declaration.
+
+**Syntax:**
+```css
+transition: property duration timing-function delay;
+```
+
+**CSS Example:**
+```css
+/* Single property */
+.box {
+    transition: background-color 0.3s ease;
+}
+
+/* Multiple properties */
+.box {
+    transition: background-color 0.3s ease,
+                transform 0.3s ease-out,
+                opacity 0.2s linear;
+}
+
+/* All properties */
+.box {
+    transition: all 0.3s ease;
+}
+```
+
+## Common Transition Patterns
+
+### Pattern 1: Button Hover
+
+```html
+<button class="btn">Hover Me</button>
+```
+
+```css
+.btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+```
+
+---
+
+### Pattern 2: Card Hover Effect
+
+```html
+<div class="card">
+    <h3>Card Title</h3>
+    <p>Card content</p>
+</div>
+```
+
+```css
+.card {
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: #007bff;
+}
+```
+
+---
+
+### Pattern 3: Link Underline Animation
+
+```html
+<a href="#" class="animated-link">Hover Me</a>
+```
+
+```css
+.animated-link {
+    position: relative;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.animated-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+.animated-link:hover::after {
+    width: 100%;
+}
+```
+
+---
+
+### Pattern 4: Smooth Color Change
+
+```css
+.box {
+    background-color: #007bff;
+    transition: background-color 0.4s ease;
+}
+
+.box:hover {
+    background-color: #28a745;
+}
+```
+
+---
+
+### Pattern 5: Expand on Hover
+
+```css
+.expand-box {
+    width: 200px;
+    height: 200px;
+    background-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.expand-box:hover {
+    width: 250px;
+    height: 250px;
+}
+```
+
+---
+
+### Pattern 6: Fade In/Out
+
+```css
+.fade-element {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.fade-element:hover {
+    opacity: 1;
+}
+```
+
+---
+
+### Pattern 7: Rotate on Hover
+
+```css
+.rotate-icon {
+    transition: transform 0.3s ease;
+}
+
+.rotate-icon:hover {
+    transform: rotate(180deg);
+}
+```
+
+---
+
+### Pattern 8: Menu Slide Down
+
+```css
+.dropdown-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.dropdown:hover .dropdown-menu {
+    max-height: 500px;
+}
+```
+
+## Transitionable Properties
+
+**Can be transitioned:**
+- `opacity`
+- `color`, `background-color`, `border-color`
+- `width`, `height`, `max-width`, `max-height`
+- `margin`, `padding`
+- `transform` (translate, rotate, scale)
+- `box-shadow`, `text-shadow`
+- `border-radius`
+- `font-size`
+
+**Cannot be transitioned:**
+- `display`
+- `font-family`
+- `position`
+
+## Performance Tips
+
+**Fast (GPU-accelerated):**
+```css
+.fast {
+    transition: transform 0.3s, opacity 0.3s;
+}
+```
+
+**Slow (avoid if possible):**
+```css
+.slow {
+    transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+}
+```
+
+**Best practice:**
+Use `transform` and `opacity` for smooth 60fps animations.
+
+---
+
+
+

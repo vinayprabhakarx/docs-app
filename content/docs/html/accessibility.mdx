@@ -1,0 +1,255 @@
+---
+title: "Accessibility (A11y) - Building Inclusive Web Pages"
+description: Documentation for Accessibility (A11y) - Building Inclusive Web Pages.
+---
+
+# Accessibility (A11y) - Building Inclusive Web Pages
+
+
+
+## What is Web Accessibility?
+
+Web accessibility ensures websites are usable by everyone, including people with disabilities.
+
+> **Definition:** Accessibility (often abbreviated as A11y - "a" + 11 letters + "y") means designing and developing websites that can be used by people with visual, auditory, motor, or cognitive disabilities. This includes screen reader users, keyboard-only users, and those using assistive technologies.
+
+## Why Accessibility Matters
+
+| Reason             | Impact                                     |
+| ------------------ | ------------------------------------------ |
+| Inclusive Design   | 15% of world population has disabilities   |
+| Legal Requirements | Many countries require accessible websites |
+| Better SEO         | Accessible code is often better for SEO    |
+| Improved UX        | Benefits all users, not just disabled      |
+| Mobile-Friendly    | Many practices help mobile users too       |
+
+## ARIA (Accessible Rich Internet Applications)
+
+ARIA attributes add semantic meaning when HTML alone isn't sufficient.
+
+### ARIA Roles
+
+```html
+<!-- Landmark roles (prefer semantic HTML) -->
+<div role="banner">...</div>
+<!-- Use <header> instead -->
+<div role="navigation">...</div>
+<!-- Use <nav> instead -->
+<div role="main">...</div>
+<!-- Use <main> instead -->
+<div role="complementary">...</div>
+<!-- Use <aside> instead -->
+<div role="contentinfo">...</div>
+<!-- Use <footer> instead -->
+
+<!-- Widget roles -->
+<div role="button">Click me</div>
+<div role="tab">Tab 1</div>
+<div role="tabpanel">Content</div>
+<div role="dialog">Modal content</div>
+<div role="alert">Alert message</div>
+
+<!-- Live regions -->
+<div role="status">Status updates here</div>
+<div role="alert">Error: Invalid input</div>
+```
+
+### ARIA Properties
+
+| Attribute          | Purpose                     | Example                      |
+| ------------------ | --------------------------- | ---------------------------- |
+| `aria-label`       | Invisible label             | `aria-label="Close menu"`    |
+| `aria-labelledby`  | References visible label ID | `aria-labelledby="heading1"` |
+| `aria-describedby` | References description ID   | `aria-describedby="hint"`    |
+| `aria-hidden`      | Hide from screen readers    | `aria-hidden="true"`         |
+| `aria-expanded`    | Expandable state            | `aria-expanded="false"`      |
+| `aria-pressed`     | Toggle button state         | `aria-pressed="true"`        |
+| `aria-current`     | Current item in set         | `aria-current="page"`        |
+| `aria-live`        | Dynamic content updates     | `aria-live="polite"`         |
+| `aria-required`    | Required field indicator    | `aria-required="true"`       |
+
+```html
+<!-- Icon button needs label -->
+<button aria-label="Close dialog">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+<!-- Link with additional context -->
+<a href="/article" aria-describedby="article-desc">Read more</a>
+<p id="article-desc" hidden>About web accessibility best practices</p>
+
+<!-- Expandable section -->
+<button aria-expanded="false" aria-controls="panel1">Show Details</button>
+<div id="panel1" hidden>Details content...</div>
+```
+
+## Keyboard Accessibility
+
+```html
+<!-- Focusable elements (default) -->
+<a href="#">Links</a>
+<button>Buttons</button>
+<input />
+<textarea></textarea>
+<select></select>
+
+<!-- Make non-interactive element focusable -->
+<div tabindex="0">Now focusable</div>
+
+<!-- Remove from tab order -->
+<button tabindex="-1">Skip in tab order</button>
+
+<!-- Custom tab order (avoid) -->
+<input tabindex="1" />
+<input tabindex="2" />
+```
+
+| tabindex Value | Behavior                               |
+| -------------- | -------------------------------------- |
+| Not present    | Natural order (if naturally focusable) |
+| `0`            | Focusable in natural order             |
+| `-1`           | Focusable via JS, not tab              |
+| Positive       | Custom order (avoid - confusing)       |
+
+## Forms Accessibility
+
+```html
+<!-- Always use labels -->
+<label for="email">Email:</label>
+<input type="email" id="email" name="email" />
+
+<!-- Required fields -->
+<label for="name">Name: <span aria-hidden="true">*</span></label>
+<input type="text" id="name" required aria-required="true" />
+
+<!-- Error messages -->
+<input
+  type="email"
+  id="email"
+  aria-describedby="email-error"
+  aria-invalid="true"
+/>
+<span id="email-error" role="alert">Please enter a valid email</span>
+
+<!-- Grouped fields -->
+<fieldset>
+  <legend>Payment Method</legend>
+  <input type="radio" id="card" name="payment" />
+  <label for="card">Credit Card</label>
+  <input type="radio" id="paypal" name="payment" />
+  <label for="paypal">PayPal</label>
+</fieldset>
+```
+
+## Images Accessibility
+
+```html
+<!-- Informative image -->
+<img src="chart.png" alt="Sales increased 25% from Q1 to Q4" />
+
+<!-- Decorative image -->
+<img src="divider.png" alt="" />
+
+<!-- Complex image with long description -->
+<figure>
+  <img
+    src="infographic.png"
+    alt="Company growth infographic"
+    aria-describedby="infographic-desc"
+  />
+  <figcaption id="infographic-desc">
+    Detailed description of the infographic...
+  </figcaption>
+</figure>
+
+<!-- Image as link -->
+<a href="/home">
+  <img src="logo.png" alt="Company Name - Go to homepage" />
+</a>
+```
+
+## Skip Links
+
+```html
+<body>
+  <!-- First element, hidden until focused -->
+  <a href="#main-content" class="skip-link"> Skip to main content </a>
+
+  <header>
+    <nav><!-- Long navigation --></nav>
+  </header>
+
+  <main id="main-content">
+    <!-- Main content -->
+  </main>
+</body>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+  }
+  .skip-link:focus {
+    left: 0;
+    background: #000;
+    color: #fff;
+    padding: 1rem;
+    z-index: 9999;
+  }
+</style>
+```
+
+## Color and Contrast
+
+```html
+<!-- Don't rely on color alone -->
+<!-- ❌ Bad: Color is only indicator -->
+<span style="color: red">Error: Invalid email</span>
+
+<!-- ✅ Good: Icon + text + color -->
+<span style="color: red">
+  <span aria-hidden="true">⚠️</span> Error: Invalid email
+</span>
+
+<!-- Focus indicators -->
+<style>
+  :focus {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+  }
+  /* Never do: :focus { outline: none; } without alternative */
+</style>
+```
+
+## Interview Questions & Answers
+
+### Q1: What is ARIA and when should you use it?
+
+ARIA (Accessible Rich Internet Applications) provides attributes that add semantic meaning for assistive technologies when HTML alone is insufficient. Use ARIA for custom widgets (tabs, accordions, modals), dynamic content updates, and adding context that HTML can't express. However, follow the first rule of ARIA: don't use ARIA if you can use native HTML. Native `<button>` is better than `<div role="button">`. Use ARIA to enhance, not replace proper HTML.
+
+---
+
+### Q2: What is the purpose of alt text and when should it be empty?
+
+Alt text provides text alternatives for images for screen reader users and when images fail to load. Write alt text that conveys the image's meaning or purpose, not just its appearance. Make it empty (`alt=""`) for purely decorative images that add no information - screen readers will skip them. Never omit the alt attribute entirely; browsers may read the filename instead. For complex images, use aria-describedby to reference a longer description.
+
+---
+
+### Q3: Why is keyboard accessibility important?
+
+Many users navigate using only keyboards: people with motor disabilities who can't use a mouse, screen reader users, power users who prefer keyboard shortcuts, and users with temporary injuries. All interactive elements should be focusable and operable via keyboard. Use native interactive elements (`<button>`, `<a>`) which are keyboard-accessible by default. Custom interactive elements need `tabindex="0"` and keyboard event handlers for Enter/Space.
+
+---
+
+### Q4: What are skip links and why are they needed?
+
+Skip links let keyboard users bypass repetitive content (like navigation) and jump directly to main content. Without them, users must tab through every navigation link on every page. Implementation: place a link early in the body pointing to main content's ID, hide it visually but show on focus. WCAG recommends bypass blocks for repeated content. It significantly improves the experience for keyboard and screen reader users.
+
+---
+
+### Q5: What is the purpose of aria-live regions?
+
+`aria-live` announces dynamic content changes to screen readers without requiring focus. Values: `polite` (announces when user is idle), `assertive` (interrupts immediately, use sparingly), `off` (no announcements). Use for status updates, form validation messages, live search results, or chat messages. Without aria-live, screen readers wouldn't know content changed. Use `role="alert"` for important urgent messages (implies `aria-live="assertive"`).
+
+

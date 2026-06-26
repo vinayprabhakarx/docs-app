@@ -1,0 +1,261 @@
+---
+title: "Global Attributes - Universal HTML Attributes"
+description: Documentation for Global Attributes - Universal HTML Attributes.
+---
+
+# Global Attributes - Universal HTML Attributes
+
+
+
+## What are Global Attributes?
+
+Global attributes are attributes that can be used on any HTML element.
+
+> **Definition:** Unlike element-specific attributes (like `href` for anchors), global attributes are valid on every HTML element. They provide common functionality for identification, styling, accessibility, and behavior.
+
+## Core Global Attributes
+
+| Attribute | Purpose           | Example               |
+| --------- | ----------------- | --------------------- |
+| `id`      | Unique identifier | `id="header"`         |
+| `class`   | CSS class name(s) | `class="btn primary"` |
+| `style`   | Inline CSS        | `style="color: red;"` |
+| `title`   | Tooltip text      | `title="More info"`   |
+| `lang`    | Language          | `lang="en"`           |
+| `dir`     | Text direction    | `dir="rtl"`           |
+
+## id Attribute
+
+```html
+<!-- Unique identifier -->
+<section id="about">About Us</section>
+
+<!-- Used for -->
+<!-- 1. CSS targeting -->
+<style>
+  #about {
+    background: blue;
+  }
+</style>
+
+<!-- 2. JavaScript selection -->
+<script>
+  document.getElementById("about");
+</script>
+
+<!-- 3. Fragment links -->
+<a href="#about">Jump to About</a>
+
+<!-- 4. Label association -->
+<label for="email">Email</label>
+<input id="email" />
+```
+
+## class Attribute
+
+```html
+<!-- Single class -->
+<div class="container">...</div>
+
+<!-- Multiple classes -->
+<button class="btn btn-primary large">Click</button>
+
+<!-- CSS targeting -->
+<style>
+  .btn {
+    padding: 10px;
+  }
+  .btn-primary {
+    background: blue;
+  }
+  .large {
+    font-size: 18px;
+  }
+</style>
+
+<!-- JavaScript selection -->
+<script>
+  document.querySelectorAll(".btn");
+  element.classList.add("active");
+  element.classList.remove("active");
+  element.classList.toggle("active");
+</script>
+```
+
+## data-\* Attributes
+
+Custom data attributes for storing extra information.
+
+```html
+<!-- Store custom data -->
+<article
+  data-id="123"
+  data-category="technology"
+  data-author-name="John Doe"
+  data-published="2024-01-15"
+>
+  Article content...
+</article>
+
+<!-- Access via JavaScript -->
+<script>
+  const article = document.querySelector("article");
+
+  // Using dataset
+  console.log(article.dataset.id); // "123"
+  console.log(article.dataset.category); // "technology"
+  console.log(article.dataset.authorName); // "John Doe" (camelCase!)
+
+  // Using getAttribute
+  console.log(article.getAttribute("data-id")); // "123"
+</script>
+
+<!-- CSS selection -->
+<style>
+  [data-category="technology"] {
+    border-left: 3px solid blue;
+  }
+  [data-published] {
+    font-style: italic;
+  }
+</style>
+```
+
+| HTML Attribute     | JavaScript dataset   |
+| ------------------ | -------------------- |
+| `data-id`          | `dataset.id`         |
+| `data-user-id`     | `dataset.userId`     |
+| `data-author-name` | `dataset.authorName` |
+
+## contenteditable
+
+```html
+<!-- Make element editable -->
+<div contenteditable="true">Click here to edit this text...</div>
+
+<!-- Rich text editor -->
+<div id="editor" contenteditable="true">
+  <p>Edit this content</p>
+</div>
+
+<!-- Values -->
+<div contenteditable="true">Editable</div>
+<div contenteditable="false">Not editable</div>
+<div contenteditable="inherit">Inherits from parent</div>
+```
+
+## hidden Attribute
+
+```html
+<!-- Hide element from display and accessibility -->
+<p hidden>This is hidden</p>
+
+<!-- Toggle with JavaScript -->
+<div id="message" hidden>Success!</div>
+<script>
+  document.getElementById("message").hidden = false;
+</script>
+
+<!-- Different from CSS display:none -->
+<!-- hidden is semantic - element shouldn't be shown -->
+<!-- display:none is presentational - element is visually hidden -->
+```
+
+## tabindex
+
+```html
+<!-- Add to tab order (0 = natural order) -->
+<div tabindex="0">Focusable div</div>
+
+<!-- Remove from tab order but focusable via JS (-1) -->
+<button tabindex="-1">Can't tab to this</button>
+
+<!-- Custom order (avoid - confusing) -->
+<input tabindex="2" />
+<input tabindex="1" />
+<input tabindex="3" />
+```
+
+## draggable
+
+```html
+<!-- Make element draggable -->
+<div draggable="true">Drag me</div>
+
+<!-- Disable default dragging (like images) -->
+<img draggable="false" src="nodrag.jpg" alt="Can't drag" />
+```
+
+## spellcheck
+
+```html
+<!-- Enable spell checking -->
+<textarea spellcheck="true">Check my spelling</textarea>
+
+<!-- Disable spell checking -->
+<input type="text" spellcheck="false" value="username123" />
+```
+
+## translate
+
+```html
+<!-- Allow translation -->
+<p translate="yes">This text may be translated.</p>
+
+<!-- Don't translate (brand names, code) -->
+<p>Developed by <span translate="no">TechCorp Inc.</span></p>
+```
+
+## Complete Reference
+
+| Attribute         | Purpose                | Values                |
+| ----------------- | ---------------------- | --------------------- |
+| `id`              | Unique identifier      | Unique string         |
+| `class`           | CSS class(es)          | Space-separated       |
+| `style`           | Inline CSS             | CSS declarations      |
+| `title`           | Tooltip                | Text                  |
+| `lang`            | Language               | BCP 47 codes          |
+| `dir`             | Text direction         | ltr, rtl, auto        |
+| `data-*`          | Custom data            | Any value             |
+| `hidden`          | Hide element           | Boolean               |
+| `tabindex`        | Tab order              | -1, 0, or positive    |
+| `contenteditable` | Make editable          | true, false, inherit  |
+| `draggable`       | Make draggable         | true, false, auto     |
+| `spellcheck`      | Spell checking         | true, false           |
+| `translate`       | Allow translation      | yes, no               |
+| `accesskey`       | Keyboard shortcut      | Single character      |
+| `autocapitalize`  | Auto capitalization    | off, on, words, etc.  |
+| `enterkeyhint`    | Mobile enter key label | enter, done, go, etc. |
+| `inputmode`       | Virtual keyboard type  | text, numeric, etc.   |
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between id and class?
+
+`id` must be unique within a document and identifies a single element. It has higher CSS specificity and is used for fragment links, label association, and JavaScript's `getElementById`. `class` can be shared by multiple elements and multiple classes can be applied to one element. Use `id` for unique elements (navigation targets, form labels), `class` for styling groups of similar elements. IDs should not be reused; classes are meant to be reused.
+
+---
+
+### Q2: How do data attributes work and when should you use them?
+
+`data-*` attributes store custom data on elements without affecting rendering. Access them via JavaScript's `dataset` property (automatically converts kebab-case to camelCase) or `getAttribute()`. Use them for: storing IDs for JavaScript operations, configuration values, metadata for analytics, and state that doesn't fit standard attributes. Don't use them for styling that should be class-based or for data that should be in JavaScript variables.
+
+---
+
+### Q3: What is the contenteditable attribute?
+
+`contenteditable="true"` makes any element's content editable by the user, like a text field but with HTML formatting support. It's the basis for rich text editors. Users can type, delete, and format content. Combined with JavaScript, you can build WYSIWYG editors. Changes aren't automatically saved - you need JavaScript to capture the content. It works on any element and supports nested HTML.
+
+---
+
+### Q4: What are the accessibility implications of tabindex?
+
+`tabindex="0"` adds an element to the natural tab order, making non-interactive elements keyboard accessible. `tabindex="-1"` removes elements from tab order but allows programmatic focus (useful for modals). Positive values create custom tab order but are discouraged as they confuse users and override natural DOM order. Only use tabindex when native focusable elements aren't suitable. Interactive elements are naturally focusable.
+
+---
+
+### Q5: When would you use the hidden attribute vs CSS display:none?
+
+Use `hidden` when content shouldn't exist for the user (conditional content, future reveal), it's semantic and indicates the element is not relevant. Use CSS `display:none` for visual hiding that might be toggled by media queries or JavaScript for presentation reasons. Both hide from screen readers and display, but `hidden` is a content decision while `display:none` is a presentation decision. JavaScript can easily toggle `element.hidden`.
+
+

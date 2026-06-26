@@ -1,0 +1,863 @@
+---
+title: "Closures - Functions with Memory"
+description: Documentation for Closures - Functions with Memory.
+---
+
+# Closures - Functions with Memory
+
+
+
+## What are Closures?
+
+**A closure** is a function that has access to variables from its outer (enclosing) scope, even after the outer function has finished executing. Closures "remember" the environment in which they were created.
+
+> **Definition:** A closure is the combination of a function and the lexical environment within which that function was declared. This environment consists of any local variables that were in-scope at the time the closure was created.
+
+```javascript
+function outer() {
+  let count = 0; // Variable in outer scope
+
+  function inner() {
+    count++; // inner() can access count
+    console.log(count);
+  }
+
+  return inner;
+}
+
+let counter = outer(); // outer() finishes, but count is preserved
+counter(); // 1
+counter(); // 2
+counter(); // 3 (count is "remembered")
+```
+
+### Why Do Closures Matter?
+
+| Benefit                | Description                                        |
+| ---------------------- | -------------------------------------------------- |
+| **Data Privacy**       | Create private variables inaccessible from outside |
+| **State Preservation** | Maintain state between function calls              |
+| **Function Factories** | Create specialized functions dynamically           |
+| **Module Pattern**     | Organize code with public/private members          |
+| **Callbacks**          | Preserve context in async operations               |
+
+## How Closures Work
+
+When a function is created, it maintains a reference to its lexical environment (the scope in which it was defined). This allows the function to access variables from that scope even when executed elsewhere.
+
+### Lexical Scoping
+
+JavaScript uses **lexical scoping** - a function's scope is determined by where it's written in the code, not where it's called.
+
+```javascript
+let globalVar = "global";
+
+function outer() {
+  let outerVar = "outer";
+
+  function inner() {
+    let innerVar = "inner";
+
+    // inner() has access to:
+    console.log(innerVar); // own scope
+    console.log(outerVar); // outer scope (closure!)
+    console.log(globalVar); // global scope
+  }
+
+  return inner;
+}
+
+let myFunc = outer();
+myFunc(); // Can still access outerVar even though outer() has returned!
+```
+
+### Closure Scope Chain
+
+```
+┌─────────────────────────────────┐
+│      Global Scope               │
+│  globalVar: 'global'            │
+│  ┌───────────────────────────┐  │
+│  │   Outer Function Scope    │  │
+│  │   outerVar: 'outer'       │  │
+│  │  ┌─────────────────────┐  │  │
+│  │  │ Inner Function      │  │  │
+│  │  │ innerVar: 'inner'   │  │  │
+│  │  │ Has access to all   │  │  │
+│  │  │ outer scopes        │  │  │
+│  │  └─────────────────────┘  │  │
+│  └───────────────────────────┘  │
+└─────────────────────────────────┘
+```
+
+> **Key Insight:** The inner function "closes over" variables from the outer scope. Even after the outer function returns, these variables remain accessible because the inner function maintains a reference to them.
+
+## Common Closure Patterns
+
+### 1. Private Variables (Data Encapsulation)
+
+Closures create private variables that can't be accessed from outside.
+
+```javascript
+function createCounter() {
+  let count = 0; // Private variable - cannot be accessed directly
+
+  return {
+    increment() {
+      count++;
+      return count;
+    },
+    decrement() {
+      count--;
+      return count;
+    },
+    getCount() {
+      return count;
+    },
+    reset() {
+      count = 0;
+      return count;
+    },
+  };
+}
+
+let counter = createCounter();
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.getCount()); // 2
+console.log(counter.count); // undefined (private!)
+
+// Each instance has its own private state
+let counter2 = createCounter();
+console.log(counter2.increment()); // 1 (independent from counter)
+```
+
+### 2. Function Factories
+
+```javascript
+function createMultiplier(multiplier) {
+  return function (number) {
+    return number * multiplier; // multiplier is "closed over"
+  };
+}
+
+let double = createMultiplier(2);
+let triple = createMultiplier(3);
+let times10 = createMultiplier(10);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+console.log(times10(5)); // 50
+
+// Example: Greeting factory
+function createGreeter(greeting) {
+  return function (name) {
+    return `${greeting}, ${name}!`;
+  };
+}
+
+let sayHello = createGreeter("Hello");
+let sayGoodbye = createGreeter("Goodbye");
+
+console.log(sayHello("John")); // 'Hello, John!'
+console.log(sayGoodbye("Jane")); // 'Goodbye, Jane!'
+
+// Example: Tax calculator factory
+function createTaxCalculator(taxRate) {
+  return function (amount) {
+    return amount + amount * taxRate;
+  };
+}
+
+const addVAT = createTaxCalculator(0.2); // 20% VAT
+const addSalesTax = createTaxCalculator(0.08); // 8% sales tax
+
+console.log(addVAT(100)); // 120
+console.log(addSalesTax(100)); // 108
+```
+
+### 3. Event Handlers with State
+
+```javascript
+function setupButton(buttonId) {
+  let clickCount = 0; // Private state per button
+
+  document.getElementById(buttonId).addEventListener("click", function () {
+    clickCount++;
+    console.log(`Button ${buttonId} clicked ${clickCount} times`);
+  });
+}
+
+setupButton("btn1");
+setupButton("btn2");
+// Each button tracks its own click count independently
+
+// Another example: Toggle state
+function createToggle(element) {
+  let isOpen = false;
+
+  element.addEventListener("click", function () {
+    isOpen = !isOpen;
+    element.textContent = isOpen ? "Close" : "Open";
+    element.classList.toggle("active", isOpen);
+  });
+}
+```
+
+### 4. Memoization (Caching)
+
+```javascript
+function memoize(fn) {
+  let cache = {}; // Cache persists between calls (closure!)
+
+  return function (...args) {
+    let key = JSON.stringify(args);
+
+    if (key in cache) {
+      console.log("From cache");
+      return cache[key];
+    }
+
+    let result = fn(...args);
+    cache[key] = result;
+    console.log("Calculated");
+    return result;
+  };
+}
+
+function expensiveOperation(n) {
+  // Simulate expensive calculation
+  let result = 0;
+  for (let i = 0; i < n * 1000000; i++) {
+    result += i;
+  }
+  return result;
+}
+
+let memoized = memoize(expensiveOperation);
+console.log(memoized(5)); // Calculated - takes time
+console.log(memoized(5)); // From cache - instant!
+console.log(memoized(10)); // Calculated - new value
+console.log(memoized(10)); // From cache
+```
+
+## Closure in Loops (Common Pitfall!)
+
+### The Problem
+
+```javascript
+// ❌ Common mistake with var
+for (var i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i); // All print 3!
+  }, 1000);
+}
+// Output: 3, 3, 3 (not 0, 1, 2)
+
+// Why? All callbacks share the same 'i' variable
+// When they execute, the loop has finished and i = 3
+```
+
+### Solutions
+
+```javascript
+// ✅ Solution 1: Use let (block scope) - PREFERRED
+for (let i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i); // 0, 1, 2
+  }, 1000);
+}
+// let creates a new binding for each iteration
+
+// ✅ Solution 2: IIFE (Immediately Invoked Function Expression)
+for (var i = 0; i < 3; i++) {
+  (function (j) {
+    setTimeout(function () {
+      console.log(j); // 0, 1, 2
+    }, 1000);
+  })(i); // Pass i as argument, creating a new scope
+}
+
+// ✅ Solution 3: Function factory
+function makeLogger(value) {
+  return function () {
+    console.log(value);
+  };
+}
+
+for (var i = 0; i < 3; i++) {
+  setTimeout(makeLogger(i), 1000);
+}
+
+// ✅ Solution 4: Using forEach (if working with arrays)
+[0, 1, 2].forEach(function (i) {
+  setTimeout(function () {
+    console.log(i); // 0, 1, 2
+  }, 1000);
+});
+```
+
+## Module Pattern
+
+Using closures to create modules with public and private members.
+
+```javascript
+const Calculator = (function () {
+  // Private variables
+  let result = 0;
+  let history = [];
+
+  // Private function
+  function addToHistory(operation) {
+    history.push({
+      operation,
+      result,
+      timestamp: new Date(),
+    });
+  }
+
+  // Public API (returned object)
+  return {
+    add(value) {
+      result += value;
+      addToHistory(`add ${value}`);
+      return this; // For chaining
+    },
+
+    subtract(value) {
+      result -= value;
+      addToHistory(`subtract ${value}`);
+      return this;
+    },
+
+    multiply(value) {
+      result *= value;
+      addToHistory(`multiply by ${value}`);
+      return this;
+    },
+
+    divide(value) {
+      if (value !== 0) {
+        result /= value;
+        addToHistory(`divide by ${value}`);
+      }
+      return this;
+    },
+
+    getResult() {
+      return result;
+    },
+
+    getHistory() {
+      return [...history]; // Return copy
+    },
+
+    reset() {
+      result = 0;
+      history = [];
+      return this;
+    },
+  };
+})();
+
+Calculator.add(10).multiply(2).subtract(5);
+console.log(Calculator.getResult()); // 15
+console.log(Calculator.getHistory()); // Array of operations
+// console.log(Calculator.result); // undefined (private!)
+// console.log(Calculator.history); // undefined (private!)
+```
+
+## Practical Applications
+
+### 1. Counter with Limits
+
+```javascript
+function createLimitedCounter(min, max) {
+  let count = min;
+
+  return {
+    increment() {
+      if (count < max) count++;
+      return count;
+    },
+    decrement() {
+      if (count > min) count--;
+      return count;
+    },
+    reset() {
+      count = min;
+      return count;
+    },
+    getCount() {
+      return count;
+    },
+    getRange() {
+      return { min, max };
+    },
+  };
+}
+
+let counter = createLimitedCounter(0, 5);
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+counter.increment();
+counter.increment();
+counter.increment();
+console.log(counter.increment()); // 5 (can't go higher)
+console.log(counter.decrement()); // 4
+```
+
+### 2. Once Function (Execute Only Once)
+
+```javascript
+function once(fn) {
+  let called = false;
+  let result;
+
+  return function (...args) {
+    if (!called) {
+      called = true;
+      result = fn.apply(this, args);
+    }
+    return result;
+  };
+}
+
+let initialize = once(function () {
+  console.log("Initializing...");
+  return { initialized: true };
+});
+
+console.log(initialize()); // 'Initializing...' { initialized: true }
+console.log(initialize()); // { initialized: true } (no log)
+console.log(initialize()); // { initialized: true } (no log)
+```
+
+### 3. Debounce Function
+
+```javascript
+function debounce(fn, delay) {
+  let timeoutId;
+
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
+// Usage: Search as user types
+const search = debounce(function (query) {
+  console.log("Searching for:", query);
+  // Make API call here
+}, 500);
+
+// Rapid calls:
+search("a"); // Cancelled
+search("ab"); // Cancelled
+search("abc"); // Executes after 500ms of no calls
+```
+
+### 4. Throttle Function
+
+```javascript
+function throttle(fn, limit) {
+  let inThrottle = false;
+  let lastArgs = null;
+
+  return function (...args) {
+    if (!inThrottle) {
+      fn.apply(this, args);
+      inThrottle = true;
+
+      setTimeout(() => {
+        inThrottle = false;
+        if (lastArgs) {
+          fn.apply(this, lastArgs);
+          lastArgs = null;
+        }
+      }, limit);
+    } else {
+      lastArgs = args;
+    }
+  };
+}
+
+// Usage: Scroll event handling
+const handleScroll = throttle(function () {
+  console.log("Scroll position:", window.scrollY);
+}, 1000);
+
+window.addEventListener("scroll", handleScroll);
+// Only fires at most once per second
+```
+
+### 5. Curry with Closure
+
+```javascript
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args);
+    }
+    return function (...moreArgs) {
+      return curried.apply(this, args.concat(moreArgs));
+    };
+  };
+}
+
+const add = (a, b, c) => a + b + c;
+const curriedAdd = curry(add);
+
+console.log(curriedAdd(1)(2)(3)); // 6
+console.log(curriedAdd(1, 2)(3)); // 6
+console.log(curriedAdd(1)(2, 3)); // 6
+```
+
+## Interview Questions & Answers
+
+### Q1: What is a closure?
+
+**Answer:**
+
+A closure is a function bundled together with its lexical environment - the variables that were in scope when the function was created. This allows the function to access those variables even after the outer function has returned.
+
+```javascript
+function createCounter() {
+  let count = 0; // This variable is "closed over"
+
+  return function () {
+    return ++count; // Can access count even after createCounter returns
+  };
+}
+
+const counter = createCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2 (count persists!)
+```
+
+Every function in JavaScript creates a closure, but we typically only notice it when the inner function outlives the outer function.
+
+---
+
+### Q2: Explain the closure loop problem and its solutions.
+
+**Answer:**
+
+The problem occurs when using `var` in loops with async callbacks - all callbacks share the same variable reference.
+
+```javascript
+// Problem
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100); // Prints: 3, 3, 3
+}
+```
+
+**Solutions:**
+
+| Solution         | How it works                              |
+| ---------------- | ----------------------------------------- |
+| `let`            | Creates new binding per iteration         |
+| IIFE             | Creates new scope by immediately invoking |
+| Function factory | Captures value in parameter               |
+
+```javascript
+// Solution 1: let (recommended)
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100); // 0, 1, 2
+}
+
+// Solution 2: IIFE
+for (var i = 0; i < 3; i++) {
+  ((j) => setTimeout(() => console.log(j), 100))(i);
+}
+```
+
+---
+
+### Q3: How do closures enable data privacy?
+
+**Answer:**
+
+Closures create private variables by keeping them in an outer function's scope, accessible only through returned inner functions.
+
+```javascript
+function createBankAccount(initialBalance) {
+  let balance = initialBalance; // Private!
+
+  return {
+    deposit(amount) {
+      if (amount > 0) balance += amount;
+      return balance;
+    },
+    withdraw(amount) {
+      if (amount > 0 && amount <= balance) {
+        balance -= amount;
+      }
+      return balance;
+    },
+    getBalance() {
+      return balance;
+    },
+  };
+}
+
+const account = createBankAccount(1000);
+account.deposit(500); // 1500
+console.log(account.balance); // undefined - private!
+console.log(account.getBalance()); // 1500
+```
+
+The `balance` variable cannot be accessed or modified directly - only through the provided methods.
+
+---
+
+### Q4: What's the difference between closure and scope?
+
+**Answer:**
+
+| Aspect           | Scope                        | Closure                             |
+| ---------------- | ---------------------------- | ----------------------------------- |
+| **Definition**   | Rules for variable access    | Function + its lexical environment  |
+| **When created** | At code write time           | When function is defined            |
+| **Purpose**      | Determines visibility        | Preserves access to outer variables |
+| **Lifetime**     | Until execution context ends | As long as inner function exists    |
+
+Scope defines where variables are accessible. Closure is the mechanism that lets a function remember and access its scope even when executed outside that scope.
+
+---
+
+### Q5: What is the Module Pattern?
+
+**Answer:**
+
+The Module Pattern uses closures and IIFEs to create encapsulated modules with private and public members.
+
+```javascript
+const UserModule = (function () {
+  // Private
+  let users = [];
+
+  function validateEmail(email) {
+    return email.includes("@");
+  }
+
+  // Public API
+  return {
+    addUser(name, email) {
+      if (validateEmail(email)) {
+        users.push({ name, email });
+        return true;
+      }
+      return false;
+    },
+
+    getUsers() {
+      return [...users]; // Return copy
+    },
+
+    getUserCount() {
+      return users.length;
+    },
+  };
+})();
+
+UserModule.addUser("John", "john@example.com");
+console.log(UserModule.getUsers());
+// console.log(UserModule.users);  // undefined - private!
+```
+
+---
+
+### Q6: How does memoization use closures?
+
+**Answer:**
+
+Memoization uses a closure to maintain a cache that persists between function calls:
+
+```javascript
+function memoize(fn) {
+  const cache = {}; // Closed over by returned function
+
+  return function (...args) {
+    const key = JSON.stringify(args);
+
+    if (!(key in cache)) {
+      cache[key] = fn.apply(this, args);
+    }
+
+    return cache[key];
+  };
+}
+
+// Without memoization: O(2^n) calls
+function fib(n) {
+  if (n <= 1) return n;
+  return fib(n - 1) + fib(n - 2);
+}
+
+// With memoization: O(n) calls
+const memoFib = memoize(function (n) {
+  if (n <= 1) return n;
+  return memoFib(n - 1) + memoFib(n - 2);
+});
+
+console.log(memoFib(40)); // Fast!
+```
+
+---
+
+### Q7: What are the downsides of closures?
+
+**Answer:**
+
+| Issue            | Description                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| **Memory usage** | Closed-over variables stay in memory as long as the closure exists                   |
+| **Memory leaks** | If closures reference large objects or DOM elements, they won't be garbage collected |
+| **Debugging**    | Harder to trace variable values across scopes                                        |
+| **Performance**  | Slight overhead compared to non-closure functions                                    |
+
+```javascript
+// Potential memory leak
+function createHandler(element) {
+  let data = new Array(1000000); // Large data
+
+  element.addEventListener("click", function () {
+    console.log(data.length); // data can't be garbage collected
+  });
+}
+
+// Solution: Release when done
+function createHandler(element) {
+  let data = new Array(1000000);
+
+  return {
+    handler: function () {
+      console.log(data.length);
+    },
+    cleanup: function () {
+      data = null; // Allow garbage collection
+    },
+  };
+}
+```
+
+---
+
+### Q8: How do closures work with async/await?
+
+**Answer:**
+
+Closures preserve variable access in async functions just like in callbacks:
+
+```javascript
+function createAsyncCounter() {
+  let count = 0;
+
+  return async function () {
+    count++;
+    await new Promise((r) => setTimeout(r, 1000));
+    return count; // Closure still works!
+  };
+}
+
+const asyncCounter = createAsyncCounter();
+
+(async () => {
+  console.log(await asyncCounter()); // 1 (after 1s)
+  console.log(await asyncCounter()); // 2 (after 1s)
+})();
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: API Client with private token
+function createAPIClient(apiToken) {
+  // Private token - never exposed
+  return {
+    async get(endpoint) {
+      const response = await fetch(endpoint, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+      });
+      return response.json();
+    },
+    async post(endpoint, data) {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    },
+  };
+}
+
+const client = createAPIClient("secret-token-123");
+// client.get('/users'); // Token is used but never exposed
+
+// Example 2: Shopping cart with private state
+function createCart() {
+  let items = [];
+
+  return {
+    addItem(item) {
+      items.push(item);
+      return this;
+    },
+    removeItem(itemId) {
+      items = items.filter((item) => item.id !== itemId);
+      return this;
+    },
+    getTotal() {
+      return items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    },
+    getItems() {
+      return items.map((item) => ({ ...item })); // Return copies
+    },
+    clear() {
+      items = [];
+      return this;
+    },
+  };
+}
+
+let cart = createCart();
+cart
+  .addItem({ id: 1, name: "Book", price: 10, qty: 2 })
+  .addItem({ id: 2, name: "Pen", price: 2, qty: 5 });
+console.log(cart.getTotal()); // 30
+console.log(cart.getItems()); // [{...}, {...}]
+
+// Example 3: Rate limiter
+function createRateLimiter(maxCalls, timeWindow) {
+  let calls = [];
+
+  return function (fn) {
+    const now = Date.now();
+    calls = calls.filter((time) => now - time < timeWindow);
+
+    if (calls.length < maxCalls) {
+      calls.push(now);
+      return fn();
+    } else {
+      console.log("Rate limit exceeded");
+      return null;
+    }
+  };
+}
+
+let limiter = createRateLimiter(3, 1000); // 3 calls per second
+
+limiter(() => console.log("Call 1")); // Executes
+limiter(() => console.log("Call 2")); // Executes
+limiter(() => console.log("Call 3")); // Executes
+limiter(() => console.log("Call 4")); // Rate limit exceeded
+```
+
+

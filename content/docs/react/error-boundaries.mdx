@@ -1,0 +1,121 @@
+---
+title: "Error Boundaries - Graceful Error Handling"
+description: Documentation for Error Boundaries - Graceful Error Handling.
+---
+
+# Error Boundaries - Graceful Error Handling
+
+
+
+## What are Error Boundaries?
+
+Components that catch JavaScript errors in child component tree and display fallback UI.
+
+## Creating Error Boundary (Class Component)
+
+```jsx
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Log to error service
+    console.error("Error caught:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || <h1>Something went wrong.</h1>;
+    }
+    return this.props.children;
+  }
+}
+
+// Usage
+<ErrorBoundary fallback={<ErrorUI />}>
+  <MyComponent />
+</ErrorBoundary>;
+```
+
+## Using react-error-boundary Library
+
+```jsx
+import { ErrorBoundary } from "react-error-boundary";
+
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <div>
+      <p>Error: {error.message}</p>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
+}
+
+<ErrorBoundary
+  FallbackComponent={ErrorFallback}
+  onReset={() => {
+    // Reset state
+  }}
+  onError={(error) => {
+    // Log error
+  }}
+>
+  <MyComponent />
+</ErrorBoundary>;
+```
+
+## Strategic Placement
+
+```jsx
+// App level - catches everything
+<ErrorBoundary>
+  <App />
+</ErrorBoundary>
+
+// Route level - isolate routes
+<Route path="/dashboard" element={
+  <ErrorBoundary>
+    <Dashboard />
+  </ErrorBoundary>
+} />
+
+// Widget level - isolate features
+<ErrorBoundary fallback={<WidgetError />}>
+  <WeatherWidget />
+</ErrorBoundary>
+```
+
+## Limitations
+
+Error boundaries do NOT catch:
+
+- Event handlers (use try/catch)
+- Async code (promises, setTimeout)
+- Server-side rendering
+- Errors in the boundary itself
+
+## Interview Questions & Answers
+
+### Q1: What are error boundaries?
+
+Class components with getDerivedStateFromError and/or componentDidCatch that catch errors in children and show fallback UI instead of crashing.
+
+---
+
+### Q2: Why can't hooks be used for error boundaries?
+
+No hook equivalent to getDerivedStateFromError or componentDidCatch. Must use class component or library like react-error-boundary.
+
+---
+
+### Q3: What errors aren't caught?
+
+Event handlers, async code, SSR, errors in boundary itself. Use try/catch for these cases.
+
+

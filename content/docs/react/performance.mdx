@@ -1,0 +1,114 @@
+---
+title: "Performance Optimization - Fast React Apps"
+description: Documentation for Performance Optimization - Fast React Apps.
+---
+
+# Performance Optimization - Fast React Apps
+
+
+
+## Common Performance Issues
+
+| Issue                  | Solution                         |
+| ---------------------- | -------------------------------- |
+| Unnecessary re-renders | React.memo, useMemo, useCallback |
+| Expensive calculations | useMemo                          |
+| Large lists            | Virtualization                   |
+| Large bundles          | Code splitting                   |
+| Slow initial load      | Lazy loading                     |
+
+## React.memo
+
+```jsx
+// Memoize component - only re-renders if props change
+const ExpensiveList = memo(function ExpensiveList({ items }) {
+  return items.map((item) => <Item key={item.id} {...item} />);
+});
+
+// Custom comparison
+const UserCard = memo(
+  function UserCard({ user, onClick }) {
+    return <div onClick={onClick}>{user.name}</div>;
+  },
+  (prevProps, nextProps) => {
+    return prevProps.user.id === nextProps.user.id;
+  },
+);
+```
+
+## Preventing Re-renders
+
+```jsx
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  // Stable callback reference
+  const handleClick = useCallback(() => {
+    console.log("clicked");
+  }, []);
+
+  // Stable object reference
+  const style = useMemo(
+    () => ({
+      color: "blue",
+    }),
+    [],
+  );
+
+  return <MemoizedChild onClick={handleClick} style={style} />;
+}
+```
+
+## List Virtualization
+
+```jsx
+import { FixedSizeList as List } from "react-window";
+
+function VirtualizedList({ items }) {
+  return (
+    <List height={400} itemCount={items.length} itemSize={35} width={300}>
+      {({ index, style }) => <div style={style}>{items[index].name}</div>}
+    </List>
+  );
+}
+```
+
+## React Profiler
+
+```jsx
+import { Profiler } from "react";
+
+function onRender(id, phase, actualDuration) {
+  console.log(`${id} ${phase}: ${actualDuration}ms`);
+}
+
+<Profiler id="App" onRender={onRender}>
+  <App />
+</Profiler>;
+```
+
+## Interview Questions & Answers
+
+### Q1: When should you use React.memo?
+
+Use for components with expensive renders that receive same props often. Don't use for frequently changing props or cheap components.
+
+---
+
+### Q2: What causes unnecessary re-renders?
+
+Parent re-renders (even if child props unchanged), new object/function references, context value changes.
+
+---
+
+### Q3: What is virtualization?
+
+Only rendering visible items in large lists. Libraries: react-window, react-virtualized. Drastically improves performance for 1000+ items.
+
+---
+
+### Q4: How do you identify performance issues?
+
+React DevTools Profiler, React.Profiler component, Chrome Performance tab, why-did-you-render library.
+
+

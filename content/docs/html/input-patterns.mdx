@@ -1,0 +1,524 @@
+---
+title: "Input Patterns - Regex Validation for Forms"
+description: Documentation for Input Patterns - Regex Validation for Forms.
+---
+
+# Input Patterns - Regex Validation for Forms
+
+
+
+## What is the Pattern Attribute?
+
+The `pattern` attribute specifies a regular expression that the input's value must match for validation.
+
+> **Definition:** The pattern attribute provides client-side validation using regular expressions (regex). When a form is submitted, the browser checks if the input value matches the pattern. If not, the form won't submit and shows a validation message.
+
+```html
+<input type="text" pattern="[A-Za-z]{3,}" title="At least 3 letters required" />
+```
+
+## How Pattern Works
+
+```html
+<input
+  type="text"
+  pattern="[0-9]{5}"           <!-- Regex pattern -->
+  title="Enter 5-digit ZIP"    <!-- Custom error message -->
+  required                     <!-- Makes empty invalid too -->
+>
+```
+
+| Component  | Purpose                                                 |
+| ---------- | ------------------------------------------------------- |
+| `pattern`  | Regex the value must match                              |
+| `title`    | Tooltip + part of validation message                    |
+| `required` | Prevents empty values (pattern allows empty by default) |
+
+## Pattern vs Input Type
+
+| Input Type | Built-in Validation          | Add Pattern For              |
+| ---------- | ---------------------------- | ---------------------------- |
+| `email`    | Valid email format           | Specific domain requirements |
+| `url`      | Valid URL format             | Specific protocol/domain     |
+| `tel`      | None (just numeric keyboard) | Phone format validation      |
+| `number`   | Numeric with min/max         | Specific number formats      |
+| `text`     | None                         | Any format validation        |
+
+## Regex Basics for Patterns
+
+### Character Classes
+
+| Pattern    | Meaning                      | Example Match |
+| ---------- | ---------------------------- | ------------- |
+| `[abc]`    | Any of a, b, or c            | "a", "b", "c" |
+| `[a-z]`    | Any lowercase letter         | "m", "z"      |
+| `[A-Z]`    | Any uppercase letter         | "A", "M"      |
+| `[0-9]`    | Any digit                    | "5", "9"      |
+| `[a-zA-Z]` | Any letter                   | "a", "Z"      |
+| `[^abc]`   | NOT a, b, or c               | "d", "1"      |
+| `.`        | Any character except newline | "x", "1", "@" |
+
+### Quantifiers
+
+| Pattern | Meaning         | Example                |
+| ------- | --------------- | ---------------------- |
+| `*`     | 0 or more       | `a*` → "", "aaa"       |
+| `+`     | 1 or more       | `a+` → "a", "aaa"      |
+| `?`     | 0 or 1          | `a?` → "", "a"         |
+| `{n}`   | Exactly n       | `a{3}` → "aaa"         |
+| `{n,}`  | n or more       | `a{2,}` → "aa", "aaaa" |
+| `{n,m}` | Between n and m | `a{2,4}` → "aa", "aaa" |
+
+### Anchors and Groups
+
+| Pattern  | Meaning                               |
+| -------- | ------------------------------------- | ------ |
+| `^`      | Start of string (implicit in pattern) |
+| `$`      | End of string (implicit in pattern)   |
+| `(abc)`  | Group                                 |
+| `(a      | b)`                                   | a OR b |
+| `(?:ab)` | Non-capturing group                   |
+
+### Escape Characters
+
+| Pattern | Meaning                |
+| ------- | ---------------------- |
+| `\d`    | Any digit [0-9]        |
+| `\w`    | Word char [a-zA-Z0-9_] |
+| `\s`    | Whitespace             |
+| `\.`    | Literal dot            |
+| `\+`    | Literal plus           |
+| `\\`    | Literal backslash      |
+
+## Common Input Patterns
+
+### Name Patterns
+
+```html
+<!-- Letters only, 2-50 characters -->
+<input
+  type="text"
+  pattern="[A-Za-z]{2,50}"
+  title="2-50 letters only"
+  required
+/>
+
+<!-- Letters with spaces (full name) -->
+<input
+  type="text"
+  pattern="[A-Za-z\s]{2,100}"
+  title="Letters and spaces only"
+  required
+/>
+
+<!-- Name with international characters -->
+<input
+  type="text"
+  pattern="[\p{L}\s'-]{2,100}"
+  title="Valid name required"
+  required
+/>
+```
+
+### Username Patterns
+
+```html
+<!-- Alphanumeric, 3-20 characters -->
+<input
+  type="text"
+  pattern="[A-Za-z0-9]{3,20}"
+  title="3-20 alphanumeric characters"
+  required
+/>
+
+<!-- Alphanumeric with underscore, starting with letter -->
+<input
+  type="text"
+  pattern="[A-Za-z][A-Za-z0-9_]{2,19}"
+  title="Start with letter, 3-20 chars, letters/numbers/underscore"
+  required
+/>
+
+<!-- No spaces, lowercase only -->
+<input
+  type="text"
+  pattern="[a-z0-9_]{3,15}"
+  title="Lowercase letters, numbers, underscore. 3-15 chars"
+  required
+/>
+```
+
+### Password Patterns
+
+```html
+<!-- Minimum 8 characters -->
+<input type="password" pattern=".{8,}" title="At least 8 characters" required />
+
+<!-- At least one uppercase, lowercase, number -->
+<input
+  type="password"
+  pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}"
+  title="8+ chars with uppercase, lowercase, and number"
+  required
+/>
+
+<!-- Strong password with special char -->
+<input
+  type="password"
+  pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}"
+  title="8+ chars: uppercase, lowercase, number, special char"
+  required
+/>
+```
+
+### Email Patterns
+
+```html
+<!-- Standard email (browser has built-in) -->
+<input type="email" required />
+
+<!-- Specific domain only -->
+<input
+  type="email"
+  pattern="[a-z0-9._%+-]+@company\.com"
+  title="Must be a company.com email"
+  required
+/>
+
+<!-- Multiple allowed domains -->
+<input
+  type="email"
+  pattern="[a-z0-9._%+-]+@(gmail|yahoo|outlook)\.com"
+  title="Gmail, Yahoo, or Outlook only"
+  required
+/>
+
+<!-- No disposable email domains -->
+<input
+  type="email"
+  pattern="[a-z0-9._%+-]+@(?!(tempmail|throwaway)\.com)[a-z0-9.-]+\.[a-z]{2,}"
+  title="No disposable emails"
+  required
+/>
+```
+
+### Phone Number Patterns
+
+```html
+<!-- US phone: (123) 456-7890 or 123-456-7890 -->
+<input
+  type="tel"
+  pattern="\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}"
+  title="Format: (123) 456-7890 or 123-456-7890"
+  required
+/>
+
+<!-- US phone with optional country code -->
+<input
+  type="tel"
+  pattern="(\+1)?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}"
+  title="US phone number"
+  required
+/>
+
+<!-- International phone -->
+<input
+  type="tel"
+  pattern="\+?[0-9]{10,15}"
+  title="10-15 digits, optional + prefix"
+  required
+/>
+
+<!-- Indian phone: +91 or 10 digits -->
+<input
+  type="tel"
+  pattern="(\+91[\s]?)?[6-9]\d{9}"
+  title="Indian phone: 10 digits starting with 6-9"
+  required
+/>
+```
+
+### Postal/ZIP Code Patterns
+
+```html
+<!-- US ZIP code: 12345 or 12345-6789 -->
+<input
+  type="text"
+  pattern="\d{5}(-\d{4})?"
+  title="5 digit ZIP or ZIP+4 format"
+  required
+/>
+
+<!-- Canadian postal code: A1A 1A1 -->
+<input
+  type="text"
+  pattern="[A-Za-z]\d[A-Za-z][\s]?\d[A-Za-z]\d"
+  title="Format: A1A 1A1"
+  required
+/>
+
+<!-- UK postcode -->
+<input
+  type="text"
+  pattern="[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}"
+  title="UK postcode format"
+  required
+/>
+
+<!-- Indian PIN code: 6 digits -->
+<input type="text" pattern="[1-9][0-9]{5}" title="6-digit PIN code" required />
+```
+
+### Credit Card Patterns
+
+```html
+<!-- Any card: 13-19 digits -->
+<input
+  type="text"
+  pattern="\d{13,19}"
+  title="13-19 digit card number"
+  required
+/>
+
+<!-- With spaces/dashes: 1234 5678 9012 3456 -->
+<input
+  type="text"
+  pattern="[\d\s-]{13,23}"
+  title="Card number with optional spaces/dashes"
+  required
+/>
+
+<!-- Visa: Starts with 4, 16 digits -->
+<input
+  type="text"
+  pattern="4\d{15}"
+  title="Visa card: 16 digits starting with 4"
+  required
+/>
+
+<!-- Mastercard: Starts with 51-55 or 2221-2720 -->
+<input
+  type="text"
+  pattern="(5[1-5]\d{14})|(2[2-7]\d{14})"
+  title="Mastercard number"
+  required
+/>
+
+<!-- CVV: 3-4 digits -->
+<input type="text" pattern="\d{3,4}" title="3 or 4 digit CVV" required />
+
+<!-- Expiry: MM/YY -->
+<input
+  type="text"
+  pattern="(0[1-9]|1[0-2])\/\d{2}"
+  title="Format: MM/YY"
+  required
+/>
+```
+
+### Date Patterns
+
+```html
+<!-- DD/MM/YYYY -->
+<input
+  type="text"
+  pattern="(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}"
+  title="Format: DD/MM/YYYY"
+  required
+/>
+
+<!-- MM/DD/YYYY -->
+<input
+  type="text"
+  pattern="(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/\d{4}"
+  title="Format: MM/DD/YYYY"
+  required
+/>
+
+<!-- YYYY-MM-DD (ISO) -->
+<input
+  type="text"
+  pattern="\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
+  title="Format: YYYY-MM-DD"
+  required
+/>
+```
+
+### URL Patterns
+
+```html
+<!-- HTTPS only -->
+<input
+  type="url"
+  pattern="https://.*"
+  title="URL must start with https://"
+  required
+/>
+
+<!-- Specific domain -->
+<input
+  type="url"
+  pattern="https?://(www\.)?example\.com/.*"
+  title="Must be an example.com URL"
+  required
+/>
+```
+
+### Social Media Patterns
+
+```html
+<!-- Twitter/X handle -->
+<input
+  type="text"
+  pattern="@?[A-Za-z0-9_]{1,15}"
+  title="Twitter handle (1-15 chars)"
+  required
+/>
+
+<!-- Instagram username -->
+<input
+  type="text"
+  pattern="[A-Za-z0-9_.]{1,30}"
+  title="Instagram username (1-30 chars)"
+  required
+/>
+```
+
+### ID Patterns
+
+```html
+<!-- Social Security Number: 123-45-6789 -->
+<input
+  type="text"
+  pattern="\d{3}-\d{2}-\d{4}"
+  title="Format: 123-45-6789"
+  required
+/>
+
+<!-- Aadhaar number (India): 12 digits -->
+<input
+  type="text"
+  pattern="[2-9]\d{11}"
+  title="12-digit Aadhaar number"
+  required
+/>
+
+<!-- PAN card (India): ABCDE1234F -->
+<input
+  type="text"
+  pattern="[A-Z]{5}[0-9]{4}[A-Z]"
+  title="Format: ABCDE1234F"
+  required
+/>
+```
+
+### Other Common Patterns
+
+```html
+<!-- Alphanumeric code: ABC-123 -->
+<input type="text" pattern="[A-Z]{3}-\d{3}" title="Format: ABC-123" required />
+
+<!-- Hexadecimal color: #FF0000 -->
+<input
+  type="text"
+  pattern="#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})"
+  title="Hex color code"
+  required
+/>
+
+<!-- Version number: 1.0.0 -->
+<input type="text" pattern="\d+\.\d+\.\d+" title="Format: X.Y.Z" required />
+
+<!-- IP Address (basic) -->
+<input
+  type="text"
+  pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+  title="IP address format"
+  required
+/>
+
+<!-- Time 24h: HH:MM -->
+<input
+  type="text"
+  pattern="([01]\d|2[0-3]):[0-5]\d"
+  title="Format: HH:MM (24-hour)"
+  required
+/>
+```
+
+## Pattern Reference Table
+
+| Use Case         | Pattern                               |
+| ---------------- | ------------------------------------- |
+| Letters only     | `[A-Za-z]+`                           |
+| Numbers only     | `[0-9]+` or `\d+`                     |
+| Alphanumeric     | `[A-Za-z0-9]+`                        |
+| No special chars | `[A-Za-z0-9\s]+`                      |
+| Min length 8     | `.{8,}`                               |
+| Exact 5 digits   | `\d{5}`                               |
+| US Phone         | `\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}` |
+| US ZIP           | `\d{5}(-\d{4})?`                      |
+| Email domain     | `.*@domain\.com`                      |
+| Strong password  | `(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}` |
+
+## Interview Questions & Answers
+
+### Q1: What is the HTML pattern attribute and when should you use it?
+
+The pattern attribute specifies a JavaScript regular expression that an input's value must match for the form to submit. It provides client-side validation beyond what input types offer. Use it when you need specific formats like phone numbers on `type="tel"` (which has no built-in validation), custom password requirements, or restricting email to specific domains. Remember pattern allows empty values by default - add `required` to prevent that. Always provide the `title` attribute for helpful error messages.
+
+---
+
+### Q2: Why doesn't pattern work without the required attribute for empty inputs?
+
+By design, pattern validation only applies when there's a value to validate. An empty input passes pattern validation because there's nothing to match against. This allows optional fields with format requirements - if filled, it must match the pattern; if empty, it's valid. To make a field both required and pattern-matched, use both attributes: `<input pattern="..." required>`. This is intentional behavior following the HTML specification.
+
+---
+
+### Q3: How do you create a pattern for password strength validation?
+
+Use lookahead assertions to require multiple character types without enforcing order: `(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}`. Each `(?=.*X)` checks that X exists somewhere. This pattern requires at least one lowercase (`[a-z]`), one uppercase (`[A-Z]`), one digit (`\d`), and minimum 8 characters (`.{8,}`). Add `(?=.*[@$!%*?&])` for special characters. The final `.{8,}` actually matches the string after the lookaheads verify character presence.
+
+---
+
+### Q4: What's the difference between `\d` and `[0-9]` in patterns?
+
+Both match digits 0-9 in most cases and are essentially equivalent in HTML patterns. `\d` is shorter to type, while `[0-9]` is more explicit. Technically, `\d` might match other Unicode digits in some regex engines, but in HTML patterns (which use JavaScript regex), they're identical for ASCII digits. Use whichever is more readable for your team. In character classes like `[0-9A-Z]`, the bracket notation may be clearer.
+
+---
+
+### Q5: How should you validate international phone numbers with pattern?
+
+International phone validation is complex because formats vary by country. A general pattern like `\+?[0-9]{10,15}` allows optional +, then 10-15 digits. For better UX, use `type="tel"` for proper mobile keyboards, accept multiple formats (spaces, dashes, parentheses): `[\d\s()-+]{10,20}`, and either use a library for proper validation or validate server-side. For country-specific validation, provide separate patterns or use JavaScript with a library like libphonenumber.
+
+---
+
+### Q6: Why is the title attribute important with pattern?
+
+The `title` attribute provides user feedback when pattern validation fails. Browsers append it to the default validation message like "Please match the requested format: [title]". Without it, users see a generic message and don't know what format is expected. Write clear, helpful titles: "Enter 10-digit phone number" rather than "Invalid format". The title also shows as a tooltip on hover. For better UX, also show format hints near the input.
+
+---
+
+### Q7: How do you validate that a value starts with a specific prefix?
+
+Use `^` (start anchor) in your pattern: `^PRE.*` or just `PRE.*` (patterns implicitly anchor at start/end). For example, to require URLs starting with https: `pattern="https://.*"` on a URL input. For a product code starting with "ABC": `pattern="ABC\d{4}"`. Remember that HTML patterns automatically anchor to both start and end, so `ABC` means "exactly ABC" not "contains ABC".
+
+---
+
+### Q8: Can you validate patterns across multiple fields without JavaScript?
+
+Pure HTML cannot validate relationships between fields (like password confirmation). The pattern attribute only validates the individual input's value against its pattern. For cross-field validation like matching passwords, confirming email, or checking that end date is after start date, you need JavaScript. You can use the Constraint Validation API: `input.setCustomValidity("Passwords don't match")`. HTML5 validation is per-field only.
+
+---
+
+### Q9: What's the pattern for validating Indian phone numbers?
+
+A pattern for Indian mobile numbers: `pattern="(\+91[\s-]?)?[6-9]\d{9}"`. This allows optional +91 prefix, then requires the number to start with 6, 7, 8, or 9 (valid mobile prefixes), followed by exactly 9 more digits. For accepting landlines too, it gets complex due to varying STD codes. For robust validation, consider: `pattern="(\+91[\s-]?)?[0-9]{10}"` and validate the actual carrier/region server-side.
+
+---
+
+### Q10: How do you escape special characters in patterns?
+
+Regex special characters (`^ $ . * + ? { } [ ] \ | ( )`) need escaping with backslash when you want the literal character. For a literal dot: `\.`, for literal plus: `\+`, for literal question mark: `\?`. Example: file extension pattern `.*\.pdf$` matches anything ending in ".pdf". For literal backslash, use `\\`. In HTML attributes, you don't need to escape the backslash itself - write `pattern=".*\.pdf"` not `pattern=".*\\.pdf"`.
+
+

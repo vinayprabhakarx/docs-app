@@ -1,0 +1,795 @@
+---
+title: "CSS Selectors - The Foundation of Styling"
+description: Documentation for CSS Selectors - The Foundation of Styling.
+---
+
+# CSS Selectors - The Foundation of Styling
+
+
+
+## What are CSS Selectors?
+
+CSS Selectors are patterns used to select and style HTML elements. They are the foundation of CSS - they tell the browser **which elements** to apply styles to.
+
+Think of selectors as a way to "point" at specific elements on your webpage and say "style this one!" Without selectors, you couldn't target specific elements to style them.
+
+### Why Are Selectors Important?
+
+Before CSS selectors, styling was done inline with HTML attributes, making code messy and hard to maintain. Selectors solve this by:
+
+- **Separating content from presentation** - HTML for structure, CSS for styling
+- **Reusing styles** - One selector can style multiple elements
+- **Precise targeting** - Select exactly what you need to style
+- **Easier maintenance** - Change styles in one place, affect many elements
+
+## Types of CSS Selectors - Quick Reference
+
+| Selector Type | Syntax | Example | Description |
+|---|---|---|---|
+| **Universal Selector** | `*` | `* { margin: 0; }` | Selects all elements |
+| **Type Selector** | `element` | `p { color: blue; }` | Selects all elements of a type |
+| **Class Selector** | `.classname` | `.btn { padding: 10px; }` | Selects elements with a class |
+| **ID Selector** | `#idname` | `#header { background: red; }` | Selects element with an ID |
+| **Attribute Selector** | `[attribute]` | `input[type="text"] { }` | Selects by attribute |
+| **Descendant Selector** | `parent child` | `div p { }` | Selects descendants |
+| **Child Selector** | `parent > child` | `ul > li { }` | Selects direct children |
+| **Adjacent Sibling** | `element + next` | `h1 + p { }` | Selects next sibling |
+| **General Sibling** | `element ~ siblings` | `h1 ~ p { }` | Selects all siblings |
+| **Group Selector** | `sel1, sel2` | `h1, h2, h3 { }` | Groups selectors |
+
+## Detailed Explanation of Each Selector
+
+### 1. Universal Selector (*)
+
+**What it does:**
+The universal selector selects **every single element** on the page. It's like saying "apply this style to everything."
+
+**Syntax:**
+```css
+* {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<div>
+    <h1>Heading</h1>
+    <p>Paragraph</p>
+    <button>Button</button>
+</div>
+```
+
+**CSS Example:**
+```css
+/* Reset all margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+```
+
+**Result:** All elements (div, h1, p, button) will have no margin, no padding, and use border-box sizing.
+
+**When to use:**
+- At the start of your stylesheet for CSS resets
+- To apply global styles to all elements
+- For setting `box-sizing: border-box` globally
+
+**Real-world scenario:**
+You're building a website and notice different browsers add different default margins and padding. Use `* { margin: 0; padding: 0; }` to reset everything to zero and start with a clean slate.
+
+**Performance Note:** The universal selector can be slow on very large pages because it targets every element. Use sparingly.
+
+---
+
+### 2. Type Selector (Element Selector)
+
+**What it does:**
+Selects all elements of a specific HTML tag type (like all paragraphs, all headings, all links).
+
+**Syntax:**
+```css
+elementName {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<p>First paragraph</p>
+<p>Second paragraph</p>
+<div>This is a div</div>
+<p>Third paragraph</p>
+```
+
+**CSS Example:**
+```css
+p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+```
+
+**Result:** All three `<p>` elements will have the same font size, line height, and color. The `<div>` is not affected.
+
+**More Examples:**
+
+**Example 1 - Style all headings:**
+```css
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+}
+```
+
+**Example 2 - Style all links:**
+```css
+a {
+    color: blue;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: darkblue;
+}
+```
+
+**Example 3 - Style all buttons:**
+```css
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+```
+
+**When to use:**
+- For base typography styles (all paragraphs, all headings)
+- For default link colors
+- When you want consistent styling across all instances of an element
+
+**Real-world scenario:**
+You want all paragraphs on your blog to have the same font size and line spacing for readability. Instead of adding a class to every `<p>` tag, use the type selector `p { }` to style them all at once.
+
+---
+
+### 3. Class Selector (.)
+
+**What it does:**
+Selects all elements that have a specific `class` attribute. Classes are **reusable** - you can apply the same class to multiple elements, even different types of elements.
+
+**Syntax:**
+```css
+.className {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<button class="btn">Click Me</button>
+<button class="btn">Submit</button>
+<a href="#" class="btn">Link Button</a>
+<div class="btn">Div Button</div>
+```
+
+**CSS Example:**
+```css
+.btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+```
+
+**Result:** All four elements (2 buttons, 1 link, 1 div) will look like buttons because they all have the `btn` class.
+
+**Multiple Classes:**
+You can apply multiple classes to one element:
+
+```html
+<div class="card featured">
+    <h2>Featured Product</h2>
+    <p>Special offer!</p>
+</div>
+```
+
+```css
+.card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.featured {
+    background-color: #fff3cd;
+    border-color: #ffc107;
+}
+```
+
+**Result:** The div gets both the card styling AND the featured styling (yellow background).
+
+**When to use:**
+- For reusable styles across multiple elements
+- When you need to style different element types the same way
+- Most common selector in modern CSS (use it often!)
+
+**Real-world scenario:**
+You have buttons, links, and divs that should all look like clickable buttons. Instead of writing separate styles for each, create a `.btn` class and apply it to all of them.
+
+**Best Practice:** Use descriptive class names like `.btn-primary`, `.card-header`, `.nav-link` instead of generic names like `.blue` or `.big`.
+
+---
+
+### 4. ID Selector (#)
+
+**What it does:**
+Selects a **single element** with a specific `id` attribute. IDs must be **unique** - each ID should only appear once per page.
+
+**Syntax:**
+```css
+#idName {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<header id="main-header">
+    <h1>My Website</h1>
+</header>
+
+<nav id="main-nav">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+</nav>
+
+<main id="content">
+    <p>Main content here</p>
+</main>
+```
+
+**CSS Example:**
+```css
+#main-header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+#main-nav {
+    background-color: #444;
+    padding: 10px;
+}
+
+#content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+```
+
+**Result:** Each unique section gets its own specific styling.
+
+**When to use:**
+- For unique elements that appear only once (header, footer, main navigation)
+- For JavaScript targeting (easier to find unique elements)
+- For anchor links (`<a href="#section1">Jump to Section 1</a>`)
+
+**Real-world scenario:**
+You have one main header on your page. Give it `id="main-header"` and style it with `#main-header { }`. Since there's only one header, an ID makes sense.
+
+**Important Notes:**
+- **IDs have higher specificity** than classes (harder to override)
+- Each ID should be used only once per page
+- **Modern best practice:** Prefer classes over IDs for styling (IDs are better for JavaScript)
+
+**Specificity Example:**
+```css
+#header {
+    color: red;  /* This wins! */
+}
+
+.header {
+    color: blue;
+}
+```
+
+Even if both selectors target the same element, the ID selector wins because it has higher specificity.
+
+---
+
+### 5. Attribute Selector ([])
+
+**What it does:**
+Selects elements based on their **attributes** and attribute values. Very powerful for targeting specific types of inputs or links.
+
+**Syntax Variations:**
+```css
+[attribute]           /* Has the attribute */
+[attribute="value"]   /* Exact match */
+[attribute^="value"]  /* Starts with */
+[attribute$="value"]  /* Ends with */
+[attribute*="value"]  /* Contains */
+```
+
+**HTML Example:**
+```html
+<input type="text" placeholder="Name">
+<input type="email" placeholder="Email">
+<input type="password" placeholder="Password">
+<input type="text" required placeholder="Required field">
+
+<a href="https://google.com">Google</a>
+<a href="http://example.com">Example</a>
+<a href="document.pdf">PDF File</a>
+```
+
+**Example 1 - Select all text inputs:**
+```css
+input[type="text"] {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+input[type="email"] {
+    border: 1px solid blue;
+}
+```
+
+**Example 2 - Select all required fields:**
+```css
+input[required] {
+    border-left: 3px solid red;
+}
+```
+
+**Example 3 - Select HTTPS links:**
+```css
+a[href^="https"] {
+    color: green;
+}
+
+a[href^="https"]::before {
+    content: "🔒 ";
+}
+```
+
+**Result:** All HTTPS links will be green with a lock icon before them.
+
+**Example 4 - Select PDF links:**
+```css
+a[href$=".pdf"]::after {
+    content: " (PDF)";
+    color: red;
+    font-size: 0.8em;
+}
+```
+
+**Result:** Links ending in `.pdf` will have "(PDF)" added after them.
+
+**Example 5 - Select elements containing a value:**
+```css
+[class*="btn"] {
+    /* Matches btn, btn-primary, btn-secondary, my-btn, etc. */
+    cursor: pointer;
+}
+```
+
+**When to use:**
+- Styling different input types differently
+- Targeting links based on their destination
+- Selecting elements with data attributes
+- When you can't add classes to HTML
+
+**Real-world scenario:**
+You're styling a form and want all required fields to have a red border to show they're mandatory. Use `input[required] { border-left: 3px solid red; }` instead of adding a class to each required field.
+
+---
+
+### 6. Descendant Selector (space)
+
+**What it does:**
+Selects all elements that are **descendants** (children, grandchildren, great-grandchildren, etc.) of a specified element.
+
+**Syntax:**
+```css
+ancestor descendant {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<article>
+    <p>Direct child paragraph</p>
+    <div>
+        <p>Grandchild paragraph</p>
+        <section>
+            <p>Great-grandchild paragraph</p>
+        </section>
+    </div>
+</article>
+
+<p>Outside paragraph (not selected)</p>
+```
+
+**CSS Example:**
+```css
+article p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.8;
+}
+```
+
+**Result:** All three paragraphs inside `<article>` are styled (direct child, grandchild, and great-grandchild). The paragraph outside `<article>` is not affected.
+
+**Example 2 - Navigation links:**
+```html
+<nav>
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+</nav>
+
+<a href="#footer">Footer Link</a>
+```
+
+```css
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+```
+
+**Result:** Only the links inside `<nav>` are styled. The footer link is not affected.
+
+**Example 3 - Sidebar lists:**
+```css
+.sidebar ul li {
+    list-style: none;
+    padding: 5px 10px;
+    border-bottom: 1px solid #eee;
+}
+```
+
+**When to use:**
+- When you want to style all elements of a type within a container
+- For scoping styles to specific sections
+- When you don't want to add extra classes
+
+**Real-world scenario:**
+You have a sidebar with lists that should look different from lists in the main content. Use `.sidebar ul li { }` to target only the list items inside the sidebar.
+
+**Note:** This selects ALL descendants at any nesting level, not just direct children.
+
+---
+
+### 7. Child Selector (>)
+
+**What it does:**
+Selects only the **direct children** of a specified element (not grandchildren or deeper descendants).
+
+**Syntax:**
+```css
+parent > child {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<nav>
+    <ul>
+        <li>Top Level 1</li>          <!-- Direct child ✓ -->
+        <li>Top Level 2               <!-- Direct child ✓ -->
+            <ul>
+                <li>Nested Item</li>   <!-- NOT a direct child ✗ -->
+            </ul>
+        </li>
+        <li>Top Level 3</li>          <!-- Direct child ✓ -->
+    </ul>
+</nav>
+```
+
+**CSS Example:**
+```css
+nav > ul > li {
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: bold;
+}
+```
+
+**Result:** Only the three top-level `<li>` elements are styled. The nested `<li>` inside the submenu is not affected.
+
+**Comparison with Descendant Selector:**
+
+```css
+/* Descendant selector - selects ALL li inside nav */
+nav li {
+    color: blue;  /* Affects all 4 li elements */
+}
+
+/* Child selector - selects ONLY direct li children */
+nav > ul > li {
+    color: red;  /* Affects only 3 top-level li elements */
+}
+```
+
+**Example 2 - Direct children only:**
+```html
+<div class="container">
+    <p>Direct child paragraph</p>
+    <div>
+        <p>Nested paragraph</p>
+    </div>
+</div>
+```
+
+```css
+.container > p {
+    font-weight: bold;
+    color: red;
+}
+```
+
+**Result:** Only the direct child paragraph is bold and red. The nested paragraph is not affected.
+
+**When to use:**
+- When you want to target only immediate children
+- To avoid styling nested elements
+- For more precise control over your styles
+
+**Real-world scenario:**
+You have a navigation menu with submenus. You want only the top-level menu items to be displayed horizontally, but the submenu items should stack vertically. Use `nav > ul > li { display: inline-block; }` to target only the top level.
+
+---
+
+### 8. Adjacent Sibling Selector (+)
+
+**What it does:**
+Selects an element that **immediately follows** another element (same parent, right after).
+
+**Syntax:**
+```css
+element1 + element2 {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<h2>Article Title</h2>
+<p>First paragraph (immediately after h2)</p>  <!-- Selected ✓ -->
+<p>Second paragraph</p>                        <!-- Not selected ✗ -->
+<p>Third paragraph</p>                         <!-- Not selected ✗ -->
+```
+
+**CSS Example:**
+```css
+h2 + p {
+    margin-top: 0;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #555;
+}
+```
+
+**Result:** Only the first paragraph (immediately after `<h2>`) is styled. The other paragraphs are not affected.
+
+**Example 2 - Custom checkbox styling:**
+```html
+<input type="checkbox" id="agree">
+<label for="agree">I agree to terms</label>
+```
+
+```css
+input[type="checkbox"]:checked + label {
+    color: green;
+    font-weight: bold;
+}
+```
+
+**Result:** When the checkbox is checked, the label immediately after it turns green and bold.
+
+**Example 3 - Image captions:**
+```html
+<img src="photo.jpg" alt="Photo">
+<p>Photo caption</p>
+```
+
+```css
+img + p {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+```
+
+**Result:** The paragraph immediately after an image is styled as a caption.
+
+**When to use:**
+- Styling the first element after another
+- Custom checkbox/radio button styling
+- Image captions or descriptions
+- Removing top margin from elements following headings
+
+**Real-world scenario:**
+You want the first paragraph after every heading to be slightly larger and bolder to serve as an introduction. Use `h2 + p { font-size: 1.1em; font-weight: bold; }`.
+
+**Important:** Only selects the IMMEDIATELY following sibling, not all siblings.
+
+---
+
+### 9. General Sibling Selector (~)
+
+**What it does:**
+Selects **all siblings** that follow a specified element (same parent, anywhere after).
+
+**Syntax:**
+```css
+element1 ~ element2 {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<h1>Main Title</h1>
+<p>Paragraph 1</p>  <!-- Selected ✓ -->
+<p>Paragraph 2</p>  <!-- Selected ✓ -->
+<div>Some div</div>
+<p>Paragraph 3</p>  <!-- Selected ✓ -->
+```
+
+**CSS Example:**
+```css
+h1 ~ p {
+    color: gray;
+    font-size: 14px;
+}
+```
+
+**Result:** All three paragraphs after `<h1>` are styled (all siblings after h1).
+
+**Comparison with Adjacent Sibling:**
+
+```css
+/* Adjacent sibling (+) - only immediate next sibling */
+h1 + p {
+    color: red;  /* Only Paragraph 1 */
+}
+
+/* General sibling (~) - all following siblings */
+h1 ~ p {
+    color: blue;  /* All 3 paragraphs */
+}
+```
+
+**Example 2 - Active tab styling:**
+```html
+<div class="tabs">
+    <div class="tab">Tab 1</div>
+    <div class="tab active">Tab 2 (Active)</div>
+    <div class="tab">Tab 3</div>
+    <div class="tab">Tab 4</div>
+</div>
+```
+
+```css
+.tab.active ~ .tab {
+    opacity: 0.5;
+}
+```
+
+**Result:** All tabs after the active tab have reduced opacity.
+
+**When to use:**
+- When you want to style all following siblings
+- For tab or accordion interfaces
+- When order matters in your layout
+
+**Real-world scenario:**
+You have a form where selecting a checkbox should dim all the options below it. Use `.checkbox:checked ~ .option { opacity: 0.5; }`.
+
+---
+
+### 10. Group Selector (,)
+
+**What it does:**
+Applies the **same styles** to multiple selectors at once. Saves you from repeating the same CSS.
+
+**Syntax:**
+```css
+selector1, selector2, selector3 {
+    property: value;
+}
+```
+
+**HTML Example:**
+```html
+<h1>Main Heading</h1>
+<h2>Subheading</h2>
+<h3>Section Heading</h3>
+<p>Paragraph</p>
+```
+
+**CSS Example:**
+```css
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+```
+
+**Result:** All six heading levels get the same font, weight, margin, and color.
+
+**Example 2 - Reset margins:**
+```css
+p, ul, ol, blockquote, pre {
+    margin-bottom: 20px;
+}
+```
+
+**Example 3 - Form elements:**
+```css
+input, textarea, select {
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+```
+
+**Result:** All form elements have consistent styling and focus states.
+
+**When to use:**
+- When multiple elements need the same styles
+- To reduce code repetition (DRY principle)
+- For consistent styling across element types
+
+**Real-world scenario:**
+You want all headings to use the same font family and have the same bottom margin. Instead of writing six separate rules, group them: `h1, h2, h3, h4, h5, h6 { }`.
+
+**Best Practice:** Keep grouped selectors related and logical. Don't group unrelated elements just to save lines of code.
+
+## Related Topics
+
+- [[02-Pseudo-Classes|Pseudo-Classes]] - Learn about :hover, :focus, :nth-child
+- [[03-Pseudo-Elements|Pseudo-Elements]] - Learn about ::before, ::after
+- [[04-CSS-Specificity|CSS Specificity]] - Understand selector priority
+
+---
+
+
+

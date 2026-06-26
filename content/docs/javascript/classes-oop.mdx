@@ -1,0 +1,984 @@
+---
+title: "Classes & OOP - Object-Oriented Programming"
+description: Documentation for Classes & OOP - Object-Oriented Programming.
+---
+
+# Classes & OOP - Object-Oriented Programming
+
+
+
+## What are Classes?
+
+**Classes** are templates for creating objects with predefined properties and methods. They're syntactic sugar over JavaScript's prototype-based inheritance.
+
+> **Definition:** A class is a blueprint for creating objects that encapsulates data (properties) and behavior (methods). JavaScript classes provide cleaner syntax for object-oriented programming while still using prototypes under the hood.
+
+```javascript
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    console.log(`Hello, I'm ${this.name}`);
+  }
+}
+
+const john = new Person("John", 30);
+john.greet(); // Hello, I'm John
+```
+
+## OOP Concepts Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                  OBJECT-ORIENTED PROGRAMMING CONCEPTS                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │                    FOUR PILLARS OF OOP                           │   │
+│  ├──────────────────────────────────────────────────────────────────┤   │
+│  │                                                                  │   │
+│  │  1. ENCAPSULATION                                                │   │
+│  │     ├─ Bundle data + methods together                            │   │
+│  │     ├─ Hide internal implementation                              │   │
+│  │     ├─ Expose only necessary interface (API)                     │   │
+│  │     └─ Private fields: #privateField                             │   │
+│  │                                                                  │   │
+│  │  2. INHERITANCE                                                  │   │
+│  │     ├─ Create new class from existing class                      │   │
+│  │     ├─ Child inherits properties/methods from parent             │   │
+│  │     ├─ Keyword: extends                                          │   │
+│  │     └─ Call parent: super()                                      │   │
+│  │                                                                  │   │
+│  │  3. POLYMORPHISM                                                 │   │
+│  │     ├─ Same method name, different behavior                      │   │
+│  │     ├─ Method overriding in child classes                        │   │
+│  │     ├─ Runtime polymorphism (dynamic dispatch)                   │   │
+│  │     └─ Enables flexible, extensible code                         │   │
+│  │                                                                  │   │
+│  │  4. ABSTRACTION                                                  │   │
+│  │     ├─ Hide complex implementation details                       │   │
+│  │     ├─ Show only essential features                              │   │
+│  │     ├─ Simplify interface for users                              │   │
+│  │     └─ Reduce code complexity                                    │   │
+│  │                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Class Structure Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        JAVASCRIPT CLASS STRUCTURE                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   class ClassName {                                                     │
+│                                                                         │
+│     ┌───────────────────────────────────────────────────────────────┐   │
+│     │  STATIC MEMBERS (belong to class itself)                      │   │
+│     ├───────────────────────────────────────────────────────────────┤   │
+│     │  static VERSION = '1.0';       // Static property             │   │
+│     │  static create() { ... }       // Static method (factory)     │   │
+│     │  static #privateStatic;        // Private static (ES2022)     │   │
+│     └───────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│     ┌───────────────────────────────────────────────────────────────┐   │
+│     │  PRIVATE FIELDS (only accessible inside class)                │   │
+│     ├───────────────────────────────────────────────────────────────┤   │
+│     │  #privateField;                // Private instance field      │   │
+│     │  #privateMethod() { ... }      // Private method              │   │
+│     └───────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│     ┌───────────────────────────────────────────────────────────────┐   │
+│     │  CONSTRUCTOR (initializes new instances)                      │   │
+│     ├───────────────────────────────────────────────────────────────┤   │
+│     │  constructor(params) {                                        │   │
+│     │    this.publicField = value;   // Public property             │   │
+│     │    this.#privateField = val;   // Initialize private          │   │
+│     │  }                                                            │   │
+│     └───────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│     ┌───────────────────────────────────────────────────────────────┐   │
+│     │  INSTANCE METHODS (available on each instance)                │   │
+│     ├───────────────────────────────────────────────────────────────┤   │
+│     │  methodName() { ... }          // Regular method              │   │
+│     │  get propName() { ... }        // Getter (access as property) │   │
+│     │  set propName(val) { ... }     // Setter (assign validation)  │   │
+│     └───────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│   }                                                                     │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Inheritance Hierarchy
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        INHERITANCE HIERARCHY                            │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│                          ┌─────────────────┐                            │
+│                          │   Object        │  ← All objects inherit     │
+│                          │   (prototype)   │    from Object.prototype   │
+│                          └────────┬────────┘                            │
+│                                   │                                     │
+│                          ┌────────▼────────┐                            │
+│                          │   Animal        │  ← Parent/Base class       │
+│                          │  ─────────────  │                            │
+│                          │  name           │                            │
+│                          │  speak()        │                            │
+│                          │  eat()          │                            │
+│                          └────────┬────────┘                            │
+│                     ┌─────────────┼─────────────┐                       │
+│                     │             │             │                       │
+│            ┌────────▼────────┐ ┌──▼──────────┐ ┌▼───────────────┐       │
+│            │   Dog           │ │  Cat        │ │  Bird          │       │
+│            │  ─────────────  │ │ ─────────── │ │ ────────────── │       │
+│            │  breed          │ │ color       │ │ wingSpan       │       │
+│            │  speak() ───────┤ │ speak()     │ │ speak()        │       │
+│            │  → 'Woof!'      │ │ → 'Meow!'   │ │ → 'Tweet!'     │       │
+│            │  fetch()        │ │ scratch()   │ │ fly()          │       │
+│            └─────────────────┘ └─────────────┘ └────────────────┘       │
+│                     │                                                   │
+│                     │  ← Method Overriding                              │
+│                     │    (Polymorphism)                                 │
+│            ┌────────▼────────┐                                          │
+│            │ GermanShepherd  │  ← Multi-level inheritance               │
+│            │ ─────────────── │                                          │
+│            │ isWorkingDog    │                                          │
+│            │ guard()         │                                          │
+│            └─────────────────┘                                          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Class Types Overview
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                     WAYS TO CREATE CLASSES/OBJECTS                      │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  1. CLASS DECLARATION                                                  │
+│     ├─ Syntax: class Name { }                                          │
+│     ├─ Not hoisted (TDZ applies)                                       │
+│     └─ Most common approach                                            │
+│                                                                        │
+│  2. CLASS EXPRESSION                                                   │
+│     ├─ Named: const C = class ClassName { }                            │
+│     ├─ Anonymous: const C = class { }                                  │
+│     └─ Used for dynamic class creation                                 │
+│                                                                        │
+│  3. CONSTRUCTOR FUNCTION (Old Way)                                     │
+│     ├─ Syntax: function Name() { }                                     │
+│     ├─ Methods added to prototype                                      │
+│     └─ Still used in legacy code                                       │
+│                                                                        │
+│  4. FACTORY FUNCTION (No class)                                        │
+│     ├─ Regular function that returns object                            │
+│     ├─ No 'new' keyword required                                       │
+│     └─ Enables composition over inheritance                            │
+│                                                                        │
+│  5. OBJECT.CREATE()                                                    │
+│     ├─ Create object with specific prototype                           │
+│     ├─ Most direct prototype control                                   │
+│     └─ Used for prototypal inheritance                                 │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+## Class Syntax
+
+### Basic Class
+
+```javascript
+class User {
+  // Constructor - called when creating instance
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+
+  // Method
+  greet() {
+    return `Hello, ${this.name}`;
+  }
+
+  // Method with parameters
+  sendEmail(message) {
+    console.log(`Sending to ${this.email}: ${message}`);
+  }
+}
+
+// Create instance
+const user = new User("John", "john@example.com");
+console.log(user.name); // 'John'
+console.log(user.greet()); // 'Hello, John'
+```
+
+### Class vs Constructor Function
+
+| Feature             | Class           | Constructor Function |
+| ------------------- | --------------- | -------------------- |
+| Syntax              | `class Name {}` | `function Name() {}` |
+| Methods             | Inside class    | On prototype         |
+| Strict mode         | Always          | Optional             |
+| Hoisting            | No (TDZ)        | Yes                  |
+| `new` required      | ✅ Yes          | Optional (bad)       |
+| `[[IsConstructor]]` | Yes             | Yes                  |
+
+```javascript
+// Constructor function (old way)
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.greet = function () {
+  console.log(`Hello, ${this.name}`);
+};
+
+// Class (modern way)
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    console.log(`Hello, ${this.name}`);
+  }
+}
+```
+
+## Constructor
+
+Special method for initializing objects.
+
+```javascript
+class User {
+  constructor(name, age) {
+    // Initialize properties
+    this.name = name;
+    this.age = age;
+    this.createdAt = new Date();
+  }
+}
+
+// Constructor with validation
+class Product {
+  constructor(name, price) {
+    if (price < 0) {
+      throw new Error("Price cannot be negative");
+    }
+    this.name = name;
+    this.price = price;
+  }
+}
+
+// Constructor with default values
+class Config {
+  constructor(options = {}) {
+    this.theme = options.theme || "light";
+    this.fontSize = options.fontSize || 14;
+  }
+}
+
+// Constructor can return object (overrides default behavior)
+class Special {
+  constructor(value) {
+    if (value < 0) {
+      return { error: "Invalid value" }; // Returns this object instead
+    }
+    this.value = value;
+  }
+}
+```
+
+## Methods
+
+### Instance Methods
+
+```javascript
+class Calculator {
+  add(a, b) {
+    return a + b;
+  }
+
+  subtract(a, b) {
+    return a - b;
+  }
+
+  // Method using other methods
+  addAndDouble(a, b) {
+    return this.add(a, b) * 2;
+  }
+}
+
+const calc = new Calculator();
+console.log(calc.add(2, 3)); // 5
+```
+
+### Static Methods
+
+Methods called on the class itself, not instances.
+
+```javascript
+class MathUtils {
+  static add(a, b) {
+    return a + b;
+  }
+
+  static max(...numbers) {
+    return Math.max(...numbers);
+  }
+
+  // Static methods can call other static methods
+  static average(...numbers) {
+    return MathUtils.sum(...numbers) / numbers.length;
+  }
+
+  static sum(...numbers) {
+    return numbers.reduce((a, b) => a + b, 0);
+  }
+}
+
+// Call on class, not instance
+console.log(MathUtils.add(2, 3)); // 5
+console.log(MathUtils.max(1, 5, 3)); // 5
+
+// ❌ Cannot call on instance
+const utils = new MathUtils();
+// utils.add(2, 3); // Error!
+
+// Practical use: Factory methods
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+
+  static createAdmin(name, email) {
+    const user = new User(name, email);
+    user.role = "admin";
+    return user;
+  }
+
+  static createGuest() {
+    return new User("Guest", "guest@example.com");
+  }
+}
+
+const admin = User.createAdmin("John", "john@example.com");
+```
+
+### Static Properties
+
+```javascript
+class Config {
+  static VERSION = "1.0.0";
+  static DEFAULT_TIMEOUT = 5000;
+
+  static getVersion() {
+    return Config.VERSION;
+  }
+}
+
+console.log(Config.VERSION); // '1.0.0'
+```
+
+## Getters and Setters
+
+```javascript
+class User {
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  // Getter - access like property
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  // Setter - set like property
+  set fullName(name) {
+    const [first, last] = name.split(" ");
+    this.firstName = first;
+    this.lastName = last;
+  }
+
+  // Getter for computed value
+  get initials() {
+    return `${this.firstName[0]}${this.lastName[0]}`;
+  }
+}
+
+const user = new User("John", "Doe");
+console.log(user.fullName); // 'John Doe' (getter)
+user.fullName = "Jane Smith"; // (setter)
+console.log(user.firstName); // 'Jane'
+
+// Validation in setters
+class Product {
+  constructor(name, price) {
+    this.name = name;
+    this._price = price; // Private convention
+  }
+
+  get price() {
+    return `$${this._price.toFixed(2)}`;
+  }
+
+  set price(value) {
+    if (value < 0) {
+      throw new Error("Price cannot be negative");
+    }
+    this._price = value;
+  }
+}
+
+// Lazy initialization with getter
+class DataLoader {
+  get data() {
+    if (!this._data) {
+      console.log("Loading data...");
+      this._data = this.loadData();
+    }
+    return this._data;
+  }
+
+  loadData() {
+    return [1, 2, 3];
+  }
+}
+```
+
+## Private Fields and Methods
+
+True private properties (ES2022+).
+
+```javascript
+class BankAccount {
+  #balance = 0; // Private field
+  #accountNumber;
+
+  constructor(initialBalance, accountNumber) {
+    this.#balance = initialBalance;
+    this.#accountNumber = accountNumber;
+  }
+
+  deposit(amount) {
+    if (amount > 0) {
+      this.#balance += amount;
+      this.#logTransaction("deposit", amount);
+    }
+  }
+
+  withdraw(amount) {
+    if (amount > 0 && amount <= this.#balance) {
+      this.#balance -= amount;
+      this.#logTransaction("withdraw", amount);
+      return true;
+    }
+    return false;
+  }
+
+  getBalance() {
+    return this.#balance;
+  }
+
+  // Private method
+  #logTransaction(type, amount) {
+    console.log(`${type}: ${amount}`);
+  }
+}
+
+const account = new BankAccount(100, "123456");
+account.deposit(50);
+console.log(account.getBalance()); // 150
+// console.log(account.#balance); // SyntaxError! Private field
+// account.#logTransaction(); // SyntaxError! Private method
+
+// Private static fields and methods
+class Counter {
+  static #count = 0;
+
+  static increment() {
+    Counter.#count++;
+    return Counter.#count;
+  }
+
+  static getCount() {
+    return Counter.#count;
+  }
+}
+```
+
+## Inheritance
+
+Classes can extend other classes.
+
+```javascript
+// Parent class
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    console.log(`${this.name} makes a sound`);
+  }
+
+  eat(food) {
+    console.log(`${this.name} eats ${food}`);
+  }
+}
+
+// Child class
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name); // Call parent constructor
+    this.breed = breed;
+  }
+
+  // Override parent method
+  speak() {
+    console.log(`${this.name} barks`);
+  }
+
+  // New method
+  fetch() {
+    console.log(`${this.name} fetches the ball`);
+  }
+}
+
+const dog = new Dog("Rex", "Labrador");
+dog.speak(); // Rex barks
+dog.eat("kibble"); // Rex eats kibble (inherited)
+dog.fetch(); // Rex fetches the ball
+```
+
+### Super Keyword
+
+```javascript
+class Vehicle {
+  constructor(brand) {
+    this.brand = brand;
+  }
+
+  start() {
+    console.log("Vehicle starting");
+    return true;
+  }
+}
+
+class Car extends Vehicle {
+  constructor(brand, model) {
+    super(brand); // Must call before using 'this'
+    this.model = model;
+  }
+
+  start() {
+    const started = super.start(); // Call parent method
+    if (started) {
+      console.log(`${this.brand} ${this.model} started`);
+    }
+    return started;
+  }
+}
+
+const car = new Car("Toyota", "Camry");
+car.start();
+// Vehicle starting
+// Toyota Camry started
+```
+
+### Extending Built-in Classes
+
+```javascript
+class PowerArray extends Array {
+  isEmpty() {
+    return this.length === 0;
+  }
+
+  first() {
+    return this[0];
+  }
+
+  last() {
+    return this[this.length - 1];
+  }
+}
+
+const arr = new PowerArray(1, 2, 3);
+console.log(arr.isEmpty()); // false
+console.log(arr.first()); // 1
+console.log(arr.last()); // 3
+
+// Built-in methods return PowerArray instances
+const filtered = arr.filter((x) => x > 1);
+console.log(filtered instanceof PowerArray); // true
+```
+
+## Common OOP Principles
+
+### 1. Encapsulation
+
+Hide internal details, expose only what's necessary.
+
+```javascript
+class User {
+  #password; // Private
+
+  constructor(name, password) {
+    this.name = name; // Public
+    this.#password = this.#hashPassword(password);
+  }
+
+  #hashPassword(password) {
+    return password.split("").reverse().join("");
+  }
+
+  verifyPassword(input) {
+    return this.#hashPassword(input) === this.#password;
+  }
+
+  changePassword(oldPassword, newPassword) {
+    if (this.verifyPassword(oldPassword)) {
+      this.#password = this.#hashPassword(newPassword);
+      return true;
+    }
+    return false;
+  }
+}
+```
+
+### 2. Inheritance
+
+Reuse code from parent classes.
+
+```javascript
+class Employee extends Person {
+  constructor(name, age, salary) {
+    super(name, age);
+    this.salary = salary;
+  }
+
+  work() {
+    console.log(`${this.name} is working`);
+  }
+}
+```
+
+### 3. Polymorphism
+
+Different classes can have methods with the same name.
+
+```javascript
+class Shape {
+  getArea() {
+    throw new Error("getArea must be implemented");
+  }
+}
+
+class Circle extends Shape {
+  constructor(radius) {
+    super();
+    this.radius = radius;
+  }
+
+  getArea() {
+    return Math.PI * this.radius ** 2;
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(width, height) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
+
+  getArea() {
+    return this.width * this.height;
+  }
+}
+
+// Same method, different behavior
+const shapes = [new Circle(5), new Rectangle(4, 6)];
+shapes.forEach((shape) => console.log(shape.getArea()));
+// 78.54... (circle)
+// 24 (rectangle)
+```
+
+### 4. Abstraction
+
+Hide complex implementation details.
+
+```javascript
+class Database {
+  #connection;
+  #config;
+
+  constructor(config) {
+    this.#config = config;
+  }
+
+  connect() {
+    // Complex connection logic hidden
+    this.#connection = this.#createConnection();
+  }
+
+  #createConnection() {
+    // Internal implementation
+    return "Connected";
+  }
+
+  query(sql) {
+    // User doesn't need to know how query works
+    this.#validateConnection();
+    return `Executing: ${sql}`;
+  }
+
+  #validateConnection() {
+    if (!this.#connection) {
+      throw new Error("Not connected");
+    }
+  }
+}
+```
+
+## Class Expressions
+
+```javascript
+// Named class expression
+const User = class UserClass {
+  constructor(name) {
+    this.name = name;
+  }
+};
+
+// Anonymous class expression
+const Product = class {
+  constructor(name) {
+    this.name = name;
+  }
+};
+
+// Immediately invoked class
+const instance = new (class {
+  constructor(value) {
+    this.value = value;
+  }
+  getValue() {
+    return this.value;
+  }
+})(42);
+
+console.log(instance.getValue()); // 42
+```
+
+## Mixin Pattern (Composition)
+
+```javascript
+// Mixin objects (reusable behaviors)
+const TimestampMixin = {
+  getCreatedAt() {
+    return this.createdAt;
+  },
+  getAge() {
+    return Date.now() - this.createdAt.getTime();
+  },
+};
+
+const SerializableMixin = {
+  toJSON() {
+    return JSON.stringify(this);
+  },
+};
+
+// Apply mixins to class
+class Model {
+  constructor() {
+    this.createdAt = new Date();
+  }
+}
+
+Object.assign(Model.prototype, TimestampMixin, SerializableMixin);
+
+const model = new Model();
+console.log(model.getCreatedAt()); // Date object
+console.log(model.toJSON()); // JSON string
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between a class and a constructor function?
+
+Classes are syntactic sugar over constructor functions, providing cleaner, more intuitive syntax for creating objects and implementing inheritance. Both create objects with the `new` keyword and use prototypes under the hood. However, classes have key differences: they always run in strict mode, cannot be called without `new` (throws an error), are not hoisted (temporal dead zone), and have a cleaner syntax for inheritance with `extends` and `super`. Constructor functions are hoisted, can technically be called without `new` (which creates bugs), and require manual prototype chain setup for inheritance. Modern JavaScript prefers classes for readability and safety.
+
+---
+
+### Q2: What are static methods and when should you use them?
+
+Static methods belong to the class itself rather than instances and are called directly on the class. They're defined with the `static` keyword and cannot access instance properties via `this` - they have no connection to any particular instance. Use static methods for utility functions that don't need instance data, factory methods that create and return new instances, singleton pattern implementations, and pure functions that are logically related to the class. Examples include `Array.from()`, `Object.keys()`, and `Math.max()`. Static methods are useful for organizing related functionality under a namespace while making it clear the function doesn't depend on instance state.
+
+---
+
+### Q3: What's the difference between public and private fields?
+
+Public fields are accessible from anywhere and can be read or modified by any code with a reference to the object. Private fields, prefixed with `#`, are only accessible within the class body itself - not even subclasses can access them. Private fields provide true encapsulation, preventing external code from depending on internal implementation details. Attempting to access a private field from outside throws a SyntaxError, not just undefined. This makes refactoring safer since you can change private implementation without breaking external code. Use private fields for internal state that shouldn't be exposed, and public fields for the API you want to maintain.
+
+---
+
+### Q4: What is the super keyword used for?
+
+The `super` keyword provides access to the parent class in inheritance. In constructors, `super()` calls the parent class constructor and must be called before using `this` in child constructors - JavaScript enforces this. In methods, `super.methodName()` calls the overridden parent method, enabling you to extend rather than completely replace parent behavior. This is useful when you want to add functionality to inherited methods. You cannot use `super` in arrow functions because they don't have their own `super` binding. Super is essential for proper class inheritance and maintaining the prototype chain.
+
+---
+
+### Q5: What is a getter and when should you use one?
+
+A getter is a method that's accessed like a property, defined with the `get` keyword. When you access `obj.property`, the getter function runs and returns a value. Use getters for computed properties that derive values from other properties (like `fullName` from `firstName` and `lastName`), for lazy initialization where you load data only when first accessed, for providing read-only access to private data, and for adding logic when a property is read. Getters make APIs cleaner by hiding method calls behind property access syntax. Pair getters with setters when you want controlled read/write access with validation.
+
+---
+
+### Q6: Can you explain how class inheritance works in JavaScript?
+
+Class inheritance uses the `extends` keyword to create a child class that inherits from a parent. The child class gets access to all non-private parent properties and methods through the prototype chain. Child constructors must call `super()` before using `this` to properly initialize the parent portion of the object. Child classes can override parent methods - calling the same method name uses the child's version. Using `super.method()` within an override calls the parent's version. instanceof checks work up the chain, so a Dog instance is both instanceof Dog and instanceof Animal. Under the hood, this sets up the prototype chain so the child's prototype has the parent's prototype in its chain.
+
+---
+
+### Q7: What's the difference between class methods and arrow function properties?
+
+Class methods are defined in the class body without assignment syntax and are stored on the prototype, shared by all instances. Arrow function properties are defined with assignment syntax and are created anew for each instance, stored on the instance itself. The key difference is `this` binding: class methods lose their `this` when extracted (like in event handlers), while arrow functions permanently bind `this` to the instance they were created in. Arrow functions use more memory since each instance gets its own copy, but they're convenient for callbacks. Use regular methods for most cases and arrow functions when you need guaranteed `this` binding without explicit binding.
+
+---
+
+### Q8: What is method overriding and how does it work?
+
+Method overriding occurs when a child class defines a method with the same name as one in the parent class. When the method is called on a child instance, JavaScript uses the child's version instead of the parent's. This is polymorphism in action - different classes respond differently to the same method call. You can still access the parent method using `super.methodName()` if you want to extend rather than replace the behavior. Overriding lets subclasses customize inherited behavior while maintaining the same interface. There's no special keyword needed - just define a method with the same name in the child class.
+
+---
+
+### Q9: What are class expressions and when would you use them?
+
+Class expressions are classes defined as part of an expression rather than a declaration. They can be anonymous or named, and the name (if provided) is only visible inside the class. Use class expressions when you need to pass a class as an argument, return a class from a function (factory pattern for classes), create a class conditionally, or use immediately invoked class expressions for one-off instances. Class expressions are useful for metaprogramming and creating classes dynamically. Like function expressions, they're not hoisted, so declaration order matters. They're less common than class declarations but valuable for advanced patterns.
+
+---
+
+### Q10: How do you achieve composition over inheritance in JavaScript classes?
+
+Composition involves building classes by combining smaller, focused objects rather than inheriting from a chain of parent classes. In JavaScript, use mixins (objects containing methods that can be copied), factory functions that compose functionality, or delegation where objects reference other objects for specific behaviors. Implement mixins with `Object.assign(Target.prototype, mixin1, mixin2)`. Composition is often preferred over deep inheritance hierarchies because it's more flexible, avoids tight coupling, allows combining behaviors freely, and doesn't suffer from the diamond problem. Many modern patterns favor small, composable pieces over complex inheritance trees.
+
+## Practical Examples
+
+```javascript
+// Example 1: User management system
+class User {
+  #password;
+
+  constructor(username, password, role = "user") {
+    this.username = username;
+    this.#password = password;
+    this.role = role;
+    this.createdAt = new Date();
+  }
+
+  verifyPassword(input) {
+    return input === this.#password;
+  }
+
+  static createAdmin(username, password) {
+    return new User(username, password, "admin");
+  }
+}
+
+class Admin extends User {
+  constructor(username, password) {
+    super(username, password, "admin");
+    this.permissions = ["read", "write", "delete"];
+  }
+
+  grantPermission(user, permission) {
+    console.log(`${this.username} granted ${permission} to ${user.username}`);
+  }
+}
+
+// Example 2: Shopping cart
+class Product {
+  constructor(name, price, quantity = 1) {
+    this.name = name;
+    this.price = price;
+    this.quantity = quantity;
+  }
+
+  get total() {
+    return this.price * this.quantity;
+  }
+}
+
+class ShoppingCart {
+  #items = [];
+
+  addItem(product) {
+    this.#items.push(product);
+  }
+
+  removeItem(productName) {
+    const index = this.#items.findIndex((p) => p.name === productName);
+    if (index > -1) this.#items.splice(index, 1);
+  }
+
+  get total() {
+    return this.#items.reduce((sum, item) => sum + item.total, 0);
+  }
+
+  get itemCount() {
+    return this.#items.reduce((sum, item) => sum + item.quantity, 0);
+  }
+}
+
+// Example 3: Shape hierarchy with polymorphism
+class Shape {
+  constructor(color) {
+    this.color = color;
+  }
+
+  getArea() {
+    throw new Error("getArea must be implemented");
+  }
+
+  getInfo() {
+    return `${this.color} shape with area ${this.getArea().toFixed(2)}`;
+  }
+}
+
+class Circle extends Shape {
+  constructor(color, radius) {
+    super(color);
+    this.radius = radius;
+  }
+
+  getArea() {
+    return Math.PI * this.radius ** 2;
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(color, width, height) {
+    super(color);
+    this.width = width;
+    this.height = height;
+  }
+
+  getArea() {
+    return this.width * this.height;
+  }
+}
+```
+
+

@@ -1,0 +1,704 @@
+---
+title: "Arrays - Working with Lists of Data"
+description: Documentation for Arrays - Working with Lists of Data.
+---
+
+# Arrays - Working with Lists of Data
+
+
+
+## What are Arrays?
+
+**Arrays** are ordered collections of values. They let you store multiple values in a single variable and access each one by its position (index).
+
+```javascript
+// Without array — need separate variable for each value
+let fruit1 = "apple";
+let fruit2 = "banana";
+let fruit3 = "orange";
+
+// With array — one variable holds everything
+let fruits = ["apple", "banana", "orange"];
+```
+
+### Why Use Arrays?
+
+- **Store multiple values** in one variable
+- **Ordered** — every element has a fixed position
+- **Dynamic** — can grow or shrink at any time
+- **Iterable** — easy to loop through with for, forEach, etc.
+- **Methods** — dozens of built-in functions to manipulate data
+
+## Creating Arrays
+
+```javascript
+// Method 1: Array literal — most common, use this
+let fruits = ["apple", "banana", "orange"];
+
+// Method 2: Array constructor with values
+let numbers = new Array(1, 2, 3, 4, 5);
+
+// Method 3: Empty array — fill it later
+let empty = [];
+
+// Method 4: Array constructor with single number — creates empty slots
+let arr = new Array(5); // [empty × 5], NOT [5]
+console.log(arr.length); // 5
+console.log(arr[0]); // undefined
+```
+
+> **Trap with `new Array()`:** If you pass a single number, it creates an array with that many empty slots — it does NOT put that number inside the array. `new Array(5)` is NOT `[5]`. But `new Array(1, 2, 3)` IS `[1, 2, 3]`. To avoid confusion, just use array literals `[]`.
+
+```javascript
+// Mixed types — JavaScript allows it, but avoid mixing in real code
+let mixed = [1, "hello", true, null, { name: "John" }];
+```
+
+## Accessing Array Elements
+
+Arrays use **zero-based indexing** — the first element is at index `0`, not `1`.
+
+```javascript
+let fruits = ["apple", "banana", "orange", "mango"];
+//              [0]       [1]       [2]       [3]
+
+console.log(fruits[0]); // apple
+console.log(fruits[1]); // banana
+console.log(fruits[3]); // mango
+
+// Getting the last element — use length - 1
+console.log(fruits[fruits.length - 1]); // mango
+
+// Accessing index that doesn't exist — returns undefined, no error
+console.log(fruits[10]); // undefined
+
+// Array length
+console.log(fruits.length); // 4
+```
+
+> **Remember:** Index always starts at `0`. So in an array of 4 items, valid indices are `0, 1, 2, 3`. Index `4` is already out of bounds.
+
+## Modifying Arrays
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+// Change existing element
+fruits[1] = "grape";
+console.log(fruits); // ['apple', 'grape', 'orange']
+
+// Add at next available index
+fruits[3] = "mango";
+console.log(fruits); // ['apple', 'grape', 'orange', 'mango']
+
+// Add beyond current length — creates empty slots in between
+fruits[7] = "kiwi";
+console.log(fruits); // ['apple', 'grape', 'orange', 'mango', empty × 3, 'kiwi']
+console.log(fruits.length); // 8
+console.log(fruits[5]); // undefined — empty slot
+```
+
+> **Warning:** Assigning to an index beyond the array length creates **empty slots** (holes). Those slots are `undefined` when accessed. This is valid but rarely intentional — use `push()` to add elements instead.
+
+## Array Methods - Quick Reference
+
+| Method       | Purpose                | Modifies Original? | Returns               |
+| ------------ | ---------------------- | ------------------ | --------------------- |
+| `push()`     | Add to end             | ✅ Yes             | New length            |
+| `pop()`      | Remove from end        | ✅ Yes             | Removed element       |
+| `unshift()`  | Add to beginning       | ✅ Yes             | New length            |
+| `shift()`    | Remove from beginning  | ✅ Yes             | Removed element       |
+| `splice()`   | Add/remove at position | ✅ Yes             | Array of removed      |
+| `slice()`    | Extract portion        | ❌ No              | New array             |
+| `concat()`   | Merge arrays           | ❌ No              | New array             |
+| `indexOf()`  | Find index of value    | ❌ No              | Index or -1           |
+| `includes()` | Check if value exists  | ❌ No              | true / false          |
+| `join()`     | Array to string        | ❌ No              | String                |
+| `reverse()`  | Reverse order          | ✅ Yes             | Same array (reversed) |
+| `sort()`     | Sort elements          | ✅ Yes             | Same array (sorted)   |
+
+> **Key rule to remember:** Methods that **modify** the original array change it in place. Methods that **don't modify** return a new array — the original stays the same.
+
+## Adding Elements
+
+### push() — Add to End
+
+```javascript
+let fruits = ["apple", "banana"];
+
+fruits.push("orange");
+console.log(fruits); // ['apple', 'banana', 'orange']
+
+// Can add multiple at once
+fruits.push("mango", "grape");
+console.log(fruits); // ['apple', 'banana', 'orange', 'mango', 'grape']
+
+// push() returns the NEW length, not the array
+let newLength = fruits.push("kiwi");
+console.log(newLength); // 6
+```
+
+### unshift() — Add to Beginning
+
+```javascript
+let fruits = ["banana", "orange"];
+
+fruits.unshift("apple");
+console.log(fruits); // ['apple', 'banana', 'orange']
+
+// Multiple items — they go in the order you write them
+fruits.unshift("mango", "grape");
+console.log(fruits); // ['mango', 'grape', 'apple', 'banana', 'orange']
+```
+
+> **Note:** `unshift()` is slower than `push()` on large arrays because every existing element has to shift its index. If performance matters, prefer `push()`.
+
+## Removing Elements
+
+### pop() — Remove from End
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+let removed = fruits.pop();
+console.log(removed); // 'orange'  — pop() returns what it removed
+console.log(fruits); // ['apple', 'banana']
+```
+
+### shift() — Remove from Beginning
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+let removed = fruits.shift();
+console.log(removed); // 'apple'  — shift() returns what it removed
+console.log(fruits); // ['banana', 'orange']
+```
+
+> **Remember:** `pop()` and `shift()` both **return the removed element**, not the array. `push()` and `unshift()` both **return the new length**, not the array.
+
+## splice() — Add/Remove at Any Position
+
+`splice()` is the most flexible method. It can remove, add, or replace elements at any index.
+
+```javascript
+// Syntax: array.splice(startIndex, deleteCount, ...itemsToAdd)
+
+let fruits = ["apple", "banana", "orange", "mango"];
+
+// --- REMOVE ---
+let removed = fruits.splice(1, 2); // Start at index 1, remove 2 elements
+console.log(removed); // ['banana', 'orange'] — returns what was removed
+console.log(fruits); // ['apple', 'mango']   — original is modified
+
+// --- ADD (without removing) ---
+fruits = ["apple", "banana", "orange"];
+fruits.splice(1, 0, "grape", "kiwi"); // At index 1, remove 0, add these
+console.log(fruits); // ['apple', 'grape', 'kiwi', 'banana', 'orange']
+
+// --- REPLACE ---
+fruits = ["apple", "banana", "orange"];
+fruits.splice(1, 1, "grape"); // At index 1, remove 1, add 'grape'
+console.log(fruits); // ['apple', 'grape', 'orange']
+```
+
+> **Remember:** The second argument is how many to **delete**, not the end index. `splice(1, 2)` means "start at index 1, delete 2 items" — not "delete from index 1 to index 2".
+
+## slice() — Extract a Portion
+
+`slice()` returns a **new array** with a portion of the original. The original is never changed.
+
+```javascript
+let fruits = ["apple", "banana", "orange", "mango", "grape"];
+//              [0]       [1]       [2]       [3]      [4]
+
+// slice(start, end) — end index is NOT included
+let sliced = fruits.slice(1, 3);
+console.log(sliced); // ['banana', 'orange']  — index 1 and 2 only
+console.log(fruits); // original unchanged
+
+// Only start — goes to the end of array
+let sliced2 = fruits.slice(2);
+console.log(sliced2); // ['orange', 'mango', 'grape']
+
+// Negative index — counts from the end
+let sliced3 = fruits.slice(-2);
+console.log(sliced3); // ['mango', 'grape'] — last 2 elements
+
+// No arguments — copies the entire array
+let copy = fruits.slice();
+console.log(copy); // ['apple', 'banana', 'orange', 'mango', 'grape']
+```
+
+> **slice vs splice — easy way to remember:** `slice` does NOT change anything (think: "slice a photo" — the original photo is still there). `splice` DOES change the original (think: "splice a wire" — the wire is actually cut).
+
+## Searching in Arrays
+
+### indexOf() — Find the Index
+
+```javascript
+let fruits = ["apple", "banana", "orange", "banana"];
+
+console.log(fruits.indexOf("banana")); // 1 — returns FIRST occurrence
+console.log(fruits.indexOf("grape")); // -1 — not found returns -1
+
+// Search starting from a specific index
+console.log(fruits.indexOf("banana", 2)); // 3 — finds the second banana
+```
+
+> **Remember:** `indexOf()` returns `-1` when not found, not `null` or `undefined`. Always check for `-1`.
+
+### includes() — Does It Exist? (ES7+)
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+console.log(fruits.includes("banana")); // true
+console.log(fruits.includes("grape")); // false
+```
+
+> **indexOf vs includes:** Use `includes()` when you only need a yes/no answer. Use `indexOf()` when you need to know the actual position.
+
+### find() and findIndex() — Search with a Condition
+
+```javascript
+let numbers = [5, 12, 8, 130, 44];
+
+// find() — returns the first element that matches
+let found = numbers.find((num) => num > 10);
+console.log(found); // 12
+
+// findIndex() — returns the INDEX of the first match
+let foundIndex = numbers.findIndex((num) => num > 10);
+console.log(foundIndex); // 1
+
+// Nothing matches — find() returns undefined, findIndex() returns -1
+let notFound = numbers.find((num) => num > 500);
+console.log(notFound); // undefined
+```
+
+## Combining Arrays
+
+### concat() — Merge Arrays
+
+```javascript
+let arr1 = [1, 2, 3];
+let arr2 = [4, 5, 6];
+
+let combined = arr1.concat(arr2);
+console.log(combined); // [1, 2, 3, 4, 5, 6]
+console.log(arr1); // [1, 2, 3] — original NOT changed
+
+// Can merge more than two
+let arr3 = [7, 8];
+let result = arr1.concat(arr2, arr3);
+console.log(result); // [1, 2, 3, 4, 5, 6, 7, 8]
+
+// Modern way — spread operator (cleaner)
+let combined2 = [...arr1, ...arr2];
+console.log(combined2); // [1, 2, 3, 4, 5, 6]
+
+// Spread also lets you insert in the middle
+let combined3 = [...arr1, 99, ...arr2];
+console.log(combined3); // [1, 2, 3, 99, 4, 5, 6]
+```
+
+## Sorting and Reversing
+
+### sort() — Sort Array
+
+```javascript
+// Sorting strings — works correctly by default
+let fruits = ["banana", "apple", "orange", "mango"];
+fruits.sort();
+console.log(fruits); // ['apple', 'banana', 'mango', 'orange']
+```
+
+**Sorting numbers — the biggest trap in arrays:**
+
+```javascript
+let numbers = [40, 100, 1, 5, 25];
+
+// ❌ WRONG — default sort converts to strings first
+numbers.sort();
+console.log(numbers); // [1, 100, 25, 40, 5] — looks wrong!
+// Why? Because as strings: "1" < "100" < "25" < "40" < "5"
+
+// ✅ CORRECT — pass a compare function
+numbers.sort((a, b) => a - b); // Ascending
+console.log(numbers); // [1, 5, 25, 40, 100]
+
+numbers.sort((a, b) => b - a); // Descending
+console.log(numbers); // [100, 40, 25, 5, 1]
+```
+
+> **Why does the compare function work?** The sort function calls your callback with two values. If the result is **negative**, `a` comes first. If **positive**, `b` comes first. If **zero**, order doesn't change. So `a - b` gives ascending order, `b - a` gives descending.
+
+> **Remember:** `sort()` modifies the original array. It does not return a new one.
+
+### reverse() — Reverse Array
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+fruits.reverse();
+console.log(fruits); // ['orange', 'banana', 'apple']
+// Original array is modified
+```
+
+## Converting Arrays
+
+### join() — Array to String
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+console.log(fruits.join()); // 'apple,banana,orange'  — default is comma
+console.log(fruits.join(" - ")); // 'apple - banana - orange'
+console.log(fruits.join("")); // 'applebananaorange'
+```
+
+### split() — String to Array
+
+```javascript
+let str = "apple,banana,orange";
+
+let arr = str.split(",");
+console.log(arr); // ['apple', 'banana', 'orange']
+
+// Split into individual characters
+let chars = "hello".split("");
+console.log(chars); // ['h', 'e', 'l', 'l', 'o']
+```
+
+> **join() and split() are opposites.** `join()` turns an array into a string. `split()` turns a string into an array. You can use them together to manipulate strings easily.
+
+## Iterating Arrays
+
+```javascript
+let fruits = ["apple", "banana", "orange"];
+
+// Method 1: for loop — use when you need the index
+for (let i = 0; i < fruits.length; i++) {
+  console.log(i, fruits[i]);
+}
+
+// Method 2: for...of — use when you only need the values
+for (let fruit of fruits) {
+  console.log(fruit);
+}
+
+// Method 3: forEach — functional style, same as for...of but as a method
+fruits.forEach((fruit) => {
+  console.log(fruit);
+});
+
+// forEach with index
+fruits.forEach((fruit, index) => {
+  console.log(`${index}: ${fruit}`);
+});
+```
+
+> **Which one to use?** Use `for` or `for...of` when you need `break` or `continue`. Use `forEach` for simple iteration when you don't need to stop early.
+
+## Multi-Dimensional Arrays (2D Arrays)
+
+An array can contain other arrays inside it. This creates a grid-like structure.
+
+```javascript
+let matrix = [
+  [1, 2, 3], // row 0
+  [4, 5, 6], // row 1
+  [7, 8, 9], // row 2
+];
+
+// Access: matrix[row][column]
+console.log(matrix[0][0]); // 1 — row 0, col 0
+console.log(matrix[1][2]); // 6 — row 1, col 2
+console.log(matrix[2][1]); // 8 — row 2, col 1
+
+// Iterate with nested loops
+for (let i = 0; i < matrix.length; i++) {
+  for (let j = 0; j < matrix[i].length; j++) {
+    console.log(matrix[i][j]);
+  }
+}
+// Output: 1, 2, 3, 4, 5, 6, 7, 8, 9
+```
+
+## Array Destructuring (ES6+)
+
+Pull values out of an array directly into variables — without using index access.
+
+```javascript
+let fruits = ["apple", "banana", "orange", "mango"];
+
+// Basic destructuring
+let [first, second] = fruits;
+console.log(first); // 'apple'
+console.log(second); // 'banana'
+// Only takes what you ask for — 'orange' and 'mango' are ignored
+
+// Skip elements — use empty commas
+let [, , third] = fruits;
+console.log(third); // 'orange'
+
+// Rest — collect remaining into an array
+let [one, ...rest] = fruits;
+console.log(one); // 'apple'
+console.log(rest); // ['banana', 'orange', 'mango']
+
+// Default values — if position is undefined, use the default
+let [a, b, c, d, e = "default"] = fruits;
+console.log(e); // 'default' — no 5th element exists
+```
+
+> **Remember:** Destructuring does not modify the original array. It just creates new variables with the values.
+
+## Interview Questions
+
+### Q1: How do you remove duplicates from an array?
+
+Two common approaches. The cleanest is using `Set` — a Set only stores unique values, so converting to a Set and back removes all duplicates automatically.
+
+```javascript
+let numbers = [1, 2, 2, 3, 4, 4, 5];
+
+// Method 1: Set + spread — cleanest
+let unique = [...new Set(numbers)];
+console.log(unique); // [1, 2, 3, 4, 5]
+
+// Method 2: filter — keep element only if its first occurrence matches current index
+let unique2 = numbers.filter((num, index) => numbers.indexOf(num) === index);
+console.log(unique2); // [1, 2, 3, 4, 5]
+```
+
+### Q2: What is the difference between `slice()` and `splice()`?
+
+`slice()` **does not** modify the original array — it returns a new array with the extracted portion. `splice()` **modifies** the original array directly — it removes or adds elements in place and returns the removed elements. `slice(start, end)` uses start and end indices. `splice(start, deleteCount, ...items)` uses a start index and a count of how many to remove.
+
+```javascript
+let arr = [1, 2, 3, 4, 5];
+
+// slice — original untouched
+let sliced = arr.slice(1, 3);
+console.log(sliced); // [2, 3]
+console.log(arr); // [1, 2, 3, 4, 5] — unchanged
+
+// splice — original modified
+let spliced = arr.splice(1, 2);
+console.log(spliced); // [2, 3] — removed elements
+console.log(arr); // [1, 4, 5] — changed
+```
+
+### Q3: Why does `sort()` not work correctly with numbers by default?
+
+By default, `sort()` converts every element to a **string** and then sorts them alphabetically. So `100` becomes `"100"` and `5` becomes `"5"`. In alphabetical order, `"100"` comes before `"5"` because `"1"` comes before `"5"`. To sort numbers correctly, you must pass a compare function: `(a, b) => a - b` for ascending.
+
+```javascript
+let nums = [10, 1, 100, 5];
+nums.sort(); // [1, 10, 100, 5] — wrong
+nums.sort((a, b) => a - b); // [1, 5, 10, 100] — correct
+```
+
+### Q4: What is the difference between `indexOf()` and `includes()`?
+
+`indexOf()` returns the **index** of the first match, or `-1` if not found. `includes()` returns a simple **true or false**. Use `includes()` when you only need to know if something exists. Use `indexOf()` when you need to know _where_ it is.
+
+```javascript
+let arr = ["a", "b", "c"];
+console.log(arr.indexOf("b")); // 1
+console.log(arr.indexOf("z")); // -1
+console.log(arr.includes("b")); // true
+console.log(arr.includes("z")); // false
+```
+
+### Q5: What is the difference between `find()` and `filter()`?
+
+`find()` returns the **first single element** that matches the condition — and stops searching after that. `filter()` returns a **new array** containing **all elements** that match. If nothing matches, `find()` returns `undefined`, `filter()` returns an empty array `[]`.
+
+```javascript
+let numbers = [1, 5, 12, 8, 130, 44];
+
+let found = numbers.find((n) => n > 10); // 12 — first match only
+let filtered = numbers.filter((n) => n > 10); // [12, 130, 44] — all matches
+```
+
+### Q6: How do you copy an array properly?
+
+Simply doing `let copy = original` does **not** copy the array — both variables point to the same array. There are three clean ways to make a real copy.
+
+```javascript
+let original = [1, 2, 3];
+
+// ❌ This is NOT a copy — both point to same array
+let fake = original;
+fake.push(4);
+console.log(original); // [1, 2, 3, 4] — original changed too!
+
+// ✅ Method 1: slice()
+let copy1 = original.slice();
+
+// ✅ Method 2: spread operator
+let copy2 = [...original];
+
+// ✅ Method 3: Array.from()
+let copy3 = Array.from(original);
+
+// Now modifying the copy does not affect original
+copy1.push(99);
+console.log(original); // [1, 2, 3, 4] — unchanged
+console.log(copy1); // [1, 2, 3, 4, 99]
+```
+
+> **Note:** All three methods create a **shallow copy**. If the array contains objects, the objects themselves are not copied — only the references. Modifying a nested object will affect both arrays.
+
+### Q7: What is the difference between `push()` and `unshift()`? What do they return?
+
+Both add elements to an array, but at different ends. `push()` adds to the **end**. `unshift()` adds to the **beginning**. Both return the **new length** of the array — not the array itself.
+
+```javascript
+let arr = [2, 3];
+
+let len1 = arr.push(4); // adds to end
+console.log(len1); // 3
+console.log(arr); // [2, 3, 4]
+
+let len2 = arr.unshift(1); // adds to beginning
+console.log(len2); // 4
+console.log(arr); // [1, 2, 3, 4]
+```
+
+### Q8: What happens when you access an index that does not exist?
+
+JavaScript returns `undefined`. It does **not** throw an error. This makes it easy to accidentally introduce bugs where you think you have a value but actually have `undefined`.
+
+```javascript
+let arr = [10, 20, 30];
+
+console.log(arr[0]); // 10
+console.log(arr[5]); // undefined — no error
+console.log(arr[-1]); // undefined — negative indices don't work in JS
+
+// Always check before using
+if (arr[5] !== undefined) {
+  console.log("exists");
+} else {
+  console.log("does not exist"); // this runs
+}
+```
+
+### Q9: How does array destructuring work, and what is the rest pattern?
+
+Destructuring lets you pull values out of an array into separate variables based on **position**. You write variable names inside `[]` on the left side, and they automatically get assigned the values at matching indices from the right side. The rest pattern `...name` collects all remaining elements into a new array.
+
+```javascript
+let [a, b, ...rest] = [1, 2, 3, 4, 5];
+console.log(a); // 1
+console.log(b); // 2
+console.log(rest); // [3, 4, 5]
+
+// Swap two variables — no temp variable needed
+let x = 1,
+  y = 2;
+[x, y] = [y, x];
+console.log(x, y); // 2, 1
+```
+
+### Q10: What is the difference between a shallow copy and a deep copy of an array?
+
+A **shallow copy** copies the array itself, but if the array contains objects or nested arrays, only the **references** to those objects are copied — not the objects themselves. So changing a nested object in the copy also changes it in the original. A **deep copy** copies everything — including all nested objects — so the two arrays are completely independent.
+
+```javascript
+let original = [1, { name: "John" }, 3];
+
+// Shallow copy
+let shallow = [...original];
+shallow[1].name = "Jane"; // modifies the object
+console.log(original[1].name); // 'Jane' — original affected!
+
+// Deep copy — use JSON (works for simple data)
+let deep = JSON.parse(JSON.stringify(original));
+deep[1].name = "Bob";
+console.log(original[1].name); // 'Jane' — original NOT affected
+```
+
+### Q11: Write a function that chunks an array into smaller arrays of a given size.
+
+```javascript
+function chunk(arr, size) {
+  let result = [];
+
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+
+  return result;
+}
+
+console.log(chunk([1, 2, 3, 4, 5], 2)); // [[1, 2], [3, 4], [5]]
+console.log(chunk([1, 2, 3, 4, 5, 6], 3)); // [[1, 2, 3], [4, 5, 6]]
+console.log(chunk([1, 2, 3], 5)); // [[1, 2, 3]]
+```
+
+### Q12: Write a function that finds the second largest number in an array.
+
+```javascript
+function secondLargest(arr) {
+  // Remove duplicates first, then sort descending
+  let unique = [...new Set(arr)];
+  unique.sort((a, b) => b - a);
+
+  if (unique.length < 2) {
+    return null; // not enough unique values
+  }
+
+  return unique[1]; // second element after sorting descending
+}
+
+console.log(secondLargest([5, 2, 8, 1, 9])); // 8
+console.log(secondLargest([10, 10, 5, 3])); // 5 — duplicates removed first
+console.log(secondLargest([7])); // null — only one unique value
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: Shopping cart — add and total items
+let cart = [];
+cart.push({ item: "Apple", price: 1.99 });
+cart.push({ item: "Banana", price: 0.99 });
+cart.push({ item: "Orange", price: 2.49 });
+
+let total = cart.reduce((sum, product) => sum + product.price, 0);
+console.log("Total: $" + total.toFixed(2)); // Total: $5.47
+
+// Example 2: Find max and min
+let numbers = [5, 12, 8, 130, 44];
+console.log(Math.max(...numbers)); // 130
+console.log(Math.min(...numbers)); // 5
+
+// Example 3: Sum all elements
+let nums = [1, 2, 3, 4, 5];
+let sum = nums.reduce((total, num) => total + num, 0);
+console.log(sum); // 15
+
+// Example 4: Filter and transform in one chain
+let students = [
+  { name: "John", score: 85 },
+  { name: "Jane", score: 45 },
+  { name: "Bob", score: 92 },
+  { name: "Alice", score: 58 },
+];
+
+// Get names of students who passed (score >= 60)
+let passed = students.filter((s) => s.score >= 60).map((s) => s.name);
+console.log(passed); // ['John', 'Bob']
+
+// Example 5: Reverse a string using array methods
+let str = "hello";
+let reversed = str.split("").reverse().join("");
+console.log(reversed); // 'olleh'
+```
+
+

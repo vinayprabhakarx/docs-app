@@ -1,0 +1,221 @@
+---
+title: "Embedding Content - iframes, Objects & SVG"
+description: Documentation for Embedding Content - iframes, Objects & SVG.
+---
+
+# Embedding Content - iframes, Objects & SVG
+
+
+
+## What is Embedded Content?
+
+Embedded content includes external resources integrated into your web page.
+
+> **Definition:** HTML provides several elements for embedding external content: `<iframe>` for other web pages, `<embed>` and `<object>` for plugins and media, and `<svg>` for vector graphics. Each has specific use cases and security considerations.
+
+## iframe
+
+```html
+<!-- Basic iframe -->
+<iframe src="https://example.com" width="600" height="400"></iframe>
+
+<!-- YouTube embed -->
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/VIDEO_ID"
+  title="YouTube video"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+  allowfullscreen
+></iframe>
+
+<!-- Google Maps embed -->
+<iframe
+  src="https://www.google.com/maps/embed?pb=..."
+  width="600"
+  height="450"
+  style="border:0;"
+  allowfullscreen=""
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade"
+></iframe>
+```
+
+### iframe Attributes
+
+| Attribute          | Purpose                   |
+| ------------------ | ------------------------- |
+| `src`              | URL to embed              |
+| `width` / `height` | Dimensions                |
+| `title`            | Accessibility description |
+| `loading`          | `lazy` or `eager`         |
+| `allowfullscreen`  | Permit fullscreen mode    |
+| `allow`            | Permissions policy        |
+| `sandbox`          | Security restrictions     |
+| `referrerpolicy`   | Referrer header policy    |
+
+### iframe Security with sandbox
+
+```html
+<!-- Maximum restrictions (no scripts, forms, etc.) -->
+<iframe src="untrusted.html" sandbox></iframe>
+
+<!-- Allow specific features -->
+<iframe src="page.html" sandbox="allow-scripts allow-same-origin"></iframe>
+
+<!-- Common sandbox values -->
+<iframe
+  sandbox="
+  allow-scripts
+  allow-forms
+  allow-popups
+  allow-same-origin
+  allow-modals
+"
+  src="content.html"
+></iframe>
+```
+
+| sandbox Value       | Allows                |
+| ------------------- | --------------------- |
+| (empty)             | All restrictions      |
+| `allow-scripts`     | JavaScript execution  |
+| `allow-forms`       | Form submission       |
+| `allow-same-origin` | Same-origin treatment |
+| `allow-popups`      | New windows/tabs      |
+| `allow-modals`      | Modal dialogs         |
+
+## embed Element
+
+```html
+<!-- PDF -->
+<embed src="document.pdf" type="application/pdf" width="600" height="400" />
+
+<!-- Flash (deprecated) -->
+<embed src="animation.swf" type="application/x-shockwave-flash" />
+```
+
+## object Element
+
+```html
+<!-- PDF with fallback -->
+<object data="document.pdf" type="application/pdf" width="600" height="400">
+  <p>PDF cannot be displayed. <a href="document.pdf">Download PDF</a></p>
+</object>
+
+<!-- SVG with fallback -->
+<object data="graphic.svg" type="image/svg+xml">
+  <img src="graphic.png" alt="Fallback image" />
+</object>
+```
+
+## SVG (Scalable Vector Graphics)
+
+### Inline SVG
+
+```html
+<svg width="100" height="100" viewBox="0 0 100 100">
+  <!-- Rectangle -->
+  <rect x="10" y="10" width="80" height="80" fill="blue" />
+
+  <!-- Circle -->
+  <circle cx="50" cy="50" r="30" fill="red" />
+
+  <!-- Line -->
+  <line x1="0" y1="0" x2="100" y2="100" stroke="black" stroke-width="2" />
+
+  <!-- Text -->
+  <text x="50" y="55" text-anchor="middle" fill="white">SVG</text>
+</svg>
+```
+
+### SVG as Image
+
+```html
+<!-- As img src -->
+<img src="icon.svg" alt="Icon" width="50" height="50" />
+
+<!-- As CSS background -->
+<style>
+  .icon {
+    background-image: url("icon.svg");
+  }
+</style>
+
+<!-- As object (allows scripting) -->
+<object type="image/svg+xml" data="interactive.svg"></object>
+```
+
+### Common SVG Shapes
+
+| Element      | Attributes                        |
+| ------------ | --------------------------------- |
+| `<rect>`     | `x`, `y`, `width`, `height`, `rx` |
+| `<circle>`   | `cx`, `cy`, `r`                   |
+| `<ellipse>`  | `cx`, `cy`, `rx`, `ry`            |
+| `<line>`     | `x1`, `y1`, `x2`, `y2`            |
+| `<polygon>`  | `points`                          |
+| `<polyline>` | `points`                          |
+| `<path>`     | `d` (path commands)               |
+
+### SVG Icon Example
+
+```html
+<!-- Hamburger menu icon -->
+<svg
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+>
+  <line x1="3" y1="6" x2="21" y2="6" stroke-width="2" />
+  <line x1="3" y1="12" x2="21" y2="12" stroke-width="2" />
+  <line x1="3" y1="18" x2="21" y2="18" stroke-width="2" />
+</svg>
+
+<!-- Close/X icon -->
+<svg
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+>
+  <line x1="4" y1="4" x2="20" y2="20" stroke-width="2" />
+  <line x1="20" y1="4" x2="4" y2="20" stroke-width="2" />
+</svg>
+```
+
+## Interview Questions & Answers
+
+### Q1: What security risks do iframes pose and how do you mitigate them?
+
+iframes can expose sites to clickjacking (malicious overlay), cross-site scripting, and data theft. Mitigate with: `sandbox` attribute to restrict capabilities, `X-Frame-Options` header to prevent your site being embedded, Content Security Policy (frame-ancestors), and careful vetting of embedded content sources. Use `allow` attribute to restrict permissions (camera, microphone). Never embed untrusted content without sandbox.
+
+---
+
+### Q2: What's the difference between embed and object?
+
+Both embed external content, but `<object>` has fallback content (shown if the object fails to load) while `<embed>` does not. `<object>` is more flexible and can nest fallback elements. `<embed>` is simpler and was originally for browser plugins (now mostly deprecated with Flash's demise). For PDFs, `<object>` is preferred for its fallback capability. Modern practice often uses iframes or native elements instead.
+
+---
+
+### Q3: What are the advantages of inline SVG over img SVG?
+
+Inline SVG can be styled with CSS (fill, stroke colors), animated, and manipulated with JavaScript - you have full DOM access. SVG as `<img>` is simpler but can't be styled or scripted externally. Inline SVG eliminates an HTTP request but increases HTML size. Use inline for icons that need styling, `<img>` for complex graphics that don't need manipulation. Inline SVGs are also better for accessibility with proper roles and titles.
+
+---
+
+### Q4: How does the sandbox attribute work on iframes?
+
+The sandbox attribute restricts iframe capabilities for security. An empty sandbox applies all restrictions: no scripts, forms, plugins, same-origin access, etc. Add exception values like `allow-scripts` or `allow-forms` to enable specific features. Note: `allow-scripts` and `allow-same-origin` together effectively removes many restrictions. Use sandbox for embedding untrusted third-party content to limit potential damage.
+
+---
+
+### Q5: When should you use SVG vs Canvas vs images?
+
+Use SVG for: icons, logos, simple graphics, diagrams, and anything that needs to scale without quality loss. Use Canvas for: complex animations, games, real-time graphics, or when manipulating many pixels. Use raster images (JPEG, PNG, WebP) for photographs. SVG is resolution-independent and DOM-based; Canvas is pixel-based and more performant for complex renders. SVG is more accessible; Canvas needs extra work for accessibility.
+
+

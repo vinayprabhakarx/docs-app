@@ -1,0 +1,178 @@
+---
+title: "Best Practices - Writing Quality HTML"
+description: Documentation for Best Practices - Writing Quality HTML.
+---
+
+# Best Practices - Writing Quality HTML
+
+
+
+## HTML Best Practices
+
+Follow these guidelines to write clean, accessible, and maintainable HTML.
+
+## Document Structure
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Page description" />
+    <title>Page Title - Site Name</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>...</header>
+    <main>...</main>
+    <footer>...</footer>
+    <script src="app.js" defer></script>
+  </body>
+</html>
+```
+
+## Do's and Don'ts
+
+| ✅ Do                              | ❌ Don't                               |
+| ---------------------------------- | -------------------------------------- |
+| Use semantic elements              | Use divs for everything                |
+| One `<h1>` per page                | Multiple `<h1>` or skip heading levels |
+| Always include `alt` on images     | Omit `alt` attribute                   |
+| Use `<label>` for form inputs      | Rely on placeholder only               |
+| Put scripts at end or use defer    | Block rendering with scripts in head   |
+| Use relative units (em, rem)       | Use only px for everything             |
+| Validate your HTML                 | Ignore validation errors               |
+| Separate content from presentation | Use inline styles extensively          |
+
+## Semantic HTML
+
+```html
+<!-- ❌ Non-semantic -->
+<div class="header">
+  <div class="nav">...</div>
+</div>
+<div class="main">...</div>
+<div class="footer">...</div>
+
+<!-- ✅ Semantic -->
+<header>
+  <nav>...</nav>
+</header>
+<main>...</main>
+<footer>...</footer>
+```
+
+## Accessibility Essentials
+
+```html
+<!-- Always use labels -->
+<label for="email">Email:</label>
+<input type="email" id="email" name="email" />
+
+<!-- Alt text for images -->
+<img src="photo.jpg" alt="Description of the image" />
+
+<!-- Skip link for keyboard users -->
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<!-- ARIA when needed -->
+<button aria-label="Close menu">&times;</button>
+
+<!-- Focus indicators (CSS) -->
+:focus { outline: 2px solid blue; }
+```
+
+## Performance
+
+```html
+<!-- Lazy load below-fold images -->
+<img src="photo.jpg" alt="Photo" loading="lazy" />
+
+<!-- Preload critical assets -->
+<link rel="preload" href="font.woff2" as="font" crossorigin />
+
+<!-- Defer non-critical scripts -->
+<script src="app.js" defer></script>
+
+<!-- Set dimensions to prevent layout shift -->
+<img src="photo.jpg" alt="Photo" width="800" height="600" />
+```
+
+## Code Style
+
+```html
+<!-- Consistent indentation (2 spaces) -->
+<ul>
+  <li>Item 1</li>
+  <li>Item 2</li>
+</ul>
+
+<!-- Lowercase tags and attributes -->
+<div class="container">...</div>
+
+<!-- Quote attribute values -->
+<input type="text" value="Hello" />
+
+<!-- Self-closing tags (optional but consistent) -->
+<img src="photo.jpg" alt="Photo" />
+<br />
+```
+
+## Validation Checklist
+
+- [ ] DOCTYPE declared
+- [ ] lang attribute on html
+- [ ] charset is UTF-8
+- [ ] viewport meta tag present
+- [ ] One h1 per page
+- [ ] All images have alt
+- [ ] All form inputs have labels
+- [ ] HTML validates (W3C Validator)
+- [ ] Links have descriptive text
+- [ ] No broken links
+
+## Common Mistakes
+
+| Mistake                  | Fix                          |
+| ------------------------ | ---------------------------- |
+| Missing DOCTYPE          | Add `<!DOCTYPE html>`        |
+| No lang attribute        | Add `<html lang="en">`       |
+| Skipping heading levels  | Use h1 → h2 → h3 in order    |
+| Empty links              | Add descriptive link text    |
+| Tables for layout        | Use CSS Flexbox/Grid         |
+| Inline styles            | Use external CSS             |
+| Missing form labels      | Associate labels with for/id |
+| Auto-playing audio/video | Let users control playback   |
+
+## Interview Questions & Answers
+
+### Q1: What makes HTML "semantic"?
+
+Semantic HTML uses elements that describe their meaning rather than just appearance. Instead of `<div class="nav">`, use `<nav>`. Semantic elements convey purpose to browsers, screen readers, and search engines. Benefits include: better accessibility (screen readers understand structure), improved SEO (search engines understand content hierarchy), easier maintenance (code is self-documenting), and consistent styling hooks.
+
+---
+
+### Q2: Why is HTML validation important?
+
+Valid HTML ensures consistent browser rendering, prevents quirks mode, and catches errors early. Invalid HTML may work but causes unpredictable behavior across browsers and assistive technologies. Use the W3C Validator regularly. Common issues: unclosed tags, improper nesting, missing required attributes. Valid HTML is also easier to parse with JavaScript and maintain long-term.
+
+---
+
+### Q3: How do you optimize HTML for performance?
+
+Minimize HTML file size through removing unnecessary whitespace and comments in production. Use lazy loading for images below the fold. Defer non-critical JavaScript. Preload critical resources. Set explicit dimensions on images to prevent layout shift. Use async for independent scripts. Minimize DOM depth and complexity. Consider server-side rendering for initial content. Enable compression (gzip/brotli).
+
+---
+
+### Q4: What's the difference between progressive enhancement and graceful degradation?
+
+Progressive enhancement starts with basic HTML that works everywhere, then layers CSS and JavaScript for enhanced experiences. Graceful degradation builds the full experience first, then ensures it still works without JavaScript/modern features. Progressive enhancement is preferred: it guarantees a baseline experience, is more accessible, and doesn't assume capabilities. Both ensure content reaches all users.
+
+---
+
+### Q5: Why shouldn't you use tables for layout?
+
+Tables are for tabular data, not layout. Layout tables break accessibility (screen readers announce table structure for data that isn't tabular), don't adapt well to different screen sizes, make content order strange for assistive technologies, and are harder to maintain. Use CSS Flexbox or Grid for layouts - they're designed for this purpose, are responsive by default, and keep HTML semantic.
+
+

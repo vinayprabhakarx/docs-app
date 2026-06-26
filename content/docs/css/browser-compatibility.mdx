@@ -1,0 +1,192 @@
+---
+title: "Browser Compatibility - Cross-Browser CSS"
+description: Documentation for Browser Compatibility - Cross-Browser CSS.
+---
+
+# Browser Compatibility - Cross-Browser CSS
+
+
+
+## What is Browser Compatibility?
+
+Browser compatibility ensures your CSS works consistently across different browsers and versions.
+
+## Common Compatibility Issues
+
+### 1. Vendor Prefixes
+
+```css
+.box {
+    /* Webkit (Chrome, Safari) */
+    -webkit-transform: rotate(45deg);
+    
+    /* Mozilla (Firefox) */
+    -moz-transform: rotate(45deg);
+    
+    /* Microsoft (IE, Edge) */
+    -ms-transform: rotate(45deg);
+    
+    /* Opera */
+    -o-transform: rotate(45deg);
+    
+    /* Standard */
+    transform: rotate(45deg);
+}
+```
+
+---
+
+### 2. Flexbox Prefixes
+
+```css
+.flex-container {
+    /* Old syntax */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    
+    /* Modern syntax */
+    display: -webkit-flex;
+    display: flex;
+}
+```
+
+---
+
+### 3. Grid Prefixes
+
+```css
+.grid-container {
+    /* IE 10-11 */
+    display: -ms-grid;
+    -ms-grid-columns: 1fr 1fr 1fr;
+    
+    /* Modern */
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+```
+
+---
+
+### 4. CSS Feature Detection
+
+```css
+/* Feature queries */
+@supports (display: grid) {
+    .container {
+        display: grid;
+    }
+}
+
+@supports not (display: grid) {
+    .container {
+        display: flex; /* Fallback */
+    }
+}
+```
+
+---
+
+### 5. Fallbacks
+
+```css
+.box {
+    background-color: #007bff; /* Fallback */
+    background-color: rgba(0, 123, 255, 0.8); /* Modern */
+}
+
+.text {
+    font-size: 16px; /* Fallback */
+    font-size: clamp(14px, 2vw, 20px); /* Modern */
+}
+```
+
+## Browser-Specific Hacks
+
+### 1. IE-Specific
+
+```css
+/* IE 10-11 only */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .ie-only {
+        /* IE-specific styles */
+    }
+}
+```
+
+---
+
+### 2. Safari-Specific
+
+```css
+/* Safari only */
+@media not all and (min-resolution:.001dpcm) {
+    @supports (-webkit-appearance:none) {
+        .safari-only {
+            /* Safari-specific styles */
+        }
+    }
+}
+```
+
+## Best Practices
+
+### 1. Use Autoprefixer
+
+Automatically adds vendor prefixes during build process.
+
+---
+
+### 2. Test in Multiple Browsers
+
+- Chrome
+- Firefox
+- Safari
+- Edge
+- Mobile browsers
+
+---
+
+### 3. Progressive Enhancement
+
+```css
+/* Base styles for all browsers */
+.button {
+    padding: 10px 20px;
+    background-color: blue;
+}
+
+/* Enhanced styles for modern browsers */
+@supports (backdrop-filter: blur(10px)) {
+    .button {
+        backdrop-filter: blur(10px);
+    }
+}
+```
+
+---
+
+### 4. Graceful Degradation
+
+```css
+.box {
+    /* Fallback */
+    background: blue;
+    
+    /* Modern gradient */
+    background: linear-gradient(to right, blue, purple);
+}
+```
+
+## Tools
+
+- **Can I Use** - Check browser support
+- **Autoprefixer** - Auto-add prefixes
+- **Modernizr** - Feature detection
+- **BrowserStack** - Cross-browser testing
+
+---
+
+
+

@@ -1,0 +1,165 @@
+---
+title: "CSS Accessibility - A11y Best Practices"
+description: Documentation for CSS Accessibility - A11y Best Practices.
+---
+
+# CSS Accessibility - A11y Best Practices
+
+
+
+## What is CSS Accessibility?
+
+CSS accessibility ensures your styles don't create barriers for users with disabilities, including those using screen readers, keyboard navigation, or high contrast modes.
+
+## Accessibility Guidelines
+
+### 1. Color Contrast
+
+**WCAG Requirements:**
+- Normal text: 4.5:1 minimum
+- Large text (18px+): 3:1 minimum
+
+**Good contrast:**
+```css
+.text {
+    color: #333; /* Dark text */
+    background-color: #fff; /* Light background */
+}
+```
+
+**Bad contrast:**
+```css
+.text {
+    color: #ccc; /* Too light */
+    background-color: #fff;
+}
+```
+
+---
+
+### 2. Focus Indicators
+
+**Always show focus:**
+```css
+button:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Never do this */
+*:focus {
+    outline: none; /* BAD! */
+}
+```
+
+---
+
+### 3. Visible Focus States
+
+```css
+.link {
+    color: #007bff;
+}
+
+.link:hover,
+.link:focus {
+    text-decoration: underline;
+    outline: 2px solid #007bff;
+}
+```
+
+---
+
+### 4. Don't Rely on Color Alone
+
+**Bad:**
+```css
+.error {
+    color: red; /* Only color indicates error */
+}
+```
+
+**Good:**
+```css
+.error {
+    color: red;
+    border-left: 4px solid red;
+}
+
+.error::before {
+    content: "⚠ ";
+}
+```
+
+---
+
+### 5. Sufficient Text Size
+
+```css
+body {
+    font-size: 16px; /* Minimum for readability */
+}
+
+small {
+    font-size: 14px; /* Don't go below 14px */
+}
+```
+
+---
+
+### 6. Responsive Text
+
+```css
+.text {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    line-height: 1.6; /* Minimum 1.5 for readability */
+}
+```
+
+---
+
+### 7. Skip Links
+
+```css
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+```
+
+---
+
+### 8. Reduced Motion
+
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+```
+
+## Best Practices
+
+1. **Test with keyboard** - Tab through your site
+2. **Use semantic HTML** - Proper headings, landmarks
+3. **Test color contrast** - Use tools like WebAIM
+4. **Provide focus indicators** - Never remove outlines without replacement
+5. **Support high contrast mode** - Test in Windows high contrast
+6. **Respect user preferences** - prefers-reduced-motion, prefers-color-scheme
+
+---
+
+
+

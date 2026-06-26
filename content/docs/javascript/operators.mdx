@@ -1,0 +1,2543 @@
+---
+title: "Operators - Performing Operations on Data"
+description: Documentation for Operators - Performing Operations on Data.
+---
+
+# Operators - Performing Operations on Data
+
+
+
+## What are Operators?
+
+**Operators** are symbols that perform operations on values (operands). They are the building blocks for creating expressions and performing calculations.
+
+```javascript
+// Example: 5 + 3
+// 5 and 3 are operands
+// + is the operator
+// Result: 8
+```
+
+## Operator Classification
+
+```
+JavaScript Operators
+│
+├─ 1. Arithmetic Operators
+├─ 2. Assignment Operators
+├─ 3. Comparison Operators
+├─ 4. Logical Operators
+├─ 5. String Operators
+├─ 6. Conditional (Ternary) Operator
+├─ 7. Type Operators
+├─ 8. Bitwise Operators
+└─ 9. Special Operators
+```
+
+## Types of Operators - Quick Reference
+
+| Type           | Operators                               | Purpose          |
+| -------------- | --------------------------------------- | ---------------- |
+| **Arithmetic** | `+` `-` `*` `/` `%` `**` `++` `--`      | Math operations  |
+| **Assignment** | `=` `+=` `-=` `*=` `/=` `%=`            | Assign values    |
+| **Comparison** | `==` `===` `!=` `!==` `>` `<` `>=` `<=` | Compare values   |
+| **Logical**    | `&&` `\|\|` `!` `??`                    | Boolean logic    |
+| **String**     | `+`                                     | Concatenation    |
+| **Ternary**    | `? :`                                   | Conditional      |
+| **Type**       | `typeof` `instanceof` `in`              | Check types      |
+| **Bitwise**    | `&` `\|` `^` `~` `<<` `>>` `>>>`        | Bit manipulation |
+| **Special**    | `?.` `...` `delete` `void` `,`          | Special purposes |
+
+## 1. Arithmetic Operators
+
+Perform mathematical calculations on numeric values.
+
+### Basic Arithmetic
+
+```javascript
+let a = 10;
+let b = 3;
+
+console.log(a + b); // 13 (Addition)
+console.log(a - b); // 7  (Subtraction)
+console.log(a * b); // 30 (Multiplication)
+console.log(a / b); // 3.333... (Division)
+console.log(a % b); // 1  (Modulus - remainder)
+console.log(a ** b); // 1000 (Exponentiation - 10^3)
+```
+
+### Arithmetic Operators Table
+
+| Operator | Name           | Example  | Result  | Description                     |
+| -------- | -------------- | -------- | ------- | ------------------------------- |
+| `+`      | Addition       | `5 + 3`  | `8`     | Adds two numbers                |
+| `-`      | Subtraction    | `5 - 3`  | `2`     | Subtracts second from first     |
+| `*`      | Multiplication | `5 * 3`  | `15`    | Multiplies two numbers          |
+| `/`      | Division       | `10 / 2` | `5`     | Divides first by second         |
+| `%`      | Modulus        | `10 % 3` | `1`     | Returns division remainder      |
+| `**`     | Exponentiation | `2 ** 3` | `8`     | Raises first to power of second |
+| `++`     | Increment      | `x++`    | `x + 1` | Increases value by 1            |
+| `--`     | Decrement      | `x--`    | `x - 1` | Decreases value by 1            |
+
+### Increment & Decrement Operators
+
+```javascript
+let x = 5;
+
+// Post-increment (use then increment)
+console.log(x++); // 5 (returns 5, then x becomes 6)
+console.log(x); // 6
+
+// Pre-increment (increment then use)
+console.log(++x); // 7 (x becomes 7, then returns 7)
+console.log(x); // 7
+
+// Post-decrement
+console.log(x--); // 7 (returns 7, then x becomes 6)
+console.log(x); // 6
+
+// Pre-decrement
+console.log(--x); // 5 (x becomes 5, then returns 5)
+console.log(x); // 5
+```
+
+### Comparison: Pre vs Post Increment
+
+| Operator | Name           | When Changes     | Returns   | Example                      |
+| -------- | -------------- | ---------------- | --------- | ---------------------------- |
+| `x++`    | Post-increment | After statement  | Old value | `let y = x++` → y gets old x |
+| `++x`    | Pre-increment  | Before statement | New value | `let y = ++x` → y gets new x |
+| `x--`    | Post-decrement | After statement  | Old value | `let y = x--` → y gets old x |
+| `--x`    | Pre-decrement  | Before statement | New value | `let y = --x` → y gets new x |
+
+### Unary Plus and Minus
+
+```javascript
+// Unary plus converts to number
+console.log(+"5"); // 5 (string to number)
+console.log(+true); // 1 (boolean to number)
+console.log(+false); // 0
+
+// Unary minus negates and converts
+console.log(-"5"); // -5
+console.log(-true); // -1
+```
+
+**Interview Example:**
+
+```javascript
+let a = 5;
+let b = a++ + ++a; // What is b?
+
+// Step by step:
+// a++ returns 5, then a becomes 6
+// ++a makes a = 7, returns 7
+// b = 5 + 7 = 12
+// Final: a = 7, b = 12
+
+console.log(a); // 7
+console.log(b); // 12
+```
+
+### Special Cases
+
+```javascript
+// Division by zero
+console.log(10 / 0); // Infinity
+console.log(-10 / 0); // -Infinity
+
+// NaN (Not a Number)
+console.log("hello" * 5); // NaN
+console.log(0 / 0); // NaN
+
+// Precision issues
+console.log(0.1 + 0.2); // 0.30000000000000004
+console.log(0.1 + 0.2 === 0.3); // false
+
+// Solution for precision
+console.log((0.1 * 10 + 0.2 * 10) / 10); // 0.3
+console.log((0.1 + 0.2).toFixed(2)); // "0.30"
+```
+
+## 2. Assignment Operators
+
+Assign values to variables.
+
+### Assignment Operators Table
+
+| Operator | Name                      | Example   | Equivalent to | Result   |
+| -------- | ------------------------- | --------- | ------------- | -------- |
+| `=`      | Assignment                | `x = 5`   | -             | `x = 5`  |
+| `+=`     | Addition assignment       | `x += 5`  | `x = x + 5`   | `x = 15` |
+| `-=`     | Subtraction assignment    | `x -= 3`  | `x = x - 3`   | `x = 12` |
+| `*=`     | Multiplication assignment | `x *= 2`  | `x = x * 2`   | `x = 24` |
+| `/=`     | Division assignment       | `x /= 4`  | `x = x / 4`   | `x = 6`  |
+| `%=`     | Modulus assignment        | `x %= 4`  | `x = x % 4`   | `x = 2`  |
+| `**=`    | Exponentiation assignment | `x **= 3` | `x = x ** 3`  | `x = 8`  |
+
+### Basic Assignment
+
+```javascript
+let x = 10; // Assigns 10 to x
+```
+
+### Compound Assignment
+
+```javascript
+let x = 10;
+
+x += 5; // x = x + 5  → 15
+console.log(x); // 15
+
+x -= 3; // x = x - 3  → 12
+console.log(x); // 12
+
+x *= 2; // x = x * 2  → 24
+console.log(x); // 24
+
+x /= 4; // x = x / 4  → 6
+console.log(x); // 6
+
+x %= 4; // x = x % 4  → 2
+console.log(x); // 2
+
+x **= 3; // x = x ** 3 → 8
+console.log(x); // 8
+```
+
+### Chained Assignment
+
+```javascript
+// Assign same value to multiple variables
+let a, b, c;
+a = b = c = 10;
+
+console.log(a); // 10
+console.log(b); // 10
+console.log(c); // 10
+
+// Right to left evaluation
+let x = (y = 5); // y gets 5, then x gets y's value
+console.log(x); // 5
+console.log(y); // 5
+```
+
+### Destructuring Assignment
+
+```javascript
+// Array destructuring
+let [first, second] = [1, 2];
+console.log(first); // 1
+console.log(second); // 2
+
+// Object destructuring
+let { name, age } = { name: "John", age: 25 };
+console.log(name); // 'John'
+console.log(age); // 25
+
+// Swap variables
+let a = 1,
+  b = 2;
+[a, b] = [b, a];
+console.log(a); // 2
+console.log(b); // 1
+```
+
+## 3. Comparison Operators
+
+Compare two values and return boolean (true/false).
+
+### Comparison Operators Table
+
+| Operator | Name                  | Example     | Result  | Description                          |
+| -------- | --------------------- | ----------- | ------- | ------------------------------------ |
+| `==`     | Equal (loose)         | `5 == '5'`  | `true`  | Compares values (with type coercion) |
+| `===`    | Equal (strict)        | `5 === '5'` | `false` | Compares values and types            |
+| `!=`     | Not equal (loose)     | `5 != '5'`  | `false` | Checks inequality (with coercion)    |
+| `!==`    | Not equal (strict)    | `5 !== '5'` | `true`  | Checks inequality (no coercion)      |
+| `>`      | Greater than          | `10 > 5`    | `true`  | Checks if left &gt; right               |
+| `<`      | Less than             | `10 < 5`    | `false` | Checks if left &lt; right               |
+| `>=`     | Greater than or equal | `10 >= 10`  | `true`  | Checks if left &gt;= right              |
+| `<=`     | Less than or equal    | `5 <= 10`   | `true`  | Checks if left &lt;= right              |
+
+### == vs === (Critical Interview Topic!)
+
+**Loose Equality (==)** - Converts types before comparing  
+**Strict Equality (===)** - No type conversion
+
+```javascript
+// Loose equality (==) - type coercion happens
+console.log(5 == "5"); // true (string '5' converted to number)
+console.log(0 == false); // true (false converted to 0)
+console.log("" == false); // true (both converted to 0)
+console.log(null == undefined); // true (special case)
+console.log(1 == true); // true (true converted to 1)
+console.log("0" == false); // true (both converted to 0)
+
+// Strict equality (===) - no type conversion
+console.log(5 === "5"); // false (different types)
+console.log(0 === false); // false (different types)
+console.log("" === false); // false (different types)
+console.log(null === undefined); // false (different types)
+console.log(1 === true); // false (different types)
+```
+
+### Detailed Comparison Table: == vs ===
+
+| Comparison          | `==` Result | `===` Result | Reason                       |
+| ------------------- | ----------- | ------------ | ---------------------------- |
+| `5 == '5'`          | `true`      | `false`      | == converts string to number |
+| `0 == false`        | `true`      | `false`      | == converts false to 0       |
+| `'' == false`       | `true`      | `false`      | == converts both to 0        |
+| `null == undefined` | `true`      | `false`      | == special rule              |
+| `NaN == NaN`        | `false`     | `false`      | NaN never equals itself      |
+| `[] == false`       | `true`      | `false`      | == converts [] to 0          |
+| `'0' == 0`          | `true`      | `false`      | == converts string to number |
+
+**Best Practice:** Always use `===` and `!==` to avoid unexpected behavior.
+
+### Greater/Less Than Comparisons
+
+```javascript
+// Number comparisons
+console.log(10 > 5); // true
+console.log(10 < 5); // false
+console.log(10 >= 10); // true
+console.log(5 <= 10); // true
+
+// String comparisons (lexicographical)
+console.log("apple" < "banana"); // true
+console.log("Z" < "a"); // true (uppercase < lowercase in ASCII)
+console.log("10" < "9"); // true (string comparison, not numeric)
+
+// Mixed type comparisons
+console.log("10" > 5); // true ('10' converted to 10)
+console.log("5" < 10); // true ('5' converted to 5)
+
+// Special cases
+console.log(null > 0); // false
+console.log(null == 0); // false
+console.log(null >= 0); // true (weird!)
+
+console.log(undefined > 0); // false
+console.log(undefined < 0); // false
+console.log(undefined == 0); // false
+```
+
+### Special Comparison Cases
+
+```javascript
+// NaN comparisons
+console.log(NaN == NaN); // false
+console.log(NaN === NaN); // false
+console.log(Object.is(NaN, NaN)); // true (correct way)
+console.log(isNaN(NaN)); // true
+
+// +0 vs -0
+console.log(+0 === -0); // true
+console.log(Object.is(+0, -0)); // false (can distinguish)
+
+// null and undefined
+console.log(null == undefined); // true
+console.log(null === undefined); // false
+console.log(null == 0); // false (special case)
+console.log(undefined == 0); // false
+```
+
+## 4. Logical Operators
+
+Combine or invert boolean values.
+
+### Logical Operators Table
+
+| Operator | Name               | Returns                    | Short-circuits | Example                           |
+| -------- | ------------------ | -------------------------- | -------------- | --------------------------------- |
+| `&&`     | Logical AND        | First falsy or last value  | Yes            | `true && 'hello'` → `'hello'`     |
+| `\|\|`   | Logical OR         | First truthy or last value | Yes            | `false \|\| 'hi'` → `'hi'`        |
+| `!`      | Logical NOT        | Boolean                    | No             | `!true` → `false`                 |
+| `??`     | Nullish Coalescing | First non-nullish value    | Yes            | `null ?? 'default'` → `'default'` |
+
+### AND Operator (&&)
+
+```javascript
+// Both must be true for result to be true
+console.log(true && true); // true
+console.log(true && false); // false
+console.log(false && true); // false
+console.log(false && false); // false
+
+// Returns first falsy value or last value
+console.log(0 && "hello"); // 0 (first falsy)
+console.log("hello" && 0); // 0 (last value)
+console.log("hello" && "world"); // 'world' (last value)
+console.log(null && "hello"); // null (first falsy)
+
+// Practical example
+let age = 25;
+let hasLicense = true;
+
+if (age >= 18 && hasLicense) {
+  console.log("Can drive"); // Executes if both conditions true
+}
+
+// Guard pattern
+let user = { name: "John" };
+user && console.log(user.name); // 'John' (safe access)
+
+let noUser = null;
+noUser && console.log(noUser.name); // null (prevents error)
+```
+
+### OR Operator (||)
+
+```javascript
+// At least one must be true for result to be true
+console.log(true || true); // true
+console.log(true || false); // true
+console.log(false || true); // true
+console.log(false || false); // false
+
+// Returns first truthy value or last value
+console.log("hello" || 0); // 'hello' (first truthy)
+console.log(0 || "hello"); // 'hello' (first truthy)
+console.log(0 || null); // null (last value)
+console.log("hi" || "hello"); // 'hi' (first truthy)
+
+// Practical example
+let isWeekend = true;
+let isHoliday = false;
+
+if (isWeekend || isHoliday) {
+  console.log("No work!"); // Executes if either is true
+}
+
+// Default values
+let userName = "";
+let displayName = userName || "Guest"; // 'Guest'
+
+let count = 0;
+let value = count || 10; // 10 (but 0 is valid!)
+```
+
+### NOT Operator (!)
+
+```javascript
+// Inverts boolean value
+console.log(!true); // false
+console.log(!false); // true
+
+// Double NOT converts to boolean
+console.log(!!1); // true
+console.log(!!0); // false
+console.log(!!"hello"); // true
+console.log(!!""); // false
+
+// Practical example
+let isLoggedIn = false;
+
+if (!isLoggedIn) {
+  console.log("Please login"); // Executes if NOT logged in
+}
+
+// Negating comparisons
+let age = 15;
+if (!(age >= 18)) {
+  console.log("Minor"); // Executes if NOT adult
+}
+```
+
+### Nullish Coalescing Operator (??)
+
+```javascript
+// Returns right side only if left is null or undefined
+console.log(null ?? "default"); // 'default'
+console.log(undefined ?? "default"); // 'default'
+
+// Unlike ||, it doesn't treat 0, false, '' as falsy
+console.log(0 ?? 10); // 0 (0 is not null/undefined)
+console.log(false ?? true); // false
+console.log("" ?? "default"); // '' (empty string is not null/undefined)
+
+// Comparison with ||
+let count = 0;
+console.log(count || 10); // 10 (|| treats 0 as falsy)
+console.log(count ?? 10); // 0 (?? only checks null/undefined)
+
+let value = "";
+console.log(value || "default"); // 'default'
+console.log(value ?? "default"); // '' (empty string)
+
+// Practical use
+let userAge = 0; // 0 is a valid age
+let age = userAge ?? 18; // 0 (keeps 0)
+let age2 = userAge || 18; // 18 (treats 0 as falsy)
+```
+
+### Short-Circuit Evaluation (Interview Topic!)
+
+```javascript
+// && stops at first falsy value
+console.log(false && "hello"); // false (doesn't evaluate 'hello')
+console.log(true && "hello"); // 'hello' (evaluates and returns)
+
+// Practical: Conditional execution
+let isLoggedIn = true;
+isLoggedIn && console.log("Welcome!"); // Logs 'Welcome!'
+
+// || stops at first truthy value
+console.log(true || "hello"); // true (doesn't evaluate 'hello')
+console.log(false || "hello"); // 'hello' (evaluates and returns)
+
+// Practical: Default values
+let config = null;
+let settings = config || { theme: "light" }; // Uses default
+
+// Can prevent errors
+let user = null;
+let name = user && user.name; // null (safe, no error)
+// let name = user.name; // Error: Cannot read property 'name' of null
+
+// Complex example
+function processUser(user) {
+  // If no user, return early
+  if (!user) return;
+
+  // Process user (short-circuit evaluation)
+  user && user.active && console.log("Processing active user");
+}
+```
+
+### Truth Table
+
+| A     | B     | A && B | A \|\| B | !A    | A ?? B |
+| ----- | ----- | ------ | -------- | ----- | ------ |
+| true  | true  | true   | true     | false | true   |
+| true  | false | false  | true     | false | true   |
+| false | true  | false  | true     | true  | true   |
+| false | false | false  | false    | true  | false  |
+| null  | 5     | null   | 5        | false | 5      |
+| 0     | 5     | 0      | 5        | true  | 0      |
+
+### Logical Operator Precedence
+
+```javascript
+// ! has highest precedence, then &&, then ||
+console.log(true || (false && false)); // true
+console.log((true || false) && false); // false
+
+console.log(!false || true); // true (! first)
+console.log(!(false || true)); // false (parentheses first)
+
+// Real-world example
+let isAdmin = false;
+let isOwner = false;
+let isActive = true;
+
+// Without parentheses (wrong!)
+if ((isAdmin || isOwner) && isActive) {
+  console.log("Access granted");
+}
+
+// With parentheses (correct!)
+if (isAdmin || (isOwner && isActive)) {
+  console.log("Access granted");
+}
+```
+
+## 5. String Operators
+
+### Concatenation (+)
+
+```javascript
+let firstName = "John";
+let lastName = "Doe";
+
+// String concatenation
+let fullName = firstName + " " + lastName; // 'John Doe'
+console.log(fullName);
+
+// Concatenation with +=
+let greeting = "Hello";
+greeting += " ";
+greeting += "World";
+console.log(greeting); // 'Hello World'
+
+// Number + String = String
+console.log(5 + "5"); // '55' (string)
+console.log("5" + 5); // '55' (string)
+console.log(5 + 5 + "5"); // '105' (5+5=10, then '10'+'5'='105')
+console.log("5" + 5 + 5); // '555' ('5'+'5'='55', then '55'+5='555')
+
+// Multi-line concatenation
+let message =
+  "This is a long message " +
+  "that spans multiple lines " +
+  "using concatenation.";
+console.log(message);
+```
+
+### String Concatenation Rules
+
+| Expression       | Result        | Explanation                                   |
+| ---------------- | ------------- | --------------------------------------------- |
+| `'5' + 5`        | `'55'`        | Number converted to string                    |
+| `5 + '5'`        | `'55'`        | Number converted to string                    |
+| `'5' + 5 + 5`    | `'555'`       | Left to right: `'5'+'5'='55'`, `'55'+5='555'` |
+| `5 + 5 + '5'`    | `'105'`       | Left to right: `5+5=10`, `10+'5'='105'`       |
+| `'Hello' + true` | `'Hellotrue'` | Boolean converted to string                   |
+| `'5' - 2`        | `3`           | Subtraction converts strings to numbers       |
+
+**Interview Tip:** When + is used with a string, it concatenates. Order matters!
+
+### Template Literals (Modern Way)
+
+```javascript
+let name = "John";
+let age = 25;
+
+// Old way (concatenation)
+let message = "My name is " + name + " and I am " + age + " years old.";
+
+// New way (template literals)
+let message2 = `My name is ${name} and I am ${age} years old.`;
+
+console.log(message2); // My name is John and I am 25 years old.
+
+// Expressions inside template literals
+let a = 5;
+let b = 10;
+console.log(`${a} + ${b} = ${a + b}`); // 5 + 10 = 15
+
+// Multi-line strings
+let html = `
+  <div>
+    <h1>${name}</h1>
+    <p>Age: ${age}</p>
+  </div>
+`;
+
+// Function calls
+function double(x) {
+  return x * 2;
+}
+console.log(`Double of 5 is ${double(5)}`); // Double of 5 is 10
+```
+
+## 6. Ternary Operator (Conditional)
+
+Shorthand for if-else statement.
+
+### Syntax
+
+```javascript
+condition ? valueIfTrue : valueIfFalse;
+```
+
+### Basic Examples
+
+```javascript
+let age = 20;
+
+// Instead of if-else
+let status = age >= 18 ? "Adult" : "Minor";
+console.log(status); // 'Adult'
+
+// Direct use
+console.log(age >= 18 ? "Can vote" : "Cannot vote"); // 'Can vote'
+
+// Assignment
+let discount = age >= 65 ? 0.2 : 0;
+console.log(discount); // 0
+
+// Multiple conditions
+let score = 85;
+let grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "F";
+console.log(grade); // 'B'
+```
+
+### Nested Ternary (Use Sparingly!)
+
+```javascript
+let score = 85;
+
+// Nested ternary (hard to read)
+let grade =
+  score >= 90
+    ? "A"
+    : score >= 80
+      ? "B"
+      : score >= 70
+        ? "C"
+        : score >= 60
+          ? "D"
+          : "F";
+
+console.log(grade); // 'B'
+
+// Better: Use if-else for complex logic
+let grade2;
+if (score >= 90) {
+  grade2 = "A";
+} else if (score >= 80) {
+  grade2 = "B";
+} else if (score >= 70) {
+  grade2 = "C";
+} else if (score >= 60) {
+  grade2 = "D";
+} else {
+  grade2 = "F";
+}
+```
+
+### Practical Use Cases
+
+```javascript
+// 1. Conditional rendering (React-style)
+let isLoggedIn = true;
+let message = isLoggedIn ? "Welcome back!" : "Please login";
+
+// 2. Setting default values
+let userRole = undefined;
+let role = userRole ? userRole : "guest";
+
+// 3. Conditional CSS class
+let isActive = true;
+let className = isActive ? "active" : "inactive";
+
+// 4. Inline calculations
+let price = 100;
+let finalPrice = price > 50 ? price * 0.9 : price; // 10% discount if > 50
+
+// 5. Function parameters
+function greet(name) {
+  name = name ? name : "Guest"; // Default parameter (old way)
+  console.log(`Hello, ${name}!`);
+}
+
+// 6. Null/undefined checks
+let value = null;
+let result = value ? value : "default";
+```
+
+### Ternary vs If-Else
+
+| Feature           | Ternary Operator     | If-Else Statement  |
+| ----------------- | -------------------- | ------------------ |
+| **Syntax**        | Single line          | Multiple lines     |
+| **Readability**   | Good for simple      | Better for complex |
+| **Returns value** | Yes                  | No (needs return)  |
+| **Use case**      | Assignments, returns | Complex logic      |
+
+```javascript
+// Ternary: Returns value directly
+let status = age >= 18 ? "Adult" : "Minor";
+
+// If-else: Need assignment
+let status2;
+if (age >= 18) {
+  status2 = "Adult";
+} else {
+  status2 = "Minor";
+}
+
+// Ternary in return statement
+function getStatus(age) {
+  return age >= 18 ? "Adult" : "Minor";
+}
+
+// If-else needs multiple returns
+function getStatus2(age) {
+  if (age >= 18) {
+    return "Adult";
+  } else {
+    return "Minor";
+  }
+}
+```
+
+## 7. Type Operators
+
+### typeof Operator
+
+Returns a string indicating the type of a value.
+
+```javascript
+// Primitives
+console.log(typeof 42); // 'number'
+console.log(typeof 3.14); // 'number'
+console.log(typeof NaN); // 'number'
+console.log(typeof Infinity); // 'number'
+
+console.log(typeof "hello"); // 'string'
+console.log(typeof ""); // 'string'
+
+console.log(typeof true); // 'boolean'
+console.log(typeof false); // 'boolean'
+
+console.log(typeof undefined); // 'undefined'
+
+console.log(typeof null); // 'object' (JavaScript bug!)
+
+console.log(typeof Symbol("id")); // 'symbol'
+
+console.log(typeof 123n); // 'bigint'
+
+// Objects
+console.log(typeof {}); // 'object'
+console.log(typeof []); // 'object'
+console.log(typeof function () {}); // 'function'
+console.log(typeof new Date()); // 'object'
+console.log(typeof /regex/); // 'object'
+
+// Undeclared variables
+console.log(typeof undeclaredVar); // 'undefined' (no error!)
+```
+
+### typeof Return Values Table
+
+| Value               | typeof Returns | Notes                    |
+| ------------------- | -------------- | ------------------------ |
+| `42`, `3.14`, `NaN` | `'number'`     | All numbers              |
+| `"hello"`, `''`     | `'string'`     | All strings              |
+| `true`, `false`     | `'boolean'`    | Boolean values           |
+| `undefined`         | `'undefined'`  | Undefined value          |
+| `null`              | `'object'`     | ⚠️ Bug! Should be 'null' |
+| `Symbol('id')`      | `'symbol'`     | Symbol type              |
+| `123n`              | `'bigint'`     | BigInt type              |
+| `{}`                | `'object'`     | Plain object             |
+| `[]`                | `'object'`     | ⚠️ Arrays are objects    |
+| `function(){}`      | `'function'`   | Functions                |
+| `class MyClass {}`  | `'function'`   | ⚠️ Classes are functions |
+
+### instanceof Operator
+
+Checks if an object is an instance of a specific constructor/class.
+
+```javascript
+// Arrays
+let arr = [1, 2, 3];
+console.log(arr instanceof Array); // true
+console.log(arr instanceof Object); // true (arrays are objects)
+
+// Objects
+let obj = { name: "John" };
+console.log(obj instanceof Object); // true
+console.log(obj instanceof Array); // false
+
+// Dates
+let date = new Date();
+console.log(date instanceof Date); // true
+console.log(date instanceof Object); // true
+
+// Functions
+function myFunc() {}
+console.log(myFunc instanceof Function); // true
+console.log(myFunc instanceof Object); // true
+
+// Custom constructors
+function Person(name) {
+  this.name = name;
+}
+let john = new Person("John");
+console.log(john instanceof Person); // true
+console.log(john instanceof Object); // true
+
+// Classes
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+}
+let user = new User("Jane");
+console.log(user instanceof User); // true
+console.log(user instanceof Object); // true
+
+// Primitives
+console.log(5 instanceof Number); // false (primitive, not object)
+console.log(new Number(5) instanceof Number); // true (object wrapper)
+```
+
+### in Operator
+
+Checks if a property exists in an object.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+};
+
+console.log("name" in person); // true
+console.log("age" in person); // true
+console.log("salary" in person); // false
+
+// Inherited properties
+console.log("toString" in person); // true (inherited from Object)
+
+// Array indices
+let arr = [1, 2, 3];
+console.log(0 in arr); // true
+console.log(3 in arr); // false (index 3 doesn't exist)
+
+// Array length
+console.log("length" in arr); // true
+```
+
+### Type Checking Best Practices
+
+```javascript
+// Check for number
+function isNumber(value) {
+  return typeof value === "number" && !isNaN(value);
+}
+
+// Check for string
+function isString(value) {
+  return typeof value === "string";
+}
+
+// Check for array (typeof doesn't work!)
+function isArray(value) {
+  return Array.isArray(value); // ✅ Correct way
+  // return typeof value === 'object'; // ❌ Wrong (objects also return 'object')
+}
+
+// Check for object (not array, not null)
+function isObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// Check for null
+function isNull(value) {
+  return value === null; // ✅ Correct way
+  // return typeof value === 'object'; // ❌ Wrong (objects also return 'object')
+}
+
+// Check for undefined
+function isUndefined(value) {
+  return typeof value === "undefined";
+}
+
+// Check for function
+function isFunction(value) {
+  return typeof value === "function";
+}
+```
+
+## 8. Operator Precedence
+
+Determines the order in which operations are performed.
+
+### Precedence Table (High to Low)
+
+| Level | Operator                                    | Name                        | Associativity |
+| ----- | ------------------------------------------- | --------------------------- | ------------- |
+| 1     | `()`                                        | Grouping                    | N/A           |
+| 2     | `.` `[]` `()`                               | Member/Call                 | Left-to-right |
+| 3     | `new`                                       | Create instance (with args) | N/A           |
+| 4     | `++` `--`                                   | Postfix increment/decrement | N/A           |
+| 5     | `!` `~` `+` `-` `++` `--` `typeof` `delete` | Unary                       | Right-to-left |
+| 6     | `**`                                        | Exponentiation              | Right-to-left |
+| 7     | `*` `/` `%`                                 | Multiplicative              | Left-to-right |
+| 8     | `+` `-`                                     | Additive                    | Left-to-right |
+| 9     | `<<` `>>` `>>>`                             | Bitwise shift               | Left-to-right |
+| 10    | `<` `<=` `>` `>=` `in` `instanceof`         | Relational                  | Left-to-right |
+| 11    | `==` `===` `!=` `!==`                       | Equality                    | Left-to-right |
+| 12    | `&`                                         | Bitwise AND                 | Left-to-right |
+| 13    | `^`                                         | Bitwise XOR                 | Left-to-right |
+| 14    | `\|`                                        | Bitwise OR                  | Left-to-right |
+| 15    | `&&`                                        | Logical AND                 | Left-to-right |
+| 16    | `\|\|`                                      | Logical OR                  | Left-to-right |
+| 17    | `??`                                        | Nullish coalescing          | Left-to-right |
+| 18    | `? :`                                       | Conditional (ternary)       | Right-to-left |
+| 19    | `=` `+=` `-=` etc.                          | Assignment                  | Right-to-left |
+| 20    | `,`                                         | Comma                       | Left-to-right |
+
+### Examples
+
+```javascript
+// Without parentheses
+let result = 2 + 3 * 4; // 14 (multiplication first)
+console.log(result);
+
+// With parentheses
+let result2 = (2 + 3) * 4; // 20 (addition first)
+console.log(result2);
+
+// Multiple operators
+let x = 10 - 5 * 2; // 0 (5*2=10, then 10-10=0)
+console.log(x);
+
+let y = (10 - 5) * 2; // 10 ((10-5)=5, then 5*2=10)
+console.log(y);
+
+// Exponentiation is right-to-left
+console.log(2 ** (3 ** 2)); // 512 (2^(3^2) = 2^9 = 512)
+console.log((2 ** 3) ** 2); // 64 ((2^3)^2 = 8^2 = 64)
+
+// Logical operators
+console.log(true || (false && false)); // true (&& before ||)
+console.log((true || false) && false); // false (parentheses first)
+```
+
+### Complex Example
+
+```javascript
+let x = 5;
+let y = x++ + ++x * 2; // What is y?
+
+// Step-by-step breakdown:
+// 1. x++ returns 5, then x becomes 6 (postfix increment)
+// 2. ++x makes x = 7, returns 7 (prefix increment)
+// 3. 7 * 2 = 14 (multiplication has higher precedence)
+// 4. 5 + 14 = 19 (addition)
+// Final: x = 7, y = 19
+
+console.log(x); // 7
+console.log(y); // 19
+```
+
+### Associativity Examples
+
+```javascript
+// Left-to-right (addition)
+let result = 5 - 3 - 1; // (5 - 3) - 1 = 1
+console.log(result); // 1
+
+// Right-to-left (assignment)
+let a, b, c;
+a = b = c = 5; // c = 5, then b = c, then a = b
+console.log(a, b, c); // 5 5 5
+
+// Right-to-left (exponentiation)
+console.log(2 ** (3 ** 2)); // 2 ** (3 ** 2) = 2 ** 9 = 512
+```
+
+### Precedence Best Practices
+
+```javascript
+// ✅ Good: Use parentheses for clarity
+let result = price * quantity + tax;
+
+// ❌ Bad: Relies on knowing precedence
+let result = price * quantity + tax;
+
+// ✅ Good: Clear intention
+if ((isAdmin || isOwner) && isActive) {
+  // ...
+}
+
+// ❌ Bad: Confusing without parentheses
+if (isAdmin || (isOwner && isActive)) {
+  // ...
+}
+
+// ✅ Good: Break complex expressions
+let subtotal = price * quantity;
+let total = subtotal + tax;
+
+// ❌ Bad: Everything in one line
+let total = price * quantity + tax + (discount ? -discount : 0);
+```
+
+## 9. Special Operators
+
+### Optional Chaining (?.)
+
+Safely access nested object properties without checking each level.
+
+```javascript
+// Without optional chaining
+let user = null;
+// let city = user.address.city; // Error: Cannot read property 'address' of null
+
+// Traditional solution
+let city = user && user.address && user.address.city;
+
+// With optional chaining (ES2020)
+let city2 = user?.address?.city; // undefined (no error)
+
+// Real examples
+let user1 = {
+  name: "John",
+  address: {
+    city: "New York",
+  },
+};
+
+console.log(user1?.address?.city); // 'New York'
+console.log(user1?.address?.zipCode); // undefined
+console.log(user1?.contact?.phone); // undefined
+
+// With arrays
+let users = null;
+console.log(users?.[0]?.name); // undefined
+
+let users2 = [{ name: "John" }, { name: "Jane" }];
+console.log(users2?.[0]?.name); // 'John'
+
+// With functions
+let obj = null;
+console.log(obj?.someMethod?.()); // undefined (doesn't call if method doesn't exist)
+
+let obj2 = {
+  greet: function () {
+    return "Hello";
+  },
+};
+console.log(obj2?.greet?.()); // 'Hello'
+```
+
+### Spread Operator (...)
+
+Expands iterables (arrays, objects) into individual elements.
+
+```javascript
+// Array spread
+let arr1 = [1, 2, 3];
+let arr2 = [4, 5, 6];
+let combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+
+// Copy array
+let original = [1, 2, 3];
+let copy = [...original]; // [1, 2, 3]
+copy.push(4);
+console.log(original); // [1, 2, 3] (unchanged)
+console.log(copy); // [1, 2, 3, 4]
+
+// Object spread
+let obj1 = { name: "John", age: 25 };
+let obj2 = { city: "New York", country: "USA" };
+let merged = { ...obj1, ...obj2 };
+// { name: 'John', age: 25, city: 'New York', country: 'USA' }
+
+// Copy object
+let person = { name: "John" };
+let personCopy = { ...person };
+
+// Function arguments
+function sum(a, b, c) {
+  return a + b + c;
+}
+let numbers = [1, 2, 3];
+console.log(sum(...numbers)); // 6
+```
+
+### Comma Operator (,)
+
+Evaluates multiple expressions, returns the last one.
+
+```javascript
+// Basic usage
+let x = (1, 2, 3, 4, 5); // x = 5 (returns last value)
+console.log(x); // 5
+
+// In for loop
+for (let i = 0, j = 10; i < 5; i++, j--) {
+  console.log(i, j);
+}
+// Output: 0 10, 1 9, 2 8, 3 7, 4 6
+
+// Multiple assignments
+let a, b, c;
+a = ((b = 1), (c = 2), 3); // a = 3, b = 1, c = 2
+
+// Rarely used in practice
+```
+
+### delete Operator
+
+Removes a property from an object.
+
+```javascript
+let person = {
+  name: "John",
+  age: 25,
+  city: "New York",
+};
+
+delete person.age;
+console.log(person); // { name: 'John', city: 'New York' }
+
+// Returns true if successful
+console.log(delete person.city); // true
+console.log(person); // { name: 'John' }
+
+// Cannot delete non-configurable properties
+let obj = {};
+Object.defineProperty(obj, "prop", {
+  value: 42,
+  configurable: false,
+});
+console.log(delete obj.prop); // false (cannot delete)
+
+// Cannot delete variables
+let x = 10;
+console.log(delete x); // false
+```
+
+### void Operator
+
+Evaluates an expression and returns undefined.
+
+```javascript
+// Basic usage
+console.log(void 0); // undefined
+console.log(void "hello"); // undefined
+console.log(void 2 + 3); // undefined (void 2 is undefined, undefined + 3 is NaN)
+
+// Used to get undefined reliably
+let x = void 0; // x = undefined
+
+// Prevent default in links (old way)
+// <a href="javascript:void(0)">Click</a>
+
+// IIFE (Immediately Invoked Function Expression)
+void (function () {
+  console.log("IIFE executed");
+})();
+```
+
+## Practical Examples
+
+### Example 1: Calculate Discount
+
+```javascript
+let price = 100;
+let discount = 0.2; // 20%
+let finalPrice = price - price * discount;
+console.log(finalPrice); // 80
+
+// Alternative
+let finalPrice2 = price * (1 - discount);
+console.log(finalPrice2); // 80
+
+// With ternary
+let isMember = true;
+let memberDiscount = isMember ? 0.2 : 0;
+let finalPrice3 = price * (1 - memberDiscount);
+console.log(finalPrice3); // 80
+```
+
+### Example 2: Check Eligibility
+
+```javascript
+let age = 25;
+let hasID = true;
+let canEnter = age >= 18 && hasID;
+console.log(canEnter); // true
+
+// With additional checks
+let isVIP = false;
+let hasTicket = true;
+let canEnterVIP = (age >= 21 && hasID && hasTicket) || isVIP;
+console.log(canEnterVIP); // true
+```
+
+### Example 3: Default Values
+
+```javascript
+// Using ||
+let userInput = "";
+let value = userInput || "Default";
+console.log(value); // 'Default'
+
+// Problem with ||
+let count = 0;
+let value2 = count || 10;
+console.log(value2); // 10 (but 0 is valid!)
+
+// Solution: Use ??
+let count2 = 0;
+let value3 = count2 ?? 10;
+console.log(value3); // 0 (correct!)
+```
+
+### Example 4: Conditional Message
+
+```javascript
+let score = 85;
+let message = score >= 60 ? "Pass" : "Fail";
+console.log(message); // 'Pass'
+
+// With grade
+let grade =
+  score >= 90
+    ? "A"
+    : score >= 80
+      ? "B"
+      : score >= 70
+        ? "C"
+        : score >= 60
+          ? "D"
+          : "F";
+console.log(grade); // 'B'
+```
+
+### Example 5: Safe Property Access
+
+```javascript
+// Without optional chaining
+let user = { name: "John" };
+let city = user && user.address && user.address.city;
+console.log(city); // undefined
+
+// With optional chaining
+let city2 = user?.address?.city;
+console.log(city2); // undefined
+
+// Real use case
+function getUserCity(user) {
+  return user?.address?.city ?? "Unknown";
+}
+
+console.log(getUserCity({ name: "John" })); // 'Unknown'
+console.log(getUserCity({ name: "Jane", address: { city: "NY" } })); // 'NY'
+```
+
+### Example 6: Complex Expression Evaluation
+
+```javascript
+let a = 5;
+let b = 10;
+let c = 15;
+
+// Complex expression
+let result = a + b * c - (a++ + ++b) / --c;
+
+// Break it down:
+// 1. b * c = 10 * 15 = 150
+// 2. a++ returns 5, a becomes 6
+// 3. ++b makes b = 11, returns 11
+// 4. 5 + 11 = 16
+// 5. --c makes c = 14, returns 14
+// 6. 16 / 14 ≈ 1.14
+// 7. a + 150 - 1.14 = 6 + 150 - 1.14 = 154.86
+
+console.log(result); // 154.85714285714286
+console.log(a, b, c); // 6 11 14
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between `==` and `===`?
+
+**Answer:**
+
+| Feature             | `==` (Loose Equality)        | `===` (Strict Equality) |
+| ------------------- | ---------------------------- | ----------------------- |
+| Type coercion       | Yes                          | No                      |
+| Compares            | Values only (after coercion) | Values AND types        |
+| `5 == '5'`          | `true`                       | `false`                 |
+| `0 == false`        | `true`                       | `false`                 |
+| `null == undefined` | `true`                       | `false`                 |
+| Best practice       | Avoid (except null check)    | Always use              |
+
+**Example:**
+
+```javascript
+// == converts types
+console.log(5 == "5"); // true (string converted to number)
+console.log(0 == false); // true (false converted to 0)
+console.log("" == 0); // true (both converted to 0)
+
+// === does NOT convert types
+console.log(5 === "5"); // false (different types)
+console.log(0 === false); // false (different types)
+console.log("" === 0); // false (different types)
+
+// Only acceptable use of ==
+if (value == null) {
+  // Checks both null AND undefined
+  console.log("No value");
+}
+```
+
+---
+
+### Q2: Explain short-circuit evaluation in logical operators.
+
+**Answer:**
+
+**Short-circuit evaluation** means logical operators stop evaluating as soon as the result is determined.
+
+**AND (&&):**
+
+- Stops at first **falsy** value
+- Returns first falsy OR last value
+
+```javascript
+// Stops at false
+console.log(false && "hello"); // false (doesn't evaluate 'hello')
+console.log(null && "world"); // null (stops at null)
+
+// Evaluates all if all truthy
+console.log(true && "hello"); // 'hello' (returns last value)
+console.log(5 && "world"); // 'world'
+
+// Practical use
+let user = { name: "John" };
+user && console.log(user.name); // 'John' (safe access)
+
+let noUser = null;
+noUser && console.log(noUser.name); // null (prevents error)
+```
+
+**OR (||):**
+
+- Stops at first **truthy** value
+- Returns first truthy OR last value
+
+```javascript
+// Stops at true
+console.log(true || "hello"); // true (doesn't evaluate 'hello')
+console.log(5 || "world"); // 5 (stops at 5)
+
+// Evaluates all if all falsy
+console.log(false || "hello"); // 'hello' (returns last value)
+console.log(0 || null); // null (last value)
+
+// Practical use: Default values
+let userName = "";
+let name = userName || "Guest"; // 'Guest'
+
+let config = null;
+let settings = config || { theme: "light" }; // default object
+```
+
+**Why it matters:**
+
+- Performance: Avoids unnecessary evaluations
+- Safety: Prevents errors with null/undefined
+- Concise code: Replace if statements
+
+---
+
+### Q3: What is the difference between `++x` and `x++`?
+
+**Answer:**
+
+| Feature          | `++x` (Pre-increment)        | `x++` (Post-increment)       |
+| ---------------- | ---------------------------- | ---------------------------- |
+| **When changes** | Before expression            | After expression             |
+| **Returns**      | New value                    | Old value                    |
+| **Example**      | `let y = ++x` → y gets new x | `let y = x++` → y gets old x |
+
+**Examples:**
+
+```javascript
+// Post-increment (x++)
+let a = 5;
+console.log(a++); // 5 (returns old value)
+console.log(a); // 6 (now incremented)
+
+// Pre-increment (++x)
+let b = 5;
+console.log(++b); // 6 (increments first, returns new value)
+console.log(b); // 6
+
+// In expressions
+let x = 5;
+let y = x++ + x; // 5 + 6 = 11
+console.log(y); // 11
+console.log(x); // 6
+
+let m = 5;
+let n = ++m + m; // 6 + 6 = 12
+console.log(n); // 12
+console.log(m); // 6
+```
+
+**Complex Example:**
+
+```javascript
+let a = 5;
+let b = a++ + ++a; // What is b?
+
+// Step by step:
+// 1. a++ returns 5, then a becomes 6
+// 2. ++a makes a = 7, returns 7
+// 3. b = 5 + 7 = 12
+
+console.log(a); // 7
+console.log(b); // 12
+```
+
+---
+
+### Q4: Explain operator precedence with an example.
+
+**Answer:**
+
+**Operator precedence** determines the order of operations when multiple operators are used.
+
+**Precedence levels (high to low):**
+
+1. Grouping: `()`
+2. Member access: `.` `[]`
+3. Increment/Decrement: `++` `--`
+4. Exponentiation: `**`
+5. Multiplicative: `*` `/` `%`
+6. Additive: `+` `-`
+7. Comparison: `<` `>` `<=` `>=`
+8. Equality: `==` `===`
+9. Logical AND: `&&`
+10. Logical OR: `||`
+11. Ternary: `? :`
+12. Assignment: `=` `+=` etc.
+
+**Examples:**
+
+```javascript
+// Multiplication before addition
+console.log(2 + 3 * 4); // 14 (not 20)
+// 3 * 4 = 12, then 2 + 12 = 14
+
+// Use parentheses to override
+console.log((2 + 3) * 4); // 20
+// (2 + 3) = 5, then 5 * 4 = 20
+
+// Complex example
+let result = 10 + 5 * 2 - 8 / 4;
+// Step by step:
+// 1. 5 * 2 = 10
+// 2. 8 / 4 = 2
+// 3. 10 + 10 - 2 = 18
+console.log(result); // 18
+
+// Logical operators
+console.log(true || (false && false)); // true
+// && has higher precedence than ||
+// false && false = false
+// true || false = true
+
+// Always use parentheses for clarity!
+console.log((true || false) && false); // false
+```
+
+---
+
+### Q5: What is the difference between `||` and `??`?
+
+**Answer:**
+
+| Feature                      | `\|\|` (OR)                                          | `??` (Nullish Coalescing)   |
+| ---------------------------- | ---------------------------------------------------- | --------------------------- |
+| **Returns right if left is** | Any falsy value                                      | Only `null` or `undefined`  |
+| **Falsy values**             | `false`, `0`, `''`, `null`, `undefined`, `NaN`, `-0` | Only `null`, `undefined`    |
+| **Use case**                 | General defaults                                     | Preserve `0`, `false`, `''` |
+
+**Examples:**
+
+```javascript
+// || treats all falsy values as "no value"
+console.log(0 || 10); // 10 (0 is falsy)
+console.log(false || true); // true (false is falsy)
+console.log("" || "default"); // 'default' ('' is falsy)
+console.log(null || "default"); // 'default'
+console.log(undefined || "default"); // 'default'
+
+// ?? only treats null/undefined as "no value"
+console.log(0 ?? 10); // 0 (0 is NOT null/undefined)
+console.log(false ?? true); // false (false is NOT null/undefined)
+console.log("" ?? "default"); // '' (empty string is NOT null/undefined)
+console.log(null ?? "default"); // 'default'
+console.log(undefined ?? "default"); // 'default'
+
+// Real-world example
+let userAge = 0; // 0 is a valid age
+
+// Using || (wrong!)
+let age1 = userAge || 18; // 18 (treats 0 as falsy)
+
+// Using ?? (correct!)
+let age2 = userAge ?? 18; // 0 (preserves 0)
+
+// Function with default parameter
+function greet(name) {
+  name = name ?? "Guest"; // Better than ||
+  console.log(`Hello, ${name}!`);
+}
+
+greet(""); // Hello, ! (empty string is valid)
+greet(null); // Hello, Guest!
+greet(undefined); // Hello, Guest!
+```
+
+---
+
+### Q6: What does the modulus operator (%) do?
+
+**Answer:**
+
+The **modulus operator (%)** returns the **remainder** after division.
+
+```javascript
+// Basic examples
+console.log(10 % 3); // 1 (10 ÷ 3 = 3 remainder 1)
+console.log(15 % 4); // 3 (15 ÷ 4 = 3 remainder 3)
+console.log(20 % 5); // 0 (20 ÷ 5 = 4 remainder 0)
+console.log(7 % 2); // 1 (odd number)
+console.log(8 % 2); // 0 (even number)
+
+// Negative numbers
+console.log(-10 % 3); // -1 (result has sign of dividend)
+console.log(10 % -3); // 1
+
+// Common use cases:
+
+// 1. Check if even or odd
+function isEven(num) {
+  return num % 2 === 0;
+}
+console.log(isEven(4)); // true
+console.log(isEven(5)); // false
+
+// 2. Cycle through array indices
+let colors = ["red", "green", "blue"];
+for (let i = 0; i < 10; i++) {
+  console.log(colors[i % colors.length]); // Loops through colors
+}
+
+// 3. Time calculations
+let totalMinutes = 135;
+let hours = Math.floor(totalMinutes / 60); // 2
+let minutes = totalMinutes % 60; // 15
+console.log(`${hours}h ${minutes}m`); // "2h 15m"
+
+// 4. Fizz Buzz problem
+for (let i = 1; i <= 15; i++) {
+  if (i % 3 === 0 && i % 5 === 0) {
+    console.log("FizzBuzz");
+  } else if (i % 3 === 0) {
+    console.log("Fizz");
+  } else if (i % 5 === 0) {
+    console.log("Buzz");
+  } else {
+    console.log(i);
+  }
+}
+```
+
+---
+
+### Q7: Explain the ternary operator with examples.
+
+**Answer:**
+
+The **ternary operator** is a shorthand for `if-else` statements.
+
+**Syntax:**
+
+```javascript
+condition ? valueIfTrue : valueIfFalse;
+```
+
+**Examples:**
+
+```javascript
+// Basic usage
+let age = 20;
+let status = age >= 18 ? "Adult" : "Minor";
+console.log(status); // 'Adult'
+
+// Replacing if-else
+// Before:
+let message;
+if (isLoggedIn) {
+  message = "Welcome back!";
+} else {
+  message = "Please login";
+}
+
+// After:
+let message = isLoggedIn ? "Welcome back!" : "Please login";
+
+// In function returns
+function getDiscount(isMember) {
+  return isMember ? 0.2 : 0;
+}
+
+// Nested ternary (use sparingly!)
+let score = 85;
+let grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "F";
+
+// Multiple conditions
+let price = 100;
+let discount = price > 50 ? (price > 100 ? 0.2 : 0.1) : 0;
+
+// With function calls
+let result = isValid ? processData() : showError();
+
+// Common use case: Default values
+let userName = input ? input : "Guest";
+// Or better:
+let userName = input || "Guest";
+let userName = input ?? "Guest"; // If you want to preserve false/0/''
+```
+
+**When to use:**
+
+- ✅ Simple conditions
+- ✅ Assignments based on condition
+- ✅ Return statements
+- ❌ Complex logic (use if-else instead)
+- ❌ Multiple nested conditions (hard to read)
+
+---
+
+### Q8: What is the difference between `typeof` and `instanceof`?
+
+**Answer:**
+
+| Feature      | `typeof`       | `instanceof`                   |
+| ------------ | -------------- | ------------------------------ |
+| **Returns**  | String         | Boolean                        |
+| **Checks**   | Primitive type | Object constructor/class       |
+| **Works on** | All values     | Objects only                   |
+| **Syntax**   | `typeof value` | `value instanceof Constructor` |
+
+**typeof:**
+
+```javascript
+// Checks primitive types
+console.log(typeof 42); // 'number'
+console.log(typeof "hello"); // 'string'
+console.log(typeof true); // 'boolean'
+console.log(typeof undefined); // 'undefined'
+console.log(typeof null); // 'object' (bug!)
+console.log(typeof Symbol()); // 'symbol'
+console.log(typeof 123n); // 'bigint'
+
+// For objects
+console.log(typeof {}); // 'object'
+console.log(typeof []); // 'object' (can't distinguish arrays!)
+console.log(typeof function () {}); // 'function'
+```
+
+**instanceof:**
+
+```javascript
+// Checks object constructor/class
+let arr = [1, 2, 3];
+console.log(arr instanceof Array); // true
+console.log(arr instanceof Object); // true (arrays are objects)
+
+let date = new Date();
+console.log(date instanceof Date); // true
+console.log(date instanceof Object); // true
+
+// Custom constructor
+function Person(name) {
+  this.name = name;
+}
+let john = new Person("John");
+console.log(john instanceof Person); // true
+console.log(john instanceof Object); // true
+
+// Doesn't work on primitives
+console.log(5 instanceof Number); // false
+console.log("hello" instanceof String); // false
+```
+
+**When to use:**
+
+- `typeof`: Check primitive types (`number`, `string`, `boolean`, etc.)
+- `instanceof`: Check if object is instance of specific class/constructor
+- `Array.isArray()`: Specifically check for arrays (better than `typeof`)
+
+---
+
+### Q9: How do you check if a value is NaN?
+
+**Answer:**
+
+**NaN** (Not a Number) is a special numeric value that represents an invalid number operation.
+
+**The Problem:**
+
+```javascript
+console.log(NaN == NaN); // false
+console.log(NaN === NaN); // false
+console.log(typeof NaN); // 'number' (yes, NaN is a number type!)
+
+// Even comparing NaN to itself returns false!
+let x = NaN;
+console.log(x == NaN); // false
+console.log(x === NaN); // false
+```
+
+**Solutions:**
+
+```javascript
+// 1. isNaN() function (be careful!)
+console.log(isNaN(NaN)); // true
+console.log(isNaN(123)); // false
+console.log(isNaN("hello")); // true (converts to NaN)
+console.log(isNaN("123")); // false (converts to 123)
+console.log(isNaN(undefined)); // true (converts to NaN)
+
+// Problem: isNaN() converts non-numbers to numbers first!
+console.log(isNaN("hello")); // true (but 'hello' is not NaN, it's a string!)
+
+// 2. Number.isNaN() - RECOMMENDED (ES6+)
+console.log(Number.isNaN(NaN)); // true
+console.log(Number.isNaN(123)); // false
+console.log(Number.isNaN("hello")); // false (no conversion!)
+console.log(Number.isNaN("123")); // false
+console.log(Number.isNaN(undefined)); // false
+
+// 3. Self-comparison trick
+function isReallyNaN(value) {
+  return value !== value; // Only NaN is not equal to itself
+}
+console.log(isReallyNaN(NaN)); // true
+console.log(isReallyNaN(123)); // false
+
+// 4. Object.is() method
+console.log(Object.is(NaN, NaN)); // true
+console.log(Object.is(5, NaN)); // false
+```
+
+**Best Practice:**
+
+```javascript
+// ✅ Use Number.isNaN() for strict NaN checking
+if (Number.isNaN(value)) {
+  console.log("Value is NaN");
+}
+
+// ❌ Avoid isNaN() unless you want type coercion
+if (isNaN(value)) {
+  // This will be true for non-numeric strings too!
+}
+```
+
+**How NaN is created:**
+
+```javascript
+console.log(0 / 0); // NaN
+console.log(Math.sqrt(-1)); // NaN
+console.log(parseInt("hello")); // NaN
+console.log("hello" * 5); // NaN
+console.log(undefined + 1); // NaN
+console.log(Number("abc")); // NaN
+```
+
+---
+
+### Q10: What happens when you use the + operator with different types?
+
+**Answer:**
+
+The `+` operator behaves differently based on operand types:
+
+**String Concatenation (if any operand is a string):**
+
+```javascript
+// String + anything = String (concatenation)
+console.log("5" + 5); // '55'
+console.log(5 + "5"); // '55'
+console.log("Hello" + " World"); // 'Hello World'
+console.log("5" + true); // '5true'
+console.log("Value: " + null); // 'Value: null'
+
+// Order matters!
+console.log(5 + 5 + "5"); // '105' (5+5=10, then '10'+'5'='105')
+console.log("5" + 5 + 5); // '555' ('5'+'5'='55', then '55'+5='555')
+console.log("5" + (5 + 5)); // '510' (parentheses force 5+5 first)
+```
+
+**Numeric Addition (if both operands are numbers):**
+
+```javascript
+// Number + Number = Number (addition)
+console.log(5 + 5); // 10
+console.log(3.14 + 2.86); // 6
+console.log(-5 + 10); // 5
+
+// Boolean to Number conversion
+console.log(true + true); // 2 (true = 1)
+console.log(true + false); // 1 (true=1, false=0)
+console.log(5 + true); // 6 (5 + 1)
+```
+
+**Type Coercion Rules:**
+
+| Expression        | Result         | Explanation                          |
+| ----------------- | -------------- | ------------------------------------ |
+| `5 + 5`           | `10`           | Both numbers → addition              |
+| `'5' + 5`         | `'55'`         | String present → concatenation       |
+| `5 + '5'`         | `'55'`         | String present → concatenation       |
+| `5 + 5 + '5'`     | `'105'`        | Left-to-right: 5+5=10, then '10'+'5' |
+| `'5' + 5 + 5`     | `'555'`        | Left-to-right: '5'+'5', then +'5'    |
+| `true + 1`        | `2`            | true → 1, then 1+1                   |
+| `false + 5`       | `5`            | false → 0, then 0+5                  |
+| `'5' + null`      | `'5null'`      | null → 'null' (string concat)        |
+| `5 + null`        | `5`            | null → 0, then 5+0                   |
+| `'5' + undefined` | `'5undefined'` | undefined → 'undefined' (concat)     |
+| `5 + undefined`   | `NaN`          | undefined → NaN, then 5+NaN          |
+
+**Common Pitfalls:**
+
+```javascript
+// Unexpected string concatenation
+let total = "10" + 5; // '105' (not 15!)
+
+// Fix: Convert to number first
+let total = Number("10") + 5; // 15
+let total = +"10" + 5; // 15 (unary plus)
+let total = parseInt("10") + 5; // 15
+
+// Array concatenation (weird!)
+console.log([1, 2] + [3, 4]); // '1,23,4' (both convert to strings)
+console.log([] + []); // '' (empty string)
+console.log([] + {}); // '[object Object]'
+console.log({} + []); // '[object Object]' (in some contexts)
+```
+
+**Best Practices:**
+
+```javascript
+// ✅ Be explicit with types
+let sum = Number(str1) + Number(str2);
+
+// ✅ Use template literals for string building
+let message = `Total: ${num1 + num2}`;
+
+// ✅ Avoid mixing types
+let total = parseFloat(price) + tax; // Both numbers
+
+// ❌ Avoid relying on implicit coercion
+let result = userInput + 10; // Dangerous if userInput is string!
+```
+
+---
+
+### Q11: Explain operator associativity with examples.
+
+**Answer:**
+
+**Associativity** determines the direction in which operators of the same precedence are evaluated.
+
+**Types:**
+
+- **Left-to-right**: Most operators (`+`, `-`, `*`, `/`, `%`)
+- **Right-to-left**: Assignment (`=`), Exponentiation (`**`)
+
+**Left-to-right (Addition, Subtraction):**
+
+```javascript
+// Evaluated from left to right
+let result = 10 - 5 - 2;
+// (10 - 5) - 2 = 5 - 2 = 3
+console.log(result); // 3
+
+let result2 = 100 / 10 / 2;
+// (100 / 10) / 2 = 10 / 2 = 5
+console.log(result2); // 5
+
+let result3 = 5 + 3 + 2;
+// (5 + 3) + 2 = 8 + 2 = 10
+console.log(result3); // 10
+```
+
+**Right-to-left (Assignment):**
+
+```javascript
+// Evaluated from right to left
+let a, b, c;
+a = b = c = 5;
+// Equivalent to: a = (b = (c = 5))
+// c = 5, then b = c, then a = b
+console.log(a, b, c); // 5 5 5
+
+// Chain assignment
+let x = (y = 10);
+// y = 10 first, then x = y
+console.log(x, y); // 10 10
+```
+
+**Right-to-left (Exponentiation):**
+
+```javascript
+// Exponentiation is right-to-left
+console.log(2 ** (3 ** 2));
+// 2 ** (3 ** 2) = 2 ** 9 = 512
+console.log(2 ** (3 ** 2)); // 512
+
+// Compare with left-to-right
+console.log((2 ** 3) ** 2);
+// (2 ** 3) ** 2 = 8 ** 2 = 64
+console.log((2 ** 3) ** 2); // 64
+```
+
+**Mixed Associativity:**
+
+```javascript
+// Assignment with operations
+let x = 5;
+x += x *= 2;
+// Right-to-left for assignment
+// x *= 2 → x = 5 * 2 = 10
+// x += 10 → x = 10 + 10 = 20
+console.log(x); // 20
+
+// Complex example
+let a = 1,
+  b = 2,
+  c = 3;
+a += b -= c;
+// b -= c → b = 2 - 3 = -1
+// a += b → a = 1 + (-1) = 0
+console.log(a, b, c); // 0 -1 3
+```
+
+---
+
+### Q12: What is optional chaining and when should you use it?
+
+**Answer:**
+
+**Optional chaining (`?.`)** allows safe access to nested properties without checking each level for `null` or `undefined`.
+
+**Without Optional Chaining (Old Way):**
+
+```javascript
+let user = null;
+
+// Traditional check (verbose)
+let city;
+if (user && user.address && user.address.city) {
+  city = user.address.city;
+}
+
+// Ternary (still verbose)
+let city = user ? (user.address ? user.address.city : undefined) : undefined;
+
+// Logical AND (still long)
+let city = user && user.address && user.address.city;
+```
+
+**With Optional Chaining (ES2020):**
+
+```javascript
+let user = null;
+let city = user?.address?.city; // undefined (no error!)
+
+// Real examples
+let user1 = {
+  name: "John",
+  address: {
+    city: "New York",
+    zip: "10001",
+  },
+};
+
+console.log(user1?.address?.city); // 'New York'
+console.log(user1?.address?.country); // undefined (doesn't exist)
+console.log(user1?.contact?.phone); // undefined (contact doesn't exist)
+```
+
+**With Arrays:**
+
+```javascript
+let users = null;
+console.log(users?.[0]); // undefined (no error!)
+
+let users2 = [{ name: "John" }, { name: "Jane" }];
+console.log(users2?.[0]?.name); // 'John'
+console.log(users2?.[5]?.name); // undefined (index 5 doesn't exist)
+```
+
+**With Functions:**
+
+```javascript
+let obj = null;
+console.log(obj?.someMethod?.()); // undefined (no error!)
+
+let obj2 = {
+  greet: function () {
+    return "Hello";
+  },
+};
+console.log(obj2?.greet?.()); // 'Hello'
+console.log(obj2?.goodbye?.()); // undefined (method doesn't exist)
+
+// With arguments
+let user = {
+  update: function (data) {
+    console.log("Updating:", data);
+  },
+};
+user?.update?.({ name: "John" }); // Logs: Updating: { name: 'John' }
+```
+
+**Common Use Cases:**
+
+```javascript
+// 1. API responses
+let response = await fetch("/api/user");
+let data = await response.json();
+let userName = data?.user?.profile?.name ?? "Unknown";
+
+// 2. DOM manipulation
+let element = document.querySelector("#myElement");
+let text = element?.textContent?.trim();
+
+// 3. Event handlers
+button?.addEventListener("click", handler);
+
+// 4. Configuration objects
+let config = getConfig();
+let theme = config?.ui?.theme ?? "light";
+
+// 5. Deeply nested data
+let company = {
+  employees: [
+    {
+      personal: {
+        address: {
+          city: "NYC",
+        },
+      },
+    },
+  ],
+};
+let city = company?.employees?.[0]?.personal?.address?.city; // 'NYC'
+```
+
+**Combining with Nullish Coalescing:**
+
+```javascript
+// Safe access with default value
+let user = null;
+let userName = user?.profile?.name ?? "Guest";
+console.log(userName); // 'Guest'
+
+// Multiple levels
+let app = {};
+let theme = app?.settings?.ui?.theme ?? "dark";
+console.log(theme); // 'dark'
+```
+
+**When NOT to use:**
+
+```javascript
+// ❌ Don't use for guaranteed properties
+let user = { name: "John" }; // name always exists
+let name = user?.name; // Unnecessary
+
+// ✅ Use for optional/uncertain properties
+let city = user?.address?.city; // address might not exist
+```
+
+---
+
+### Q13: What are the differences between bitwise operators and logical operators?
+
+**Answer:**
+
+**Logical Operators** work with boolean values:
+
+```javascript
+// Logical operators return boolean or original value
+console.log(true && false); // false
+console.log(true || false); // true
+console.log(!true); // false
+
+// Work with truthy/falsy values
+console.log(5 && 10); // 10 (last truthy value)
+console.log(0 || 5); // 5 (first truthy value)
+```
+
+**Bitwise Operators** work with binary representations of numbers:
+
+```javascript
+// Bitwise AND (&)
+console.log(5 & 3); // 1
+// Binary: 5 = 101, 3 = 011
+//         101
+//       & 011
+//       = 001 (1)
+
+// Bitwise OR (|)
+console.log(5 | 3); // 7
+// Binary: 5 = 101, 3 = 011
+//         101
+//       | 011
+//       = 111 (7)
+
+// Bitwise XOR (^)
+console.log(5 ^ 3); // 6
+// Binary: 5 = 101, 3 = 011
+//         101
+//       ^ 011
+//       = 110 (6)
+
+// Bitwise NOT (~)
+console.log(~5); // -6
+// Binary: 5 = 00000101
+//        ~5 = 11111010 (two's complement = -6)
+
+// Left Shift (<<)
+console.log(5 << 1); // 10
+// Binary: 5 = 101
+//     5<<1 = 1010 (10) - shifts left, adds 0
+
+// Right Shift (>>)
+console.log(5 >> 1); // 2
+// Binary: 5 = 101
+//     5>>1 = 10 (2) - shifts right, removes last bit
+```
+
+**Key Differences:**
+
+| Feature           | Logical (`&&`, `          |                         | `, `!`) | Bitwise (`&`, ` | `, `^`, `~`) |
+| ----------------- | ------------------------- | ----------------------- | ------- | --------------- | ------------ |
+| **Operates on**   | Boolean values            | Binary bits             |
+| **Returns**       | Boolean or original value | Number                  |
+| **Use case**      | Conditions, control flow  | Bit manipulation, flags |
+| **Short-circuit** | Yes (`&&`, `              |                         | `)      | No              |
+
+**Common Pitfalls:**
+
+```javascript
+// ❌ Using & instead of &&
+if ((age > 18) & hasLicense) {
+  // Wrong! & is bitwise, not logical
+}
+
+// ✅ Correct
+if (age > 18 && hasLicense) {
+  // Correct!
+}
+
+// Bitwise returns numbers, not booleans
+console.log(true & true); // 1 (not true)
+console.log(true && true); // true
+```
+
+**Practical Bitwise Use Cases:**
+
+```javascript
+// 1. Check if number is even (faster than %)
+function isEven(num) {
+  return (num & 1) === 0;
+}
+console.log(isEven(4)); // true
+console.log(isEven(5)); // false
+
+// 2. Swap without temporary variable
+let a = 5,
+  b = 3;
+a = a ^ b;
+b = a ^ b; // b = (a^b)^b = a
+a = a ^ b; // a = (a^b)^a = b
+console.log(a, b); // 3 5
+
+// 3. Toggle boolean (XOR)
+let flag = 1;
+flag = flag ^ 1; // Toggle: 1^1=0
+console.log(flag); // 0
+flag = flag ^ 1; // Toggle: 0^1=1
+console.log(flag); // 1
+
+// 4. Permissions/flags
+const READ = 1; // 001
+const WRITE = 2; // 010
+const EXECUTE = 4; // 100
+
+let permissions = READ | WRITE; // 011 (3)
+console.log(permissions & READ); // 1 (has READ)
+console.log(permissions & EXECUTE); // 0 (no EXECUTE)
+```
+
+---
+
+### Q14: How do compound assignment operators work?
+
+**Answer:**
+
+**Compound assignment operators** combine an operation with assignment.
+
+**Syntax:** `variable operator= value`  
+**Equivalent to:** `variable = variable operator value`
+
+**All Compound Operators:**
+
+```javascript
+let x = 10;
+
+// Addition
+x += 5; // x = x + 5 = 15
+console.log(x); // 15
+
+// Subtraction
+x -= 3; // x = x - 3 = 12
+console.log(x); // 12
+
+// Multiplication
+x *= 2; // x = x * 2 = 24
+console.log(x); // 24
+
+// Division
+x /= 4; // x = x / 4 = 6
+console.log(x); // 6
+
+// Modulus
+x %= 4; // x = x % 4 = 2
+console.log(x); // 2
+
+// Exponentiation
+x **= 3; // x = x ** 3 = 8
+console.log(x); // 8
+```
+
+**With Strings:**
+
+```javascript
+let greeting = "Hello";
+greeting += " "; // greeting = greeting + " "
+greeting += "World"; // greeting = greeting + "World"
+console.log(greeting); // 'Hello World'
+
+// Shorter version
+let message = "Hi";
+message += " there!";
+console.log(message); // 'Hi there!'
+```
+
+**Important Points:**
+
+```javascript
+// 1. Left side must be a variable
+// x + y += 5; // ❌ Error: Invalid left-hand side
+let x = 10;
+x += 5; // ✅ Correct
+
+// 2. Evaluation order matters
+let a = 5;
+a += a * 2; // a = 5 + (5 * 2) = 5 + 10 = 15
+console.log(a); // 15
+
+// 3. Works with any expression on right
+let sum = 10;
+sum += calculateTax(100); // sum = sum + calculateTax(100)
+
+// 4. Can be chained (right-to-left)
+let x = 5;
+let y = 10;
+x += y += 2; // y = 10 + 2 = 12, then x = 5 + 12 = 17
+console.log(x, y); // 17 12
+```
+
+**Practical Examples:**
+
+```javascript
+// Counter
+let count = 0;
+count += 1; // Increment
+count -= 1; // Decrement
+
+// Accumulator
+let total = 0;
+for (let i = 1; i <= 5; i++) {
+  total += i; // total = total + i
+}
+console.log(total); // 15
+
+// String builder
+let html = "<div>";
+html += "<h1>Title</h1>";
+html += "<p>Content</p>";
+html += "</div>";
+
+// Price calculation
+let price = 100;
+price *= 1.1; // Add 10% tax
+price -= 5; // Subtract $5 discount
+console.log(price); // 105
+```
+
+**Comparison with Regular Assignment:**
+
+```javascript
+// Compound (shorter)
+x += 5;
+
+// Regular (longer)
+x = x + 5;
+
+// Both equivalent, but compound is:
+// ✅ More concise
+// ✅ Clearer intent
+// ✅ Less prone to typos (x vs y)
+
+// Example of typo with regular assignment
+let count = 10;
+count = cont + 1; // ❌ Typo: 'cont' instead of 'count'
+
+// Compound prevents this
+count += 1; // ✅ Can't typo the variable
+```
+
+---
+
+### Q15: What is type coercion and how does it affect operators?
+
+**Answer:**
+
+**Type coercion** is automatic type conversion performed by JavaScript when operators are used with different types.
+
+**Implicit Coercion Examples:**
+
+```javascript
+// String coercion (+ operator with string)
+console.log("5" + 3); // '53' (number to string)
+console.log("Hello" + true); // 'Hellotrue' (boolean to string)
+console.log("Age: " + null); // 'Age: null' (null to string)
+
+// Number coercion (arithmetic operators)
+console.log("5" - 3); // 2 (string to number)
+console.log("10" * "2"); // 20 (both to numbers)
+console.log("20" / "4"); // 5
+console.log("10" % 3); // 1
+
+// Boolean coercion (logical context)
+if ("hello") {
+  console.log("Truthy"); // Runs
+}
+if (0) {
+  console.log("Won't run"); // Falsy
+}
+
+// Comparison coercion
+console.log("5" == 5); // true (string to number)
+console.log(false == 0); // true (boolean to number)
+console.log(null == undefined); // true (special case)
+```
+
+**How Different Operators Coerce:**
+
+| Operator        | Preferred Type            | Example     | Result  |
+| --------------- | ------------------------- | ----------- | ------- | -------------- | --- |
+| `+`             | String (if one is string) | `'5' + 3`   | `'53'`  |
+| `-` `*` `/` `%` | Number                    | `'5' - 3`   | `2`     |
+| `==`            | Varies                    | `'5' == 5`  | `true`  |
+| `===`           | No coercion               | `'5' === 5` | `false` |
+| `&&` `          |                           | `           | Boolean | `'hello' && 0` | `0` |
+| `!`             | Boolean                   | `!'hello'`  | `false` |
+
+**Conversion Rules:**
+
+```javascript
+// To String
+String(123); // '123'
+String(true); // 'true'
+String(null); // 'null'
+String(undefined); // 'undefined'
+String([1, 2]); // '1,2'
+String({ a: 1 }); // '[object Object]'
+
+// To Number
+Number("123"); // 123
+Number("12.5"); // 12.5
+Number(""); // 0
+Number(" "); // 0
+Number("hello"); // NaN
+Number(true); // 1
+Number(false); // 0
+Number(null); // 0
+Number(undefined); // NaN
+Number([1]); // 1
+Number([1, 2]); // NaN
+Number({}); // NaN
+
+// To Boolean
+Boolean(1); // true (any non-zero number)
+Boolean(0); // false
+Boolean(""); // false
+Boolean("hello"); // true (any non-empty string)
+Boolean(null); // false
+Boolean(undefined); // false
+Boolean({}); // true (any object)
+Boolean([]); // true (any array)
+```
+
+**Common Pitfalls:**
+
+```javascript
+// Unexpected concatenation
+let result = "10" + 5 + 5; // '1055' (not 20)
+// Fix: Convert to number first
+let result = Number("10") + 5 + 5; // 20
+
+// Order matters!
+console.log(1 + 2 + "3"); // '33' (1+2=3, then '3'+'3'='33')
+console.log("1" + 2 + 3); // '123' ('1'+'2'='12', '12'+'3'='123')
+
+// Boolean arithmetic
+console.log(true + true); // 2 (1 + 1)
+console.log(false + 1); // 1 (0 + 1)
+console.log(true * 2); // 2 (1 * 2)
+
+// Array/Object coercion
+console.log([1] + [2]); // '12' (both convert to strings)
+console.log({} + []); // '[object Object]' or 0 (context-dependent!)
+console.log([] + {}); // '[object Object]'
+```
+
+**Best Practices to Avoid Coercion Issues:**
+
+```javascript
+// ✅ Explicit conversion
+let num = Number(userInput);
+let str = String(value);
+let bool = Boolean(value);
+
+// ✅ Use === instead of ==
+if (value === 5) {
+  /* strict comparison */
+}
+
+// ✅ Parse numbers properly
+let price = parseFloat("19.99");
+let quantity = parseInt("5");
+
+// ✅ Type checking before operations
+function add(a, b) {
+  if (typeof a !== "number" || typeof b !== "number") {
+    throw new Error("Both arguments must be numbers");
+  }
+  return a + b;
+}
+
+// ✅ Use TypeScript for type safety
+function multiply(a: number, b: number): number {
+  return a * b;
+}
+```
+
+**Interview Question:** _"What is `[] + {}` in JavaScript?"_
+
+**Answer:**
+
+```javascript
+console.log([] + {}); // '[object Object]'
+
+// Explanation:
+// 1. Both [] and {} are converted to strings
+// 2. [] converts to '' (empty string)
+// 3. {} converts to '[object Object]'
+// 4. '' + '[object Object]' = '[object Object]'
+
+// But:
+console.log({} + []); // 0 or '[object Object]' (depends on context!)
+// In statement context: {} is empty block, +[] converts to 0
+// In expression context: '[object Object]'
+```
+
+---
+
+

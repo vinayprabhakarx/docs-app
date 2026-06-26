@@ -1,0 +1,429 @@
+---
+title: "Components - Building Blocks of React"
+description: Documentation for Components - Building Blocks of React.
+---
+
+# Components - Building Blocks of React
+
+
+
+## What are Components?
+
+Components are independent, reusable pieces of UI.
+
+> **Definition:** Components are the fundamental building blocks of React applications. They let you split the UI into independent, reusable pieces and think about each piece in isolation. Components are JavaScript functions or classes that accept inputs (props) and return React elements describing what should appear on screen.
+
+## Why Use Components?
+
+| Benefit             | Explanation                               |
+| ------------------- | ----------------------------------------- |
+| **Reusability**     | Write once, use everywhere                |
+| **Maintainability** | Smaller, focused code is easier to manage |
+| **Separation**      | Each component handles one concern        |
+| **Testing**         | Isolated units are easier to test         |
+| **Collaboration**   | Teams can work on different components    |
+| **Abstraction**     | Hide complexity behind simple interfaces  |
+
+## Component Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                          App                            │
+├─────────────────────────────────────────────────────────┤
+│  ┌───────────┐   ┌─────────────────────────────────┐    │
+│  │  Header   │   │           Main                  │    │
+│  │ ┌───────┐ │   │  ┌─────────┐   ┌─────────────┐  │    │
+│  │ │  Nav  │ │   │  │ Sidebar │   │   Content   │  │    │
+│  │ └───────┘ │   │  └─────────┘   │ ┌─────────┐ │  │    │
+│  └───────────┘   │                │ │  Card   │ │  │    │
+│                  │                │ └─────────┘ │  │    │
+│  ┌───────────┐   │                └─────────────┘  │    │
+│  │  Footer   │   └─────────────────────────────────┘    │
+│  └───────────┘                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Functional Components
+
+Modern React primarily uses functional components with hooks.
+
+### Basic Syntax
+
+```jsx
+// Simple functional component
+function Welcome() {
+  return <h1>Hello, World!</h1>;
+}
+
+// Arrow function syntax
+const Welcome = () => {
+  return <h1>Hello, World!</h1>;
+};
+
+// Implicit return (single expression)
+const Welcome = () => <h1>Hello, World!</h1>;
+```
+
+### With Props
+
+```jsx
+function Greeting({ name, age }) {
+  return (
+    <div>
+      <h1>Hello, {name}!</h1>
+      <p>You are {age} years old.</p>
+    </div>
+  );
+}
+
+// Usage
+<Greeting name="Alice" age={25} />;
+```
+
+### With State (using Hooks)
+
+```jsx
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+## Class Components
+
+Legacy approach, still used in older codebases.
+
+### Basic Syntax
+
+```jsx
+import { Component } from "react";
+
+class Welcome extends Component {
+  render() {
+    return <h1>Hello, World!</h1>;
+  }
+}
+```
+
+### With Props
+
+```jsx
+class Greeting extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello, {this.props.name}!</h1>
+        <p>You are {this.props.age} years old.</p>
+      </div>
+    );
+  }
+}
+```
+
+### With State
+
+```jsx
+class Counter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  // Or class field syntax (no constructor needed)
+  // state = { count: 0 };
+
+  increment = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.increment}>Increment</button>
+      </div>
+    );
+  }
+}
+```
+
+## Functional vs Class Components
+
+| Feature              | Functional       | Class             |
+| -------------------- | ---------------- | ----------------- |
+| Syntax               | Function         | ES6 Class         |
+| State                | useState hook    | this.state        |
+| Lifecycle            | useEffect hook   | Lifecycle methods |
+| `this` keyword       | Not needed       | Required          |
+| Code length          | Shorter, cleaner | More verbose      |
+| Performance          | Slightly better  | Slightly slower   |
+| React recommendation | ✅ Preferred     | Legacy            |
+
+## Component Naming Conventions
+
+```jsx
+// ✅ PascalCase for component names
+function UserProfile() { ... }
+function ShoppingCart() { ... }
+function NavBar() { ... }
+
+// ❌ lowercase (treated as HTML elements)
+function userprofile() { ... }  // Wrong!
+
+// ✅ File naming: Component.jsx or Component.js
+// UserProfile.jsx
+// ShoppingCart.jsx
+```
+
+## Component Composition
+
+Building complex UIs by combining smaller components.
+
+```jsx
+// Small, focused components
+function Avatar({ src, alt }) {
+  return <img src={src} alt={alt} className="avatar" />;
+}
+
+function UserInfo({ name, title }) {
+  return (
+    <div className="user-info">
+      <h2>{name}</h2>
+      <p>{title}</p>
+    </div>
+  );
+}
+
+function Card({ children }) {
+  return <div className="card">{children}</div>;
+}
+
+// Composed together
+function UserCard({ user }) {
+  return (
+    <Card>
+      <Avatar src={user.avatar} alt={user.name} />
+      <UserInfo name={user.name} title={user.title} />
+    </Card>
+  );
+}
+```
+
+## Component Organization
+
+### File Structure
+
+```
+src/
+├── components/
+│   ├── common/           # Reusable components
+│   │   ├── Button.jsx
+│   │   ├── Input.jsx
+│   │   └── Card.jsx
+│   ├── layout/           # Layout components
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   └── Sidebar.jsx
+│   └── features/         # Feature-specific
+│       ├── auth/
+│       │   ├── LoginForm.jsx
+│       │   └── RegisterForm.jsx
+│       └── dashboard/
+│           ├── Stats.jsx
+│           └── Chart.jsx
+├── pages/                # Page components
+│   ├── Home.jsx
+│   └── About.jsx
+└── App.jsx
+```
+
+### Single Component File
+
+```jsx
+// Button.jsx
+import "./Button.css";
+
+function Button({ children, variant = "primary", onClick }) {
+  return (
+    <button className={`btn btn-${variant}`} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+export default Button;
+```
+
+### Multiple Exports
+
+```jsx
+// index.js (barrel file)
+export { default as Button } from "./Button";
+export { default as Input } from "./Input";
+export { default as Card } from "./Card";
+
+// Usage
+import { Button, Input, Card } from "./components";
+```
+
+## Pure vs Impure Components
+
+### Pure Component
+
+```jsx
+// Pure: Same input always produces same output
+function Greeting({ name }) {
+  return <h1>Hello, {name}!</h1>;
+}
+```
+
+### Impure Component (has side effects)
+
+```jsx
+// Impure: Modifies external state or has side effects
+function Greeting({ name }) {
+  // ❌ Side effect - modifying external variable
+  document.title = `Hello, ${name}`;
+
+  return <h1>Hello, {name}!</h1>;
+}
+
+// ✅ Use useEffect for side effects
+function Greeting({ name }) {
+  useEffect(() => {
+    document.title = `Hello, ${name}`;
+  }, [name]);
+
+  return <h1>Hello, {name}!</h1>;
+}
+```
+
+## Common Mistakes & Exceptions
+
+### 1. Not Starting Component Name with Capital
+
+```jsx
+// ❌ Treated as HTML element
+function button() {
+  return <button>Click</button>;
+}
+<button />; // Renders empty HTML button, not component
+
+// ✅ Correct
+function Button() {
+  return <button>Click</button>;
+}
+<Button />; // Renders your component
+```
+
+### 2. Forgetting to Return JSX
+
+```jsx
+// ❌ Returns undefined
+function Greeting() {
+  <h1>Hello</h1>; // Missing return!
+}
+
+// ✅ Correct
+function Greeting() {
+  return <h1>Hello</h1>;
+}
+```
+
+### 3. Modifying Props
+
+```jsx
+// ❌ Props are read-only
+function Greeting({ user }) {
+  user.name = "New Name"; // Never do this!
+  return <h1>Hello, {user.name}</h1>;
+}
+
+// ✅ Create new object if needed
+function Greeting({ user }) {
+  const updatedUser = { ...user, name: "New Name" };
+  return <h1>Hello, {updatedUser.name}</h1>;
+}
+```
+
+## When to Create a Component
+
+Create a new component when:
+
+| Scenario                       | Example                 |
+| ------------------------------ | ----------------------- |
+| UI is reused                   | Button, Card, Modal     |
+| Logic is complex               | Form with validation    |
+| Section is self-contained      | Header, Footer, Sidebar |
+| Testing in isolation is needed | Any unit-testable piece |
+| File is getting too long       | 200+ lines is a sign    |
+
+## Interview Questions & Answers
+
+### Q1: What is a React component and what are the different types?
+
+A React component is an independent, reusable piece of UI that returns React elements (JSX). There are two types: **Functional components** are JavaScript functions that accept props and return JSX. They use hooks for state and lifecycle. **Class components** are ES6 classes that extend `React.Component` and have a required `render()` method. They use `this.state` and lifecycle methods. Functional components are the modern, recommended approach because they're simpler, easier to test, and have better performance with hooks.
+
+---
+
+### Q2: What is the difference between functional and class components?
+
+Functional components are JavaScript functions that accept props and return JSX. They use hooks (`useState`, `useEffect`) for state and side effects. They don't use `this` keyword and are more concise. Class components extend `React.Component`, use `this.state` for state, lifecycle methods for side effects, and require `this` binding for methods. Functional components are preferred in modern React because: hooks made them equally powerful, they're easier to understand, have less boilerplate, and enable better code reuse through custom hooks.
+
+---
+
+### Q3: Why must component names start with a capital letter?
+
+React distinguishes between custom components and HTML elements by the first letter. Lowercase names like `<div>` or `<span>` are treated as built-in HTML elements. Uppercase names like `<Button>` or `<UserProfile>` are treated as custom React components. If you name a component `button` (lowercase), React will render an HTML `<button>` element, not your component. This is part of JSX's transformation rules - lowercase becomes `'div'` string, uppercase becomes the component reference.
+
+---
+
+### Q4: What is component composition and why is it important?
+
+Component composition is building complex UIs by combining smaller, focused components. Instead of one large component, you create small reusable pieces and compose them together. Benefits: better reusability (each piece can be used elsewhere), easier maintenance (changes are isolated), improved testing (test small units), and clearer code structure. React favors composition over inheritance. Use the `children` prop to create flexible wrapper components. This "lego block" approach is fundamental to React's design philosophy.
+
+---
+
+### Q5: What is a pure component?
+
+A pure component always renders the same output given the same props and state - it has no side effects. It doesn't modify external variables, make API calls, or change the DOM directly during rendering. Benefits: predictable behavior, easier testing, and React can optimize re-renders. In class components, `React.PureComponent` implements `shouldComponentUpdate` with shallow prop/state comparison. For functional components, use `React.memo()` for similar optimization. Keep components pure; use `useEffect` for side effects.
+
+---
+
+### Q6: How do you organize components in a React project?
+
+Common patterns: **By type** - separate folders for components, pages, layouts, hooks. **By feature** - group all related files (component, styles, tests) together. **Barrel exports** - use index.js files to simplify imports. Best practices: keep components small and focused, co-locate related files (CSS, tests), use consistent naming (PascalCase for components), separate reusable (Button, Modal) from feature-specific (UserDashboard) components. The right structure depends on project size - simpler for small apps, more modular for large ones.
+
+---
+
+### Q7: What happens if you modify props directly?
+
+Props are read-only by design. Modifying props directly breaks React's unidirectional data flow, can cause unpredictable bugs, and React won't detect the change for re-rendering. This violates the principle that components should be predictable functions of their inputs. If you need to modify data: create a new object with the changes, use state if the component owns the data, or lift state up to a parent component that passes down the modified value. Immutability is core to React's optimization strategy.
+
+---
+
+### Q8: What is the difference between default and named exports?
+
+**Default export**: One per file, imported with any name. `export default Button;` → `import Button from './Button'`. **Named export**: Multiple per file, imported with exact name. `export function Button() {}` → `import { Button } from './Button'`. Best practices: use default for the main component of a file, named exports for utilities and secondary components. Barrel files (index.js) can re-export for cleaner imports: `export { Button, Input } from './components'`.
+
+---
+
+### Q9: When should you create a new component vs keeping code in one component?
+
+Create a new component when: **Reusability** - if the UI appears elsewhere; **Complexity** - if logic is getting hard to follow (200+ lines is a smell); **Single Responsibility** - if the component does multiple unrelated things; **Testing** - if you need to test a piece in isolation; **Performance** - if a section can be memoized separately. Keep in one component if: it's simple, not reused, and splitting would add unnecessary indirection. Ask: "Would extracting this make the code clearer?" If yes, extract it.
+
+---
+
+### Q10: What are Higher-Order Components and how do they relate to component composition?
+
+Higher-Order Components (HOCs) are functions that take a component and return an enhanced component: `withAuth(MyComponent)`. They were the main pattern for code reuse before hooks. HOCs wrap components to add functionality (authentication, logging, theming). However, they can lead to "wrapper hell" and make debugging harder. Modern React prefers custom hooks for logic reuse and composition with render props or children for UI flexibility. HOCs are still valid but use hooks when possible for cleaner code.
+
+

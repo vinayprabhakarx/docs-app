@@ -1,0 +1,537 @@
+---
+title: "Common CSS Patterns - Frequently Used Code Snippets"
+description: Documentation for Common CSS Patterns - Frequently Used Code Snippets.
+---
+
+# Common CSS Patterns - Frequently Used Code Snippets
+
+[[00-CSS-Index|← Back to CSS Index]]
+
+
+
+## Layout Patterns
+
+### 1. Perfect Centering
+
+```css
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+```
+
+### 2. Sticky Footer
+
+```css
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
+.footer {
+    flex: 0 0 auto;
+}
+```
+
+### 3. Holy Grail Layout
+
+```css
+.container {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "header header header"
+        "nav main aside"
+        "footer footer footer";
+    min-height: 100vh;
+}
+
+.header { grid-area: header; }
+.nav { grid-area: nav; }
+.main { grid-area: main; }
+.aside { grid-area: aside; }
+.footer { grid-area: footer; }
+```
+
+### 4. Responsive Card Grid
+
+```css
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+```
+
+### 5. Sidebar Layout
+
+```css
+.layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
+```
+
+
+
+## Navigation Patterns
+
+### 1. Horizontal Navigation
+
+```css
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+}
+```
+
+### 2. Dropdown Menu
+
+```css
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+}
+```
+
+### 3. Hamburger Menu
+
+```css
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: all 0.3s;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+}
+```
+
+
+
+## Card Patterns
+
+### 1. Basic Card
+
+```css
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+```
+
+### 2. Card with Image
+
+```css
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 20px;
+}
+```
+
+### 3. Pricing Card
+
+```css
+.pricing-card {
+    text-align: center;
+    padding: 30px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+}
+
+.features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+```
+
+
+
+## Button Patterns
+
+### 1. Primary Button
+
+```css
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+```
+
+### 2. Outline Button
+
+```css
+.btn-outline {
+    background-color: transparent;
+    color: #007bff;
+    padding: 12px 24px;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    background-color: #007bff;
+    color: white;
+}
+```
+
+### 3. Icon Button
+
+```css
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+```
+
+
+
+## Form Patterns
+
+### 1. Input Field
+
+```css
+.input-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+```
+
+### 2. Form Group
+
+```css
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+```
+
+### 3. Checkbox/Radio
+
+```css
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+```
+
+
+
+## Text Patterns
+
+### 1. Truncate Text
+
+```css
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+```
+
+### 2. Multi-line Truncate
+
+```css
+.truncate-multiline {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+```
+
+### 3. Gradient Text
+
+```css
+.gradient-text {
+    background: linear-gradient(to right, #007bff, #6c757d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+```
+
+
+
+## Image Patterns
+
+### 1. Responsive Image
+
+```css
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+```
+
+### 2. Image Overlay
+
+```css
+.image-container {
+    position: relative;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.image-container:hover .image-overlay {
+    opacity: 1;
+}
+```
+
+### 3. Avatar
+
+```css
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+```
+
+
+
+## Loading Patterns
+
+### 1. Spinner
+
+```css
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+```
+
+### 2. Skeleton Loader
+
+```css
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    to { background-position: -200% 0; }
+}
+```
+
+
+
+## Modal Pattern
+
+```css
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+}
+```
+
+
+
+## Tooltip Pattern
+
+```css
+.tooltip {
+    position: relative;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+}
+```
+
+
+---
+[[00-CSS-Index|← Back to CSS Index]]

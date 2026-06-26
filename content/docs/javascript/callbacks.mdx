@@ -1,0 +1,893 @@
+---
+title: "Callbacks - Asynchronous Function Execution"
+description: Documentation for Callbacks - Asynchronous Function Execution.
+---
+
+# Callbacks - Asynchronous Function Execution
+
+
+
+## What are Callbacks?
+
+**A callback** is a function passed as an argument to another function, to be executed later. Callbacks are fundamental to asynchronous programming in JavaScript.
+
+> **Definition:** A callback function is a function that is passed as an argument to another function and is invoked after some operation has completed. The "call back" refers to the fact that the function is called back at a later point.
+
+```javascript
+// Simple callback
+function greet(name, callback) {
+  console.log("Hello, " + name);
+  callback(); // Execute the callback
+}
+
+greet("John", function () {
+  console.log("Callback executed!");
+});
+// Output:
+// Hello, John
+// Callback executed!
+```
+
+### Why Use Callbacks?
+
+| Purpose                 | Description                                          |
+| ----------------------- | ---------------------------------------------------- |
+| **Async operations**    | Handle operations that take time (file I/O, network) |
+| **Event handling**      | Respond to user interactions                         |
+| **Customization**       | Allow callers to customize behavior                  |
+| **Non-blocking code**   | Continue execution while waiting for results         |
+| **Functional patterns** | Enable higher-order functions like map/filter        |
+
+## Synchronous vs Asynchronous Callbacks
+
+| Type             | Execution            | Example                                    |
+| ---------------- | -------------------- | ------------------------------------------ |
+| **Synchronous**  | Executes immediately | `array.map()`, `array.filter()`            |
+| **Asynchronous** | Executes later       | `setTimeout()`, `fetch()`, event listeners |
+
+### Synchronous Callbacks
+
+Execute immediately during the function call - the code waits for them to complete.
+
+```javascript
+// Array methods use synchronous callbacks
+let numbers = [1, 2, 3, 4, 5];
+
+console.log("Before map");
+
+let doubled = numbers.map(function (num) {
+  console.log("Processing:", num);
+  return num * 2; // Executes immediately, one by one
+});
+
+console.log("After map");
+console.log(doubled);
+
+// Output (in order):
+// Before map
+// Processing: 1
+// Processing: 2
+// Processing: 3
+// Processing: 4
+// Processing: 5
+// After map
+// [2, 4, 6, 8, 10]
+```
+
+### Asynchronous Callbacks
+
+Execute later, after some operation completes - the code continues running.
+
+```javascript
+// setTimeout - executes after delay
+console.log("1 - Start");
+
+setTimeout(function () {
+  console.log("2 - Delayed message");
+}, 2000);
+
+console.log("3 - End");
+
+// Output:
+// 1 - Start
+// 3 - End
+// 2 - Delayed message (after 2 seconds)
+
+// The code doesn't wait for setTimeout!
+
+// Event listener - executes when event occurs
+document.getElementById("btn").addEventListener("click", function () {
+  console.log("Button clicked!"); // Runs whenever user clicks
+});
+
+// File reading (Node.js) - executes when file is read
+const fs = require("fs");
+fs.readFile("file.txt", "utf8", function (error, data) {
+  if (error) {
+    console.error("Error:", error);
+  } else {
+    console.log("File contents:", data);
+  }
+});
+console.log("This runs before file is read!");
+```
+
+## Common Callback Patterns
+
+### 1. Error-First Callbacks (Node.js Convention)
+
+The standard pattern in Node.js where the first argument is always the error.
+
+```javascript
+// Pattern: callback(error, result)
+function readFile(filename, callback) {
+  // Simulate async operation
+  setTimeout(function () {
+    if (filename === "error.txt") {
+      callback(new Error("File not found"), null);
+    } else {
+      callback(null, "File contents here");
+    }
+  }, 1000);
+}
+
+// Usage - always check error first!
+readFile("data.txt", function (error, data) {
+  if (error) {
+    console.error("Error:", error.message);
+    return; // Stop execution
+  }
+  console.log("Data:", data);
+});
+
+// Multiple error-first callbacks
+function fetchUserData(userId, callback) {
+  // Simulate database query
+  setTimeout(() => {
+    if (!userId) {
+      callback(new Error("User ID required"), null);
+    } else if (userId < 0) {
+      callback(new Error("Invalid user ID"), null);
+    } else {
+      callback(null, { id: userId, name: "John", email: "john@example.com" });
+    }
+  }, 500);
+}
+```
+
+### 2. Success/Failure Callbacks
+
+Separate callbacks for success and failure cases.
+
+```javascript
+function fetchData(url, onSuccess, onFailure) {
+  setTimeout(function () {
+    if (url && url.startsWith("http")) {
+      onSuccess({ data: "Some data from " + url });
+    } else {
+      onFailure(new Error("Invalid URL"));
+    }
+  }, 1000);
+}
+
+// Usage
+fetchData(
+  "https://api.example.com",
+  function (response) {
+    console.log("Success:", response.data);
+  },
+  function (error) {
+    console.error("Failure:", error.message);
+  },
+);
+```
+
+### 3. Callback with Context
+
+Passing context (this value) to callbacks.
+
+```javascript
+function processArray(arr, callback, context) {
+  for (let i = 0; i < arr.length; i++) {
+    callback.call(context, arr[i], i, arr);
+  }
+}
+
+let formatter = {
+  prefix: "Item:",
+  format(item, index) {
+    console.log(`${this.prefix} [${index}] ${item}`);
+  },
+};
+
+processArray([1, 2, 3], formatter.format, formatter);
+// Output:
+// Item: [0] 1
+// Item: [1] 2
+// Item: [2] 3
+```
+
+### 4. Completion Callback Pattern
+
+Execute callback when all operations complete.
+
+```javascript
+function processItems(items, processOne, onComplete) {
+  let processed = 0;
+
+  items.forEach((item, index) => {
+    processOne(item, (result) => {
+      processed++;
+      console.log(`Processed ${item}: ${result}`);
+
+      if (processed === items.length) {
+        onComplete(); // All done!
+      }
+    });
+  });
+}
+
+processItems(
+  [1, 2, 3],
+  (item, done) => setTimeout(() => done(item * 2), Math.random() * 1000),
+  () => console.log("All items processed!"),
+);
+```
+
+## Callback Hell (Pyramid of Doom)
+
+When callbacks are nested deeply, code becomes hard to read and maintain.
+
+```javascript
+// ❌ Callback hell - deeply nested, hard to maintain
+getUserData(userId, function (error, user) {
+  if (error) {
+    handleError(error);
+  } else {
+    getUserPosts(user.id, function (error, posts) {
+      if (error) {
+        handleError(error);
+      } else {
+        getPostComments(posts[0].id, function (error, comments) {
+          if (error) {
+            handleError(error);
+          } else {
+            getCommentAuthor(comments[0].authorId, function (error, author) {
+              if (error) {
+                handleError(error);
+              } else {
+                console.log("Author:", author.name);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+});
+
+// Problems:
+// - Hard to read (horizontal growth)
+// - Difficult to handle errors consistently
+// - Hard to maintain and debug
+// - Error handling duplicated everywhere
+// - Difficult to reuse code
+```
+
+### Solutions to Callback Hell
+
+```javascript
+// ✅ Solution 1: Named functions (extract into separate functions)
+function handleUser(error, user) {
+  if (error) return handleError(error);
+  getUserPosts(user.id, handlePosts);
+}
+
+function handlePosts(error, posts) {
+  if (error) return handleError(error);
+  getPostComments(posts[0].id, handleComments);
+}
+
+function handleComments(error, comments) {
+  if (error) return handleError(error);
+  getCommentAuthor(comments[0].authorId, handleAuthor);
+}
+
+function handleAuthor(error, author) {
+  if (error) return handleError(error);
+  console.log("Author:", author.name);
+}
+
+getUserData(userId, handleUser); // Clean entry point
+
+// ✅ Solution 2: Promises (modern approach)
+getUserData(userId)
+  .then((user) => getUserPosts(user.id))
+  .then((posts) => getPostComments(posts[0].id))
+  .then((comments) => getCommentAuthor(comments[0].authorId))
+  .then((author) => console.log("Author:", author.name))
+  .catch(handleError); // Single error handler!
+
+// ✅ Solution 3: Async/Await (best approach)
+async function getAuthorInfo(userId) {
+  try {
+    const user = await getUserData(userId);
+    const posts = await getUserPosts(user.id);
+    const comments = await getPostComments(posts[0].id);
+    const author = await getCommentAuthor(comments[0].authorId);
+    console.log("Author:", author.name);
+  } catch (error) {
+    handleError(error);
+  }
+}
+```
+
+## Callback Timing and Event Loop
+
+JavaScript is single-threaded but handles async operations through the event loop.
+
+```javascript
+console.log("1");
+
+setTimeout(function () {
+  console.log("2");
+}, 0); // Even with 0 delay!
+
+console.log("3");
+
+// Output:
+// 1
+// 3
+// 2
+
+// Why? setTimeout is async, callback goes to the callback queue
+// It only executes after the current code (synchronous) finishes
+```
+
+### Event Loop Visualization
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                      Call Stack                          │
+│  (Executes synchronous code)                            │
+└─────────────────────────────────────────────────────────┘
+          ↓ (async operations)        ↑ (when stack empty)
+┌─────────────────────────┐    ┌────────────────────────────┐
+│       Web APIs          │    │      Callback Queue        │
+│  - setTimeout           │ ──→│  (Waiting callbacks)       │
+│  - fetch                │    │                            │
+│  - DOM events           │    │                            │
+└─────────────────────────┘    └────────────────────────────┘
+
+Event Loop: Moves callbacks from queue to stack when stack is empty
+```
+
+```javascript
+// More complex example
+console.log("Start");
+
+setTimeout(() => console.log("Timeout 1"), 0);
+setTimeout(() => console.log("Timeout 2"), 0);
+
+Promise.resolve().then(() => console.log("Promise"));
+
+console.log("End");
+
+// Output:
+// Start
+// End
+// Promise        ← Microtask queue (higher priority)
+// Timeout 1      ← Callback queue
+// Timeout 2
+```
+
+## Error Handling in Callbacks
+
+### Try-Catch Doesn't Work with Async Callbacks
+
+```javascript
+// ❌ This doesn't work - callback runs in different execution context
+try {
+  setTimeout(function () {
+    throw new Error("Async error");
+  }, 1000);
+} catch (error) {
+  console.log("Caught:", error); // Never executes!
+}
+// Error is thrown but not caught!
+
+// ✅ Handle errors inside the callback
+setTimeout(function () {
+  try {
+    throw new Error("Async error");
+  } catch (error) {
+    console.log("Caught:", error); // Works!
+  }
+}, 1000);
+
+// ✅ Error-first callback pattern (preferred)
+function asyncOperation(callback) {
+  setTimeout(function () {
+    try {
+      // Some risky operation
+      const result = riskyComputation();
+      callback(null, result);
+    } catch (error) {
+      callback(error, null);
+    }
+  }, 1000);
+}
+
+asyncOperation(function (error, result) {
+  if (error) {
+    console.error("Error:", error.message);
+    return;
+  }
+  console.log("Result:", result);
+});
+```
+
+## Practical Callback Examples
+
+### 1. Custom forEach Implementation
+
+```javascript
+function customForEach(array, callback) {
+  for (let i = 0; i < array.length; i++) {
+    callback(array[i], i, array);
+  }
+}
+
+customForEach([1, 2, 3], function (item, index) {
+  console.log(`Index ${index}: ${item}`);
+});
+```
+
+### 2. Retry Logic with Callbacks
+
+```javascript
+function retryOperation(operation, maxRetries, delay, callback) {
+  let attempts = 0;
+
+  function attempt() {
+    attempts++;
+    console.log(`Attempt ${attempts}/${maxRetries}`);
+
+    operation(function (error, result) {
+      if (error) {
+        if (attempts < maxRetries) {
+          setTimeout(attempt, delay); // Try again after delay
+        } else {
+          callback(new Error(`Failed after ${maxRetries} attempts`), null);
+        }
+      } else {
+        callback(null, result);
+      }
+    });
+  }
+
+  attempt();
+}
+
+// Usage: Unreliable operation
+function unreliableAPI(callback) {
+  const success = Math.random() > 0.7;
+  setTimeout(() => {
+    if (success) {
+      callback(null, { data: "Success!" });
+    } else {
+      callback(new Error("Request failed"), null);
+    }
+  }, 500);
+}
+
+retryOperation(unreliableAPI, 5, 1000, function (error, result) {
+  if (error) {
+    console.log("All attempts failed:", error.message);
+  } else {
+    console.log("Success:", result);
+  }
+});
+```
+
+### 3. Sequential Execution
+
+```javascript
+function runSequentially(tasks, finalCallback) {
+  let results = [];
+  let currentIndex = 0;
+
+  function next() {
+    if (currentIndex >= tasks.length) {
+      finalCallback(null, results);
+      return;
+    }
+
+    const task = tasks[currentIndex];
+    currentIndex++;
+
+    task(function (error, result) {
+      if (error) {
+        finalCallback(error, null);
+        return;
+      }
+      results.push(result);
+      next();
+    });
+  }
+
+  next();
+}
+
+// Usage
+const tasks = [
+  (cb) => setTimeout(() => cb(null, "Task 1 done"), 1000),
+  (cb) => setTimeout(() => cb(null, "Task 2 done"), 500),
+  (cb) => setTimeout(() => cb(null, "Task 3 done"), 800),
+];
+
+runSequentially(tasks, function (error, results) {
+  if (error) {
+    console.log("Error:", error);
+  } else {
+    console.log("All tasks done:", results);
+    // ['Task 1 done', 'Task 2 done', 'Task 3 done']
+  }
+});
+```
+
+### 4. Parallel Execution with Callbacks
+
+```javascript
+function runParallel(tasks, finalCallback) {
+  let results = new Array(tasks.length);
+  let completed = 0;
+  let hasError = false;
+
+  tasks.forEach(function (task, index) {
+    task(function (error, result) {
+      if (hasError) return; // Ignore if already errored
+
+      if (error) {
+        hasError = true;
+        finalCallback(error, null);
+        return;
+      }
+
+      results[index] = result; // Preserve order
+      completed++;
+
+      if (completed === tasks.length) {
+        finalCallback(null, results);
+      }
+    });
+  });
+}
+
+// All run at the same time, results collected in order
+runParallel(tasks, function (error, results) {
+  console.log("All done:", results);
+});
+```
+
+## Interview Questions & Answers
+
+### Q1: What is a callback function?
+
+**Answer:**
+
+A callback function is a function passed as an argument to another function, which is then invoked inside the outer function to complete some action. The term "callback" refers to the fact that the function is "called back" at a later point.
+
+```javascript
+function fetchData(url, callback) {
+  // Perform async operation...
+  const data = { result: "data" };
+  callback(data); // "Call back" with the result
+}
+
+fetchData("/api/users", function (result) {
+  console.log(result);
+});
+```
+
+Callbacks are essential for handling asynchronous operations, events, and customizing function behavior.
+
+---
+
+### Q2: What is callback hell and how do you avoid it?
+
+**Answer:**
+
+Callback hell (pyramid of doom) occurs when multiple nested callbacks make code difficult to read and maintain.
+
+```javascript
+// ❌ Callback hell
+op1(function (r1) {
+  op2(r1, function (r2) {
+    op3(r2, function (r3) {
+      op4(r3, function (r4) {
+        // Deep nesting...
+      });
+    });
+  });
+});
+```
+
+**Solutions:**
+
+| Solution        | Description                                      |
+| --------------- | ------------------------------------------------ |
+| Named functions | Extract callbacks into separate named functions  |
+| Promises        | Use `.then()` chaining for sequential operations |
+| Async/Await     | Write async code that looks synchronous          |
+| Modularization  | Break code into smaller, reusable modules        |
+
+---
+
+### Q3: Why doesn't try-catch work with asynchronous callbacks?
+
+Try-catch doesn't work with asynchronous callbacks because the callback executes later, after the try-catch block has already completed. When an error occurs inside an async callback, the original try-catch is no longer on the call stack. The error happens in a different execution context. To handle errors in async callbacks, you need to either use try-catch inside the callback itself, use the error-first callback pattern where errors are passed as the first argument, or use Promises which have built-in error handling with `.catch()`.
+
+### Q4: What's the difference between synchronous and asynchronous callbacks?
+
+**Answer:**
+
+Synchronous callbacks execute immediately during the function call and block further execution until complete. Asynchronous callbacks are scheduled to execute later, allowing the program to continue running other code. Async callbacks are essential for operations like network requests, file I/O, and timers that would otherwise freeze the application.
+
+| Feature            | Synchronous                   | Asynchronous                      |
+| ------------------ | ----------------------------- | --------------------------------- |
+| **Execution**      | Immediately, in order         | Later, after operation completes  |
+| **Blocks code**    | Yes                           | No                                |
+| **Examples**       | `map()`, `filter()`, `sort()` | `setTimeout()`, `fetch()`, events |
+| **Error handling** | try-catch works               | Need callback error handling      |
+| **Call stack**     | Same context                  | Different context                 |
+
+```javascript
+// Synchronous - blocks until done
+[1, 2, 3].forEach((x) => console.log(x));
+console.log("Done"); // After 1, 2, 3
+
+// Asynchronous - doesn't block
+setTimeout(() => console.log("Later"), 0);
+console.log("Now"); // "Now" prints first!
+```
+
+---
+
+### Q5: What is the error-first callback pattern?
+
+**Answer:**
+
+A Node.js convention where the callback's first parameter is always the error (or null if no error), and subsequent parameters are the result data.
+
+```javascript
+function asyncOperation(callback) {
+  // callback(error, result1, result2, ...)
+
+  if (somethingWentWrong) {
+    callback(new Error("Operation failed"), null);
+  } else {
+    callback(null, result); // null means no error
+  }
+}
+
+// Usage - always check error first
+asyncOperation(function (error, data) {
+  if (error) {
+    console.error("Error:", error.message);
+    return; // Stop here
+  }
+  // Safe to use data
+  console.log("Data:", data);
+});
+```
+
+**Benefits:**
+
+- Consistent error handling pattern
+- Error is always checked first
+- Clear separation of error and success cases
+- Standard across Node.js ecosystem
+
+---
+
+### Q6: How do you convert callback-based code to Promises?
+
+**Answer:**
+
+Wrap the callback function in a new Promise, calling `resolve()` for success and `reject()` for errors:
+
+```javascript
+// Callback-based function
+function readFile(path, callback) {
+  setTimeout(() => {
+    if (path) callback(null, "file contents");
+    else callback(new Error("Path required"), null);
+  }, 100);
+}
+
+// Convert to Promise ("promisification")
+function readFilePromise(path) {
+  return new Promise((resolve, reject) => {
+    readFile(path, (error, data) => {
+      if (error) reject(error);
+      else resolve(data);
+    });
+  });
+}
+
+// Usage
+readFilePromise("/path/to/file")
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));
+
+// Node.js has util.promisify for this:
+const util = require("util");
+const readFilePromise = util.promisify(readFile);
+```
+
+---
+
+### Q7: Explain the event loop and how it relates to callbacks.
+
+**Answer:**
+
+The event loop is JavaScript's mechanism for handling asynchronous operations in a single-threaded environment.
+
+```
+1. Call Stack    - Executes synchronous code
+2. Web APIs      - Handle async operations (setTimeout, fetch, etc.)
+3. Callback Queue - Holds callbacks waiting to execute
+4. Microtask Queue - Holds Promise callbacks (higher priority)
+5. Event Loop    - Moves callbacks to stack when it's empty
+```
+
+```javascript
+console.log("1"); // Call stack
+setTimeout(() => console.log("2"), 0); // Goes to Web API → Callback queue
+Promise.resolve().then(() => console.log("3")); // Microtask queue
+console.log("4"); // Call stack
+
+// Output: 1, 4, 3, 2
+// Microtasks run before callback queue!
+```
+
+---
+
+### Q8: What are the alternatives to callbacks for async programming?
+
+**Answer:**
+
+| Approach           | Syntax             | Error Handling      | Readability          |
+| ------------------ | ------------------ | ------------------- | -------------------- |
+| Callbacks          | Nested functions   | Error-first pattern | Poor (callback hell) |
+| Promises           | `.then()/.catch()` | `.catch()` chain    | Good                 |
+| Async/Await        | `async`/`await`    | try-catch           | Best                 |
+| Observables (RxJS) | Stream-based       | `.catch()` operator | Good for streams     |
+
+```javascript
+// Callbacks
+getData(url, (err, data) => {
+  if (err) handleError(err);
+  else process(data);
+});
+
+// Promises
+getData(url).then(process).catch(handleError);
+
+// Async/Await
+try {
+  const data = await getData(url);
+  process(data);
+} catch (err) {
+  handleError(err);
+}
+```
+
+## Practical Examples
+
+```javascript
+// Example 1: Simple animation with callbacks
+function animate(element, property, start, end, duration, onComplete) {
+  const startTime = Date.now();
+
+  function step() {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    const value = start + (end - start) * progress;
+    element.style[property] = value + "px";
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else if (onComplete) {
+      onComplete();
+    }
+  }
+
+  step();
+}
+
+// Animate with completion callback
+// animate(div, 'left', 0, 300, 1000, () => console.log('Done!'));
+
+// Example 2: Event emitter with callbacks
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+
+  on(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+    return this; // For chaining
+  }
+
+  off(event, callback) {
+    if (this.events[event]) {
+      this.events[event] = this.events[event].filter((cb) => cb !== callback);
+    }
+    return this;
+  }
+
+  emit(event, ...args) {
+    if (this.events[event]) {
+      this.events[event].forEach((callback) => callback(...args));
+    }
+    return this;
+  }
+}
+
+const emitter = new EventEmitter();
+emitter
+  .on("data", (data) => console.log("Received:", data))
+  .on("error", (err) => console.error("Error:", err));
+
+emitter.emit("data", { message: "Hello!" });
+
+// Example 3: Waterfall pattern (each step uses previous result)
+function waterfall(tasks, finalCallback) {
+  let index = 0;
+
+  function next(error, ...results) {
+    if (error) {
+      return finalCallback(error);
+    }
+
+    const task = tasks[index++];
+
+    if (!task) {
+      return finalCallback(null, ...results);
+    }
+
+    // Pass results to next task
+    task(...results, next);
+  }
+
+  next(null); // Start the chain
+}
+
+waterfall(
+  [
+    (next) => {
+      console.log("Step 1");
+      next(null, 1);
+    },
+    (result, next) => {
+      console.log("Step 2, got:", result);
+      next(null, result + 1);
+    },
+    (result, next) => {
+      console.log("Step 3, got:", result);
+      next(null, result + 1);
+    },
+  ],
+  (error, result) => {
+    console.log("Final result:", result); // 3
+  },
+);
+```
+
+

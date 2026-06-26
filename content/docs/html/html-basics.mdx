@@ -1,0 +1,294 @@
+---
+title: "HTML Basics - Introduction to Web Markup"
+description: Documentation for HTML Basics - Introduction to Web Markup.
+---
+
+# HTML Basics - Introduction to Web Markup
+
+
+
+## What is HTML?
+
+**HTML (HyperText Markup Language)** is the standard markup language for creating web pages. It describes the structure and content of a webpage using elements (tags).
+
+> **Definition:** HTML is not a programming language - it's a markup language that tells browsers how to structure content. It uses a system of tags to define elements like headings, paragraphs, links, images, and more.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My First Page</title>
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+    <p>This is my first webpage.</p>
+  </body>
+</html>
+```
+
+## Why Learn HTML?
+
+| Reason                | Description                                    |
+| --------------------- | ---------------------------------------------- |
+| **Foundation of Web** | Every website is built with HTML               |
+| **Easy to Learn**     | Simple syntax, immediate visual results        |
+| **Universal**         | Works in all browsers                          |
+| **Required Skill**    | Essential for web development careers          |
+| **Gateway to CSS/JS** | Understanding HTML is prerequisite for styling |
+
+## HTML Syntax Fundamentals
+
+### Element Structure
+
+```html
+<tagname attribute="value">Content goes here</tagname> │ │ │ │ │ │ │ │ │ └──
+Closing tag │ │ │ └── Element content │ │ └── Attribute value │ └── Attribute
+name └── Opening tag
+```
+
+### Types of Elements
+
+| Type           | Description                  | Example                     |
+| -------------- | ---------------------------- | --------------------------- |
+| **Container**  | Has opening and closing tags | `<p>Text</p>`               |
+| **Void/Empty** | Self-closing, no content     | `<img>`, `<br>`, `<input>`  |
+| **Block**      | Takes full width             | `<div>`, `<p>`, `<h1>`      |
+| **Inline**     | Takes only needed width      | `<span>`, `<a>`, `<strong>` |
+
+### Void (Self-Closing) Elements
+
+```html
+<!-- These elements don't have closing tags -->
+<br />
+<!-- Line break -->
+<hr />
+<!-- Horizontal rule -->
+<img />
+<!-- Image -->
+<input />
+<!-- Form input -->
+<meta />
+<!-- Metadata -->
+<link />
+<!-- External resource link -->
+<area />
+<!-- Image map area -->
+<base />
+<!-- Base URL -->
+<col />
+<!-- Table column -->
+<embed />
+<!-- Embedded content -->
+<source />
+<!-- Media source -->
+<track />
+<!-- Text track for media -->
+<wbr />
+<!-- Word break opportunity -->
+
+<!-- Optional trailing slash (XHTML style) -->
+<br />
+<img src="photo.jpg" />
+```
+
+## Attributes
+
+Attributes provide additional information about elements.
+
+```html
+<!-- Common attribute syntax -->
+<element attribute="value">Content</element>
+
+<!-- Multiple attributes -->
+<a href="https://example.com" target="_blank" title="Visit Example">
+  Click Here
+</a>
+
+<!-- Boolean attributes (presence = true) -->
+<input type="text" disabled />
+<input type="checkbox" checked />
+<button disabled>Can't Click</button>
+```
+
+### Common Global Attributes
+
+| Attribute         | Purpose               | Example                        |
+| ----------------- | --------------------- | ------------------------------ |
+| `id`              | Unique identifier     | `<div id="header">`            |
+| `class`           | CSS class name(s)     | `<p class="intro highlight">`  |
+| `style`           | Inline CSS            | `<p style="color: red;">`      |
+| `title`           | Tooltip text          | `<abbr title="HyperText...">`  |
+| `lang`            | Language              | `<html lang="en">`             |
+| `data-*`          | Custom data           | `<div data-user-id="123">`     |
+| `hidden`          | Hides element         | `<p hidden>Not visible</p>`    |
+| `tabindex`        | Tab order             | `<button tabindex="1">`        |
+| `contenteditable` | Make content editable | `<div contenteditable="true">` |
+
+## Comments
+
+```html
+<!-- This is a comment -->
+<!-- Comments are not displayed in the browser -->
+
+<!--
+  Multi-line
+  comment
+-->
+
+<!-- TODO: Add navigation here -->
+<!-- FIXME: Image path needs updating -->
+```
+
+## Nesting Elements
+
+Elements can contain other elements (parent-child relationship).
+
+```html
+<!-- Correct nesting -->
+<article>
+  <h2>Article Title</h2>
+  <p>First paragraph with <strong>bold text</strong>.</p>
+  <p>Second paragraph with <a href="#">a link</a>.</p>
+</article>
+
+<!-- ❌ INCORRECT - tags must close in order -->
+<p>This is <strong>wrong</p></strong>
+
+<!-- ✅ CORRECT - proper nesting -->
+<p>This is <strong>correct</strong></p>
+```
+
+## Block vs Inline Elements
+
+| Block Elements              | Inline Elements            |
+| --------------------------- | -------------------------- |
+| Start on new line           | Flow within text           |
+| Take full available width   | Take only needed width     |
+| Can contain other blocks    | Cannot contain blocks      |
+| `<div>`, `<p>`, `<h1>-<h6>` | `<span>`, `<a>`, `<img>`   |
+| `<ul>`, `<ol>`, `<li>`      | `<strong>`, `<em>`, `<br>` |
+| `<table>`, `<form>`         | `<input>`, `<label>`       |
+| `<header>`, `<section>`     | `<abbr>`, `<cite>`         |
+
+```html
+<!-- Block elements stack vertically -->
+<div>Block 1</div>
+<div>Block 2</div>
+
+<!-- Inline elements flow horizontally -->
+<span>Inline 1</span>
+<span>Inline 2</span>
+<span>Inline 3</span>
+```
+
+## Whitespace Handling
+
+HTML collapses multiple whitespaces into one.
+
+```html
+<!-- These render the same -->
+<p>Hello World</p>
+<p>Hello World</p>
+<p>Hello World</p>
+
+<!-- All display as: "Hello World" -->
+
+<!-- To preserve whitespace -->
+<pre>
+  This   preserves
+  all    spaces
+  and line breaks
+</pre>
+```
+
+## Your First HTML Page
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My First Page</title>
+  </head>
+  <body>
+    <header>
+      <h1>Welcome to My Website</h1>
+    </header>
+
+    <main>
+      <article>
+        <h2>About Me</h2>
+        <p>Hello! I'm learning <strong>HTML</strong>.</p>
+        <p>This is my first webpage.</p>
+      </article>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 My Name</p>
+    </footer>
+  </body>
+</html>
+```
+
+## Interview Questions & Answers
+
+### Q1: What is HTML and what is it used for?
+
+HTML stands for HyperText Markup Language and is the standard markup language for creating web pages. It's used to structure content on the web by defining elements like headings, paragraphs, links, images, lists, tables, and forms. HTML is not a programming language because it doesn't have logic or variables - it's purely for describing document structure. Every website uses HTML as its foundation, with CSS for styling and JavaScript for interactivity. Browsers read HTML files and render them as visual web pages.
+
+---
+
+### Q2: What's the difference between HTML elements and tags?
+
+Tags are the markup syntax used to define elements - they're the angle bracket notation like `<p>` and `</p>`. An element is the complete unit including the opening tag, content, and closing tag together: `<p>This is a paragraph</p>`. Some elements are self-closing (void elements) and consist of only a single tag like `<br>` or `<img>`. The distinction matters when discussing HTML structure: tags define where elements begin and end, while elements are the actual components that browsers render.
+
+---
+
+### Q3: What are void (empty) elements?
+
+Void elements are HTML elements that cannot have any content inside them and don't have closing tags. Examples include `<br>`, `<hr>`, `<img>`, `<input>`, `<meta>`, and `<link>`. They represent things that are inherently empty or are replaced by external content (like images). In XHTML, these required a trailing slash (`<br />`), but in HTML5 the slash is optional. The key is understanding that you cannot put content between opening and closing tags because there is no closing tag.
+
+---
+
+### Q4: What's the difference between block and inline elements?
+
+Block elements start on a new line and take up the full available width, stacking vertically. Examples include `<div>`, `<p>`, `<h1>`, and `<section>`. Inline elements flow within the text, only taking up as much width as needed, and don't force line breaks. Examples include `<span>`, `<a>`, `<strong>`, and `<img>`. Block elements can contain other block and inline elements, but inline elements should only contain other inline elements (with some exceptions like `<a>` which can wrap blocks in HTML5).
+
+---
+
+### Q5: What are HTML attributes and how are they used?
+
+Attributes provide additional information about HTML elements. They're written in the opening tag as name-value pairs: `<tag attribute="value">`. Some attributes are global (usable on any element) like `id`, `class`, `style`, and `title`. Others are specific to certain elements like `href` for `<a>` or `src` for `<img>`. Boolean attributes like `disabled` or `checked` don't need a value - their presence alone activates the feature. Attributes are essential for linking to URLs, applying styling, identifying elements, and configuring element behavior.
+
+---
+
+### Q6: Why is proper nesting important in HTML?
+
+Proper nesting means elements must be closed in the reverse order they were opened - inner elements close before outer elements. This creates a valid document tree (DOM) that browsers can parse correctly. Improper nesting like `<p><strong>text</p></strong>` creates ambiguous structure that browsers must guess how to handle, often resulting in unexpected rendering. Modern browsers are forgiving but still may interpret malformed HTML differently. Proper nesting ensures consistent behavior, makes debugging easier, and is required for valid HTML that passes validation.
+
+---
+
+### Q7: What is the purpose of HTML comments?
+
+HTML comments are written with `<!-- comment -->` syntax and are not displayed in the browser. They serve several purposes: documenting code for other developers (or your future self), temporarily disabling code during development without deleting it, marking sections of code for easier navigation, and leaving TODO notes for future work. Comments are visible in the source code, so don't include sensitive information. They're also useful for conditional comments for older browsers (though mostly obsolete now).
+
+---
+
+### Q8: How does the browser handle whitespace in HTML?
+
+HTML collapses multiple consecutive whitespace characters (spaces, tabs, newlines) into a single space. This means extra spaces in your source code don't appear in the rendered output. To preserve whitespace, use the `<pre>` element which renders text exactly as written, or use CSS `white-space: pre` or `white-space: pre-wrap`. For non-breaking spaces that prevent line breaks and don't collapse, use the `&nbsp;` entity. Understanding whitespace behavior is important for proper text formatting and layout.
+
+---
+
+### Q9: What are global attributes?
+
+Global attributes are attributes that can be used on any HTML element. Common ones include: `id` for unique identification, `class` for CSS styling and JavaScript selection, `style` for inline CSS, `title` for tooltip text, `lang` for language declaration, `data-*` for custom data attributes, `hidden` to hide elements, `tabindex` for keyboard navigation order, and `contenteditable` to make content editable. These provide consistent ways to identify, style, and add functionality to any element regardless of its type.
+
+---
+
+### Q10: What makes HTML5 different from earlier versions?
+
+HTML5, released in 2014, introduced semantic elements like `<header>`, `<nav>`, `<main>`, `<article>`, and `<section>` for meaningful structure. It added native support for audio and video without plugins, new form input types like `email`, `date`, and `range`, and APIs for features like geolocation, local storage, and drag-and-drop. The DOCTYPE simplified to `<!DOCTYPE html>`. HTML5 also made syntax more forgiving, made attribute quotes optional in some cases, and deprecated presentational elements in favor of CSS. It's now simply called "HTML" as it's a living standard.
+
+

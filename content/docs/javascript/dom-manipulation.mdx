@@ -1,0 +1,821 @@
+---
+title: "DOM Manipulation - Modifying the Page"
+description: Documentation for DOM Manipulation - Modifying the Page.
+---
+
+# DOM Manipulation - Modifying the Page
+
+
+
+## What is DOM Manipulation?
+
+**DOM Manipulation** is the process of changing the structure, content, or style of a web page using JavaScript. This is how you create dynamic, interactive websites.
+
+> **Definition:** DOM Manipulation refers to the programmatic modification of the Document Object Model, including creating, removing, modifying, and rearranging elements, changing content and attributes, and updating styles. It's the foundation of interactive web applications.
+
+```javascript
+// Change content
+document.getElementById("title").textContent = "New Title";
+
+// Change style
+document.querySelector(".box").style.backgroundColor = "blue";
+
+// Add element
+const newDiv = document.createElement("div");
+document.body.appendChild(newDiv);
+```
+
+### Types of DOM Manipulation
+
+| Type           | Description                   | Examples                         |
+| -------------- | ----------------------------- | -------------------------------- |
+| **Content**    | Modify text and HTML          | textContent, innerHTML           |
+| **Structure**  | Add, remove, replace elements | appendChild, remove, replaceWith |
+| **Attributes** | Change element attributes     | setAttribute, dataset            |
+| **Styles**     | Modify appearance             | style, classList                 |
+| **Position**   | Move and reorder elements     | insertBefore, after              |
+
+## Creating Elements
+
+### createElement()
+
+```javascript
+// Create elements
+const div = document.createElement("div");
+const p = document.createElement("p");
+const button = document.createElement("button");
+const img = document.createElement("img");
+
+// Set properties
+div.id = "myDiv";
+div.className = "container";
+p.textContent = "Hello World";
+button.textContent = "Click Me";
+img.src = "image.jpg";
+img.alt = "Description";
+
+// Set attributes
+div.setAttribute("data-id", "123");
+button.setAttribute("type", "button");
+
+// Set styles
+div.style.padding = "20px";
+div.style.backgroundColor = "#f0f0f0";
+
+// Chain creation and setup
+const link = Object.assign(document.createElement("a"), {
+  href: "https://example.com",
+  textContent: "Click here",
+  target: "_blank",
+});
+```
+
+### Creating Text Nodes
+
+```javascript
+// Create text node
+const textNode = document.createTextNode("Hello World");
+
+// Append to element
+const p = document.createElement("p");
+p.appendChild(textNode);
+
+// Usually simpler to use textContent
+p.textContent = "Hello World"; // Preferred
+
+// When to use createTextNode:
+// - When you need multiple text nodes in one element
+// - When mixing text with other nodes
+const span = document.createElement("span");
+span.appendChild(document.createTextNode("Hello "));
+span.appendChild(document.createElement("strong")).textContent = "World";
+span.appendChild(document.createTextNode("!"));
+```
+
+## Adding Elements to DOM
+
+### appendChild()
+
+```javascript
+const parent = document.getElementById("parent");
+const child = document.createElement("div");
+child.textContent = "Child element";
+
+// Add to end of parent
+parent.appendChild(child);
+
+// Returns the appended element
+const appended = parent.appendChild(child);
+console.log(appended === child); // true
+
+// Moving elements (not copying)
+const existing = document.getElementById("existing");
+newParent.appendChild(existing); // Moves, doesn't copy
+```
+
+### append() - Modern Method
+
+```javascript
+const parent = document.getElementById("parent");
+
+// Can append multiple nodes
+parent.append(
+  document.createElement("div"),
+  document.createElement("p"),
+  "Text content", // Can append strings directly
+);
+
+// Difference from appendChild
+parent.appendChild("text"); // Error! Only accepts nodes
+parent.append("text"); // Works! Accepts strings too
+
+// Useful for building structures
+const card = document.createElement("div");
+card.append(createHeader(), createBody(), createFooter());
+```
+
+### prepend() - Add to Beginning
+
+```javascript
+const parent = document.getElementById("parent");
+const child = document.createElement("div");
+
+// Add to beginning
+parent.prepend(child);
+
+// Can prepend multiple
+parent.prepend(document.createElement("h1"), document.createElement("p"));
+
+// Prepend text
+parent.prepend("First: ");
+```
+
+### insertBefore()
+
+```javascript
+const parent = document.getElementById("parent");
+const newElement = document.createElement("div");
+const referenceElement = document.getElementById("reference");
+
+// Insert before reference
+parent.insertBefore(newElement, referenceElement);
+
+// Insert as first child
+parent.insertBefore(newElement, parent.firstChild);
+
+// Insert as last child (when reference is null)
+parent.insertBefore(newElement, null); // Same as appendChild
+```
+
+### Modern Insert Methods
+
+```javascript
+const element = document.getElementById("myElement");
+const newElement = document.createElement("div");
+
+// Insert before element (as sibling)
+element.before(newElement);
+
+// Insert after element (as sibling)
+element.after(newElement);
+
+// Insert at beginning of element (as first child)
+element.prepend(newElement);
+
+// Insert at end of element (as last child)
+element.append(newElement);
+
+// Multiple elements
+element.after(el1, el2, "text", el3);
+```
+
+### insertAdjacentHTML() and insertAdjacentElement()
+
+```javascript
+const element = document.getElementById("myElement");
+
+// Insert HTML string at specific position
+element.insertAdjacentHTML("beforebegin", "<p>Before</p>"); // Before element
+element.insertAdjacentHTML("afterbegin", "<p>First child</p>"); // First child
+element.insertAdjacentHTML("beforeend", "<p>Last child</p>"); // Last child
+element.insertAdjacentHTML("afterend", "<p>After</p>"); // After element
+
+// Insert element at specific position
+const newEl = document.createElement("div");
+element.insertAdjacentElement("beforebegin", newEl);
+
+// Insert text
+element.insertAdjacentText("beforeend", "Some text");
+```
+
+### Insertion Methods Comparison
+
+| Method                    | Position         | Accepts Strings | Returns       |
+| ------------------------- | ---------------- | --------------- | ------------- |
+| `appendChild()`           | End of parent    | ❌ No           | Appended node |
+| `append()`                | End of parent    | ✅ Yes          | undefined     |
+| `prepend()`               | Start of parent  | ✅ Yes          | undefined     |
+| `before()`                | Before element   | ✅ Yes          | undefined     |
+| `after()`                 | After element    | ✅ Yes          | undefined     |
+| `insertBefore()`          | Before reference | ❌ No           | Inserted node |
+| `insertAdjacentHTML()`    | 4 positions      | HTML string     | undefined     |
+| `insertAdjacentElement()` | 4 positions      | ❌ No           | Inserted node |
+
+## Removing Elements
+
+### remove() - Modern Method
+
+```javascript
+const element = document.getElementById("myElement");
+
+// Remove element
+element.remove();
+
+// Simple and clean
+document.querySelector(".unwanted").remove();
+
+// Remove with condition
+if (element.classList.contains("expired")) {
+  element.remove();
+}
+```
+
+### removeChild() - Old Method
+
+```javascript
+const parent = document.getElementById("parent");
+const child = document.getElementById("child");
+
+// Remove child from parent
+parent.removeChild(child);
+
+// Remove element (old way)
+const element = document.getElementById("myElement");
+element.parentNode.removeChild(element);
+
+// Returns removed node (can be reused)
+const removed = parent.removeChild(child);
+document.body.appendChild(removed); // Re-add somewhere else
+```
+
+### Remove All Children
+
+```javascript
+const parent = document.getElementById("parent");
+
+// Method 1: innerHTML (simple but slower, loses event listeners)
+parent.innerHTML = "";
+
+// Method 2: Loop and remove (more efficient)
+while (parent.firstChild) {
+  parent.removeChild(parent.firstChild);
+}
+
+// Method 3: Modern replaceChildren (recommended)
+parent.replaceChildren(); // Removes all children
+
+// Method 4: Replace with new children
+parent.replaceChildren(newChild1, newChild2);
+
+// Method 5: textContent (removes children too)
+parent.textContent = ""; // Removes all children
+```
+
+## Replacing Elements
+
+### replaceWith() - Modern Method
+
+```javascript
+const oldElement = document.getElementById("old");
+const newElement = document.createElement("div");
+newElement.textContent = "New content";
+
+// Replace old with new
+oldElement.replaceWith(newElement);
+
+// Can replace with multiple elements
+oldElement.replaceWith(
+  document.createElement("div"),
+  document.createElement("p"),
+);
+
+// Replace with text
+oldElement.replaceWith("Just text now");
+```
+
+### replaceChild() - Old Method
+
+```javascript
+const parent = document.getElementById("parent");
+const oldChild = document.getElementById("old");
+const newChild = document.createElement("div");
+
+// Replace old child with new
+parent.replaceChild(newChild, oldChild);
+
+// Returns the replaced node
+const replaced = parent.replaceChild(newChild, oldChild);
+```
+
+### replaceChildren()
+
+```javascript
+const parent = document.getElementById("parent");
+
+// Remove all and add new children
+parent.replaceChildren(newChild1, newChild2, newChild3);
+
+// Remove all children
+parent.replaceChildren();
+
+// Replace with array of elements (spread)
+const newChildren = [el1, el2, el3];
+parent.replaceChildren(...newChildren);
+```
+
+## Cloning Elements
+
+```javascript
+const original = document.getElementById("original");
+
+// Shallow clone (element only, no children)
+const shallowClone = original.cloneNode(false);
+
+// Deep clone (element and all descendants)
+const deepClone = original.cloneNode(true);
+
+// Clone and append
+const clone = original.cloneNode(true);
+document.body.appendChild(clone);
+
+// ⚠️ Event listeners are NOT cloned
+original.addEventListener("click", () => console.log("Click"));
+const clone2 = original.cloneNode(true);
+// clone2 doesn't have the click listener!
+
+// ⚠️ IDs are cloned - may cause duplicates!
+// Remember to change IDs after cloning
+clone.id = "clone-" + Date.now();
+```
+
+## Modifying Content
+
+### textContent vs innerHTML vs innerText
+
+```javascript
+const div = document.getElementById("myDiv");
+
+// textContent - plain text (safe, fast)
+div.textContent = "Hello <strong>World</strong>";
+// Shows: Hello <strong>World</strong> (as text)
+
+// innerHTML - parses HTML (slower, XSS risk)
+div.innerHTML = "Hello <strong>World</strong>";
+// Shows: Hello World (bold)
+
+// innerText - visible text only
+div.innerText = "Hello\nWorld";
+// Respects line breaks and CSS visibility
+```
+
+### Comparison
+
+| Property      | Parses HTML | Performance | Security    | Hidden Text |
+| ------------- | ----------- | ----------- | ----------- | ----------- |
+| `textContent` | ❌ No       | ⚡ Fastest  | ✅ Safe     | ✅ Includes |
+| `innerHTML`   | ✅ Yes      | Slower      | ⚠️ XSS risk | N/A         |
+| `innerText`   | ❌ No       | Slowest     | ✅ Safe     | ❌ Excludes |
+
+```javascript
+// ⚠️ XSS vulnerability with innerHTML
+const userInput = "<img src=x onerror=\"alert('XSS')\">";
+div.innerHTML = userInput; // Dangerous!
+
+// ✅ Safe with textContent
+div.textContent = userInput; // Shows as text, safe
+
+// Getting content
+console.log(div.textContent); // All text including hidden
+console.log(div.innerText); // Only visible text
+```
+
+### outerHTML
+
+```javascript
+const element = document.getElementById("myElement");
+
+// Get element AND its HTML
+console.log(element.outerHTML); // <div id="myElement">...</div>
+
+// Replace element entirely
+element.outerHTML = "<p>Replacement</p>";
+// Warning: element variable now references orphaned node!
+```
+
+## Modifying Attributes
+
+### Standard Attributes
+
+```javascript
+const img = document.querySelector("img");
+
+// Get attribute
+const src = img.src;
+const alt = img.alt;
+
+// Set attribute
+img.src = "new-image.jpg";
+img.alt = "New description";
+
+// Direct property access (preferred for standard attributes)
+const link = document.querySelector("a");
+link.href = "https://example.com";
+link.target = "_blank";
+
+// Boolean attributes
+const input = document.querySelector("input");
+input.disabled = true;
+input.required = true;
+input.checked = false;
+```
+
+### getAttribute() and setAttribute()
+
+```javascript
+const element = document.getElementById("myElement");
+
+// Get attribute
+const id = element.getAttribute("id");
+const dataId = element.getAttribute("data-id");
+
+// Set attribute
+element.setAttribute("data-id", "123");
+element.setAttribute("aria-label", "Description");
+element.setAttribute("role", "button");
+
+// Remove attribute
+element.removeAttribute("data-id");
+
+// Check if has attribute
+if (element.hasAttribute("data-id")) {
+  console.log("Has data-id");
+}
+
+// Toggle attribute (custom implementation)
+function toggleAttribute(el, attr) {
+  if (el.hasAttribute(attr)) {
+    el.removeAttribute(attr);
+  } else {
+    el.setAttribute(attr, "");
+  }
+}
+```
+
+### Data Attributes
+
+```javascript
+// HTML: <div id="user" data-user-id="123" data-role="admin"></div>
+const user = document.getElementById("user");
+
+// Access via dataset (camelCase)
+console.log(user.dataset.userId); // '123'
+console.log(user.dataset.role); // 'admin'
+
+// Set data attribute
+user.dataset.status = "active";
+// Creates: data-status="active"
+
+// Multi-word attributes (kebab-case in HTML, camelCase in JS)
+user.dataset.lastLogin = "2024-01-01";
+// Creates: data-last-login="2024-01-01"
+
+// Delete data attribute
+delete user.dataset.role;
+
+// Check if exists
+if ("userId" in user.dataset) {
+  console.log("Has user ID");
+}
+
+// Get all data attributes
+console.log(user.dataset); // DOMStringMap object
+```
+
+## Modifying Styles
+
+### Inline Styles
+
+```javascript
+const element = document.getElementById("myElement");
+
+// Set single style (camelCase for CSS properties)
+element.style.color = "red";
+element.style.backgroundColor = "blue";
+element.style.fontSize = "20px";
+element.style.marginTop = "10px";
+
+// CSS custom properties (variables)
+element.style.setProperty("--main-color", "blue");
+
+// Set multiple styles
+Object.assign(element.style, {
+  color: "white",
+  backgroundColor: "black",
+  padding: "20px",
+  borderRadius: "5px",
+});
+
+// Remove style
+element.style.color = "";
+element.style.removeProperty("background-color");
+
+// Get style
+const bgColor = element.style.backgroundColor;
+```
+
+### CSS Classes (Recommended)
+
+```javascript
+const element = document.getElementById("myElement");
+
+// classList methods
+element.classList.add("active"); // Add class
+element.classList.remove("hidden"); // Remove class
+element.classList.toggle("visible"); // Toggle class
+element.classList.contains("active"); // Check class (returns boolean)
+
+// Multiple classes
+element.classList.add("class1", "class2", "class3");
+element.classList.remove("class1", "class2");
+
+// Replace class
+element.classList.replace("old", "new");
+
+// Toggle with condition
+element.classList.toggle("active", isActive); // Add if true, remove if false
+
+// className (string of all classes)
+element.className = "class1 class2"; // Replace all
+console.log(element.className); // 'class1 class2'
+```
+
+### Computed Styles
+
+```javascript
+const element = document.getElementById("myElement");
+
+// Get computed style (actual rendered style)
+const styles = window.getComputedStyle(element);
+
+console.log(styles.color); // rgb(255, 0, 0)
+console.log(styles.fontSize); // 16px
+console.log(styles.display); // block
+
+// Get specific property
+const color = styles.getPropertyValue("color");
+
+// Get pseudo-element styles
+const beforeStyles = window.getComputedStyle(element, "::before");
+console.log(beforeStyles.content);
+```
+
+## Document Fragments
+
+Use for efficient batch DOM operations.
+
+```javascript
+// Create fragment
+const fragment = document.createDocumentFragment();
+
+// Add multiple elements to fragment
+for (let i = 0; i < 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  fragment.appendChild(li);
+}
+
+// Single DOM update (efficient!)
+document.getElementById("list").appendChild(fragment);
+
+// Why use fragments?
+// ❌ Slow - 100 DOM updates, 100 reflows
+for (let i = 0; i < 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  list.appendChild(li); // Reflow each time!
+}
+
+// ✅ Fast - 1 DOM update, 1 reflow
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  fragment.appendChild(li);
+}
+list.appendChild(fragment); // Single reflow!
+```
+
+## Template Element
+
+Modern alternative to document fragments.
+
+```html
+<template id="cardTemplate">
+  <div class="card">
+    <h3 class="title"></h3>
+    <p class="content"></p>
+  </div>
+</template>
+```
+
+```javascript
+// Get template
+const template = document.getElementById("cardTemplate");
+
+// Clone template content
+const clone = template.content.cloneNode(true);
+
+// Fill with data
+clone.querySelector(".title").textContent = "My Title";
+clone.querySelector(".content").textContent = "My content";
+
+// Add to DOM
+document.getElementById("container").appendChild(clone);
+
+// Create multiple from template
+function createCards(data) {
+  const fragment = document.createDocumentFragment();
+
+  data.forEach((item) => {
+    const clone = template.content.cloneNode(true);
+    clone.querySelector(".title").textContent = item.title;
+    clone.querySelector(".content").textContent = item.content;
+    fragment.appendChild(clone);
+  });
+
+  document.getElementById("container").appendChild(fragment);
+}
+```
+
+## Interview Questions & Answers
+
+### Q1: What's the difference between textContent and innerHTML?
+
+textContent sets or gets the text content of an element without parsing HTML, treating everything as plain text. It's fast and secure because it can't execute scripts. innerHTML parses and renders HTML tags, allowing you to insert formatted content with elements like strong, links, or images. textContent should be your default choice for plain text because it's faster and prevents XSS attacks. Only use innerHTML when you specifically need to insert HTML markup, and never use it with untrusted user input since it can execute malicious scripts. A middle option is innerText, which is similar to textContent but respects CSS visibility and styling.
+
+---
+
+### Q2: What's the difference between appendChild and append?
+
+appendChild only accepts Node objects and returns the appended node, which is useful if you need to chain operations or reference the added element. append is more flexible: it accepts both nodes and strings, can add multiple items in a single call, but returns undefined. appendChild throws an error if you pass a string, while append converts strings to text nodes automatically. Both methods move elements rather than copying them - if you append an existing element, it's removed from its current location. append is preferred in modern code for its convenience, though appendChild has broader browser support.
+
+---
+
+### Q3: Why use DocumentFragment and when?
+
+DocumentFragment is a lightweight, invisible container for building DOM structures off-screen. Every time you modify the DOM, the browser may need to recalculate layouts (reflow) and repaint, which is expensive. When appending 100 elements individually, you trigger 100 reflows. With DocumentFragment, you build everything in memory, then add it with a single appendChild, causing just one reflow. Use fragments when adding multiple elements in a loop, building lists or tables dynamically, or any batch DOM operation. The template element is a modern alternative that works similarly but lets you define HTML structure declaratively.
+
+---
+
+### Q4: How do you safely insert user-generated content?
+
+Never use innerHTML with user input because it can execute malicious scripts through XSS attacks. Instead, use textContent which treats everything as plain text, preventing script execution. When you need to create structure with user data, create elements programmatically with createElement and set their textContent. If you must accept HTML input, sanitize it first using DOMPurify or similar libraries. For attributes, use setAttribute or direct property assignment rather than string concatenation. Always assume user input is malicious and validate on both client and server sides. Content Security Policy headers provide an additional layer of protection.
+
+---
+
+### Q5: What's the difference between cloneNode(true) and cloneNode(false)?
+
+cloneNode(false) creates a shallow clone - just the element itself without any children or descendants. cloneNode(true) creates a deep clone - the element plus all its children, grandchildren, and their contents. Both copy the element's attributes. Neither copies event listeners attached via addEventListener, though inline event handlers in attributes are copied. Deep cloning is useful when duplicating complex components, while shallow cloning works for simple elements or when you'll add new content. Be careful with IDs: clones have the same ID as originals, which violates HTML rules about unique IDs. Always update or remove cloned IDs.
+
+---
+
+### Q6: What is the difference between remove() and removeChild()?
+
+remove() is the modern, simpler method that removes an element directly: `element.remove()`. removeChild() is older and requires access to the parent: `parent.removeChild(child)`. remove() doesn't return anything, while removeChild() returns the removed node, which is useful if you want to move it elsewhere. For environments without remove() support, the old pattern was `element.parentNode.removeChild(element)`. Both methods truly remove the element from the DOM tree. If you have references to the removed element in JavaScript variables, it still exists in memory and can be re-added later.
+
+---
+
+### Q7: What is insertAdjacentHTML and when should you use it?
+
+insertAdjacentHTML is a powerful method that inserts HTML at four possible positions relative to an element: beforebegin (before the element), afterbegin (as first child), beforeend (as last child), and afterend (after the element). It's faster than innerHTML for adding content because it doesn't reparse existing content. It's useful when you have HTML as a string and need precise insertion placement. However, it has the same XSS risks as innerHTML - never use it with untrusted input. For user content, prefer createElement with textContent. Related methods insertAdjacentElement and insertAdjacentText offer similar positioning but for elements and text.
+
+---
+
+### Q8: How do you efficiently update many elements at once?
+
+For batch updates, minimize DOM access and reflows. First, cache element references rather than querying repeatedly. Use DocumentFragment to build structures off-screen then insert once. For style changes, prefer adding/removing CSS classes over changing individual style properties. If you must change multiple styles, consider temporarily setting display:none to avoid incremental reflows, make changes, then restore display. Use requestAnimationFrame for visual updates to batch them with the browser's render cycle. When updating many similar elements, collect all changes first, then apply in a single loop. The template element combined with fragments is excellent for creating many similar components.
+
+---
+
+### Q9: What is the difference between dataset and getAttribute for data attributes?
+
+dataset provides a clean JavaScript interface for data-\* attributes, automatically converting kebab-case attribute names to camelCase properties. getAttribute("data-user-id") is equivalent to element.dataset.userId. dataset returns a DOMStringMap object where you can directly read, write, and delete properties. getAttribute always returns strings and requires the full attribute name including "data-" prefix. dataset is generally preferred for its cleaner syntax and automatic naming conversion. However, getAttribute is more explicit and works when you don't know attribute names at design time. Both return string values, so you may need to parse numbers or JSON.
+
+---
+
+### Q10: What are best practices for DOM manipulation performance?
+
+Start by minimizing DOM access: cache references to frequently used elements. Batch DOM updates using DocumentFragment or requestAnimationFrame. Avoid layout thrashing by reading all needed values before writing changes - don't interleave reads and writes. Use CSS classes instead of inline styles when possible since the browser can optimize class changes better. For complex updates, consider removing elements from the DOM, modifying them, then reinserting. Use event delegation instead of attaching many listeners. Prefer modern methods like append and remove which are more efficient. Virtual DOM libraries like React exist specifically because raw DOM manipulation at scale is expensive.
+
+## Practical Examples
+
+```javascript
+// Example 1: Create card component
+function createCard(title, content, imageUrl) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const img = document.createElement("img");
+  img.src = imageUrl;
+  img.alt = title;
+
+  const cardBody = document.createElement("div");
+  cardBody.className = "card-body";
+
+  const cardTitle = document.createElement("h3");
+  cardTitle.textContent = title;
+
+  const cardText = document.createElement("p");
+  cardText.textContent = content;
+
+  cardBody.append(cardTitle, cardText);
+  card.append(img, cardBody);
+
+  return card;
+}
+
+// Usage
+const myCard = createCard("Title", "Content", "image.jpg");
+document.getElementById("container").appendChild(myCard);
+
+// Example 2: Build table efficiently
+function createTable(data) {
+  const fragment = document.createDocumentFragment();
+
+  data.forEach((row) => {
+    const tr = document.createElement("tr");
+
+    Object.values(row).forEach((value) => {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    fragment.appendChild(tr);
+  });
+
+  const tbody = document.querySelector("#myTable tbody");
+  tbody.appendChild(fragment);
+}
+
+// Example 3: Toggle visibility
+function toggleElement(selector) {
+  const element = document.querySelector(selector);
+  element.classList.toggle("hidden");
+}
+
+// Example 4: Safe user content insertion
+function displayUserComment(comment) {
+  const div = document.createElement("div");
+  div.className = "comment";
+
+  const author = document.createElement("strong");
+  author.textContent = comment.author; // Safe
+
+  const text = document.createElement("p");
+  text.textContent = comment.text; // Safe
+
+  div.append(author, text);
+  document.getElementById("comments").appendChild(div);
+}
+
+// Example 5: Create from template
+function createFromTemplate(templateId, data) {
+  const template = document.getElementById(templateId);
+  const clone = template.content.cloneNode(true);
+
+  Object.entries(data).forEach(([key, value]) => {
+    const el = clone.querySelector(`[data-field="${key}"]`);
+    if (el) el.textContent = value;
+  });
+
+  return clone;
+}
+
+// Example 6: Batch DOM updates with fragment
+function updateList(items) {
+  const list = document.getElementById("list");
+  const fragment = document.createDocumentFragment();
+
+  items.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item.name;
+    li.dataset.id = item.id;
+    fragment.appendChild(li);
+  });
+
+  list.replaceChildren(fragment);
+}
+```
+
+

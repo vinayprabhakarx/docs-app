@@ -1,0 +1,170 @@
+---
+title: "Introduction to React - Getting Started"
+description: Documentation for Introduction to React - Getting Started.
+---
+
+# Introduction to React - Getting Started
+
+
+
+## What is React?
+
+React is a JavaScript library for building user interfaces.
+
+> **Definition:** React is an open-source JavaScript library created by Facebook (Meta) for building fast, interactive, and component-based user interfaces. It uses a declarative approach where you describe what the UI should look like, and React efficiently updates the DOM when data changes.
+
+## Why React?
+
+| Feature           | Benefit                               |
+| ----------------- | ------------------------------------- |
+| Component-Based   | Reusable, modular UI pieces           |
+| Virtual DOM       | Efficient updates, better performance |
+| Declarative       | Predictable code, easier debugging    |
+| One-Way Data Flow | Clear data flow, easier to understand |
+| Large Ecosystem   | Rich libraries, tools, community      |
+| React Native      | Build mobile apps with same concepts  |
+
+## Virtual DOM
+
+```
+┌─────────────────────────────────────────────────┐
+│                  How Virtual DOM Works          │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│   State Change                                  │
+│       ↓                                         │
+│   New Virtual DOM Created                       │
+│       ↓                                         │
+│   Diff with Previous Virtual DOM                │
+│       ↓                                         │
+│   Only Changed Elements Update in Real DOM      │
+│                                                 │
+└─────────────────────────────────────────────────┘
+```
+
+## Setting Up React
+
+### Using Vite (Recommended)
+
+```bash
+# Create project
+npm create vite@latest my-app -- --template react
+
+# Navigate and install
+cd my-app
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Using Create React App
+
+```bash
+# Create project
+npx create-react-app my-app
+
+# Navigate and start
+cd my-app
+npm start
+```
+
+### Comparison
+
+| Feature        | Vite                | Create React App  |
+| -------------- | ------------------- | ----------------- |
+| Build Speed    | Very fast (ESBuild) | Slower (Webpack)  |
+| Dev Server     | Instant HMR         | Slower HMR        |
+| Bundle Size    | Smaller             | Larger            |
+| Configuration  | Easy to customize   | Ejecting required |
+| Recommendation | ✅ Modern choice    | Legacy projects   |
+
+## Project Structure
+
+```
+my-react-app/
+├── node_modules/       # Dependencies
+├── public/
+│   └── index.html      # HTML template
+├── src/
+│   ├── App.jsx         # Root component
+│   ├── App.css         # App styles
+│   ├── main.jsx        # Entry point
+│   └── index.css       # Global styles
+├── package.json        # Dependencies & scripts
+└── vite.config.js      # Vite configuration
+```
+
+## First React Component
+
+```jsx
+// App.jsx
+function App() {
+  return (
+    <div>
+      <h1>Hello, React!</h1>
+      <p>Welcome to my first React app.</p>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## Entry Point
+
+```jsx
+// main.jsx (Vite) or index.js (CRA)
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
+```
+
+## React vs Traditional DOM
+
+| Traditional DOM          | React                         |
+| ------------------------ | ----------------------------- |
+| Imperative (how to do)   | Declarative (what to do)      |
+| Direct DOM manipulation  | Virtual DOM diffing           |
+| Manual event binding     | Automatic event handling      |
+| Scattered state          | Centralized state management  |
+| Page reloads for updates | Single Page Application (SPA) |
+
+## Interview Questions & Answers
+
+### Q1: What is React and why is it called a "library" not a "framework"?
+
+React is a JavaScript library for building user interfaces. It's called a library rather than a framework because it focuses only on the view layer (UI rendering) and doesn't dictate how you structure your entire application. Unlike Angular or Vue, React doesn't include routing, HTTP clients, or form handling out of the box. You're free to choose additional libraries for these features. This flexibility is both React's strength and why it has such a rich ecosystem.
+
+---
+
+### Q2: What is the Virtual DOM and how does it improve performance?
+
+The Virtual DOM is a lightweight JavaScript representation of the actual DOM. When state changes, React creates a new Virtual DOM tree, compares it with the previous one (diffing), and calculates the minimum changes needed. Only those specific changes are applied to the real DOM (reconciliation). This is faster than directly manipulating the DOM because: DOM operations are expensive, batch updates are optimized, and unnecessary repaints are avoided.
+
+---
+
+### Q3: What is JSX?
+
+JSX (JavaScript XML) is a syntax extension that lets you write HTML-like code in JavaScript. It's not valid JavaScript; Babel transpiles it to `React.createElement()` calls. JSX makes component code more readable and allows you to embed JavaScript expressions using curly braces `{}`. While optional, JSX is the standard way to write React components because it clearly shows the UI structure.
+
+---
+
+### Q4: What is React.StrictMode?
+
+`React.StrictMode` is a development tool that highlights potential problems in your application. It activates additional checks and warnings: detecting unsafe lifecycle methods, warning about legacy API usage, detecting unexpected side effects by double-invoking certain functions, and identifying deprecated features. It only runs in development mode - there's no performance impact in production. It's recommended to wrap your app in StrictMode during development.
+
+---
+
+### Q5: What is the difference between Vite and Create React App?
+
+Create React App (CRA) uses Webpack for bundling, which becomes slow as projects grow. Vite uses native ES modules during development and ESBuild for faster bundling. Vite offers near-instant dev server startup and hot module replacement. CRA requires "ejecting" for configuration changes; Vite is easily configurable. For new projects, Vite is recommended due to better developer experience and performance.
+
+

@@ -1,0 +1,321 @@
+---
+title: "CSS Specificity - Understanding Selector Priority"
+description: Documentation for CSS Specificity - Understanding Selector Priority.
+---
+
+# CSS Specificity - Understanding Selector Priority
+
+
+
+## What is CSS Specificity?
+
+Specificity determines which CSS rule is applied when multiple rules target the same element. It's a scoring system that calculates which selector is more "specific" and therefore wins.
+
+### Why is Specificity Important?
+
+Understanding specificity helps you:
+- **Predict which styles apply** - Know which rule will win
+- **Avoid !important** - Write better, more maintainable CSS
+- **Debug conflicts** - Understand why styles aren't applying
+- **Write efficient CSS** - Use the right selector for the job
+
+## Specificity Hierarchy
+
+From **lowest** to **highest** specificity:
+
+1. **Universal selector** (`*`) - 0 points
+2. **Element selectors** (`div`, `p`) - 1 point
+3. **Class selectors** (`.class`) - 10 points
+4. **ID selectors** (`#id`) - 100 points
+5. **Inline styles** (`style=""`) - 1000 points
+6. **!important** - Overrides everything
+
+## Specificity Calculation
+
+Specificity is calculated as: **(inline, IDs, classes, elements)**
+
+### Examples:
+
+```css
+/* (0, 0, 0, 1) = 1 */
+p { color: red; }
+
+/* (0, 0, 1, 0) = 10 */
+.text { color: blue; }
+
+/* (0, 1, 0, 0) = 100 */
+#header { color: green; }
+
+/* (0, 0, 1, 1) = 11 */
+p.text { color: purple; }
+
+/* (0, 1, 1, 0) = 110 */
+#header .text { color: orange; }
+
+/* (0, 1, 1, 1) = 111 */
+#header p.text { color: yellow; }
+```
+
+## Detailed Examples
+
+### Example 1: Element vs Class
+
+**HTML:**
+```html
+<p class="highlight">Text</p>
+```
+
+**CSS:**
+```css
+p { color: red; }           /* Specificity: 1 */
+.highlight { color: blue; } /* Specificity: 10 - WINS */
+```
+
+**Result:** Text is blue (class wins over element).
+
+---
+
+### Example 2: Class vs ID
+
+**HTML:**
+```html
+<div id="main" class="container">Content</div>
+```
+
+**CSS:**
+```css
+.container { background: red; }  /* Specificity: 10 */
+#main { background: blue; }      /* Specificity: 100 - WINS */
+```
+
+**Result:** Background is blue (ID wins over class).
+
+---
+
+### Example 3: Multiple Classes
+
+**HTML:**
+```html
+<button class="btn primary">Click</button>
+```
+
+**CSS:**
+```css
+.btn { background: gray; }           /* Specificity: 10 */
+.primary { background: blue; }       /* Specificity: 10 */
+.btn.primary { background: green; }  /* Specificity: 20 - WINS */
+```
+
+**Result:** Background is green (two classes beat one class).
+
+---
+
+### Example 4: Descendant Selectors
+
+**HTML:**
+```html
+<div id="sidebar">
+    <p class="text">Paragraph</p>
+</div>
+```
+
+**CSS:**
+```css
+p { color: red; }                  /* Specificity: 1 */
+.text { color: blue; }             /* Specificity: 10 */
+#sidebar p { color: green; }       /* Specificity: 101 - WINS */
+#sidebar .text { color: purple; }  /* Specificity: 110 - WINS OVER ALL */
+```
+
+**Result:** Text is purple.
+
+---
+
+### Example 5: Inline Styles
+
+**HTML:**
+```html
+<p id="text" class="highlight" style="color: orange;">Text</p>
+```
+
+**CSS:**
+```css
+p { color: red; }                /* Specificity: 1 */
+.highlight { color: blue; }      /* Specificity: 10 */
+#text { color: green; }          /* Specificity: 100 */
+/* Inline style wins - Specificity: 1000 */
+```
+
+**Result:** Text is orange (inline style wins).
+
+## The !important Rule
+
+**What it does:**
+Overrides all other declarations, regardless of specificity.
+
+**Syntax:**
+```css
+property: value !important;
+```
+
+**Example:**
+```css
+p { color: red !important; }     /* WINS */
+#text { color: blue; }           /* Loses even with higher specificity */
+```
+
+**When to use:**
+- Overriding third-party CSS
+- Utility classes that should always apply
+- Quick fixes (not recommended for production)
+
+**Why to avoid:**
+- Makes debugging harder
+- Creates specificity wars
+- Reduces maintainability
+
+## Specificity Calculator
+
+### Practice Examples:
+
+```css
+/* Calculate specificity: */
+
+/* 1. */ * { }                        /* (0,0,0,0) = 0 */
+/* 2. */ p { }                        /* (0,0,0,1) = 1 */
+/* 3. */ .class { }                   /* (0,0,1,0) = 10 */
+/* 4. */ #id { }                      /* (0,1,0,0) = 100 */
+/* 5. */ p.class { }                  /* (0,0,1,1) = 11 */
+/* 6. */ div p { }                    /* (0,0,0,2) = 2 */
+/* 7. */ .class1 .class2 { }          /* (0,0,2,0) = 20 */
+/* 8. */ #id .class p { }             /* (0,1,1,1) = 111 */
+/* 9. */ div#id.class p { }           /* (0,1,1,2) = 112 */
+/* 10. */ #id1 #id2 { }               /* (0,2,0,0) = 200 */
+```
+
+## Common Specificity Conflicts
+
+### Conflict 1: Bootstrap Override
+
+**Problem:**
+```css
+/* Bootstrap */
+.btn-primary { background: blue; }
+
+/* Your CSS - doesn't work */
+.custom-btn { background: red; }
+```
+
+**Solution:**
+```css
+/* Match or exceed specificity */
+.btn-primary.custom-btn { background: red; }
+```
+
+---
+
+### Conflict 2: ID vs Class
+
+**Problem:**
+```html
+<div id="sidebar" class="dark-theme">Content</div>
+```
+
+```css
+.dark-theme { background: black; }  /* Doesn't work */
+#sidebar { background: white; }     /* Wins */
+```
+
+**Solution:**
+```css
+/* Increase specificity */
+#sidebar.dark-theme { background: black; }
+```
+
+## Best Practices
+
+### 1. Keep Specificity Low
+
+**Bad:**
+```css
+#header nav ul li a { }  /* Too specific */
+```
+
+**Good:**
+```css
+.nav-link { }  /* Simple and reusable */
+```
+
+---
+
+### 2. Use Classes Over IDs
+
+**Bad:**
+```css
+#button { }
+```
+
+**Good:**
+```css
+.button { }
+```
+
+---
+
+### 3. Avoid !important
+
+**Bad:**
+```css
+.text { color: red !important; }
+```
+
+**Good:**
+```css
+/* Increase specificity instead */
+.container .text { color: red; }
+```
+
+---
+
+### 4. Use BEM Methodology
+
+```css
+/* Block */
+.card { }
+
+/* Element */
+.card__title { }
+.card__content { }
+
+/* Modifier */
+.card--featured { }
+```
+
+All have same specificity (10), easy to override.
+
+## Specificity Tips
+
+1. **Start with low specificity** - Easier to override later
+2. **Use classes for styling** - IDs for JavaScript
+3. **Avoid nesting too deep** - Max 3 levels
+4. **Use specificity calculator** - When debugging
+5. **Document overrides** - Comment why you increased specificity
+
+## Debugging Specificity
+
+**Browser DevTools:**
+1. Inspect element
+2. Look at "Styles" panel
+3. Crossed-out styles = lower specificity
+4. Order matters when specificity is equal
+
+**Example:**
+```css
+.text { color: red; }
+.text { color: blue; }  /* WINS - same specificity, comes last */
+```
+
+---
+
+
+

@@ -1,0 +1,280 @@
+---
+title: "HTML Cheat Sheet - Quick Reference"
+description: Documentation for HTML Cheat Sheet - Quick Reference.
+---
+
+# HTML Cheat Sheet - Quick Reference
+
+
+
+## Document Template
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Page description" />
+    <title>Page Title</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>...</nav>
+    </header>
+    <main>
+      <article>...</article>
+    </main>
+    <footer>...</footer>
+    <script src="app.js" defer></script>
+  </body>
+</html>
+```
+
+## Text Elements
+
+| Element        | Purpose         | Example                          |
+| -------------- | --------------- | -------------------------------- |
+| `<h1>-<h6>`    | Headings        | `<h1>Title</h1>`                 |
+| `<p>`          | Paragraph       | `<p>Text</p>`                    |
+| `<strong>`     | Important text  | `<strong>Bold</strong>`          |
+| `<em>`         | Emphasized text | `<em>Italic</em>`                |
+| `<mark>`       | Highlighted     | `<mark>Highlight</mark>`         |
+| `<code>`       | Inline code     | `<code>const</code>`             |
+| `<pre>`        | Preformatted    | `<pre>  code  </pre>`            |
+| `<blockquote>` | Quote block     | `<blockquote>Quote</blockquote>` |
+| `<abbr>`       | Abbreviation    | `<abbr title="HTML">HTML</abbr>` |
+| `<br>`         | Line break      | `Line 1<br>Line 2`               |
+| `<hr>`         | Horizontal rule | `<hr>`                           |
+
+## Links & Images
+
+```html
+<!-- Links -->
+<a href="page.html">Same site</a>
+<a href="https://example.com" target="_blank" rel="noopener">External</a>
+<a href="#section">Anchor</a>
+<a href="mailto:email@example.com">Email</a>
+<a href="tel:+1234567890">Phone</a>
+<a href="file.pdf" download>Download</a>
+
+<!-- Images -->
+<img
+  src="photo.jpg"
+  alt="Description"
+  width="800"
+  height="600"
+  loading="lazy"
+/>
+
+<!-- Figure -->
+<figure>
+  <img src="photo.jpg" alt="Description" />
+  <figcaption>Caption text</figcaption>
+</figure>
+```
+
+## Lists
+
+```html
+<!-- Unordered -->
+<ul>
+  <li>Item</li>
+</ul>
+
+<!-- Ordered -->
+<ol type="1" start="1">
+  <li>First</li>
+</ol>
+
+<!-- Description -->
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+## Tables
+
+```html
+<table>
+  <caption>
+    Table Title
+  </caption>
+  <thead>
+    <tr>
+      <th scope="col">Header</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Data</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+## Forms
+
+```html
+<form action="/submit" method="POST">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" required />
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="msg">Message:</label>
+  <textarea id="msg" name="msg" rows="4"></textarea>
+
+  <select name="option">
+    <option value="1">Option 1</option>
+  </select>
+
+  <fieldset>
+    <legend>Choose</legend>
+    <input type="radio" id="yes" name="choice" value="yes" />
+    <label for="yes">Yes</label>
+  </fieldset>
+
+  <button type="submit">Submit</button>
+</form>
+```
+
+## Input Types
+
+| Type       | Purpose            | Mobile Keyboard |
+| ---------- | ------------------ | --------------- |
+| `text`     | General text       | Standard        |
+| `email`    | Email address      | @ key visible   |
+| `password` | Hidden input       | Standard        |
+| `tel`      | Phone number       | Numeric         |
+| `url`      | Website URL        | .com key        |
+| `number`   | Numeric value      | Numeric         |
+| `date`     | Date picker        | Date UI         |
+| `time`     | Time picker        | Time UI         |
+| `checkbox` | Multiple selection | -               |
+| `radio`    | Single selection   | -               |
+| `file`     | File upload        | -               |
+| `range`    | Slider             | -               |
+| `color`    | Color picker       | Color UI        |
+
+## Semantic Structure
+
+```html
+<header>
+  <!-- Page/section header -->
+  <nav>
+    <!-- Navigation links -->
+    <main>
+      <!-- Main content (one per page) -->
+      <article>
+        <!-- Self-contained content -->
+        <section>
+          <!-- Thematic grouping -->
+          <aside>
+            <!-- Sidebar, related content -->
+            <footer>
+              <!-- Page/section footer -->
+              <figure>
+                <!-- Self-contained media -->
+                <details>
+                  <!-- Expandable content -->
+                  <summary><!-- Details heading --></summary>
+                </details>
+              </figure>
+            </footer>
+          </aside>
+        </section>
+      </article>
+    </main>
+  </nav>
+</header>
+```
+
+## Common Meta Tags
+
+```html
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Page description" />
+<meta name="robots" content="index, follow" />
+<meta property="og:title" content="Title" />
+<meta property="og:description" content="Description" />
+<meta property="og:image" content="image.jpg" />
+<link rel="canonical" href="https://example.com/page" />
+```
+
+## Common Patterns
+
+```html
+<!-- Phone pattern -->
+<input type="tel" pattern="\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}" />
+
+<!-- Email domain -->
+<input type="email" pattern=".*@company\.com" />
+
+<!-- Password strength -->
+<input type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
+
+<!-- US ZIP -->
+<input type="text" pattern="\d{5}(-\d{4})?" />
+
+<!-- Alphanumeric -->
+<input type="text" pattern="[A-Za-z0-9]+" />
+```
+
+## Common Entities
+
+| Entity    | Character | Description        |
+| --------- | --------- | ------------------ |
+| `&lt;`    | `<`         | Less than          |
+| `&gt;`    | `>`         | Greater than       |
+| `&amp;`   | `&`         | Ampersand          |
+| `&nbsp;`  | (space)   | Non-breaking space |
+| `&copy;`  | ©         | Copyright          |
+| `&reg;`   | ®         | Registered         |
+| `&trade;` | ™         | Trademark          |
+| `&mdash;` | —         | Em dash            |
+| `&rarr;`  | →         | Right arrow        |
+| `&euro;`  | €         | Euro               |
+
+## Global Attributes
+
+| Attribute         | Purpose           |
+| ----------------- | ----------------- |
+| `id`              | Unique identifier |
+| `class`           | CSS class names   |
+| `style`           | Inline CSS        |
+| `title`           | Tooltip text      |
+| `hidden`          | Hide element      |
+| `tabindex`        | Tab order         |
+| `data-*`          | Custom data       |
+| `contenteditable` | Make editable     |
+| `draggable`       | Make draggable    |
+
+## Accessibility Quick Reference
+
+```html
+<!-- Always use labels -->
+<label for="input">Label</label>
+<input id="input" />
+
+<!-- Alt text for images -->
+<img src="photo.jpg" alt="Descriptive text" />
+
+<!-- Skip link -->
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- Button labels -->
+<button aria-label="Close">×</button>
+
+<!-- Live regions -->
+<div aria-live="polite">Status updates</div>
+
+<!-- Expanded state -->
+<button aria-expanded="false">Menu</button>
+```
+
+

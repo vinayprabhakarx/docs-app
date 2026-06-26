@@ -1,0 +1,116 @@
+---
+title: "Best Practices - Writing Quality React"
+description: Documentation for Best Practices - Writing Quality React.
+---
+
+# Best Practices - Writing Quality React
+
+
+
+## Component Design
+
+### Single Responsibility
+
+```jsx
+// ❌ Too many responsibilities
+function UserDashboard() {
+  // Fetches user, manages form, handles payments...
+}
+
+// ✅ Split into focused components
+function UserDashboard() {
+  return (
+    <>
+      <UserProfile />
+      <PaymentHistory />
+      <SettingsForm />
+    </>
+  );
+}
+```
+
+### Props Destructuring
+
+```jsx
+// ✅ Clean prop handling
+function Card({ title, children, className = "" }) {
+  return (
+    <div className={`card ${className}`}>
+      <h2>{title}</h2>
+      {children}
+    </div>
+  );
+}
+```
+
+## State Management
+
+| Guideline             | Implementation                  |
+| --------------------- | ------------------------------- |
+| Minimize state        | Derive values when possible     |
+| Colocate state        | Keep close to where it's used   |
+| Lift only when needed | Share only between siblings     |
+| Use appropriate tools | useState < useReducer < Context |
+
+## File Organization
+
+```
+src/
+├── components/
+│   ├── common/        # Reusable UI
+│   └── features/      # Feature-specific
+├── hooks/             # Custom hooks
+├── contexts/          # React contexts
+├── utils/             # Helper functions
+├── pages/             # Route pages
+└── api/               # API functions
+```
+
+## Performance Checklist
+
+- [ ] Use keys properly in lists
+- [ ] Memoize expensive calculations
+- [ ] Stable function references for memoized children
+- [ ] Lazy load routes and heavy components
+- [ ] Virtualize long lists
+- [ ] Avoid inline objects in JSX
+
+## Common Anti-Patterns
+
+```jsx
+// ❌ Props drilling through many levels
+// ✅ Use Context or composition
+
+// ❌ Logic in useEffect that belongs in handlers
+// ✅ Move to event handlers when possible
+
+// ❌ Storing derived state
+const [fullName, setFullName] = useState("");
+// ✅ Derive it
+const fullName = `${firstName} ${lastName}`;
+
+// ❌ Over-memoizing
+const doubled = useMemo(() => count * 2, [count]);
+// ✅ Just calculate
+const doubled = count * 2;
+```
+
+## Interview Questions & Answers
+
+### Q1: What are key React best practices?
+
+Single responsibility, colocate state, derive vs store, consistent file structure, meaningful names, proper error handling.
+
+---
+
+### Q2: How do you structure a React project?
+
+Group by feature or layer (components/hooks/pages). Keep common/reusable separate. Colocate tests with components.
+
+---
+
+### Q3: When should you not use useMemo/useCallback?
+
+For simple calculations, primitives, or when the component isn't actually slow. Measure before optimizing.
+
+

@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
+
+/* Minimalist footer style */
+.nextra-footer {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.nextra-footer a.text-end {
+  margin-left: auto !important;
+}
+.nextra-footer a {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0.5rem 0 !important;
+  box-shadow: none !important;
+  color: var(--fd-muted-foreground) !important;
+  transition: color 0.2s ease !important;
+}
+
+.nextra-footer a:hover {
+  background-color: transparent !important;
+  color: var(--fd-primary) !important;
+}
+
+.nextra-footer a > div {
+  gap: 0.5rem !important;
+}
+
+.nextra-footer a > div > p {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+}
+
+.nextra-footer a > div > svg {
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+/* Hide the description label entirely */
+.nextra-footer a > p {
+  display: none !important;
+}
