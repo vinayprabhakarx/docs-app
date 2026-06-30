@@ -8,7 +8,7 @@ export function baseOptions(): BaseLayoutProps {
       // JSX supported
       title: (
         <div className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Docs Logo" width={36} height={36} className="dark:invert" />
+          <Image src="/logo.svg" alt="Docs Logo" width={24} height={24} className="dark:invert" />
           <span className="font-semibold text-lg">{appName}</span>
         </div>
       ),
