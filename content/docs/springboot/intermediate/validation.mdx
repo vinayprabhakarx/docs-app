@@ -1,0 +1,93 @@
+---
+title: DTOs & Request Validation
+description: Using DTOs instead of exposing entities, and Bean Validation annotations.
+---
+
+# DTOs & Request Validation
+
+## Why DTOs (Data Transfer Objects)?
+
+Never expose JPA entities directly in your API:
+- Entities carry persistence concerns (lazy-loaded relations → serialization
+  bugs or `LazyInitializationException`).
+- Couples your API contract to your database schema — a column rename breaks
+  the API.
+- Can leak internal/sensitive fields (password hashes, internal flags).
+
+Use separate **Request** and **Response** DTOs (records are a great fit):
+
+```java
+public record TransactionRequest(
+        @NotBlank String description,
+        @NotNull @Positive BigDecimal amount,
+        @NotNull LocalDate date,
+        @NotBlank String category
+) {}
+
+public record TransactionResponse(
+        Long id,
+        String description,
+        BigDecimal amount,
+        LocalDate date,
+        String category,
+        Instant createdAt
+) {}
+```
+
+Map between entity ↔ DTO manually, with MapStruct, or with a small mapper
+class/method — avoid putting mapping logic in the controller.
+
+## Bean Validation Annotations
+
+| Annotation | Checks |
+|---|---|
+| `@NotNull` | Value is not null |
+| `@NotBlank` | String is not null and not just whitespace |
+| `@NotEmpty` | Collection/String is not null and has ≥1 element |
+| `@Size(min, max)` | Length/size bounds |
+| `@Min` / `@Max` | Numeric bounds |
+| `@Positive` / `@PositiveOrZero` | Numeric sign checks |
+| `@Email` | Valid email format |
+| `@Pattern(regexp = ...)` | Regex match |
+| `@Past` / `@Future` | Date constraints |
+
+## Triggering Validation
+
+```java
+@PostMapping
+public TransactionResponse create(@Valid @RequestBody TransactionRequest req) {
+    ...
+}
+```
+
+`@Valid` triggers validation; a failure throws
+`MethodArgumentNotValidException`, which you handle globally (see the
+Exception Handling topic) to return a clean `400` with field errors.
+
+## Custom Validators
+
+For rules that don't fit a built-in annotation:
+
+```java
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = ValidCategoryValidator.class)
+public @interface ValidCategory {
+    String message() default "Invalid category";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+
+public class ValidCategoryValidator implements ConstraintValidator<ValidCategory, String> {
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext ctx) {
+        return CategoryRegistry.isKnown(value);
+    }
+}
+```
+
+## Validation Groups (advanced but useful)
+
+Use different validation rules for create vs update (e.g. `id` required on
+update, forbidden on create) via `@Validated(OnCreate.class)` and marker
+interfaces — avoids duplicating near-identical DTOs.

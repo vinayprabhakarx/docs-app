@@ -1,0 +1,106 @@
+---
+title: Spring Data JPA
+description: Entities, repositories, query derivation, relationships, and the N+1 problem.
+---
+
+# Spring Data JPA
+
+## Entities
+
+```java
+@Entity
+@Table(name = "transactions")
+public class Transaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String description;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal amount;
+
+    private LocalDate date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @CreationTimestamp
+    private Instant createdAt;
+}
+```
+
+## Repositories — Almost No Code Needed
+
+```java
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
+    List<Transaction> findByUserIdAndCategoryId(Long userId, Long categoryId);
+
+    List<Transaction> findByDateBetween(LocalDate start, LocalDate end);
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.user.id = :userId")
+    BigDecimal sumAmountByUserId(@Param("userId") Long userId);
+}
+```
+
+`JpaRepository<Entity, IdType>` gives you `save`, `findById`, `findAll`,
+`deleteById`, pagination, and more — for free.
+
+## Query Derivation Rules (method-name queries)
+
+Spring Data parses method names into queries:
+`findBy` + field + optional keyword (`And`, `Or`, `Between`, `LessThan`,
+`OrderBy...Desc`, `Containing`, `IgnoreCase`).
+
+```java
+List<Transaction> findByAmountGreaterThanAndDateBefore(BigDecimal amount, LocalDate date);
+```
+
+Use this for simple queries; switch to `@Query` (JPQL) or `@Query(nativeQuery = true)`
+once the method name gets unreadable or you need complex joins/aggregations.
+
+## Relationships
+
+- `@OneToMany` / `@ManyToOne` — default fetch for `@ManyToOne` is `EAGER`;
+  **always** override to `FetchType.LAZY` unless you have a specific reason,
+  to avoid unnecessary joins and N+1 problems.
+- `@ManyToMany` — usually better modeled as two `@OneToMany`/`@ManyToOne`
+  relationships through an explicit join entity, giving you room to add
+  metadata (e.g. `created_at` on the join row) later.
+
+## The N+1 Query Problem
+
+Lazy-loading a collection inside a loop triggers one query per iteration.
+Fix with:
+- `JOIN FETCH` in a JPQL query, or
+- `@EntityGraph` on the repository method, or
+- batch fetching (`spring.jpa.properties.hibernate.default_batch_fetch_size`).
+
+```java
+@Query("SELECT t FROM Transaction t JOIN FETCH t.category WHERE t.user.id = :userId")
+List<Transaction> findAllWithCategory(@Param("userId") Long userId);
+```
+
+## `@Transactional`
+
+```java
+@Service
+public class TransactionService {
+
+    @Transactional
+    public void transferBetweenAccounts(Long fromId, Long toId, BigDecimal amount) {
+        // all-or-nothing: an exception rolls back every change made in this method
+    }
+}
+```
+
+Put `@Transactional` on **service** methods, not repositories or controllers.
+By default it rolls back on unchecked exceptions only — use
+`rollbackFor = Exception.class` if you need checked exceptions to roll back too.

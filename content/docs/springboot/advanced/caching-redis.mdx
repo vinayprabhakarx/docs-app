@@ -1,0 +1,94 @@
+---
+title: Caching with Redis
+description: Spring's cache abstraction backed by Redis, and cache invalidation strategies.
+---
+
+# Caching with Redis
+
+## Why Cache?
+
+Cache to avoid recomputing or refetching expensive, frequently-requested,
+rarely-changing data — e.g. a user's dashboard summary, category lists,
+exchange rates. Redis is the standard choice: fast, supports TTL, works
+as a distributed cache across multiple app instances.
+
+## Enabling Spring Cache Abstraction
+
+```java
+@Configuration
+@EnableCaching
+public class CacheConfig {
+
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair
+                        .fromSerializer(new GenericJackson2JsonRedisSerializer()));
+        return RedisCacheManager.builder(factory).cacheDefaults(config).build();
+    }
+}
+```
+
+```yaml
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      # Upstash/managed Redis typically needs SSL + password:
+      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
+```
+
+## Declarative Caching with Annotations
+
+```java
+@Service
+public class CategoryService {
+
+    @Cacheable(value = "categories", key = "#userId")
+    public List<Category> getUserCategories(Long userId) {
+        return categoryRepository.findByUserId(userId); // only hits DB on cache miss
+    }
+
+    @CacheEvict(value = "categories", key = "#userId")
+    public void addCategory(Long userId, Category category) {
+        categoryRepository.save(category);
+        // cache entry removed so the next read repopulates it
+    }
+
+    @CachePut(value = "categories", key = "#userId")
+    public List<Category> refreshCategories(Long userId) {
+        return categoryRepository.findByUserId(userId); // always executes, updates cache
+    }
+}
+```
+
+| Annotation | Behavior |
+|---|---|
+| `@Cacheable` | Return cached value if present, else execute method and cache the result |
+| `@CacheEvict` | Remove an entry (or all entries with `allEntries = true`) |
+| `@CachePut` | Always execute the method, then update the cache |
+| `@Caching` | Combine multiple cache operations on one method |
+
+## Cache Invalidation is the Hard Part
+
+"There are only two hard things in Computer Science: cache invalidation and
+naming things." Practical rules:
+- Evict on every write path that changes the cached data — don't rely on TTL
+  alone for data that must be fresh after a mutation.
+- Keep TTLs short for data that changes often; longer for near-static data
+  (e.g. currency/category reference data).
+- Watch for **cache stampede** — many requests missing the cache
+  simultaneously and hammering the DB. Mitigate with request coalescing or a
+  short "soft" TTL + background refresh for hot keys.
+
+## Redis Beyond Caching
+
+- **Rate limiting** — store request counters with TTL per user/IP (pairs well
+  with Bucket4j, covered in the Resilience topic).
+- **Session storage** — `spring-session-data-redis` for shared sessions
+  across instances.
+- **Pub/Sub** — lightweight messaging between app instances.

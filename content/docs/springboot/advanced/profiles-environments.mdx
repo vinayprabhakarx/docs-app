@@ -1,0 +1,106 @@
+---
+title: Profiles & Environment Management
+description: Environment-specific configuration and the 12-factor approach to config.
+---
+
+# Profiles & Environment Management
+
+## Why Profiles
+
+You need different config for local dev, CI, staging, and production — a
+different database URL, log level, feature flags, mock vs real external
+services. Profiles let one codebase adapt to each environment without
+`if (env == "prod")` scattered through the code.
+
+## File-Based Profiles
+
+```
+application.yml          # shared defaults
+application-dev.yml       # local dev overrides
+application-staging.yml
+application-prod.yml
+```
+
+```yaml
+# application-prod.yml
+spring:
+  jpa:
+    show-sql: false
+logging:
+  level:
+    root: WARN
+    com.vinay.fintrack: INFO
+```
+
+Activate with:
+```bash
+java -jar app.jar --spring.profiles.active=prod
+# or
+SPRING_PROFILES_ACTIVE=prod java -jar app.jar
+```
+
+## Profile-Specific Beans
+
+```java
+@Configuration
+@Profile("dev")
+public class DevConfig {
+    @Bean
+    public EmailService emailService() {
+        return new MockEmailService(); // no real emails sent locally
+    }
+}
+
+@Configuration
+@Profile("prod")
+public class ProdConfig {
+    @Bean
+    public EmailService emailService() {
+        return new SmtpEmailService();
+    }
+}
+```
+
+## Multiple Active Profiles
+
+```bash
+SPRING_PROFILES_ACTIVE=prod,oracle-cloud java -jar app.jar
+```
+
+Useful for composing orthogonal concerns — e.g. `prod` for logging/DB
+behavior, `oracle-cloud` for infra-specific beans (metadata endpoints, etc.).
+
+## The 12-Factor Approach: Config via Environment
+
+For containerized deployments (Docker/Oracle Cloud), prefer environment
+variables over profile-specific files for anything environment-dependent —
+keeps secrets out of the repo and makes the same image portable across
+environments:
+
+```yaml
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+```
+
+```yaml
+# docker-compose.yml
+services:
+  app:
+    image: fintrack-backend:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:postgresql://db:5432/fintrack
+    env_file:
+      - .env   # secrets not committed to git
+```
+
+## Practical Setup for a Solo/Small-Team Project
+
+- `application.yml` — safe shared defaults, no secrets.
+- `application-dev.yml` — local H2/docker-compose Postgres, verbose logging.
+- Production config — entirely from environment variables injected by
+  GitHub Actions / your deployment target, never a committed
+  `application-prod.yml` with real credentials.

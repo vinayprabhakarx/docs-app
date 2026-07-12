@@ -1,0 +1,135 @@
+---
+title: Resilience, Rate Limiting & Secure File Handling
+description: Rate limiting with Bucket4j, circuit breakers with Resilience4j, and secure file uploads.
+---
+
+# Resilience, Rate Limiting & Secure File Handling
+
+## Rate Limiting with Bucket4j
+
+Protects your API from abuse and controls cost on downstream calls (e.g. an
+ML parsing pipeline). Token-bucket algorithm: each client gets a bucket of
+tokens that refill over time; each request consumes one.
+
+```java
+@Component
+public class RateLimitFilter extends OncePerRequestFilter {
+
+    private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+
+    private Bucket newBucket() {
+        Bandwidth limit = Bandwidth.classic(60, Refill.greedy(60, Duration.ofMinutes(1)));
+        return Bucket.builder().addLimit(limit).build();
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
+                                     FilterChain chain) throws ServletException, IOException {
+        String key = req.getRemoteAddr(); // or user id once authenticated
+        Bucket bucket = buckets.computeIfAbsent(key, k -> newBucket());
+
+        if (bucket.tryConsume(1)) {
+            chain.doFilter(req, res);
+        } else {
+            res.setStatus(429); // Too Many Requests
+            res.getWriter().write("Rate limit exceeded");
+        }
+    }
+}
+```
+
+For multi-instance deployments, back the bucket state with **Redis**
+(`bucket4j-redis`) so limits are shared across instances rather than
+per-instance.
+
+## Resilience4j — Circuit Breaker & Retry for External Calls
+
+```java
+@Service
+public class ExternalRateService {
+
+    @CircuitBreaker(name = "exchangeRateApi", fallbackMethod = "fallbackRate")
+    @Retry(name = "exchangeRateApi")
+    public BigDecimal getRate(String currency) {
+        return exchangeRateClient.fetch(currency);
+    }
+
+    private BigDecimal fallbackRate(String currency, Throwable t) {
+        return lastKnownRateCache.get(currency); // graceful degradation
+    }
+}
+```
+
+```yaml
+resilience4j:
+  circuitbreaker:
+    instances:
+      exchangeRateApi:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+  retry:
+    instances:
+      exchangeRateApi:
+        max-attempts: 3
+        wait-duration: 500ms
+```
+
+The circuit "opens" after repeated failures, stops hammering a failing
+downstream service, and periodically tests recovery — prevents one flaky
+dependency from cascading into a full outage.
+
+## Secure File Upload Handling
+
+For a feature like uploading a bank statement PDF/CSV, validate at every
+layer:
+
+```java
+@PostMapping("/statements")
+public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) {
+    if (file.isEmpty()) {
+        throw new BadRequestException("File is empty");
+    }
+    if (file.getSize() > 5_000_000) {
+        throw new BadRequestException("File exceeds 5MB limit");
+    }
+
+    String detectedType = new Tika().detect(file.getInputStream());
+    if (!ALLOWED_TYPES.contains(detectedType)) {
+        throw new BadRequestException("Unsupported file type: " + detectedType);
+    }
+    // proceed to parsing pipeline
+}
+```
+
+```yaml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+```
+
+Key points:
+- **Check the actual content type with Apache Tika**, not just the file
+  extension or the client-supplied `Content-Type` header — both are
+  trivially spoofable.
+- Enforce size limits at both the Spring config level and in code.
+- Sanitize any extracted text before rendering it anywhere (e.g. with Jsoup)
+  to avoid stored XSS if parsed content is ever displayed back in a UI.
+- Never trust the original filename for constructing file-system paths —
+  generate your own identifier to avoid path traversal.
+
+## Putting It Together for a Personal Finance App
+
+A parsing endpoint like FinTrack's bank-statement upload benefits from all
+three: rate limiting (prevent abuse of a CPU-heavy ML pipeline), a circuit
+breaker if any step calls an external service, and strict file validation
+before the raw bytes ever reach the parser.
+
+## You've Reached the End of the Core Track
+
+From here, natural next steps depend on your project: dig deeper into
+Kafka/event-driven architecture, Kubernetes for orchestration, or
+observability (distributed tracing with Zipkin/Jaeger) — add new `.mdx`
+files following the same numbering convention as you learn them.

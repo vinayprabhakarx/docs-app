@@ -1,0 +1,104 @@
+---
+title: Async Processing, Scheduling & Messaging
+description: "@Async, @Scheduled, and when to move to a real message queue."
+---
+
+# Async Processing, Scheduling & Messaging
+
+## `@Async` — Fire-and-Forget or Non-Blocking Work
+
+```java
+@Configuration
+@EnableAsync
+public class AsyncConfig {
+
+    @Bean
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("async-");
+        executor.initialize();
+        return executor;
+    }
+}
+```
+
+```java
+@Service
+public class StatementParsingService {
+
+    @Async
+    public CompletableFuture<ParsedStatement> parseInBackground(String statementText) {
+        ParsedStatement result = mlPipeline.parse(statementText);
+        return CompletableFuture.completedFuture(result);
+    }
+}
+```
+
+Good for: sending emails, running an ML parsing pipeline after upload,
+generating a report — anything the caller doesn't need to block on.
+
+**Caveat:** `@Async` only works when called from a *different* Spring bean
+(self-invocation bypasses the proxy) and silently swallows exceptions unless
+you configure an `AsyncUncaughtExceptionHandler`.
+
+## `@Scheduled` — Recurring Jobs
+
+```java
+@Component
+public class RecurringJobs {
+
+    @Scheduled(cron = "0 0 2 * * *") // 2 AM daily
+    public void reconcileDailyTransactions() { ... }
+
+    @Scheduled(fixedRate = 300_000) // every 5 minutes
+    public void refreshExchangeRates() { ... }
+}
+```
+
+Requires `@EnableScheduling` on a config class. Note: by default,
+`@Scheduled` runs on a single thread — long-running jobs will delay other
+scheduled tasks unless you configure a dedicated `TaskScheduler` with a
+thread pool.
+
+## Message Queues: When and Why
+
+Once you need to decouple services, handle spikes in load, or guarantee
+delivery/retries, move from `@Async` (in-process, lost on crash) to a real
+message broker.
+
+| Tool | Typical Use |
+|---|---|
+| **RabbitMQ** | Task queues, work distribution, routing by topic/exchange |
+| **Kafka** | High-throughput event streaming, event sourcing, log-based processing |
+| **Redis Streams** | Lightweight pub/sub when you already run Redis |
+
+## Kafka with Spring Boot (sketch)
+
+```java
+@Service
+public class TransactionEventPublisher {
+
+    private final KafkaTemplate<String, TransactionEvent> kafkaTemplate;
+
+    public void publish(TransactionEvent event) {
+        kafkaTemplate.send("transaction-events", event.userId(), event);
+    }
+}
+
+@KafkaListener(topics = "transaction-events", groupId = "fintrack-analytics")
+public void consume(TransactionEvent event) {
+    // update analytics/aggregates asynchronously
+}
+```
+
+## Choosing: `@Async` vs a Queue
+
+- **`@Async`** — simple, in-process, fine for non-critical background work in
+  a single-instance app. Work is lost if the app crashes mid-task.
+  Good starting point for a solo project.
+- **Message queue** — needed once you scale to multiple instances, need
+  guaranteed delivery/retry, or want to decouple producer and consumer
+  services entirely.

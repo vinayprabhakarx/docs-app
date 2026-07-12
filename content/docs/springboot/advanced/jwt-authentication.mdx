@@ -1,0 +1,111 @@
+---
+title: JWT Authentication
+description: "Stateless auth with JWT: generating tokens, a validation filter, and refresh tokens."
+---
+
+# JWT Authentication
+
+## Why JWT for REST APIs
+
+Session-based auth requires server-side session storage, which doesn't scale
+horizontally without a shared session store. JWT (JSON Web Token) is
+self-contained and stateless — the server verifies a signature rather than
+looking up a session.
+
+A JWT has three parts: `header.payload.signature`, e.g.:
+```
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2aW5heSJ9.4f9a...
+```
+
+## Generating a Token
+
+```java
+@Component
+public class JwtService {
+
+    private final SecretKey key;
+    private final long expirationMs;
+
+    public JwtService(JwtProperties props) {
+        this.key = Keys.hmacShaKeyFor(props.getSecret().getBytes(StandardCharsets.UTF_8));
+        this.expirationMs = props.getExpirationMs();
+    }
+
+    public String generateToken(String username, Map<String, Object> claims) {
+        return Jwts.builder()
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(key)
+                .compact();
+    }
+
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    public boolean isValid(String token, String username) {
+        Claims claims = parseClaims(token);
+        return claims.getSubject().equals(username) && claims.getExpiration().after(new Date());
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser().verifyWith(key).build()
+                .parseSignedClaims(token).getPayload();
+    }
+}
+```
+
+## A Custom Filter to Validate Incoming Tokens
+
+```java
+@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     FilterChain chain) throws ServletException, IOException {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            String username = jwtService.extractUsername(token);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (jwtService.isValid(token, username)) {
+                    var auth = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            }
+        }
+        chain.doFilter(request, response);
+    }
+}
+```
+
+Register it before `UsernamePasswordAuthenticationFilter` in the security
+config: `.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)`.
+
+## Access Tokens vs Refresh Tokens
+
+- **Access token** — short-lived (minutes to ~1 hour), sent on every request.
+- **Refresh token** — long-lived, stored securely (httpOnly cookie or secure
+  storage), used only to get a new access token. Store refresh tokens
+  server-side (or a hash of them) so they can be revoked on logout/compromise.
+
+## Security Checklist for JWT
+
+- Use a strong, random secret (256-bit minimum for HMAC), never a short
+  guessable string, and load it from an environment variable — not source
+  control.
+- Set a short expiration on access tokens; rely on refresh tokens for longer
+  sessions.
+- Validate `exp`, `iss`, and `aud` claims if your system has multiple
+  issuers/audiences.
+- Never put sensitive data (passwords, full PII) inside the JWT payload — it's
+  base64-encoded, not encrypted, and readable by anyone with the token.

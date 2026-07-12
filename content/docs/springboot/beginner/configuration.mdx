@@ -1,0 +1,94 @@
+---
+title: Configuration & application.yml
+description: application.yml vs properties, externalizing secrets, and type-safe config binding.
+---
+
+# Configuration & application.yml
+
+## application.properties vs application.yml
+
+Both configure the app; YAML is more readable for nested config (and is the
+more common modern choice).
+
+```yaml
+# application.yml
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fintrack
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 3600000
+```
+
+```properties
+# equivalent application.properties
+server.port=8080
+spring.datasource.url=jdbc:postgresql://localhost:5432/fintrack
+```
+
+## Externalizing Secrets with Environment Variables
+
+Never hardcode secrets. Use `${ENV_VAR}` placeholders and supply them via:
+- `.env` file + Docker Compose `env_file`
+- CI/CD secret store (GitHub Actions secrets)
+- Cloud provider secret manager (Oracle Cloud Vault, AWS Secrets Manager)
+
+## Type-Safe Configuration with `@ConfigurationProperties`
+
+Instead of scattering `@Value("${app.jwt.secret}")` everywhere, bind a whole
+config block to a class:
+
+```java
+@Configuration
+@ConfigurationProperties(prefix = "app.jwt")
+public class JwtProperties {
+    private String secret;
+    private long expirationMs;
+    // getters/setters
+}
+```
+
+Then inject `JwtProperties` wherever needed — it's testable, IDE-autocompletes,
+and validates types at startup.
+
+## `@Value` for One-Off Values
+
+```java
+@Value("${server.port}")
+private int port;
+```
+
+Fine for a single simple value; prefer `@ConfigurationProperties` for related
+groups of values.
+
+## Profile-Specific Configuration (preview)
+
+```
+application.yml           # common config
+application-dev.yml       # dev overrides
+application-prod.yml      # prod overrides
+```
+
+Activate with `spring.profiles.active=dev` (env var, JVM arg, or in the base
+YAML). Full details in the Profiles topic later.
+
+## Configuration Precedence (high to low, common ones)
+
+1. Command-line arguments (`--server.port=9090`)
+2. `SPRING_APPLICATION_JSON` env var
+3. OS environment variables
+4. `application-{profile}.yml`
+5. `application.yml`
+6. `@PropertySource` annotated values
+7. Default values in code

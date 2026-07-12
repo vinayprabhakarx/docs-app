@@ -1,0 +1,105 @@
+---
+title: Microservices & Deployment
+description: Containerizing, CI/CD to GHCR, and deploying behind Nginx.
+---
+
+# Microservices & Deployment
+
+## Monolith First
+
+Start with a well-layered monolith (like a typical FinTrack-style backend).
+Split into microservices only when you have a concrete reason: independent
+scaling needs, separate release cadences, or a team boundary — not because
+"microservices" sounds more advanced. Splitting too early adds network calls,
+distributed transactions, and operational overhead for no real benefit.
+
+## Core Microservices Building Blocks (Spring Cloud)
+
+| Concern | Tool |
+|---|---|
+| Service discovery | Eureka / Consul |
+| API Gateway | Spring Cloud Gateway |
+| Config management | Spring Cloud Config Server |
+| Resilience | Resilience4j (circuit breaker, retry, bulkhead) |
+| Distributed tracing | Micrometer Tracing + Zipkin/Jaeger |
+| Inter-service calls | `RestClient`/`WebClient`, OpenFeign |
+
+## Containerizing a Spring Boot App
+
+```dockerfile
+# Multi-stage build keeps the final image small
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+Use `eclipse-temurin` (or Spring Boot's own buildpacks via
+`./mvnw spring-boot:build-image`) rather than a full JDK image in production
+— smaller image, smaller attack surface.
+
+## CI/CD: GitHub Actions → GHCR → Oracle Cloud (typical solo-dev pipeline)
+
+```yaml
+# .github/workflows/deploy.yml
+name: Build and Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - run: ./mvnw clean package -DskipTests
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}:latest .
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker push ghcr.io/${{ github.repository }}:latest
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            docker pull ghcr.io/${{ github.repository }}:latest
+            docker compose up -d
+```
+
+## Nginx as a Reverse Proxy in Front of Spring Boot
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name api.fintrack.example.com;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Nginx handles TLS termination, gzip, and can rate-limit/cache at the edge
+before a request even reaches the JVM.
+
+## Health Checks for Orchestration
+
+Whatever deploys your container (Docker Compose, k8s, Oracle Cloud) should
+poll `/actuator/health` and restart the container automatically on repeated
+failures — pairs directly with the Actuator topic.

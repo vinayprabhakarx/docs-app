@@ -1,0 +1,145 @@
+---
+title: Testing Spring Boot Applications
+description: Unit tests, @WebMvcTest, @DataJpaTest, and full integration tests with Testcontainers.
+---
+
+# Testing Spring Boot Applications
+
+## The Testing Pyramid in a Spring Boot Context
+
+- **Unit tests** — plain JUnit + Mockito, no Spring context loaded. Fast.
+- **Slice tests** — load only part of the context (`@WebMvcTest`,
+  `@DataJpaTest`). Fast-ish.
+- **Integration tests** — `@SpringBootTest`, full context, possibly a real
+  (containerized) database. Slower, fewer of these.
+
+## Unit Testing a Service with Mockito
+
+```java
+@ExtendWith(MockitoExtension.class)
+class TransactionServiceTest {
+
+    @Mock
+    private TransactionRepository repository;
+
+    @InjectMocks
+    private TransactionService service;
+
+    @Test
+    void shouldThrowWhenTransactionNotFound() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> service.findById(1L));
+    }
+
+    @Test
+    void shouldCalculateTotalCorrectly() {
+        when(repository.findByUserId(1L)).thenReturn(List.of(
+                new Transaction(BigDecimal.valueOf(100)),
+                new Transaction(BigDecimal.valueOf(50))
+        ));
+
+        BigDecimal total = service.getTotalForUser(1L);
+
+        assertEquals(BigDecimal.valueOf(150), total);
+    }
+}
+```
+
+No Spring context is loaded here — it's plain JUnit 5 + Mockito, so it runs
+in milliseconds.
+
+## `@WebMvcTest` — Testing the Web Layer Only
+
+```java
+@WebMvcTest(TransactionController.class)
+class TransactionControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private TransactionService service;
+
+    @Test
+    void shouldReturn404WhenNotFound() throws Exception {
+        when(service.findById(1L)).thenThrow(new ResourceNotFoundException("not found"));
+
+        mockMvc.perform(get("/api/transactions/1"))
+               .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldCreateTransaction() throws Exception {
+        mockMvc.perform(post("/api/transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"description":"Coffee","amount":150,"date":"2026-07-01","category":"Food"}
+                    """))
+               .andExpect(status().isCreated());
+    }
+}
+```
+
+Loads only MVC infrastructure + the specified controller — the service is
+mocked, so no database is touched.
+
+## `@DataJpaTest` — Testing the Repository Layer
+
+```java
+@DataJpaTest
+class TransactionRepositoryTest {
+
+    @Autowired
+    private TransactionRepository repository;
+
+    @Test
+    void shouldFindByDateRange() {
+        repository.save(new Transaction(..., LocalDate.of(2026, 1, 10)));
+
+        List<Transaction> result = repository.findByDateBetween(
+                LocalDate.of(2026, 1, 1), LocalDate.of(2026, 1, 31));
+
+        assertThat(result).hasSize(1);
+    }
+}
+```
+
+By default uses an in-memory H2 database and rolls back after each test.
+
+## `@SpringBootTest` — Full Integration Test
+
+```java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+class TransactionIntegrationTest {
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+
+    @DynamicPropertySource
+    static void configureProps(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+    }
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    void shouldCreateAndFetchTransaction() {
+        // exercises the real HTTP stack against a real Postgres container
+    }
+}
+```
+
+**Testcontainers** spins up a real, disposable database in Docker for
+integration tests — far more reliable than testing against H2 and hoping SQL
+dialect differences don't bite you in production.
+
+## Practical Guidance
+
+- Most of your test suite should be fast unit tests on services.
+- A handful of `@WebMvcTest`/`@DataJpaTest` slice tests per feature.
+- A small number of true end-to-end `@SpringBootTest` tests for critical
+  flows (login, payment/transaction creation) — they're valuable but
+  expensive to run, so don't over-invest here.

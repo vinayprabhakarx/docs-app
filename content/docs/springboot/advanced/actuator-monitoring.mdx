@@ -1,0 +1,105 @@
+---
+title: Actuator & Monitoring
+description: Health checks, metrics, and securing actuator endpoints in production.
+---
+
+# Actuator & Monitoring
+
+## What Actuator Gives You
+
+`spring-boot-starter-actuator` exposes production-ready endpoints for health,
+metrics, and app internals — essential once you deploy anywhere real.
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+## Key Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `/actuator/health` | Overall app + dependency (DB, Redis) health |
+| `/actuator/info` | Build/version info you configure |
+| `/actuator/metrics` | JVM, HTTP, custom metrics |
+| `/actuator/env` | Active configuration properties (sensitive — restrict access!) |
+| `/actuator/loggers` | View/change log levels at runtime without a redeploy |
+| `/actuator/prometheus` | Metrics in Prometheus scrape format (needs `micrometer-registry-prometheus`) |
+
+## Exposing Endpoints Selectively
+
+By default, only `/health` is exposed over HTTP. Enable more explicitly and
+**always secure them** in production:
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+```
+
+```java
+// restrict actuator endpoints to admins in your security config
+.requestMatchers("/actuator/**").hasRole("ADMIN")
+```
+
+Exposing `/actuator/env` or `/actuator/heapdump` publicly is a real-world
+leak of secrets and internals — treat actuator endpoints as sensitive by
+default.
+
+## Custom Health Indicators
+
+```java
+@Component
+public class BankStatementParserHealthIndicator implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        boolean pipelineUp = checkMlPipelineReachable();
+        return pipelineUp
+                ? Health.up().withDetail("pipeline", "reachable").build()
+                : Health.down().withDetail("pipeline", "unreachable").build();
+    }
+}
+```
+
+## Custom Metrics with Micrometer
+
+```java
+@Component
+public class TransactionMetrics {
+
+    private final Counter transactionsCreated;
+
+    public TransactionMetrics(MeterRegistry registry) {
+        this.transactionsCreated = Counter.builder("transactions.created")
+                .description("Number of transactions created")
+                .register(registry);
+    }
+
+    public void recordCreation() {
+        transactionsCreated.increment();
+    }
+}
+```
+
+Micrometer is a facade — the same code works whether you export to
+Prometheus, Datadog, CloudWatch, etc.
+
+## Typical Production Setup
+
+1. Actuator + Micrometer + Prometheus registry in the app.
+2. Prometheus scrapes `/actuator/prometheus` on an interval.
+3. Grafana dashboards visualize metrics.
+4. Alerting rules on error rate, latency percentiles, DB connection pool
+   saturation.
+
+For a small solo project like a personal deployment, even just securing
+`/actuator/health` for uptime checks (e.g. a cron hitting it) is a solid,
+low-effort starting point.

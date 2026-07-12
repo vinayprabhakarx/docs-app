@@ -1,0 +1,86 @@
+---
+title: Project Setup & Structure
+description: Creating a project with Spring Initializr, Maven vs Gradle, and standard package layout.
+---
+
+# Project Setup & Structure
+
+## Creating a Project
+
+Use [Spring Initializr](https://start.spring.io) (or your IDE's built-in wizard):
+
+1. Choose **Maven** or **Gradle** as the build tool.
+2. Choose packaging: **Jar** (default, has embedded server) vs **War**
+   (deployed to external servlet container — rare today).
+3. Pick a Java version (17 or 21 LTS recommended for new projects).
+4. Add starters: `spring-boot-starter-web`, `spring-boot-starter-data-jpa`, etc.
+
+## Maven vs Gradle (quick take)
+
+- **Maven** — XML-based (`pom.xml`), very common, verbose but predictable.
+- **Gradle** — Groovy/Kotlin DSL (`build.gradle`), faster incremental builds,
+  more concise, growing in popularity for larger projects.
+
+Both work identically well with Spring Boot; pick based on team/tooling
+familiarity.
+
+## Standard Project Structure
+
+```
+src
+ ├── main
+ │    ├── java/com/company/app
+ │    │     ├── FinTrackApplication.java   (entry point)
+ │    │     ├── config/                    (@Configuration classes)
+ │    │     ├── controller/                (REST controllers)
+ │    │     ├── service/                   (business logic)
+ │    │     ├── repository/                (Spring Data interfaces)
+ │    │     ├── entity/ or model/          (JPA entities)
+ │    │     ├── dto/                       (request/response objects)
+ │    │     └── exception/                 (custom exceptions, handlers)
+ │    └── resources
+ │          ├── application.yml
+ │          ├── static/                    (public assets, if serving a UI)
+ │          └── templates/                 (Thymeleaf, if used)
+ └── test
+      └── java/com/company/app             (mirrors main package structure)
+```
+
+## Layered Architecture (Controller → Service → Repository)
+
+- **Controller** — handles HTTP, delegates to service, returns response.
+  Should contain no business logic.
+- **Service** — business logic, transactions, orchestration between
+  repositories/external calls.
+- **Repository** — data access only, typically a Spring Data JPA interface.
+
+Keeping these layers separate makes the app testable (mock the service in
+controller tests, mock the repository in service tests).
+
+## The `pom.xml` Essentials
+
+```xml
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.0</version>
+</parent>
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+```
+
+The `starter-parent` manages dependency versions for you — you rarely need to
+specify a version for an official Spring Boot starter.
+
+## Running the App
+
+```bash
+./mvnw spring-boot:run       # Maven wrapper
+./gradlew bootRun            # Gradle wrapper
+java -jar target/app-0.0.1.jar   # after mvn package
+```

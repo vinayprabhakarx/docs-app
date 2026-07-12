@@ -1,0 +1,92 @@
+---
+title: Database Integration (SQL, NoSQL, Migrations)
+description: Relational DBs, H2 for tests, schema migrations, and NoSQL with MongoDB.
+---
+
+# Database Integration
+
+## Relational Databases with Spring Boot
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fintrack
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate   # never "update" or "create" in production
+```
+
+- **HikariCP** is the default connection pool since Spring Boot 2.x — usually
+  no need to swap it out, just tune pool size to your DB's connection limits.
+- **`ddl-auto`** — use `validate` (or `none`) in production and drive schema
+  changes through migrations instead (see below). `update`/`create-drop` are
+  only for quick local prototyping.
+
+## H2 for Local Dev/Tests
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      enabled: true   # visit /h2-console
+```
+
+In-memory, zero setup — great for fast test suites, but its SQL dialect
+differs slightly from Postgres/MySQL, so don't rely on it to validate
+production SQL behavior.
+
+## Schema Migrations: Flyway / Liquibase
+
+Never let Hibernate auto-generate your production schema. Use a migration
+tool so schema changes are versioned, reviewed, and repeatable.
+
+```
+src/main/resources/db/migration/
+  V1__init_schema.sql
+  V2__add_category_table.sql
+  V3__add_index_on_transactions_date.sql
+```
+
+Flyway runs these automatically on startup (`spring-boot-starter-flyway`
+dependency), in order, tracking applied versions in a `flyway_schema_history`
+table.
+
+## NoSQL: MongoDB Example
+
+```java
+@Document(collection = "parsed_statements")
+public class ParsedStatement {
+    @Id
+    private String id;
+    private String userId;
+    private List<ExtractedTransaction> transactions;
+    private Instant parsedAt;
+}
+
+public interface ParsedStatementRepository extends MongoRepository<ParsedStatement, String> {
+    List<ParsedStatement> findByUserId(String userId);
+}
+```
+
+`spring-boot-starter-data-mongodb` gives you the same repository-style API as
+JPA. Good fit for semi-structured data (e.g. raw parsed bank statement blobs)
+that doesn't need relational integrity.
+
+## Caching Layer: Redis (preview)
+
+Used for session storage, rate-limit counters, and caching expensive reads —
+covered in depth in the Caching topic.
+
+## Connection Pooling & Timeouts Checklist
+
+- Set `hikari.maximum-pool-size` based on `(core_count * 2) + effective_spindle_count`
+  as a starting heuristic, then tune with load testing.
+- Set `hikari.connection-timeout` so the app fails fast rather than hanging
+  under DB pressure.
+- Set statement/query timeouts to avoid one slow query starving the pool.

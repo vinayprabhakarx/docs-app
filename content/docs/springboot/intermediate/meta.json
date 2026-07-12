@@ -1,0 +1,4 @@
+{
+  "title": "Intermediate",
+  "pages": ["rest-apis", "validation", "exception-handling", "spring-data-jpa", "database-integration", "lombok"]
+}

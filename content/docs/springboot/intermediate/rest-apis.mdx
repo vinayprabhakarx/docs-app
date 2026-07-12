@@ -1,0 +1,104 @@
+---
+title: Building REST APIs
+description: Writing REST controllers, HTTP status conventions, pagination, and CORS.
+---
+
+# Building REST APIs
+
+## A Typical Controller
+
+```java
+@RestController
+@RequestMapping("/api/transactions")
+public class TransactionController {
+
+    private final TransactionService service;
+
+    public TransactionController(TransactionService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List<TransactionResponse> getAll(
+            @RequestParam(required = false) String category) {
+        return service.findAll(category);
+    }
+
+    @GetMapping("/{id}")
+    public TransactionResponse getById(@PathVariable Long id) {
+        return service.findById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TransactionResponse create(@Valid @RequestBody TransactionRequest req) {
+        return service.create(req);
+    }
+
+    @PutMapping("/{id}")
+    public TransactionResponse update(@PathVariable Long id,
+                                       @Valid @RequestBody TransactionRequest req) {
+        return service.update(id, req);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
+}
+```
+
+## REST Conventions Worth Following
+
+- Use nouns for resources (`/transactions`), not verbs (`/getTransactions`).
+- Use HTTP methods to express intent: GET (read), POST (create), PUT (full
+  update), PATCH (partial update), DELETE (remove).
+- Use plural resource names and nested paths for relationships:
+  `/users/{userId}/transactions`.
+- Return the right status codes: `200 OK`, `201 Created`, `204 No Content`,
+  `400 Bad Request`, `404 Not Found`, `409 Conflict`.
+- Version your API when you need to break compatibility: `/api/v1/...`.
+
+## Returning `ResponseEntity` for More Control
+
+When you need custom headers or dynamic status codes, prefer `ResponseEntity`
+over relying only on `@ResponseStatus`:
+
+```java
+@GetMapping("/{id}")
+public ResponseEntity<TransactionResponse> getById(@PathVariable Long id) {
+    return service.findByIdOptional(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+}
+```
+
+## Pagination & Sorting
+
+```java
+@GetMapping
+public Page<TransactionResponse> getAll(
+        @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
+        Pageable pageable) {
+    return service.findAll(pageable);
+}
+```
+
+Spring Data automatically parses `?page=0&size=20&sort=amount,desc` query
+params into a `Pageable`.
+
+## CORS Configuration (global, cleaner than `@CrossOrigin` per-controller)
+
+```java
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("https://fintrack.vinayprabhakar.dev")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
+    }
+}
+```

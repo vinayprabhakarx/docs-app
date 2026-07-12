@@ -1,0 +1,98 @@
+---
+title: IoC Container & Dependency Injection
+description: The IoC container, constructor vs field injection, bean scopes, and declaring beans.
+---
+
+# IoC Container & Dependency Injection
+
+## Inversion of Control (IoC)
+
+Instead of your code creating and managing its own dependencies (`new UserService()`),
+you hand control to the **Spring container**, which creates, configures, and wires
+objects (beans) for you. The container is called the **ApplicationContext**.
+
+## Dependency Injection (DI)
+
+DI is the mechanism through which IoC is implemented — dependencies are "injected"
+into a class rather than the class constructing them itself.
+
+### Constructor Injection (preferred)
+
+```java
+@Service
+public class TransactionService {
+
+    private final TransactionRepository repository;
+    private final CategoryService categoryService;
+
+    public TransactionService(TransactionRepository repository,
+                               CategoryService categoryService) {
+        this.repository = repository;
+        this.categoryService = categoryService;
+    }
+}
+```
+
+Why preferred:
+- Dependencies are `final` → immutable, thread-safe.
+- Makes required dependencies explicit and testable (easy to pass mocks).
+- Fails fast at startup if a bean is missing, rather than at runtime.
+
+### Field Injection (avoid in production code)
+
+```java
+@Autowired
+private TransactionRepository repository;
+```
+
+Simple to write but hides dependencies, makes unit testing harder (needs
+reflection or Spring context), and allows circular dependencies to slip through.
+
+### Setter Injection
+
+Used for optional dependencies that can be reconfigured after construction.
+Rarely needed in typical Spring Boot apps.
+
+## Bean Scopes
+
+| Scope | Description |
+|---|---|
+| `singleton` (default) | One instance per Spring container |
+| `prototype` | New instance every time it's requested |
+| `request` | One instance per HTTP request (web apps) |
+| `session` | One instance per HTTP session (web apps) |
+
+```java
+@Scope("prototype")
+@Component
+public class ReportGenerator { }
+```
+
+## Declaring Beans
+
+**Stereotype annotations** (auto-detected via component scan):
+- `@Component` — generic bean.
+- `@Service` — business logic layer (semantically same as `@Component`).
+- `@Repository` — data access layer; also enables exception translation
+  (JDBC/JPA exceptions → Spring's `DataAccessException` hierarchy).
+- `@Controller` / `@RestController` — web layer.
+
+**Explicit configuration** (for third-party classes you can't annotate):
+
+```java
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+```
+
+## Circular Dependency Trap
+
+If `A` depends on `B` and `B` depends on `A` via constructor injection, Spring
+Boot 2.6+ throws an error at startup by default. Fix by redesigning the
+relationship (extract shared logic into a third bean) rather than switching to
+field injection to "solve" it — it's usually a sign of a design issue.

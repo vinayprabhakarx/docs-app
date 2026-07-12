@@ -1,0 +1,100 @@
+---
+title: Spring Security Basics
+description: The filter chain model, password hashing, UserDetailsService, and authorization.
+---
+
+# Spring Security Basics
+
+## The Filter Chain Model
+
+Spring Security works by inserting a chain of servlet filters in front of
+your app. Each request passes through filters that authenticate it,
+check authorization, handle CSRF, etc., before it ever reaches your
+controller.
+
+## Minimal Security Config (Spring Security 6.x style)
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())               // typically disabled for stateless REST APIs
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults()); // replace with JWT filter in real apps
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+```
+
+Note: as of Spring Security 6, config is done via the lambda DSL on
+`HttpSecurity`, not the older `WebSecurityConfigurerAdapter` (removed).
+
+## Password Storage
+
+Always hash passwords with **BCrypt** (or Argon2) — never store plaintext or
+use fast general-purpose hashes like MD5/SHA-256 for passwords (they're
+crackable via brute force too easily; BCrypt is deliberately slow).
+
+```java
+String hashed = passwordEncoder.encode(rawPassword);
+boolean matches = passwordEncoder.matches(rawPassword, hashed);
+```
+
+## `UserDetailsService`
+
+Spring Security needs to know how to load a user by username:
+
+```java
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPasswordHash())
+                .roles(user.getRole())
+                .build();
+    }
+}
+```
+
+## Authentication vs Authorization
+
+- **Authentication** — "who are you?" (login, verifying credentials)
+- **Authorization** — "what are you allowed to do?" (roles/permissions)
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+@DeleteMapping("/users/{id}")
+public void deleteUser(@PathVariable Long id) { ... }
+```
+
+`@PreAuthorize` needs `@EnableMethodSecurity` on your security config.
+
+## Common Beginner Mistakes
+
+- Disabling CSRF for a **stateful** (cookie/session-based) app — only safe to
+  disable when the API is fully stateless and token-based (e.g. JWT in the
+  `Authorization` header).
+- Returning detailed error messages on login failure ("no such user" vs
+  "wrong password") — leaks whether an account exists; use a generic
+  "invalid credentials" message.

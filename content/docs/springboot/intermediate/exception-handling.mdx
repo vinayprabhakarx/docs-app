@@ -1,0 +1,90 @@
+---
+title: Exception Handling
+description: Centralizing error handling with @RestControllerAdvice.
+---
+
+# Exception Handling
+
+## Why Centralize It?
+
+Without a global handler, unhandled exceptions leak stack traces (a security
+risk) and every controller ends up with repetitive try/catch blocks.
+Spring's `@ControllerAdvice` centralizes this in one place.
+
+## Custom Exceptions
+
+```java
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+
+public class DuplicateResourceException extends RuntimeException {
+    public DuplicateResourceException(String message) {
+        super(message);
+    }
+}
+```
+
+## Global Handler with `@RestControllerAdvice`
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        ErrorResponse body = new ErrorResponse("NOT_FOUND", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(FieldError::getField,
+                        fe -> fe.getDefaultMessage(), (a, b) -> a));
+        ErrorResponse body = new ErrorResponse("VALIDATION_ERROR", "Invalid request", fieldErrors);
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+        // log the full exception server-side, never return internal details to the client
+        ErrorResponse body = new ErrorResponse("INTERNAL_ERROR", "Something went wrong");
+        return ResponseEntity.internalServerError().body(body);
+    }
+}
+```
+
+```java
+public record ErrorResponse(String code, String message, Map<String, String> details) {
+    public ErrorResponse(String code, String message) {
+        this(code, message, null);
+    }
+}
+```
+
+## Order of Resolution
+
+`@ExceptionHandler` methods are matched by the most specific exception type
+first. Keep a catch-all `Exception` handler last as a safety net — but never
+let it leak stack traces or internal messages to the client.
+
+## `@ResponseStatus` on Custom Exceptions (simpler alternative)
+
+```java
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException { ... }
+```
+
+Fine for very simple cases, but a `@ControllerAdvice` gives you a consistent
+response body shape across all error types — usually the better long-term
+choice for a real API.
+
+## Logging Practice
+
+Log the exception with context (request path, user id if available) at the
+point where it's handled, at `WARN` for expected errors (404, validation) and
+`ERROR` for unexpected ones — don't log-and-rethrow at every layer, which
+creates duplicate noisy log entries.

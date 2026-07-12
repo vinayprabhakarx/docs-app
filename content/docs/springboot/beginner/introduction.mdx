@@ -1,0 +1,65 @@
+---
+title: Introduction to Spring Boot
+description: What Spring Boot is, why it exists, and how it relates to the core Spring Framework.
+---
+
+# Introduction to Spring Boot
+
+## What is Spring Boot?
+
+Spring Boot is an extension of the Spring Framework that removes the boilerplate
+configuration needed to build production-ready Spring applications. It follows an
+**opinionated, convention-over-configuration** approach.
+
+Core ideas:
+- **Auto-configuration** — Spring Boot guesses sensible defaults based on the
+  dependencies on your classpath (e.g. add `spring-boot-starter-web` and it
+  configures an embedded Tomcat + Spring MVC automatically).
+- **Starter dependencies** — curated dependency bundles (`spring-boot-starter-*`)
+  that pull in everything needed for a feature (web, data-jpa, security, test...).
+- **Embedded servers** — Tomcat/Jetty/Undertow ships inside the JAR, so you run
+  `java -jar app.jar` instead of deploying a WAR to an external server.
+- **Production-ready features** — metrics, health checks, externalized config via
+  Actuator (covered later).
+
+## Why Spring Boot over plain Spring?
+
+| Plain Spring | Spring Boot |
+|---|---|
+| Manual XML/Java config for beans | Auto-configuration |
+| External servlet container (Tomcat) | Embedded server |
+| Manually manage dependency versions | Managed via parent BOM |
+| More boilerplate to get started | `spring-initializr` gets you running in minutes |
+
+## The Big Picture: Spring vs Spring Boot vs Spring MVC
+
+- **Spring Framework** — the core: IoC container, dependency injection, AOP.
+- **Spring MVC** — a module built on Spring for building web apps/REST APIs
+  (`DispatcherServlet`, controllers, view resolvers).
+- **Spring Boot** — a layer on top of both that auto-configures and packages
+  everything so you can run a Spring app with minimal setup.
+
+## A Minimal Spring Boot App
+
+```java
+@SpringBootApplication
+public class FinTrackApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(FinTrackApplication.class, args);
+    }
+}
+```
+
+`@SpringBootApplication` is a meta-annotation combining:
+- `@Configuration` — marks the class as a source of bean definitions.
+- `@EnableAutoConfiguration` — turns on auto-configuration.
+- `@ComponentScan` — scans the current package (and sub-packages) for components.
+
+## Key Terms to Know Before Moving On
+
+- **Bean** — an object managed by the Spring IoC container.
+- **Application Context** — the container that holds and wires beans.
+- **Auto-configuration class** — a class annotated with `@Configuration` that
+  conditionally registers beans (e.g. `DataSourceAutoConfiguration`).
+- **Starter POM** — a Maven/Gradle dependency that transitively pulls in a
+  feature's dependencies.

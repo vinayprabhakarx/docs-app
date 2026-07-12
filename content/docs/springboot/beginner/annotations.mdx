@@ -1,0 +1,72 @@
+---
+title: Core Annotations Cheat Sheet
+description: A reference table of the core annotations you'll see across a typical Spring Boot codebase.
+---
+
+# Core Annotations Cheat Sheet
+
+## Application & Configuration
+
+| Annotation | Purpose |
+|---|---|
+| `@SpringBootApplication` | Entry point; combines `@Configuration`, `@EnableAutoConfiguration`, `@ComponentScan` |
+| `@Configuration` | Marks a class as a source of bean definitions |
+| `@Bean` | Declares a bean inside a `@Configuration` class |
+| `@ConfigurationProperties` | Binds a config block to a POJO |
+| `@Profile("dev")` | Only load a bean/config under a given active profile |
+| `@Conditional*` | Register a bean only if a condition holds (used heavily in auto-config) |
+
+## Component Stereotypes
+
+| Annotation | Purpose |
+|---|---|
+| `@Component` | Generic Spring-managed bean |
+| `@Service` | Business/service layer bean (semantic alias of `@Component`) |
+| `@Repository` | Data access layer bean; adds exception translation |
+| `@Controller` | Web layer bean returning views |
+| `@RestController` | `@Controller` + `@ResponseBody`; returns data (JSON) directly |
+
+## Dependency Injection
+
+| Annotation | Purpose |
+|---|---|
+| `@Autowired` | Injects a dependency (optional on constructors since Spring 4.3 if there's only one constructor) |
+| `@Qualifier("beanName")` | Disambiguates when multiple beans of the same type exist |
+| `@Primary` | Marks a bean as the default choice when multiple candidates exist |
+| `@Lazy` | Delays bean initialization until first use |
+
+## Web / REST
+
+| Annotation | Purpose |
+|---|---|
+| `@RequestMapping` | Base mapping for a controller/method (path, method, etc.) |
+| `@GetMapping` / `@PostMapping` / `@PutMapping` / `@DeleteMapping` / `@PatchMapping` | Shortcut HTTP-method mappings |
+| `@PathVariable` | Binds a URI template variable to a method param |
+| `@RequestParam` | Binds a query parameter |
+| `@RequestBody` | Deserializes the request body into a Java object |
+| `@ResponseBody` | Serializes the return value into the response body |
+| `@ResponseStatus` | Sets the HTTP status for a response/exception |
+| `@CrossOrigin` | Enables CORS for a controller/method |
+
+## Validation
+
+| Annotation | Purpose |
+|---|---|
+| `@Valid` / `@Validated` | Triggers bean validation on a `@RequestBody` or method params |
+| `@NotNull`, `@NotBlank`, `@Size`, `@Email`, `@Min`/`@Max` | Field-level constraints (from `jakarta.validation`) |
+
+## Data / JPA (preview — full topic later)
+
+| Annotation | Purpose |
+|---|---|
+| `@Entity` | Marks a class as a JPA-managed table |
+| `@Id` / `@GeneratedValue` | Primary key + generation strategy |
+| `@Column` | Column-level customization |
+| `@OneToMany`, `@ManyToOne`, `@ManyToMany` | Relationship mappings |
+| `@Transactional` | Wraps a method in a database transaction |
+
+## A Common Beginner Mistake
+
+Don't sprinkle `@Autowired` field injection everywhere just because it
+"compiles." Constructor injection (covered in the IoC/DI topic) is the
+convention in real codebases and what you should default to.

@@ -1,0 +1,4 @@
+{
+  "title": "Advanced",
+  "pages": ["security", "jwt-authentication", "testing", "caching-redis", "actuator-monitoring", "profiles-environments", "async-scheduling", "microservices-deployment", "resilience-rate-limiting"]
+}

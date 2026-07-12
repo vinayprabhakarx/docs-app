@@ -1,0 +1,4 @@
+{
+  "title": "Beginner",
+  "pages": ["introduction", "project-setup", "dependency-injection", "configuration", "annotations"]
+}

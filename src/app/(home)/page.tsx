@@ -7,6 +7,7 @@ import {
   Briefcase,
   Coffee,
   FileCode2,
+  Leaf,
   Palette,
   Terminal,
 } from "lucide-react";
@@ -63,6 +64,13 @@ const categories = [
     description: "Complete setup, configuration, and developer workflows for Neovim mastery.",
     href: "/docs/NVIM",
     icon: Terminal,
+  },
+  {
+    title: "Spring Boot",
+    label: "Framework",
+    description: "Enterprise Java backend development with Spring Boot.",
+    href: "/docs/springboot",
+    icon: Leaf,
   },
 ];
 

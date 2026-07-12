@@ -1,0 +1,93 @@
+---
+title: Lombok & Boilerplate Reduction
+description: Reducing boilerplate with Lombok, and where to avoid it (JPA entities).
+---
+
+# Lombok & Boilerplate Reduction
+
+## What Lombok Does
+
+Generates getters, setters, constructors, `equals`/`hashCode`, `toString`,
+and builders at compile time via annotation processing — no runtime cost, but
+requires IDE plugin support and annotation processing enabled in the build.
+
+```java
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Transaction {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String description;
+    private BigDecimal amount;
+}
+```
+
+## Common Annotations
+
+| Annotation | Generates |
+|---|---|
+| `@Getter` / `@Setter` | Accessor methods |
+| `@NoArgsConstructor` | Empty constructor (required by JPA) |
+| `@AllArgsConstructor` | Constructor with all fields |
+| `@RequiredArgsConstructor` | Constructor for `final`/`@NonNull` fields — pairs well with constructor injection |
+| `@Data` | Getters/setters + `equals`/`hashCode`/`toString` + `@RequiredArgsConstructor` |
+| `@Builder` | Builder pattern for object construction |
+| `@Slf4j` | Injects a `private static final Logger log` field |
+| `@Value` | Immutable variant of `@Data` (all fields final) |
+
+## Constructor Injection with Lombok
+
+```java
+@Service
+@RequiredArgsConstructor
+public class TransactionService {
+    private final TransactionRepository repository;
+    private final CategoryService categoryService;
+    // constructor generated automatically — no boilerplate
+}
+```
+
+This is the most common real-world Lombok + DI pattern.
+
+## Caution: `@Data` on JPA Entities
+
+Avoid `@Data` on entities — its generated `equals`/`hashCode` can include
+lazy-loaded relations (triggering unwanted queries or
+`LazyInitializationException`) and its `toString` can do the same. Prefer:
+
+```java
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+public class Transaction {
+    @EqualsAndHashCode.Include
+    @Id
+    private Long id;
+    // ...
+}
+```
+
+Only include the `@Id` in `equals`/`hashCode` for entities — two entities with
+the same ID are the same row, regardless of other field values.
+
+## `@Builder` for DTOs
+
+```java
+@Builder
+public record TransactionResponse(Long id, String description, BigDecimal amount) {}
+```
+
+Handy for tests where you construct many similar objects with a few fields
+varying per test case.
+
+## Is Lombok "Worth It"?
+
+Trade-off: less boilerplate vs an extra build-time dependency and slightly
+"magic" generated code that's invisible in the source file. Very standard in
+industry Spring Boot projects — worth learning, but understand what each
+annotation expands to rather than treating it as a black box.
