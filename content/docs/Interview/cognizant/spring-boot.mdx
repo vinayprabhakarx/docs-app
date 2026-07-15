@@ -1,0 +1,354 @@
+---
+title: Spring Boot
+description: Spring Boot interview questions for Cognizant.
+---
+
+## Part III – Spring Boot (40 Questions)
+
+---
+
+## A. Spring Core & IOC
+
+### 1. What is Spring Framework?
+
+**Answer:** A comprehensive, modular Java framework for building enterprise applications, providing infrastructure support (DI, transaction management, MVC, security, data access) so developers focus on business logic instead of boilerplate.
+
+**Follow-up:** What problem did Spring solve compared to plain Java EE/EJB?
+
+---
+
+### 2. What is Spring Boot? How is it different from Spring?
+
+**Answer:** Spring Boot is a convention-over-configuration extension of Spring that eliminates most manual XML/Java config via auto-configuration, embedded servers (Tomcat/Jetty), and starter dependencies — enabling standalone, production-ready apps with minimal setup.
+
+**Follow-up:** Can a Spring Boot app run without an external application server? (Yes — embedded server)
+
+**Common Mistakes:** Saying Spring Boot "replaces" Spring — it's built on top of it.
+
+---
+
+### 3. What is Inversion of Control (IoC)?
+
+**Answer:** A design principle where object creation and dependency management is handed over to a container/framework instead of being done manually by the application code.
+
+**Follow-up:** How does IoC improve testability? (Dependencies can be mocked/injected easily)
+
+---
+
+### 4. What is Dependency Injection (DI)?
+
+**Answer:** A pattern implementing IoC, where a class's dependencies are provided (injected) by an external source (the Spring container) rather than the class creating them itself.
+
+**Explanation:** Types: constructor injection, setter injection, field injection.
+
+**Follow-up:** Which type of DI is recommended and why? (Constructor injection — enables immutability, ensures required dependencies at construction time, and makes testing easier)
+
+---
+
+### 5. What is the Spring IoC Container?
+
+**Answer:** The core of Spring that manages the lifecycle and configuration of application objects (beans) using dependency injection. Implemented via `BeanFactory` (basic) or `ApplicationContext` (advanced, most commonly used).
+
+**Follow-up:** Difference between `BeanFactory` and `ApplicationContext`? (ApplicationContext adds event handling, AOP, internationalization, and eager bean loading by default)
+
+---
+
+### 6. What is a Spring Bean?
+
+**Answer:** An object that is instantiated, assembled, and managed by the Spring IoC container.
+
+**Follow-up:** How do you define a bean? (`@Component`, `@Service`, `@Repository`, `@Controller`, or explicitly via `@Bean` in a `@Configuration` class)
+
+---
+
+### 7. What is the Bean lifecycle in Spring?
+
+**Answer:** Instantiation → populate properties (DI) → `BeanNameAware`/`BeanFactoryAware` callbacks → `@PostConstruct`/`InitializingBean.afterPropertiesSet()` → bean ready for use → `@PreDestroy`/`DisposableBean.destroy()` on container shutdown.
+
+**Follow-up:** What's the difference between `@PostConstruct` and a constructor? (`@PostConstruct` runs after all dependencies are injected; the constructor runs before)
+
+**Interview Tip:** This is a favorite deep-dive question — be ready to explain each stage with the annotation/interface involved.
+
+---
+
+### 8. What are the different bean scopes in Spring?
+
+**Answer:** `singleton` (default, one instance per container), `prototype` (new instance every request), and web-specific scopes: `request`, `session`, `application`.
+
+**Follow-up:** Is `singleton` scope thread-safe by default? (No — you must design the bean to be stateless or handle synchronization yourself)
+
+---
+
+### 9. What is `@Autowired`? How does it work?
+
+**Answer:** An annotation that tells Spring to automatically inject a matching bean into a field, constructor, or setter, resolved by type (and by name/qualifier if there's ambiguity).
+
+**Follow-up:** What happens if multiple beans of the same type exist and none are marked `@Primary` or `@Qualifier`? (`NoUniqueBeanDefinitionException`)
+
+---
+
+### 10. Difference between `@Component`, `@Service`, `@Repository`, and `@Controller`?
+
+**Answer:** All are specializations of `@Component` (making them Spring-managed beans). `@Service` marks business logic layer, `@Repository` marks the data access layer (also enables exception translation for persistence exceptions), and `@Controller` marks web layer components (handles HTTP requests).
+
+**Follow-up:** What extra behavior does `@Repository` add beyond being a plain `@Component`? (Translates persistence-specific exceptions into Spring's `DataAccessException` hierarchy)
+
+---
+
+### 11. What is Auto-Configuration in Spring Boot?
+
+**Answer:** A mechanism where Spring Boot automatically configures beans based on the dependencies present on the classpath (e.g., if `spring-boot-starter-data-jpa` is present, it auto-configures a `DataSource`, `EntityManager`, etc.), enabled via `@EnableAutoConfiguration` (included in `@SpringBootApplication`).
+
+**Follow-up:** How can you exclude a specific auto-configuration class? (`@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})`)
+
+---
+
+### 12. What happens when you run `SpringApplication.run()`?
+
+**Answer:** It bootstraps the application: creates the `ApplicationContext`, determines the application type (servlet/reactive/none), loads and applies auto-configurations, registers beans via component scanning, starts the embedded server (if web app), publishes application events (`ApplicationStartingEvent` → ... → `ApplicationReadyEvent`), and runs any `CommandLineRunner`/`ApplicationRunner` beans.
+
+**Follow-up:** What is the order of the Spring Boot application lifecycle events?
+
+**Interview Tip:** This is a common deep internals question at Cognizant — practicing the exact flow out loud helps.
+
+---
+
+### 13. What is `@SpringBootApplication`?
+
+**Answer:** A composite/meta-annotation combining `@Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan` — the standard entry-point annotation for a Spring Boot app.
+
+**Follow-up:** What's the default component scan base package? (The package of the class annotated with `@SpringBootApplication`, and its sub-packages)
+
+---
+
+## B. REST APIs & Web Layer
+
+### 14. How do you build a REST API in Spring Boot?
+
+**Answer:** Annotate a class with `@RestController` (combines `@Controller` + `@ResponseBody`), define endpoint methods with `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, and bind request data with `@RequestBody`, `@PathVariable`, `@RequestParam`.
+
+**Follow-up:** Difference between `@Controller` and `@RestController`? (`@RestController` automatically serializes return values to the response body, typically as JSON, instead of resolving a view)
+
+---
+
+### 15. What is the request lifecycle in Spring MVC?
+
+**Answer:** Client request → `DispatcherServlet` (front controller) → `HandlerMapping` (finds the right controller method) → `HandlerAdapter` invokes the controller → controller returns data/view → `ViewResolver` (for MVC) or `HttpMessageConverter` (for REST, serializes to JSON) → response sent back to client.
+
+**Follow-up:** What role does `DispatcherServlet` play? (Single entry point/front controller for all incoming requests)
+
+---
+
+### 16. What is `@RequestMapping`?
+
+**Answer:** A general-purpose annotation to map HTTP requests to handler methods/classes, supporting method, path, headers, and params attributes. `@GetMapping`, `@PostMapping`, etc. are shorthand specializations for specific HTTP methods.
+
+---
+
+### 17. Difference between `@PathVariable` and `@RequestParam`?
+
+**Answer:** `@PathVariable` extracts values from the URI path itself (e.g., `/users/{id}`). `@RequestParam` extracts values from query parameters (e.g., `/users?id=5`) or form data.
+
+**Follow-up:** When would you prefer one over the other from a REST design standpoint? (Path variable for identifying a specific resource; query param for filtering/optional data)
+
+---
+
+### 18. How do you handle exceptions globally in a Spring Boot REST API?
+
+**Answer:** Using `@ControllerAdvice` (or `@RestControllerAdvice`) combined with `@ExceptionHandler` methods to centrally catch and format exceptions into consistent error responses, instead of handling them in each controller.
+
+**Follow-up:** What HTTP status code would you return for a validation failure vs. a resource-not-found error? (400 vs. 404)
+
+---
+
+### 19. How does request validation work in Spring Boot?
+
+**Answer:** Using Bean Validation annotations (`@NotNull`, `@Size`, `@Email`, etc.) on DTO fields, combined with `@Valid`/`@Validated` on the controller method parameter to trigger validation, with failures surfaced via `MethodArgumentNotValidException` (typically handled in a `@ControllerAdvice`).
+
+**Follow-up:** What's the difference between `@Valid` and `@Validated`? (`@Validated` is Spring's own annotation, supports validation groups and can be used at the class level for method parameter validation)
+
+---
+
+### 20. How do you version REST APIs in Spring Boot?
+
+**Answer:** Common strategies: URI versioning (`/api/v1/users`), request parameter versioning, header versioning (custom header like `X-API-Version`), or media-type/content negotiation versioning.
+
+**Follow-up:** What are the trade-offs of URI versioning vs. header versioning?
+
+---
+
+## C. Spring Data JPA & Hibernate
+
+### 21. What is Spring Data JPA?
+
+**Answer:** A Spring module that simplifies data access by providing repository abstractions (`JpaRepository`, `CrudRepository`) that auto-generate common CRUD and query implementations, reducing boilerplate DAO code.
+
+**Follow-up:** What do you get "for free" just by extending `JpaRepository`? (save, findById, findAll, delete, count, etc.)
+
+---
+
+### 22. What is Hibernate? How does it relate to JPA?
+
+**Answer:** Hibernate is an ORM (Object-Relational Mapping) framework that implements the JPA (Java Persistence API) specification — JPA defines the standard interfaces/annotations, and Hibernate provides the actual implementation. Spring Boot uses Hibernate as the default JPA provider.
+
+**Follow-up:** Name another JPA implementation besides Hibernate. (EclipseLink)
+
+---
+
+### 23. What is the difference between `@Entity`, `@Table`, and `@Id`?
+
+**Answer:** `@Entity` marks a class as a JPA-managed persistent entity. `@Table` (optional) specifies the database table name/schema if different from the class name. `@Id` marks the primary key field.
+
+**Follow-up:** What's the purpose of `@GeneratedValue`? (Defines the primary key generation strategy — IDENTITY, SEQUENCE, AUTO, TABLE)
+
+---
+
+### 24. Difference between `@OneToMany`, `@ManyToOne`, `@ManyToMany`, and `@OneToOne`?
+
+**Answer:** These annotations define entity relationships/associations mirroring database foreign key relationships — `@OneToMany`/`@ManyToOne` for parent-child, `@ManyToMany` for join-table relationships, `@OneToOne` for a strict 1:1 mapping.
+
+**Follow-up:** What is the `mappedBy` attribute used for? (Indicates the inverse (non-owning) side of a bidirectional relationship)
+
+---
+
+### 25. What is lazy loading vs. eager loading in Hibernate?
+
+**Answer:** Lazy loading defers fetching associated entities until they're actually accessed (default for `@OneToMany`/`@ManyToMany`). Eager loading fetches associated entities immediately along with the parent (default for `@ManyToOne`/`@OneToOne`).
+
+**Follow-up:** What is the `LazyInitializationException` and when does it occur? (Accessing a lazily-loaded association outside of an active Hibernate session)
+
+**Common Mistakes:** Defaulting everything to eager loading "to be safe" — this causes performance issues (N+1 queries, over-fetching).
+
+---
+
+### 26. What is the N+1 query problem?
+
+**Answer:** A performance issue where fetching N parent entities triggers N additional queries to fetch each one's related child entities (due to lazy loading), instead of one optimized join query.
+
+**Follow-up:** How do you fix it? (`JOIN FETCH` in JPQL, `@EntityGraph`, or batch fetching configuration)
+
+---
+
+### 27. What is `@Transactional`? How does it work internally?
+
+**Answer:** An annotation that wraps a method (or class) in a database transaction — Spring creates a proxy around the bean that begins a transaction before the method executes and commits/rolls back after, based on whether an exception was thrown.
+
+**Explanation:** By default, it rolls back only on unchecked exceptions (`RuntimeException`/`Error`), not checked exceptions, unless explicitly configured via `rollbackFor`.
+
+**Follow-up:** Why doesn't `@Transactional` work when calling a method on `this` from within the same class? (Because Spring's proxy-based AOP intercepts calls only through the bean's external proxy, not internal self-invocation)
+
+**Interview Tip:** This "self-invocation" gotcha is a very common trick question — know it cold.
+
+---
+
+### 28. What is the difference between `save()` and `saveAndFlush()` in Spring Data JPA?
+
+**Answer:** `save()` persists/updates the entity but may not immediately synchronize with the database (Hibernate can batch/delay the actual SQL). `saveAndFlush()` forces an immediate flush of pending changes to the database.
+
+**Follow-up:** Why would flushing immediately matter in some use cases? (When subsequent code in the same transaction depends on the DB state being current, e.g., for a native query)
+
+---
+
+### 29. What is the persistence context / first-level cache?
+
+**Answer:** A per-`EntityManager`/session-scoped cache that Hibernate maintains, tracking managed entities to avoid redundant database hits and to detect changes for automatic dirty-checking at flush/commit time.
+
+**Follow-up:** Is the first-level cache shared across sessions? (No — it's session-scoped only. Second-level cache, if enabled, is shared across sessions)
+
+---
+
+### 30. How do you write custom queries in Spring Data JPA?
+
+**Answer:** Using derived query methods (method name parsed into a query, e.g., `findByEmailAndStatus`), `@Query` with JPQL or native SQL, or the `Specification`/Criteria API for dynamic queries.
+
+**Follow-up:** When would you use native SQL over JPQL? (Complex/DB-specific queries not expressible cleanly in JPQL, or for performance tuning)
+
+---
+
+## D. Configuration, Profiles & Security
+
+### 31. What is `application.properties`/`application.yml` used for?
+
+**Answer:** External configuration files where you define app settings (DB connection, server port, logging levels, custom properties) without hardcoding them into the source code.
+
+**Follow-up:** How do you access a custom property in code? (`@Value("${my.property}")` or `@ConfigurationProperties`)
+
+---
+
+### 32. What are Spring Profiles?
+
+**Answer:** A mechanism to define environment-specific configurations (e.g., `dev`, `test`, `prod`) that can be activated selectively, e.g., via `application-dev.properties` and `spring.profiles.active=dev`.
+
+**Follow-up:** How do you activate a profile at runtime without changing code? (`--spring.profiles.active=prod` as a JVM/CLI arg, or an environment variable)
+
+---
+
+### 33. What is `@ConfigurationProperties`?
+
+**Answer:** An annotation that binds a group of related external properties (typically with a common prefix) to a strongly-typed Java object, as an alternative to multiple individual `@Value` injections.
+
+**Follow-up:** What's an advantage over using many `@Value` annotations? (Type safety, validation support, cleaner grouping)
+
+---
+
+### 34. What is Spring Security, at a high level?
+
+**Answer:** A framework providing authentication (who are you) and authorization (what are you allowed to do) for Spring applications, using a filter chain that intercepts requests before they reach the controller.
+
+**Follow-up:** What is the `SecurityFilterChain`? (The ordered set of filters that process every incoming request for security checks)
+
+---
+
+### 35. What is JWT and how is it used in Spring Boot security?
+
+**Answer:** JSON Web Token — a compact, self-contained, signed token (header, payload, signature) used for stateless authentication. The client sends it in the `Authorization: Bearer <token>` header, and a filter validates it (signature + expiry) on each request instead of relying on server-side sessions.
+
+**Follow-up:** Why is JWT considered "stateless" compared to session-based auth? (No server-side session storage needed — all necessary info is in the token itself)
+
+**Common Mistakes:** Storing sensitive data unencrypted in the JWT payload (it's signed, not encrypted, so it's readable by anyone with the token).
+
+---
+
+### 36. What is CORS, and how do you handle it in Spring Boot?
+
+**Answer:** Cross-Origin Resource Sharing — a browser security mechanism that blocks requests to a different origin (domain/port/protocol) unless explicitly permitted. Configured in Spring Boot via `@CrossOrigin` on a controller, or globally via a `WebMvcConfigurer` bean/`CorsConfigurationSource`.
+
+**Follow-up:** Why does a preflight `OPTIONS` request happen for some requests but not others?
+
+---
+
+## E. Logging, Exception Handling & Deployment
+
+### 37. How does logging work in Spring Boot by default?
+
+**Answer:** Spring Boot uses SLF4J as a logging facade with Logback as the default implementation, auto-configured out of the box, with log levels configurable via `application.properties` (`logging.level.<package>=DEBUG`).
+
+**Follow-up:** How would you write logs to a file instead of just the console?
+
+---
+
+### 38. What are Spring Boot Actuator endpoints?
+
+**Answer:** Built-in production-ready endpoints (e.g., `/actuator/health`, `/actuator/metrics`, `/actuator/info`) for monitoring and managing an application at runtime, added via the `spring-boot-starter-actuator` dependency.
+
+**Follow-up:** How would you secure Actuator endpoints in production? (Restrict exposure, add authentication, or bind to a separate management port)
+
+---
+
+### 39. How do you deploy a Spring Boot application?
+
+**Answer:** Package it as an executable JAR (with an embedded server) using `mvn package`/`gradle build`, then run it directly (`java -jar app.jar`), or containerize it with Docker and deploy to a cloud platform (e.g., Oracle Cloud, AWS, Cloudflare-fronted setups) — often via a CI/CD pipeline (GitHub Actions building and pushing an image to a registry like GHCR).
+
+**Follow-up:** What's the difference between deploying a JAR directly vs. via a Docker container? (Portability, environment consistency, isolation)
+
+---
+
+### 40. What are common Spring Boot starter dependencies and what do they provide?
+
+**Answer:** `spring-boot-starter-web` (REST/MVC + embedded Tomcat), `spring-boot-starter-data-jpa` (JPA/Hibernate + repository support), `spring-boot-starter-security` (auth/authorization), `spring-boot-starter-test` (JUnit, Mockito, Spring Test), `spring-boot-starter-validation` (Bean Validation).
+
+**Follow-up:** How do starters simplify dependency management? (They bundle compatible, tested versions of related libraries together, avoiding manual version conflicts)
+
+---
+
+*End of Part III. Part IV (SQL, 50 questions) continues next.*

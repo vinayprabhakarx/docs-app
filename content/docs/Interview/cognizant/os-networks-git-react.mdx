@@ -1,0 +1,434 @@
+---
+title: OS, Networks, Git & React
+description: Operating Systems, Computer Networks, Git, and React interview questions for Cognizant.
+---
+
+## Part VI – Operating Systems (15 Questions)
+
+---
+
+### 1. What is a process? What is a thread?
+
+**Answer:** A process is an independent, running instance of a program with its own memory space. A thread is a lightweight unit of execution *within* a process, sharing the process's memory but having its own stack.
+
+**Follow-up:** Why is context switching between threads generally faster than between processes? (Threads share memory space, so less state needs to be saved/restored)
+
+---
+
+### 2. Difference between a process and a program?
+
+**Answer:** A program is a static set of instructions stored on disk. A process is a program in execution — an active entity with allocated memory, state, and resources.
+
+---
+
+### 3. What is a deadlock? What are its four necessary conditions?
+
+**Answer:** A state where two or more processes are blocked forever, each waiting on a resource held by another. Necessary conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.
+
+**Follow-up:** How can deadlock be prevented? (Break any one of the four conditions — e.g., resource ordering to prevent circular wait)
+
+---
+
+### 4. What is CPU scheduling? Name common scheduling algorithms.
+
+**Answer:** The mechanism by which the OS decides which process gets CPU time next. Algorithms: FCFS (First Come First Serve), SJF (Shortest Job First), Round Robin, Priority Scheduling, Multilevel Queue Scheduling.
+
+**Follow-up:** Which algorithm is best for time-sharing/interactive systems? (Round Robin — ensures fairness via fixed time quantum)
+
+---
+
+### 5. What is a context switch?
+
+**Answer:** The process of saving the state of a currently running process/thread and loading the state of another, allowing the CPU to switch between them — has overhead, so excessive switching reduces throughput.
+
+---
+
+### 6. What is virtual memory?
+
+**Answer:** An abstraction that gives each process the illusion of a large, contiguous, private address space, backed by a combination of physical RAM and disk (swap space), managed via paging.
+
+**Follow-up:** What is thrashing? (Excessive paging/swapping that severely degrades performance because the system spends more time swapping than executing)
+
+---
+
+### 7. What is paging?
+
+**Answer:** A memory management scheme that divides both physical memory and process address space into fixed-size blocks (pages/frames), eliminating the need for contiguous memory allocation and reducing external fragmentation.
+
+**Follow-up:** What is a page fault? (Occurs when a requested page isn't currently in physical memory and must be fetched from disk)
+
+---
+
+### 8. Difference between paging and segmentation?
+
+**Answer:** Paging divides memory into fixed-size blocks, invisible to the programmer. Segmentation divides memory into variable-size logical units (code, data, stack segments) that align with the program's logical structure.
+
+---
+
+### 9. What is a semaphore?
+
+**Answer:** A synchronization primitive (an integer variable) used to control access to shared resources among multiple processes/threads, supporting `wait()` (decrement) and `signal()` (increment) operations.
+
+**Follow-up:** Difference between a binary semaphore and a mutex? (A binary semaphore can be signaled by any thread; a mutex can only be released by the thread that locked it — ownership semantics differ)
+
+---
+
+### 10. What is a race condition?
+
+**Answer:** A situation where the outcome of concurrent execution depends on the unpredictable timing/interleaving of operations by multiple threads/processes accessing shared data, leading to inconsistent results.
+
+**Follow-up:** How is it typically prevented? (Locks, synchronization, atomic operations)
+
+---
+
+### 11. What is thrashing?
+
+**Answer:** A condition where the system spends most of its time swapping pages in and out of memory rather than executing actual processes, usually due to insufficient physical memory for the current workload.
+
+---
+
+### 12. What is the difference between multitasking, multiprocessing, and multithreading?
+
+**Answer:** Multitasking: OS runs multiple processes concurrently (often via time-sharing on a single CPU). Multiprocessing: multiple CPUs/cores execute processes truly in parallel. Multithreading: multiple threads run within a single process, sharing memory.
+
+---
+
+### 13. What is a zombie process?
+
+**Answer:** A process that has completed execution but still has an entry in the process table because its parent hasn't yet read its exit status (via `wait()`).
+
+---
+
+### 14. What is an orphan process?
+
+**Answer:** A process whose parent has terminated before it, and gets adopted by the init/root process (PID 1) in Unix-like systems.
+
+---
+
+### 15. What is the difference between a mutex and a semaphore?
+
+**Answer:** A mutex allows only one thread to access a resource at a time and enforces strict ownership (only the locking thread can unlock it). A semaphore can allow a configurable number of concurrent accesses (a counting semaphore) and doesn't enforce ownership.
+
+---
+
+## Part VII – Computer Networks (15 Questions)
+
+---
+
+### 1. What is the OSI model? Name its 7 layers.
+
+**Answer:** A conceptual framework describing how data travels across a network in 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, Application (bottom to top).
+
+**Interview Tip:** Mnemonic: "Please Do Not Throw Sausage Pizza Away."
+
+---
+
+### 2. What is TCP/IP? How does it relate to the OSI model?
+
+**Answer:** TCP/IP is a simplified, practical 4-layer model (Network Access, Internet, Transport, Application) that maps roughly onto OSI's 7 layers, and is the actual protocol suite the internet runs on.
+
+---
+
+### 3. Difference between TCP and UDP?
+
+**Answer:** TCP is connection-oriented, reliable (guarantees delivery and order via acknowledgments/retransmission), but slower. UDP is connectionless, faster, with no delivery guarantee — used where speed matters more than reliability (e.g., video streaming, DNS).
+
+**Follow-up:** Give a real-world example of when you'd choose UDP over TCP.
+
+---
+
+### 4. What is the three-way handshake in TCP?
+
+**Answer:** The process to establish a TCP connection: SYN (client → server), SYN-ACK (server → client), ACK (client → server) — after which the connection is established.
+
+---
+
+### 5. What is HTTP? What is HTTPS?
+
+**Answer:** HTTP (HyperText Transfer Protocol) is the protocol for transferring web data between client and server, stateless by design. HTTPS is HTTP secured with TLS/SSL encryption, ensuring data confidentiality and integrity in transit.
+
+**Follow-up:** What port does each typically use? (HTTP: 80, HTTPS: 443)
+
+---
+
+### 6. What are common HTTP methods?
+
+**Answer:** `GET` (retrieve), `POST` (create), `PUT` (update/replace), `PATCH` (partial update), `DELETE` (remove), `HEAD`, `OPTIONS`.
+
+**Follow-up:** Which HTTP methods are idempotent? (`GET`, `PUT`, `DELETE` — repeating them has the same effect as doing it once; `POST` is not idempotent)
+
+---
+
+### 7. What are common HTTP status codes?
+
+**Answer:** 200 (OK), 201 (Created), 204 (No Content), 301/302 (Redirects), 400 (Bad Request), 401 (Unauthorized), 403 (Forbidden), 404 (Not Found), 500 (Internal Server Error), 503 (Service Unavailable).
+
+**Follow-up:** Difference between 401 and 403? (401 = not authenticated; 403 = authenticated but not authorized)
+
+---
+
+### 8. What is DNS?
+
+**Answer:** Domain Name System — translates human-readable domain names (e.g., `example.com`) into IP addresses, functioning like the internet's phonebook.
+
+**Follow-up:** What is DNS caching, and why does it matter for performance?
+
+---
+
+### 9. What is an IP address? Difference between IPv4 and IPv6?
+
+**Answer:** A unique numerical identifier assigned to each device on a network. IPv4 uses a 32-bit address (~4.3 billion addresses); IPv6 uses a 128-bit address, offering a vastly larger address space to accommodate growing internet-connected devices.
+
+---
+
+### 10. What are cookies?
+
+**Answer:** Small pieces of data stored client-side (in the browser) by a website, used to persist state across requests — e.g., session tokens, preferences, tracking.
+
+**Follow-up:** What's the difference between session cookies and persistent cookies?
+
+---
+
+### 11. What is a session?
+
+**Answer:** A server-side mechanism to maintain state about a user across multiple requests, typically identified by a session ID stored in a cookie on the client.
+
+**Follow-up:** How does session-based auth differ from token-based (JWT) auth? (Session state is stored server-side; JWT is stateless and self-contained)
+
+---
+
+### 12. What is a firewall?
+
+**Answer:** A network security system that monitors and controls incoming/outgoing traffic based on predefined security rules, acting as a barrier between trusted and untrusted networks.
+
+---
+
+### 13. What is a proxy server? Difference from a load balancer?
+
+**Answer:** A proxy server sits between client and server, forwarding requests (often for caching, anonymity, or filtering). A load balancer distributes incoming traffic across multiple backend servers to improve availability and performance.
+
+---
+
+### 14. What is REST? What makes an API RESTful?
+
+**Answer:** REST (Representational State Transfer) is an architectural style for designing networked APIs. RESTful APIs are stateless, use standard HTTP methods, represent resources via URIs, and typically exchange data in JSON.
+
+**Follow-up:** What does "stateless" mean in a REST context? (Each request must contain all information needed to process it — server doesn't store client session state between requests)
+
+---
+
+### 15. What is the difference between latency and bandwidth?
+
+**Answer:** Latency is the time delay for data to travel from source to destination (measured in ms). Bandwidth is the maximum rate of data transfer over a network connection (measured in bps/Mbps).
+
+---
+
+## Part VIII – Git (10 Questions)
+
+---
+
+### 1. What is Git? How is it different from a centralized VCS?
+
+**Answer:** Git is a distributed version control system where every developer has a full local copy of the repository history, unlike centralized systems (e.g., SVN) where history lives only on a central server.
+
+---
+
+### 2. Difference between `git fetch` and `git pull`?
+
+**Answer:** `git fetch` downloads changes from the remote but doesn't merge them into your local branch. `git pull` does a `fetch` followed by an automatic `merge` (or `rebase`, if configured).
+
+---
+
+### 3. What is a Git branch?
+
+**Answer:** A lightweight, movable pointer to a specific commit, allowing parallel, isolated lines of development without affecting the main codebase until merged.
+
+**Follow-up:** What is the default branch typically called? (`main` or `master`)
+
+---
+
+### 4. What is the difference between `git merge` and `git rebase`?
+
+**Answer:** `git merge` combines two branches by creating a new merge commit, preserving full history. `git rebase` replays your branch's commits on top of the target branch, producing a linear history without a merge commit.
+
+**Follow-up:** Why is rebasing considered risky on shared/public branches? (It rewrites commit history, causing conflicts for others who already have the old commits)
+
+---
+
+### 5. What is a merge conflict? How do you resolve one?
+
+**Answer:** Occurs when Git can't automatically reconcile changes to the same lines/file made in two branches being merged. Resolved by manually editing the conflicting file (Git marks conflict regions with `<<<<<<<`, `=======`, `>>>>>>>`), then staging and committing the resolution.
+
+---
+
+### 6. What is `git stash` used for?
+
+**Answer:** Temporarily saves uncommitted changes (working directory + staged changes) so you can switch branches or pull cleanly, without committing incomplete work — retrievable later via `git stash pop`/`git stash apply`.
+
+---
+
+### 7. Difference between `git reset` and `git revert`?
+
+**Answer:** `git reset` moves the branch pointer backward, optionally discarding commits/changes (rewrites history — risky on shared branches). `git revert` creates a *new* commit that undoes the changes of a previous commit, preserving history (safe for shared branches).
+
+---
+
+### 8. What is the difference between `git clone` and `git fork`?
+
+**Answer:** `git clone` is a Git command that creates a local copy of a remote repository. "Fork" is a platform-level concept (GitHub/GitLab) that creates your own remote copy of someone else's repository under your account, which you can then clone locally.
+
+---
+
+### 9. What is a `.gitignore` file used for?
+
+**Answer:** Specifies files/directories Git should intentionally not track (e.g., build artifacts, `node_modules/`, environment files with secrets), preventing them from being accidentally committed.
+
+---
+
+### 10. What is a pull request (PR)?
+
+**Answer:** A platform-level (GitHub/GitLab/Bitbucket) mechanism to propose that changes from one branch be merged into another, enabling code review, discussion, and CI checks before merging.
+
+---
+
+## Part IX – React (20 Questions)
+
+---
+
+### 1. What is React?
+
+**Answer:** A JavaScript library (not a full framework) for building user interfaces using a component-based, declarative approach, maintained by Meta.
+
+---
+
+### 2. What is JSX?
+
+**Answer:** A syntax extension for JavaScript that allows writing HTML-like markup directly within JavaScript code, which gets transpiled (via Babel) into `React.createElement()` calls.
+
+**Follow-up:** Is JSX mandatory for React? (No — you could write `React.createElement` calls directly, but JSX is far more readable)
+
+---
+
+### 3. What is a React component? What are the two types?
+
+**Answer:** A reusable, self-contained piece of UI. Function components (the modern standard, using Hooks) and Class components (older style, using lifecycle methods, less common in new code).
+
+---
+
+### 4. Difference between props and state?
+
+**Answer:** Props are read-only data passed *into* a component from its parent. State is internal, mutable data managed *within* a component that can trigger re-renders when updated.
+
+**Follow-up:** Can a child component modify its own props? (No — props are immutable from the child's perspective)
+
+---
+
+### 5. What is the Virtual DOM?
+
+**Answer:** An in-memory, lightweight representation of the actual DOM that React uses to compute the minimal set of changes needed (via a diffing algorithm) before updating the real DOM, improving performance.
+
+**Follow-up:** Why is direct DOM manipulation slower than using the Virtual DOM diffing approach?
+
+---
+
+### 6. What are React Hooks?
+
+**Answer:** Functions (introduced in React 16.8) that let function components use state and other React features (lifecycle-like behavior, context, refs) without writing a class.
+
+---
+
+### 7. What is `useState`?
+
+**Answer:** A Hook that lets a function component hold and update local state, returning a state value and a setter function: `const [count, setCount] = useState(0)`.
+
+**Follow-up:** Why shouldn't you mutate state directly instead of using the setter? (React won't detect the change and won't trigger a re-render)
+
+---
+
+### 8. What is `useEffect`? What is it used for?
+
+**Answer:** A Hook for handling side effects (data fetching, subscriptions, DOM manipulation, timers) in function components, running after render — replaces `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount` from class components.
+
+**Follow-up:** What does an empty dependency array `[]` in `useEffect` mean? (Effect runs only once, after the initial render — similar to `componentDidMount`)
+
+---
+
+### 9. What is the dependency array in `useEffect`?
+
+**Answer:** The second argument to `useEffect` — an array of values the effect depends on. React re-runs the effect only when one of these values changes between renders. Omitting it entirely causes the effect to run after every render.
+
+**Common Mistakes:** Omitting a dependency actually used inside the effect, causing stale closures/bugs.
+
+---
+
+### 10. What is the Context API?
+
+**Answer:** A built-in React mechanism for sharing data (e.g., theme, auth state) across the component tree without manually passing props through every intermediate level ("prop drilling").
+
+**Follow-up:** When would you use Context API vs. a state management library like Redux? (Context is best for relatively simple, infrequently-changing global state; complex/high-frequency state often benefits from a dedicated state library)
+
+---
+
+### 11. What is prop drilling?
+
+**Answer:** The practice of passing data through multiple layers of nested components via props, even when intermediate components don't need the data themselves — solved via Context API or state management libraries.
+
+---
+
+### 12. What is the key prop used for in React lists?
+
+**Answer:** A special prop that helps React efficiently identify which list items changed, were added, or removed during re-renders, by giving each item a stable, unique identity.
+
+**Common Mistakes:** Using array index as the key when the list can be reordered/filtered — causes rendering bugs and lost component state.
+
+---
+
+### 13. Difference between controlled and uncontrolled components?
+
+**Answer:** A controlled component's form value is driven entirely by React state (value + `onChange` handler). An uncontrolled component manages its own internal DOM state, accessed via a `ref` when needed.
+
+---
+
+### 14. What is React Router used for?
+
+**Answer:** A library for handling client-side routing/navigation in single-page React applications, mapping URL paths to specific components without full page reloads.
+
+---
+
+### 15. What is the difference between `useMemo` and `useCallback`?
+
+**Answer:** `useMemo` memoizes a computed *value*, recomputing only when dependencies change. `useCallback` memoizes a *function reference*, useful for preventing unnecessary re-renders of child components that receive the function as a prop.
+
+---
+
+### 16. What is React's reconciliation process?
+
+**Answer:** The algorithm React uses to compare (diff) the new Virtual DOM tree against the previous one and determine the minimal set of actual DOM updates needed.
+
+---
+
+### 17. What are React Fragments?
+
+**Answer:** A way to group multiple children in a component's return statement without adding an extra wrapper DOM node — `<React.Fragment>` or the shorthand `<>...</>`.
+
+---
+
+### 18. What is lifting state up in React?
+
+**Answer:** Moving shared state to the closest common ancestor of components that need it, so it can be passed down as props — a pattern for coordinating state between sibling components.
+
+---
+
+### 19. What is the difference between `useRef` and `useState`?
+
+**Answer:** `useState` triggers a re-render when updated. `useRef` persists a mutable value across renders *without* triggering a re-render — commonly used for accessing DOM elements directly or storing values that shouldn't affect rendering.
+
+---
+
+### 20. What is code splitting in React? How is it implemented?
+
+**Answer:** Breaking a large bundle into smaller chunks that load on demand (rather than all at once), improving initial load performance — implemented via `React.lazy()` combined with `<Suspense>` for dynamic component imports.
+
+---
+
+*End of Parts VI–IX. Parts X–XII (Project Discussion, Scenario Questions, Coding Problems) continue next.*

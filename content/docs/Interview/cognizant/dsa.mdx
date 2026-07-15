@@ -1,0 +1,670 @@
+---
+title: Data Structures & Algorithms
+description: DSA interview questions for Cognizant.
+---
+
+## Part V – Data Structures & Algorithms (50 Questions)
+
+---
+
+## A. Complexity Fundamentals
+
+### 1. What is time complexity?
+
+**Answer:** A measure of how the runtime of an algorithm grows relative to input size (`n`), expressed using Big-O notation, describing the worst-case (typically) growth rate.
+
+**Follow-up:** What's the difference between Big-O, Big-Theta, and Big-Omega? (Upper bound, tight bound, lower bound respectively)
+
+---
+
+### 2. What is space complexity?
+
+**Answer:** A measure of the additional memory an algorithm needs relative to input size, including auxiliary data structures (not counting the input itself).
+
+**Follow-up:** What's the space complexity of an in-place sorting algorithm like quicksort? (O(log n) due to recursion stack)
+
+---
+
+### 3. Rank these complexities from fastest to slowest: O(n²), O(1), O(log n), O(n log n), O(n)
+
+**Answer:** O(1) < O(log n) < O(n) < O(n log n) < O(n²)
+
+**Interview Tip:** Be ready to give a real algorithm example for each class (O(1): array access, O(log n): binary search, O(n): linear scan, O(n log n): merge sort, O(n²): nested loops/bubble sort).
+
+---
+
+## B. Arrays & Strings
+
+### 4. How do you find the maximum and minimum element in an array?
+
+**Answer:** Single linear pass, tracking running max/min — O(n) time, O(1) space.
+
+```java
+int max = arr[0], min = arr[0];
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] > max) max = arr[i];
+    if (arr[i] < min) min = arr[i];
+}
+```
+
+---
+
+### 5. How do you reverse an array in place?
+
+**Answer:** Use a two-pointer approach — swap elements from both ends moving toward the center.
+
+```java
+int left = 0, right = arr.length - 1;
+while (left < right) {
+    int temp = arr[left];
+    arr[left] = arr[right];
+    arr[right] = temp;
+    left++; right--;
+}
+```
+
+**Complexity:** O(n) time, O(1) space.
+
+---
+
+### 6. How do you find duplicate elements in an array?
+
+**Answer:** Use a `HashSet` — iterate and add each element; if it's already present, it's a duplicate.
+
+```java
+Set<Integer> seen = new HashSet<>();
+for (int num : arr) {
+    if (!seen.add(num)) System.out.println("Duplicate: " + num);
+}
+```
+
+**Complexity:** O(n) time, O(n) space.
+
+**Follow-up:** How would you solve this with O(1) extra space if the array contains values from 1 to n?
+
+---
+
+### 7. How do you find the missing number in an array of 1 to n?
+
+**Answer:** Use the sum formula: expected sum `n*(n+1)/2` minus the actual sum of the array.
+
+```java
+int n = arr.length + 1;
+int expectedSum = n * (n + 1) / 2;
+int actualSum = 0;
+for (int num : arr) actualSum += num;
+int missing = expectedSum - actualSum;
+```
+
+**Complexity:** O(n) time, O(1) space.
+
+**Follow-up:** How would XOR-based approach work instead of sum? (Avoids overflow for very large n)
+
+---
+
+### 8. How do you check if a string is a palindrome?
+
+**Answer:** Two-pointer comparison from both ends toward the middle.
+
+```java
+boolean isPalindrome(String s) {
+    int left = 0, right = s.length() - 1;
+    while (left < right) {
+        if (s.charAt(left) != s.charAt(right)) return false;
+        left++; right--;
+    }
+    return true;
+}
+```
+
+**Complexity:** O(n) time, O(1) space.
+
+---
+
+### 9. How do you check if two strings are anagrams?
+
+**Answer:** Sort both strings and compare, or use a frequency count array/map.
+
+```java
+boolean isAnagram(String a, String b) {
+    if (a.length() != b.length()) return false;
+    int[] count = new int[26];
+    for (char c : a.toCharArray()) count[c - 'a']++;
+    for (char c : b.toCharArray()) count[c - 'a']--;
+    for (int c : count) if (c != 0) return false;
+    return true;
+}
+```
+
+**Complexity:** O(n) time, O(1) space (fixed-size count array).
+
+---
+
+### 10. How do you find the first non-repeating character in a string?
+
+**Answer:** Use a `LinkedHashMap` (or frequency array + second pass) to track character counts while preserving order, then find the first one with count 1.
+
+```java
+char firstUnique(String s) {
+    Map<Character, Integer> count = new LinkedHashMap<>();
+    for (char c : s.toCharArray()) count.merge(c, 1, Integer::sum);
+    for (Map.Entry<Character, Integer> e : count.entrySet())
+        if (e.getValue() == 1) return e.getKey();
+    return '\0';
+}
+```
+
+**Complexity:** O(n) time, O(1) space (bounded alphabet).
+
+---
+
+### 11. What is the two-pointer technique? When is it used?
+
+**Answer:** Using two indices moving through a data structure (often from opposite ends, or at different speeds) to solve problems in O(n) instead of O(n²) — common in sorted array problems, palindrome checks, and cycle detection.
+
+**Follow-up:** Give an example where two pointers move at different speeds (fast/slow — e.g., cycle detection in a linked list).
+
+---
+
+### 12. What is the sliding window technique?
+
+**Answer:** A technique for problems involving contiguous subarrays/substrings, where a "window" of indices expands/contracts as it moves across the array, avoiding recomputation from scratch — commonly O(n) instead of O(n²).
+
+**Follow-up:** Give a classic sliding window problem (e.g., "longest substring without repeating characters," "maximum sum subarray of size k").
+
+---
+
+## C. Linked Lists
+
+### 13. What is a linked list? How is it different from an array?
+
+**Answer:** A linear data structure where elements (nodes) are connected via pointers/references rather than contiguous memory. Unlike arrays, linked lists have dynamic size and O(1) insertion/deletion at known positions, but O(n) random access (no indexing).
+
+---
+
+### 14. How do you reverse a singly linked list?
+
+**Answer:** Iteratively re-point each node's `next` reference to the previous node while traversing.
+
+```java
+Node reverse(Node head) {
+    Node prev = null, curr = head;
+    while (curr != null) {
+        Node next = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+```
+
+**Complexity:** O(n) time, O(1) space.
+
+**Follow-up:** How would you do this recursively instead?
+
+---
+
+### 15. How do you detect a cycle in a linked list?
+
+**Answer:** Floyd's Cycle Detection Algorithm ("tortoise and hare") — use two pointers moving at different speeds; if they meet, there's a cycle.
+
+```java
+boolean hasCycle(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+```
+
+**Complexity:** O(n) time, O(1) space.
+
+---
+
+### 16. How do you find the middle of a linked list in one pass?
+
+**Answer:** Use slow/fast pointers — slow moves one step, fast moves two; when fast reaches the end, slow is at the middle.
+
+```java
+Node findMiddle(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return slow;
+}
+```
+
+---
+
+### 17. How do you merge two sorted linked lists?
+
+**Answer:** Use a dummy head node and compare the current nodes of both lists, attaching the smaller one at each step.
+
+```java
+Node merge(Node l1, Node l2) {
+    Node dummy = new Node(-1);
+    Node curr = dummy;
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) { curr.next = l1; l1 = l1.next; }
+        else { curr.next = l2; l2 = l2.next; }
+        curr = curr.next;
+    }
+    curr.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+**Complexity:** O(n + m) time, O(1) extra space (excluding output).
+
+---
+
+### 18. Difference between singly, doubly, and circular linked lists?
+
+**Answer:** Singly: each node points only to the next. Doubly: each node points to both next and previous, enabling backward traversal. Circular: the last node points back to the first, forming a loop (can be singly or doubly).
+
+---
+
+## D. Stacks & Queues
+
+### 19. What is a stack? What are its core operations?
+
+**Answer:** A LIFO (Last-In-First-Out) data structure. Core operations: `push` (add), `pop` (remove top), `peek`/`top` (view top), all O(1).
+
+**Follow-up:** Name a real-world use case (e.g., undo functionality, function call stack, expression parsing).
+
+---
+
+### 20. What is a queue? What are its core operations?
+
+**Answer:** A FIFO (First-In-First-Out) data structure. Core operations: `enqueue` (add to rear), `dequeue` (remove from front), `peek` (view front), all O(1) with a proper implementation (e.g., using a circular buffer or linked list).
+
+---
+
+### 21. How do you check for balanced parentheses using a stack?
+
+**Answer:** Push opening brackets onto a stack; on a closing bracket, check if it matches the top of the stack (pop if so). String is balanced if the stack is empty at the end.
+
+```java
+boolean isBalanced(String s) {
+    Deque<Character> stack = new ArrayDeque<>();
+    Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '[' || c == '{') stack.push(c);
+        else if (pairs.containsKey(c)) {
+            if (stack.isEmpty() || stack.pop() != pairs.get(c)) return false;
+        }
+    }
+    return stack.isEmpty();
+}
+```
+
+**Complexity:** O(n) time, O(n) space.
+
+---
+
+### 22. How would you implement a queue using two stacks?
+
+**Answer:** Use one stack for enqueue operations. For dequeue, if the second (output) stack is empty, pop everything from the input stack into it (reversing order), then pop from the output stack.
+
+**Complexity:** Amortized O(1) per operation.
+
+**Follow-up:** Why is this amortized O(1) and not always O(1)?
+
+---
+
+### 23. What is a Deque? How does it differ from a regular queue?
+
+**Answer:** A double-ended queue that allows insertion and removal from both the front and rear, making it usable as both a stack and a queue. In Java, `ArrayDeque` is the common implementation.
+
+---
+
+### 24. What is a priority queue? How is it implemented internally in Java?
+
+**Answer:** A queue where elements are dequeued based on priority (not insertion order) — the highest (or lowest) priority element comes out first. Java's `PriorityQueue` is implemented internally using a binary heap.
+
+**Follow-up:** What's the time complexity of insertion and extraction in a heap-backed priority queue? (O(log n) for both)
+
+---
+
+## E. Trees & Binary Search Trees
+
+### 25. What is a tree? What is a binary tree?
+
+**Answer:** A tree is a hierarchical, non-linear data structure with a root node and child nodes, no cycles. A binary tree restricts each node to at most two children (left and right).
+
+---
+
+### 26. What are the different tree traversal methods?
+
+**Answer:** Depth-first: Inorder (left → root → right), Preorder (root → left → right), Postorder (left → right → root). Breadth-first: Level-order (using a queue).
+
+**Follow-up:** For a Binary *Search* Tree, what does inorder traversal produce? (Elements in sorted ascending order)
+
+---
+
+### 27. Write code for inorder traversal of a binary tree.
+
+**Answer:**
+```java
+void inorder(Node root, List<Integer> result) {
+    if (root == null) return;
+    inorder(root.left, result);
+    result.add(root.val);
+    inorder(root.right, result);
+}
+```
+
+**Complexity:** O(n) time, O(h) space for recursion stack (h = tree height).
+
+---
+
+### 28. What is a Binary Search Tree (BST)?
+
+**Answer:** A binary tree where, for every node, all values in the left subtree are smaller and all values in the right subtree are larger, enabling O(log n) average search/insert/delete (in a balanced tree).
+
+**Follow-up:** What's the worst-case time complexity for BST operations, and when does it occur? (O(n) — when the tree becomes skewed, e.g., inserting sorted data sequentially)
+
+---
+
+### 29. How do you search for a value in a BST?
+
+**Answer:**
+```java
+boolean search(Node root, int target) {
+    if (root == null) return false;
+    if (root.val == target) return true;
+    return target < root.val ? search(root.left, target) : search(root.right, target);
+}
+```
+
+**Complexity:** O(h), where h is tree height — O(log n) average, O(n) worst case.
+
+---
+
+### 30. What is a balanced binary tree? Name examples.
+
+**Answer:** A tree where the height difference between left and right subtrees of any node is bounded (typically by 1), guaranteeing O(log n) operations. Examples: AVL Tree, Red-Black Tree.
+
+**Follow-up:** Which self-balancing tree does Java's `TreeMap`/`TreeSet` use internally? (Red-Black Tree)
+
+---
+
+### 31. How do you find the height of a binary tree?
+
+**Answer:**
+```java
+int height(Node root) {
+    if (root == null) return 0;
+    return 1 + Math.max(height(root.left), height(root.right));
+}
+```
+
+**Complexity:** O(n) time.
+
+---
+
+### 32. How do you check if a binary tree is a valid BST?
+
+**Answer:** Recursively validate each node against a valid min/max range, narrowing the range as you go left/right — a plain inorder-must-be-sorted check also works.
+
+```java
+boolean isValidBST(Node node, long min, long max) {
+    if (node == null) return true;
+    if (node.val <= min || node.val >= max) return false;
+    return isValidBST(node.left, min, node.val) && isValidBST(node.right, node.val, max);
+}
+```
+
+---
+
+### 33. What is a heap? What are its types?
+
+**Answer:** A complete binary tree satisfying the heap property — Min-Heap (parent ≤ children) or Max-Heap (parent ≥ children). Commonly implemented via an array for efficient index-based parent/child access.
+
+**Follow-up:** What is heapify, and what's its time complexity? (O(log n) for a single element, O(n) to build a heap from an unsorted array)
+
+---
+
+## F. Hashing
+
+### 34. What is hashing? Why is it useful?
+
+**Answer:** A technique that maps data (keys) to array indices using a hash function, enabling average O(1) lookup, insertion, and deletion — the basis for `HashMap`/`HashSet`.
+
+---
+
+### 35. How are hash collisions handled?
+
+**Answer:** Common strategies: chaining (each bucket holds a linked list/tree of colliding entries — used by Java's `HashMap`) and open addressing (probing for the next free slot).
+
+**Follow-up:** What did Java 8 change about `HashMap`'s collision handling? (Buckets convert from linked lists to red-black trees when they grow beyond a threshold, improving worst-case lookup from O(n) to O(log n))
+
+---
+
+### 36. How would you find the first pair of numbers in an array that sum to a target (Two Sum)?
+
+**Answer:** Use a `HashMap` to store each number's complement as you iterate — O(n) time instead of O(n²) with nested loops.
+
+```java
+int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> seen = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (seen.containsKey(complement)) return new int[]{seen.get(complement), i};
+        seen.put(nums[i], i);
+    }
+    return new int[]{-1, -1};
+}
+```
+
+**Complexity:** O(n) time, O(n) space.
+
+**Interview Tip:** This is one of the most commonly asked coding questions in fresher interviews — know it by heart.
+
+---
+
+## G. Sorting
+
+### 37. Name common sorting algorithms and their average time complexities.
+
+**Answer:** Bubble Sort O(n²), Selection Sort O(n²), Insertion Sort O(n²), Merge Sort O(n log n), Quick Sort O(n log n) average / O(n²) worst, Heap Sort O(n log n).
+
+---
+
+### 38. How does Bubble Sort work?
+
+**Answer:** Repeatedly compares adjacent elements and swaps them if out of order, "bubbling" the largest element to the end each pass.
+
+```java
+void bubbleSort(int[] arr) {
+    for (int i = 0; i < arr.length - 1; i++)
+        for (int j = 0; j < arr.length - 1 - i; j++)
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j]; arr[j] = arr[j + 1]; arr[j + 1] = temp;
+            }
+}
+```
+
+**Complexity:** O(n²) time, O(1) space.
+
+---
+
+### 39. How does Merge Sort work? What's the time complexity?
+
+**Answer:** A divide-and-conquer algorithm: recursively splits the array into halves, sorts each half, then merges the two sorted halves.
+
+**Complexity:** O(n log n) time (always, including worst case), O(n) space (not in-place).
+
+**Follow-up:** Why is Merge Sort preferred for linked lists over Quick Sort? (No random access needed, and merge sort's O(n) space is less of a concern since linked lists don't need contiguous memory)
+
+---
+
+### 40. How does Quick Sort work? What's the time complexity?
+
+**Answer:** Picks a pivot element, partitions the array so smaller elements go left and larger go right, then recursively sorts each partition.
+
+**Complexity:** O(n log n) average, O(n²) worst case (e.g., already-sorted array with a poor pivot choice), O(log n) space (recursion stack).
+
+**Follow-up:** How can worst-case behavior be mitigated? (Randomized pivot selection, or median-of-three pivot choice)
+
+---
+
+### 41. Is Merge Sort stable? Is Quick Sort stable?
+
+**Answer:** Merge Sort is stable (preserves relative order of equal elements). Quick Sort is generally not stable (due to swapping during partitioning).
+
+**Follow-up:** What does "stability" matter for in practice? (Sorting objects by a secondary key while preserving order from a prior sort on a primary key)
+
+---
+
+## H. Searching & Recursion
+
+### 42. How does Binary Search work? What's the precondition?
+
+**Answer:** Repeatedly halves the search range by comparing the target to the middle element — requires the array to be sorted.
+
+```java
+int binarySearch(int[] arr, int target) {
+    int low = 0, high = arr.length - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == target) return mid;
+        else if (arr[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1;
+}
+```
+
+**Complexity:** O(log n) time, O(1) space (iterative version).
+
+**Common Mistakes:** Writing `(low + high) / 2` instead of `low + (high - low) / 2` — the former can overflow for very large arrays.
+
+---
+
+### 43. What is recursion? What are its essential components?
+
+**Answer:** A function calling itself to solve smaller instances of the same problem. Essential components: a base case (stopping condition) and a recursive case that moves toward the base case.
+
+**Follow-up:** What happens if there's no base case, or it's never reached? (`StackOverflowError`)
+
+---
+
+### 44. Write a recursive function to compute factorial.
+
+**Answer:**
+```java
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+```
+
+**Complexity:** O(n) time, O(n) space (call stack).
+
+---
+
+### 45. Write a recursive function to compute the nth Fibonacci number. What's a more efficient approach?
+
+**Answer:**
+```java
+int fib(int n) {
+    if (n <= 1) return n;
+    return fib(n - 1) + fib(n - 2);
+}
+```
+
+**Explanation:** Naive recursion is O(2ⁿ) due to repeated subproblem computation. A more efficient approach uses memoization (top-down DP) or an iterative bottom-up approach — both O(n) time.
+
+**Follow-up:** Write the memoized version.
+
+```java
+int fibMemo(int n, int[] memo) {
+    if (n <= 1) return n;
+    if (memo[n] != 0) return memo[n];
+    return memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+}
+```
+
+---
+
+### 46. What is the difference between recursion and iteration?
+
+**Answer:** Recursion solves a problem by calling itself with smaller inputs, using the call stack implicitly; iteration uses explicit loops. Recursion can be more readable for naturally recursive problems (trees, divide-and-conquer) but risks stack overflow and typically has more overhead than iteration.
+
+**Follow-up:** Can every recursive function be converted to an iterative one? (Yes, in principle — often using an explicit stack to simulate the call stack)
+
+---
+
+### 47. What is tail recursion? Does Java optimize it?
+
+**Answer:** Tail recursion is when the recursive call is the last operation in the function, with no pending computation after it. Java does **not** perform tail-call optimization (unlike some functional languages), so deep tail-recursive calls in Java can still cause `StackOverflowError`.
+
+---
+
+## I. Additional Common Problems
+
+### 48. How would you find the intersection of two arrays?
+
+**Answer:** Use a `HashSet` for one array, then check membership while iterating the second.
+
+```java
+List<Integer> intersection(int[] a, int[] b) {
+    Set<Integer> set = new HashSet<>();
+    for (int x : a) set.add(x);
+    List<Integer> result = new ArrayList<>();
+    for (int y : b) if (set.remove(y)) result.add(y);
+    return result;
+}
+```
+
+**Complexity:** O(n + m) time, O(n) space.
+
+---
+
+### 49. How would you rotate an array by k positions?
+
+**Answer:** Reverse the whole array, then reverse the first k elements, then reverse the remaining n-k elements — an elegant in-place O(n) time, O(1) space solution.
+
+```java
+void rotate(int[] arr, int k) {
+    k %= arr.length;
+    reverse(arr, 0, arr.length - 1);
+    reverse(arr, 0, k - 1);
+    reverse(arr, k, arr.length - 1);
+}
+```
+
+**Follow-up:** What's the brute-force approach and why is this reversal trick better? (Brute-force uses an extra array — O(n) space; the reversal trick achieves O(1) space)
+
+---
+
+### 50. How would you find the longest common prefix among an array of strings?
+
+**Answer:** Take the first string as a reference prefix, then progressively trim it by comparing character-by-character against every other string.
+
+```java
+String longestCommonPrefix(String[] strs) {
+    if (strs.length == 0) return "";
+    String prefix = strs[0];
+    for (int i = 1; i < strs.length; i++) {
+        while (!strs[i].startsWith(prefix)) {
+            prefix = prefix.substring(0, prefix.length() - 1);
+            if (prefix.isEmpty()) return "";
+        }
+    }
+    return prefix;
+}
+```
+
+**Complexity:** O(S) where S is the sum of all characters in all strings (worst case).
+
+---
+
+*End of Part V. Parts VI–IX (OS, Computer Networks, Git, React) continue next.*
