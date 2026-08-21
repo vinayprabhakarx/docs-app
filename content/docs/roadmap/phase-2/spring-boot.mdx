@@ -1,0 +1,88 @@
+---
+title: Spring Boot
+description: "Learn Spring Boot from scratch: REST APIs, Spring Data JPA, Security, Testing, and Build Tools."
+---
+
+## Overview
+
+Spring Boot is the standard framework for building modern enterprise Java applications and microservices. This checklist covers fundamental Spring concepts, RESTful API design, database persistence with Spring Data JPA, authentication and authorization with Spring Security, automated testing with JUnit 5/Mockito, and project build systems.
+
+> **Tip:** Focus on building clean layered architecture (`Controller` ➔ `Service` ➔ `Repository` ➔ `Entity`/`DTO`). Ensure you handle exceptions globally and write tests for each layer.
+
+---
+
+## Spring Fundamentals
+
+- [ ] Spring Framework vs Spring Boot — why Boot?
+- [ ] Dependency Injection (DI) & Inversion of Control (IoC)
+- [ ] `@Component`, `@Service`, `@Repository`, `@Controller`
+- [ ] `@Autowired`, `@Qualifier`, `@Primary`
+- [ ] `@Configuration`, `@Bean`
+- [ ] `application.properties` / `application.yml`
+- [ ] Profiles — `dev`, `prod`, `test`
+- [ ] Spring Boot DevTools — hot reload
+
+---
+
+## REST API Development
+
+- [ ] `@RestController`, `@RequestMapping`
+- [ ] `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping`
+- [ ] `@PathVariable`, `@RequestParam`, `@RequestBody`, `@RequestHeader`
+- [ ] `ResponseEntity` & HTTP status codes
+- [ ] Request validation — `@Valid`, `@NotNull`, `@NotBlank`, `@Size`, `@Email`, `@Pattern`
+- [ ] Custom validators
+- [ ] Global exception handling — `@ControllerAdvice`, `@ExceptionHandler`
+- [ ] Pagination & sorting — `Pageable`, `Page<T>`, `Sort`
+- [ ] HATEOAS (concept)
+- [ ] API versioning strategies
+- [ ] Swagger / OpenAPI 3 — `springdoc-openapi`
+
+---
+
+## Spring Data JPA
+
+- [ ] Entity mapping — `@Entity`, `@Table`, `@Id`, `@GeneratedValue`
+- [ ] `@Column`, `@Transient`, `@Lob`, `@Enumerated`
+- [ ] Relationships — `@OneToOne`, `@OneToMany`, `@ManyToOne`, `@ManyToMany`
+- [ ] `@JoinColumn`, `@JoinTable`, cascade types
+- [ ] `JpaRepository` — built-in CRUD + custom methods
+- [ ] Derived queries — `findByEmail`, `findByNameContainingIgnoreCase`
+- [ ] `@Query` — JPQL & native SQL
+- [ ] `@Transactional` — propagation, isolation
+- [ ] Auditing — `@CreatedDate`, `@LastModifiedDate`, `@CreatedBy`
+- [ ] Lazy vs Eager — `FetchType.LAZY`, `FetchType.EAGER`
+- [ ] N+1 problem — `@EntityGraph`, `JOIN FETCH`
+- [ ] Database migration — Flyway or Liquibase
+
+---
+
+## Spring Security
+
+- [ ] Authentication vs Authorization
+- [ ] `SecurityFilterChain` configuration
+- [ ] JWT — generation, validation, refresh tokens
+- [ ] `BCryptPasswordEncoder`
+- [ ] Role-based access — `@PreAuthorize`, `hasRole()`, `hasAuthority()`
+- [ ] CORS configuration
+- [ ] OAuth2 / Social Login (concept-level)
+- [ ] Method-level security
+
+---
+
+## Testing
+
+- [ ] JUnit 5 — `@Test`, `@BeforeEach`, `@AfterEach`, `@ParameterizedTest`
+- [ ] Assertions — `assertEquals`, `assertThrows`, `assertNotNull`
+- [ ] Mockito — `@Mock`, `@InjectMocks`, `when().thenReturn()`, `verify()`
+- [ ] `@SpringBootTest`, `@WebMvcTest`, `MockMvc`
+- [ ] `@DataJpaTest` — repository testing
+- [ ] TestContainers (concept)
+
+---
+
+## Build Tools
+
+- [ ] Maven — `pom.xml`, dependencies, plugins, lifecycle (`clean`, `compile`, `test`, `package`)
+- [ ] Gradle basics — `build.gradle`, `dependencies`, tasks
+- [ ] Dependency management & version conflicts

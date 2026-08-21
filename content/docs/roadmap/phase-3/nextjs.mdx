@@ -1,0 +1,107 @@
+---
+title: Next.js
+description: "Learn Next.js: App Router, Server Components, data fetching, rendering strategies, and deployment."
+---
+
+## Overview
+
+**Next.js** is the leading React framework for building production-ready, fullstack web applications. With the introduction of the **App Router** and **React Server Components (RSC)**, Next.js combines the developer experience of React with server-side capabilities, optimized data fetching, hybrid rendering strategies, and built-in performance optimizations.
+
+As a fullstack Java engineer, mastering Next.js allows you to build lightning-fast, SEO-optimized frontend interfaces that integrate seamlessly with your Spring Boot REST APIs and distributed microservices.
+
+> **Tip:** Always design your Next.js components as Server Components by default. Only add the `'use client'` directive when you need client-side interactivity (state, event handlers, lifecycle hooks) or browser-only APIs.
+
+---
+
+## Next.js Fundamentals
+
+Master the core architectural building blocks and file-system routing conventions introduced in Next.js 14+.
+
+- [ ] **App Router (Next.js 14+)** — Understand the `app/` directory paradigm, file-based routing hierarchy, and conventions (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`).
+- [ ] **Server Components vs Client Components** — Learn the boundary rules:
+  - Server Components (default): Render on server, zero client bundle size, direct access to backend/secrets, no React state/hooks.
+  - Client Components (`'use client'`): Render on client & server (SSR), support `useState`, `useEffect`, event listeners (`onClick`, `onChange`), and browser APIs.
+- [ ] **Layouts & Templates** — Implement persistent layouts (`layout.tsx`), per-page state reset with `template.tsx`, fallback loading states with `loading.tsx` (React Suspense), and error handling with `error.tsx` (Error Boundaries).
+- [ ] **Dynamic Routes** — Define parameter-driven routes:
+  - Single segment: `app/products/[id]/page.tsx` (`params.id`)
+  - Catch-all routes: `app/docs/[...slug]/page.tsx` (`params.slug` array)
+  - Optional catch-all: `app/docs/[[...slug]]/page.tsx`
+- [ ] **Route Groups** — Organize routes without affecting URL pathname using parentheses: `app/(auth)/login/page.tsx` and `app/(dashboard)/settings/page.tsx`.
+- [ ] **Error Handling & 404** — Custom 404 pages with `not-found.tsx`, programmatic triggering with `notFound()`, and global error boundaries with `global-error.tsx`.
+- [ ] **Metadata API** — Configure static and dynamic metadata for SEO, Open Graph tags, Twitter cards, and `<meta>` elements using `export const metadata` and `generateMetadata()`.
+- [ ] **Image Optimization (`next/image`)** — Automatic resizing, modern format conversion (WebP/AVIF), lazy loading, visual stability (preventing CLS), `priority` attribute for LCP images, and `sizes` attributes.
+- [ ] **Navigation & Prefetching (`next/link`)** — Client-side soft navigation with automatic viewport prefetching and active link detection via `usePathname()`.
+- [ ] **Font Optimization (`next/font`)** — Zero-layout-shift font loading for Google Fonts (`next/font/google`) and self-hosted fonts (`next/font/local`).
+
+---
+
+## Data Fetching & Rendering Strategies
+
+Learn how Next.js unifies multiple rendering strategies into a single composable framework.
+
+- [ ] **Server-Side Rendering (SSR)** — Dynamic on-demand server rendering using `fetch(url, { cache: 'no-store' })` or dynamic functions like `cookies()` and `headers()`.
+- [ ] **Static Site Generation (SSG)** — Pre-rendering static HTML at build time and generating static parameter sets with `generateStaticParams()`.
+- [ ] **Incremental Static Regeneration (ISR)** — Rebuilding static pages in the background without a full redeploy using time-based revalidation:
+  ```typescript
+  // Fetch with ISR (revalidates every 60 seconds)
+  const res = await fetch('https://api.example.com/products', {
+    next: { revalidate: 60 }
+  });
+  ```
+- [ ] **React Server Components & Streaming** — Stream UI chunks progressively using `<Suspense fallback={<Skeleton />}>` to dramatically improve Time to First Byte (TTFB) and First Contentful Paint (FCP).
+- [ ] **Route Handlers** — Create custom backend API endpoints inside `app/api/.../route.ts` supporting standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`, `PATCH`).
+- [ ] **Server Actions** — Perform asynchronous server-side mutations directly from React forms or event handlers using `'use server'`:
+  ```typescript
+  // app/actions.ts
+  'use server';
+
+  import { revalidatePath } from 'next/cache';
+
+  export async function createItem(formData: FormData) {
+    const title = formData.get('title');
+    await db.item.create({ data: { title } });
+    revalidatePath('/items');
+  }
+  ```
+- [ ] **Caching Strategies** — Deep dive into the four-tier Next.js caching architecture:
+  - Request Memoization (per-render deduplication)
+  - Data Cache (`fetch` persistent cache across requests)
+  - Full Route Cache (static HTML/RSC payload on server)
+  - Router Cache (in-memory client-side cache)
+  - Cache Invalidation using `revalidatePath()` and `revalidateTag()`.
+
+---
+
+## Next.js Advanced
+
+Scale, secure, and deploy high-performance enterprise Next.js applications.
+
+- [ ] **Middleware** — Execute code before requests complete via `middleware.ts` for authentication verification, JWT validation, geo-routing, security headers, redirects, and rewrites.
+- [ ] **Parallel & Intercepting Routes** — Implement complex UI patterns:
+  - Parallel routes (`@modal`, `@analytics`) to render multiple pages simultaneously within the same layout.
+  - Intercepting routes (`(.)photo/[id]`, `(..)cart`) for modal previews while maintaining shareable deep-link URLs.
+- [ ] **Environment Variables** — Manage runtime configurations using `.env`, `.env.local`, `.env.production`, and expose client-safe variables using the `NEXT_PUBLIC_` prefix.
+- [ ] **Dynamic Imports & Code Splitting** — Lazy-load heavy client components and third-party libraries using `next/dynamic` to reduce initial JavaScript bundle size:
+  ```typescript
+  import dynamic from 'next/dynamic';
+
+  const ChartComponent = dynamic(() => import('@/components/HeavyChart'), {
+    ssr: false,
+    loading: () => <p>Loading chart...</p>
+  });
+  ```
+- [ ] **Deployment Strategies**:
+  - **Vercel**: Edge network, zero-config CI/CD, preview deployments, automatic ISR edge caching.
+  - **Docker (Self-Hosted)**: Standalone output mode (`output: 'standalone'` in `next.config.mjs`) for lightweight container images deployed to AWS ECS/EC2 or Kubernetes.
+- [ ] **Bundle Analysis & Performance Optimization** — Analyze webpack bundles using `@next/bundle-analyzer`, optimize Core Web Vitals (LCP, FID/INP, CLS), and configure Next.js compiler settings.
+
+---
+
+## Quick Reference / Cheat Sheet
+
+| Rendering Mode | Mechanism | When to Use |
+|---|---|---|
+| **Static (SSG)** | Build time pre-rendering | Marketing pages, docs, blog posts, static product catalogs |
+| **ISR** | `revalidate: N` / on-demand tag | E-commerce catalogs, news feeds, content updated occasionally |
+| **Dynamic (SSR)** | Request time rendering | User profiles, real-time dashboards, search results |
+| **Client-Side (CSR)** | `'use client'` + hooks / SWR | Complex interactive widgets, canvas, device APIs, private settings |

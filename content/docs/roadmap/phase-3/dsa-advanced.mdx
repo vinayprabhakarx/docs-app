@@ -1,0 +1,110 @@
+---
+title: DSA Advanced
+description: "Master Graphs, Dynamic Programming, Tries, and Greedy algorithms."
+---
+
+## Overview
+
+Advanced Data Structures and Algorithms (DSA) form the core of high-level technical interviews at top tier tech companies (FAANG/MANG and high-growth product companies). This phase focuses on mastering complex non-linear structures, graph algorithms, and optimization paradigms including **Dynamic Programming**, **Tries**, and **Greedy strategies**.
+
+By the end of Phase 3, you will have completed **200+ cumulative LeetCode problems** across all core and advanced patterns.
+
+> **Tip:** For Dynamic Programming, always formulate the recursive relation and base cases first (top-down memoization) before converting it into an iterative tabulation (bottom-up) approach for $O(1)$ space optimization.
+
+---
+
+## Graphs
+
+Graphs model complex networks, dependencies, maps, and relationship structures.
+
+### Graph Fundamentals & Traversals
+- [ ] **Graph Representation** — Understand trade-offs between:
+  - **Adjacency List**: `Map<Integer, List<Integer>>` or `List<List<Integer>>` — Space $O(V + E)$, optimal for sparse graphs.
+  - **Adjacency Matrix**: `int[][]` — Space $O(V^2)$, optimal for dense graphs and $O(1)$ edge lookups.
+- [ ] **Breadth-First Search (BFS)** — Level-order traversal using a `Queue`, finding shortest path in unweighted graphs, visited tracking.
+- [ ] **Depth-First Search (DFS)** — Recursive and iterative (stack-based) path exploration, backtrack state handling.
+- [ ] **Connected Components & Grid Traversals** — Counting components, Number of Islands, Max Area of Island, Flood Fill, Pacific Atlantic Water Flow.
+- [ ] **Cycle Detection**:
+  - Undirected Graphs: DFS with parent tracking or Union-Find.
+  - Directed Graphs: DFS with 3-color state tracking (`0 = unvisited`, `1 = visiting`, `2 = visited`) or Kahn's algorithm.
+
+### Advanced Graph Algorithms
+- [ ] **Topological Sort** — Ordering of directed acyclic graphs (DAG):
+  - **Kahn's Algorithm (BFS)**: In-degree array + Queue of 0 in-degree nodes (Course Schedule I & II).
+  - **DFS-based**: Reverse post-order traversal using a call stack/list.
+- [ ] **Shortest Path Algorithms**:
+  - **Dijkstra's Algorithm**: Single-source shortest path on non-negative weighted graphs using a `PriorityQueue` ($O((V + E) \log V)$).
+  - **Bellman-Ford / Floyd-Warshall** (Concept): Handling negative weight edges and all-pairs shortest paths.
+- [ ] **Disjoint Set Union (DSU / Union-Find)** — `find(x)` with path compression, `union(x, y)` by rank/size ($O(\alpha(N))$ nearly constant time), Redundant Connection, Accounts Merge.
+- [ ] **Minimum Spanning Tree (MST)**:
+  - **Kruskal's Algorithm**: Sort all edges by weight + Union-Find cycle prevention ($O(E \log E)$).
+  - **Prim's Algorithm**: Greedy node expansion with PriorityQueue ($O(E \log V)$).
+- [ ] **Practice Target**: Solve **20 Graph problems** covering BFS, DFS, TopoSort, Dijkstra, and Union-Find.
+
+---
+
+## Dynamic Programming (DP)
+
+Master identifying overlapping subproblems and optimal substructure to break exponential complexity down to polynomial time.
+
+### Core Paradigms
+- [ ] **Top-Down (Memoization)** — Recursion + caching table (`Integer[]` / `Map`) to eliminate redundant recursive calls.
+- [ ] **Bottom-Up (Tabulation)** — Iterative table filling from base cases up to the target state.
+- [ ] **Space Optimization** — Reducing $O(N)$ or $O(N \times M)$ DP tables to $O(1)$ or $O(M)$ by keeping only previous row/state variables.
+
+### 1D Dynamic Programming
+- [ ] **Fibonacci & Step Patterns** — Climbing Stairs, Min Cost Climbing Stairs, House Robber I & II, Decode Ways.
+- [ ] **Coin Change Patterns** — Coin Change (minimum coins), Coin Change II (number of combinations).
+- [ ] **Longest Increasing Subsequence (LIS)** — $O(N^2)$ DP solution and $O(N \log N)$ Patience Sorting with Binary Search.
+- [ ] **Word Break** — Partitioning strings using DP and dictionary sets.
+
+### 2D Dynamic Programming & Classic Subproblems
+- [ ] **Grid Paths** — Unique Paths I & II, Minimum Path Sum, Triangle.
+- [ ] **0/1 Knapsack & Bounded/Unbounded Variants** — Partition Equal Subset Sum, Target Sum, Unbounded Knapsack.
+- [ ] **Strings & Subsequences**:
+  - Longest Common Subsequence (LCS)
+  - Longest Palindromic Substring & Subsequence
+  - Edit Distance (Levenshtein Distance)
+  - Distinct Subsequences
+- [ ] **Interval & Matrix DP** — Burst Balloons, Matrix Chain Multiplication (concept).
+- [ ] **Practice Target**: Solve **25 DP problems** across 1D, 2D, Knapsack, and String patterns.
+
+---
+
+## Tries (Prefix Trees)
+
+Optimize string search, prefix matching, and word games with $O(L)$ time complexity where $L$ is word length.
+
+- [ ] **Trie Data Structure Implementation** — `TrieNode` containing children array (`TrieNode[26]`) and boolean `isEndOfWord`.
+- [ ] **Core Operations** — `insert(word)`, `search(word)`, `startsWith(prefix)`, `delete(word)`.
+- [ ] **Autocomplete & Prefix Search** — Designing search suggestion systems, dictionary lookups, and wildcard queries (`.`).
+- [ ] **Word Search II (Boggle with Trie)** — Backtracking grid traversal combined with Trie prefix pruning to avoid redundant recursive branches.
+- [ ] **Maximum XOR of Two Numbers in an Array** — Bitwise Trie for fast XOR pair matching.
+
+---
+
+## Greedy Algorithms
+
+Make locally optimal choices at each stage to produce a global optimum.
+
+- [ ] **Greedy Choice Property vs Dynamic Programming** — When greedy works (proof of correctness) vs when DP is required due to subproblem dependencies.
+- [ ] **Interval Scheduling & Activity Selection** — Non-overlapping intervals, Merge Intervals, Meeting Rooms I & II, Minimum Number of Arrows to Burst Balloons.
+- [ ] **Classic Greedy Problems**:
+  - Jump Game I (reachability) & Jump Game II (minimum jumps)
+  - Gas Station (circular tour)
+  - Candy (two-pass distribution)
+  - Task Scheduler (frequency-based slotting)
+- [ ] **Huffman Coding** (Concept) — Greedy prefix-free compression tree with PriorityQueue.
+- [ ] **Practice Target**: Solve **10 Greedy problems** focusing on interval partitioning and scheduling.
+
+---
+
+## Problem-Solving Roadmap Summary
+
+| Topic Area | Target Count | Key LeetCode Problems |
+|---|---|---|
+| **Graphs** | 20 problems | *Number of Islands (200), Course Schedule (207), Network Delay Time (743), Redundant Connection (684)* |
+| **Dynamic Programming** | 25 problems | *Coin Change (322), House Robber (198), Longest Common Subsequence (1143), Edit Distance (72)* |
+| **Tries** | 5 problems | *Implement Trie (208), Design Add and Search Words (211), Word Search II (212)* |
+| **Greedy** | 10 problems | *Merge Intervals (56), Jump Game (55), Gas Station (134), Task Scheduler (621)* |
+| **Phase 3 Total Target** | **60+ problems** | **Cumulative Total: 200+ LeetCode Problems** |

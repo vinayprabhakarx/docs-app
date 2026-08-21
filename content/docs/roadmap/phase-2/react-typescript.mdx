@@ -1,0 +1,79 @@
+---
+title: React + TypeScript
+description: "Learn React.js with TypeScript, hooks, ecosystem libraries, and Tailwind CSS."
+---
+
+## Overview
+
+Modern frontend engineering requires a robust type system, predictable component composition, and battle-tested ecosystem libraries. This checklist guides you through learning TypeScript directly within React, mastering React hooks and patterns, integrating standard ecosystem tools (Routing, Zustand, TanStack Query, React Hook Form + Zod), and crafting responsive user interfaces with Tailwind CSS and Shadcn/UI.
+
+> **Tip:** Do not learn TypeScript in isolation. Apply TypeScript directly when defining React component props, hook states, form schemas, and API response structures.
+
+---
+
+## TypeScript (Learn WITH React, not separately)
+
+- [ ] Types — `string`, `number`, `boolean`, `any`, `unknown`, `void`, `never`, `null`, `undefined`
+- [ ] Arrays & tuples — `string[]`, `[string, number]`
+- [ ] Interfaces vs Types — when to use which
+- [ ] Union types `|` & intersection types `&`
+- [ ] Enums — string & numeric
+- [ ] Type assertions (`as`) & type guards (`typeof`, `in`, `instanceof`)
+- [ ] Generics — `<T>`, constrained generics `<T extends Base>`
+- [ ] Utility types — `Partial<T>`, `Required<T>`, `Pick<T, K>`, `Omit<T, K>`, `Record<K, V>`, `Readonly<T>`
+- [ ] `keyof`, `typeof`, mapped types, conditional types
+- [ ] `tsconfig.json` — `strict`, `target`, `module`, `paths`
+
+---
+
+## React Fundamentals
+
+- [ ] Project setup — Vite + React + TypeScript
+- [ ] JSX / TSX — syntax, expressions, fragments
+- [ ] Components — functional components, typing props (`interface Props {}`)
+- [ ] `useState<T>` — primitive & object state
+- [ ] Event handling — typing `React.ChangeEvent`, `React.FormEvent`, `React.MouseEvent`
+- [ ] Conditional rendering — `&&`, ternary, early return
+- [ ] Lists & keys — `map()`, why keys matter
+- [ ] Component composition & `children` prop
+
+---
+
+## React Hooks Deep Dive
+
+- [ ] `useState` — complex state, functional updates, lazy init
+- [ ] `useEffect` — dependencies array, cleanup, fetching data
+- [ ] `useRef` — DOM refs, mutable values, `forwardRef`
+- [ ] `useMemo` & `useCallback` — memoization, when to use
+- [ ] `useReducer` — complex state logic, typing dispatch
+- [ ] `useContext` — context API, Provider pattern, avoiding prop drilling
+- [ ] Custom hooks — `useFetch`, `useLocalStorage`, `useDebounce`
+
+---
+
+## React Ecosystem (Essential Libraries)
+
+- [ ] React Router v6 — `Routes`, `Route`, `Link`, `NavLink`, `Outlet`
+- [ ] `useNavigate`, `useParams`, `useSearchParams`, `useLocation`
+- [ ] Protected routes / auth guards
+- [ ] Nested routes, layout routes
+- [ ] State management — **Zustand** (simple) or Redux Toolkit (if job requires)
+- [ ] Forms — **React Hook Form** + **Zod** validation
+- [ ] Data fetching — **TanStack Query (React Query)** — queries, mutations, caching, invalidation
+- [ ] HTTP client — **Axios** — interceptors, instances, error handling
+- [ ] Toast/notifications — `react-hot-toast` or `sonner`
+- [ ] Icons — `lucide-react` or `react-icons`
+
+---
+
+## Tailwind CSS (Learn as you build React)
+
+- [ ] Installation & `tailwind.config.js`
+- [ ] Utility-first approach — spacing, colors, typography
+- [ ] Responsive — `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
+- [ ] Dark mode — `dark:` variant
+- [ ] Flexbox & Grid utilities
+- [ ] Custom theme — colors, fonts, breakpoints
+- [ ] Component patterns — cards, navbars, modals, forms, tables
+- [ ] `@apply` directive, `cn()` utility (clsx + tailwind-merge)
+- [ ] **Shadcn/UI** — install components, customize, compose

@@ -1,0 +1,58 @@
+---
+title: MongoDB
+description: "Learn MongoDB: document model, CRUD operations, aggregation pipeline, schema design, and Spring Data MongoDB."
+---
+
+## Overview
+
+MongoDB is the premier document-oriented NoSQL database, offering horizontal scalability, flexible schema design, and high performance for unstructured or semi-structured data. This checklist covers core MongoDB fundamentals, CRUD operations, aggregation pipelines, indexing strategies, and integration with Spring Boot via Spring Data MongoDB.
+
+> **Tip:** Practice writing queries both in MongoDB Compass / Shell and within Spring Data repositories using `MongoRepository` and `MongoTemplate`.
+
+---
+
+## MongoDB Fundamentals
+
+- [ ] Document model — JSON/BSON, collections, documents
+- [ ] MongoDB vs SQL — when to use NoSQL
+- [ ] Install locally / use MongoDB Atlas (cloud)
+- [ ] MongoDB Shell & Compass GUI
+
+---
+
+## CRUD Operations
+
+- [ ] `insertOne`, `insertMany`
+- [ ] `find`, `findOne` — query operators: `$eq`, `$gt`, `$lt`, `$gte`, `$lte`, `$ne`
+- [ ] `$in`, `$nin`, `$and`, `$or`, `$not`, `$regex`
+- [ ] Projection — include/exclude fields
+- [ ] `updateOne`, `updateMany` — `$set`, `$unset`, `$push`, `$pull`, `$inc`, `$addToSet`
+- [ ] `deleteOne`, `deleteMany`
+- [ ] `sort`, `limit`, `skip`
+
+---
+
+## Aggregation Pipeline
+
+- [ ] `$match`, `$group`, `$sort`, `$project`, `$limit`
+- [ ] `$lookup` — join equivalent
+- [ ] `$unwind`, `$addFields`, `$count`
+- [ ] Accumulator operators — `$sum`, `$avg`, `$max`, `$min`, `$first`
+
+---
+
+## Schema Design & Indexing
+
+- [ ] Embedding vs referencing — when to use which
+- [ ] One-to-one, one-to-many, many-to-many patterns
+- [ ] Indexes — single field, compound, text, unique
+- [ ] `explain()` — query performance analysis
+
+---
+
+## Spring Data MongoDB
+
+- [ ] `@Document`, `@Field`, `@Id`
+- [ ] `MongoRepository` — CRUD methods
+- [ ] `MongoTemplate` — complex queries
+- [ ] `@DBRef` — referencing documents

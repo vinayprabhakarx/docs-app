@@ -1,0 +1,144 @@
+---
+title: Kafka + Redis
+description: "Learn Redis caching and Apache Kafka event-driven messaging with Spring Boot integration."
+---
+
+## Overview
+
+Modern scalable architectures decouple services and accelerate database performance using two essential distributed tools:
+1. **Redis**: An ultra-fast, in-memory data store used for sub-millisecond caching, session state, distributed locking, and rate limiting.
+2. **Apache Kafka**: A distributed, append-only event streaming platform used for high-throughput, fault-tolerant, asynchronous messaging across microservices.
+
+Integrating Redis and Kafka with **Spring Boot** enables you to build reactive, resilient, and enterprise-grade distributed systems.
+
+---
+
+## Redis
+
+Master in-memory data structures, caching paradigms, and Spring Boot data caching integration.
+
+### Core Redis Concepts & Data Types
+- [ ] **What is Redis** — In-memory key-value data store, single-threaded event loop architecture (I/O multiplexing), persistence mechanisms (RDB snapshots & AOF logs), and primary use cases (caching, session store, leaderboards, pub/sub).
+- [ ] **Redis Data Types**:
+  - **Strings**: Basic text/binary payloads, integers, counters.
+  - **Lists**: Linked lists of strings (queue/stack behavior).
+  - **Sets**: Unordered collections of unique strings.
+  - **Sorted Sets (ZSet)**: Sets ordered by floating-point scores (ideal for leaderboards and rate limiting).
+  - **Hashes**: Maps of key-value pairs (ideal for user profiles and object models).
+  - **Bitmaps & HyperLogLogs**: Memory-efficient cardinality estimation and bit arrays.
+
+### Redis CLI Commands
+- [ ] **Basic Key Operations** — `SET key value`, `GET key`, `DEL key`, `EXPIRE key seconds`, `TTL key`, `EXISTS key`, `INCR key`, `DECR key`.
+- [ ] **List Operations** — `LPUSH key val`, `RPUSH key val`, `LPOP key`, `RPOP key`, `LRANGE key start stop`.
+- [ ] **Set Operations** — `SADD key member`, `SMEMBERS key`, `SREM key member`, `SISMEMBER key member`, `SUNION`, `SINTER`.
+- [ ] **Sorted Set Operations** — `ZADD key score member`, `ZRANGE key start stop [WITHSCORES]`, `ZREVRANGE`, `ZRANK`, `ZREM`.
+- [ ] **Hash Operations** — `HSET key field value`, `HGET key field`, `HGETALL key`, `HDEL key field`, `HINCRBY key field increment`.
+
+### Caching Architecture & Patterns
+- [ ] **Caching Patterns**:
+  - **Cache-Aside (Lazy Loading)**: Application checks cache first; if cache miss, queries DB, populates cache, and returns data.
+  - **Write-Through**: Application writes to cache; cache synchronously writes to DB.
+  - **Write-Behind (Write-Back)**: Application writes to cache; cache asynchronously writes to DB in batches.
+- [ ] **Cache Invalidation Strategies** — Time-to-Live (TTL), event-driven cache eviction, cache stampede prevention (mutex locks/probabilistic early expiration), and cache penetration mitigation (Bloom filters, caching null values).
+- [ ] **Session Management** — Centralized user session storage in Redis (`spring-session-data-redis`) for stateless backend horizontal scaling.
+- [ ] **Redis Eviction Policies** — `volatile-lru`, `allkeys-lru`, `volatile-lfu`, `allkeys-lfu`, `volatile-ttl`, `noeviction`.
+- [ ] **Rate Limiting with Redis** — Sliding window counter using Redis Sorted Sets (`ZREMRANGEBYSCORE`, `ZADD`, `ZCARD`) and token bucket algorithm.
+- [ ] **Redis Pub/Sub** — Lightweight message broadcasting with `PUBLISH`, `SUBSCRIBE`, `PSUBSCRIBE`.
+
+### Spring Boot + Redis Integration
+- [ ] **Dependencies & Configuration** — Adding `spring-boot-starter-data-redis` and configuring `RedisConnectionFactory` (Lettuce client).
+- [ ] **Spring Cache Annotations**:
+  - `@EnableCaching`: Enables Spring's annotation-driven cache management.
+  - `@Cacheable(value = "users", key = "#id")`: Caches method results.
+  - `@CachePut(value = "users", key = "#user.id")`: Updates cache without skipping method execution.
+  - `@CacheEvict(value = "users", key = "#id")`: Removes entry from cache on mutation/deletion.
+- [ ] **`RedisTemplate` Custom Operations** — Configuring custom `RedisTemplate<String, Object>` with `Jackson2JsonRedisSerializer` / `GenericJackson2JsonRedisSerializer` for storing serialized JSON objects:
+  ```java
+  @Autowired
+  private RedisTemplate<String, Object> redisTemplate;
+
+  public void saveToCache(String key, UserDto user, long ttlSeconds) {
+      redisTemplate.opsForValue().set(key, user, Duration.ofSeconds(ttlSeconds));
+  }
+  ```
+
+---
+
+## Apache Kafka
+
+Master distributed event streaming, partitioned messaging, and enterprise Spring Kafka integration.
+
+### Core Architecture & Concepts
+- [ ] **Event-Driven Architecture** — Decoupled asynchronous microservices, producer-consumer pattern, event sourcing, and Kafka vs traditional message queues.
+- [ ] **Kafka Core Components**:
+  - **Topic**: Category/feed name to which records are published.
+  - **Partition**: Ordered, immutable commit log within a topic; unit of parallelism and horizontal scale.
+  - **Offset**: Unique sequential ID assigned to each record within a partition.
+  - **Broker**: A single Kafka server node in a cluster; handles read/write requests.
+  - **Cluster & Controller**: Distributed coordinator (Kraft / ZooKeeper) managing broker metadata and partition leaders.
+- [ ] **Producers** — Message publishing, message keys (hashing algorithm for partition routing), acknowledgment levels (`acks=0`, `acks=1`, `acks=all`), and batching (`linger.ms`, `batch.size`).
+- [ ] **Consumers & Consumer Groups** — Scaling consumption across multiple workers, consumer group rebalancing, offset commits (manual vs auto-commit), and partition assignment strategies.
+- [ ] **Delivery Guarantees & Exactly-Once Semantics (EOS)**:
+  - At-most-once (offsets committed before processing)
+  - At-least-once (default: offsets committed after processing, duplicate handling needed)
+  - Exactly-once semantics (Kafka transactional API + idempotent producers)
+
+### Spring Boot + Kafka Integration
+- [ ] **Dependency & Configuration** — `spring-kafka` starter, configuring bootstrap servers, producer serializer (`StringSerializer`, `JsonSerializer`), and consumer deserializer (`ErrorHandlingDeserializer`, `JsonDeserializer`).
+- [ ] **Sending Messages (`KafkaTemplate`)**:
+  ```java
+  @Service
+  public class OrderProducer {
+      private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
+
+      public OrderProducer(KafkaTemplate<String, OrderEvent> kafkaTemplate) {
+          this.kafkaTemplate = kafkaTemplate;
+      }
+
+      public CompletableFuture<SendResult<String, OrderEvent>> sendOrderEvent(String orderId, OrderEvent event) {
+          return kafkaTemplate.send("order-topic", orderId, event);
+      }
+  }
+  ```
+- [ ] **Consuming Messages (`@KafkaListener`)**:
+  ```java
+  @Component
+  public class OrderConsumer {
+      @KafkaListener(topics = "order-topic", groupId = "order-fulfillment-group")
+      public void processOrder(ConsumerRecord<String, OrderEvent> record) {
+          System.out.println("Processing order: " + record.key() + " with payload: " + record.value());
+      }
+  }
+  ```
+- [ ] **Error Handling & Dead Letter Topics (DLT)** — Configuring `DefaultErrorHandler`, retry policies with exponential backoff, and forwarding unprocessable messages to a Dead Letter Topic (`order-topic.DLT`).
+- [ ] **Kafka Local Setup with Docker Compose** — Running Kafka broker with Kraft (or Zookeeper) and Kafka UI for local inspection:
+  ```yaml
+  version: '3.8'
+  services:
+    kafka:
+      image: confluentinc/cp-kafka:7.5.0
+      ports:
+        - "9092:9092"
+      environment:
+        KAFKA_NODE_ID: 1
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+        KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+        KAFKA_PROCESS_ROLES: 'broker,controller'
+        KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+        KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+        KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+        KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+        CLUSTER_ID: '4L622nShTUiBenAANAHBAA'
+  ```
+
+---
+
+## Architectural Comparison: Kafka vs Redis vs RabbitMQ
+
+| Dimension | Redis (Pub/Sub / Streams) | Apache Kafka | RabbitMQ |
+|---|---|---|---|
+| **Primary Use Case** | Transient caching, instant broadcast | Distributed log, persistent streaming, high-throughput events | Complex routing, task queuing, AMQP workflows |
+| **Persistence** | In-memory with disk snapshots | Disk-based distributed commit log | Disk & memory (removes message after ACK) |
+| **Throughput** | Ultra high (RAM speed) | Millions of msgs/sec (Disk sequential I/O) | High (tens of thousands msgs/sec) |
+| **Replayability** | Limited (unless Redis Streams used) | Yes (configurable retention period) | No (once consumed, message is gone) |
+| **Ordering** | In-order per stream | Strictly in-order within a partition | In-order per queue |
