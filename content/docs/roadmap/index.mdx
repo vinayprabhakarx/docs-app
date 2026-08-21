@@ -15,29 +15,44 @@ Traditional roadmaps make you finish one skill before starting another. That's a
 
 ```mermaid
 flowchart TD
-    subgraph Phase1 [Phase 1: Revision Weeks 1-2]
-        direction LR
-        A[Java Core] ~~~ B[HTML/CSS/JS] ~~~ C[SQL] ~~~ D[DSA Basics]
+    classDef revision fill:#eef2ff,stroke:#6366f1,stroke-width:2px,color:#312e81
+    classDef frontend fill:#f0fdfa,stroke:#14b8a6,stroke-width:2px,color:#134e4a
+    classDef backend fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#78350f
+    classDef dsa fill:#fdf4ff,stroke:#d946ef,stroke-width:2px,color:#701a75
+    classDef job fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#0f172a
+    
+    subgraph P1 ["Phase 1: Revision (Weeks 1-2)"]
+        J1["☕ Java Core<br/>& OOP"]:::revision
+        F1["🌐 HTML/CSS<br/>& JS"]:::revision
+        D1["💾 SQL<br/>Fundamentals"]:::revision
+        A1["🧠 DSA<br/>Warm-up"]:::dsa
     end
-
-    subgraph Phase2 [Phase 2: Core Skills Weeks 3-6]
-        direction LR
-        E[Spring Boot] ~~~ F[React + TS] ~~~ G[MongoDB] ~~~ H[DSA Intermediate]
+    
+    subgraph P2 ["Phase 2: Core Skills (Weeks 3-6)"]
+        J2["🍃 Spring<br/>Boot"]:::backend
+        F2["⚛️ React<br/>+ TS"]:::frontend
+        D2["🍃 MongoDB"]:::backend
+        A2["🧠 DSA<br/>Intermediate"]:::dsa
     end
-
-    subgraph Phase3 [Phase 3: Advanced Stack Weeks 7-10]
-        direction LR
-        I[Docker/DevOps] ~~~ J[Next.js] ~~~ K[Kafka & Redis] ~~~ L[DSA Advanced]
+    
+    subgraph P3 ["Phase 3: Advanced Stack (Weeks 7-10)"]
+        J3["📬 Kafka<br/>& Redis"]:::backend
+        F3["▲ Next.js"]:::frontend
+        D3["🐳 Docker<br/>& DevOps"]:::backend
+        A3["🧠 DSA<br/>Advanced"]:::dsa
     end
-
-    subgraph Phase4 [Phase 4: Job Ready Weeks 11-12]
-        direction LR
-        M[AI Skills] ~~~ N[Portfolio] ~~~ O[Interview Prep]
+    
+    subgraph P4 ["Phase 4: Job Ready (Weeks 11-12)"]
+        J4["🤖 AI-Era<br/>Skills"]:::job
+        F4["📁 Capstone<br/>Portfolio"]:::job
+        A4["💼 Interview<br/>Prep"]:::job
     end
-
-    Phase1 ==> Phase2
-    Phase2 ==> Phase3
-    Phase3 ==> Phase4
+    
+    %% Track Connections
+    J1 == Backend ==> J2 == Backend ==> J3 == Polish ==> J4
+    F1 == Frontend ==> F2 == Frontend ==> F3 == Build ==> F4
+    D1 -. Database .-> D2 -. DevOps .-> D3 -. Deploy .-> F4
+    A1 == DSA ==> A2 == DSA ==> A3 == Practice ==> A4
 ```
 
 | Phase | Weeks | Focus | Type |
