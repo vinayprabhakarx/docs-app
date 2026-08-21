@@ -15,6 +15,14 @@ import { CategoryCard } from "./category-card";
 
 const categories = [
   {
+    title: "Roadmaps",
+    label: "Guide",
+    description:
+      "Learning roadmaps and structured guides, starting with the Fullstack Java Developer path.",
+    href: "/docs/roadmap",
+    icon: BookOpen,
+  },
+  {
     title: "HTML",
     label: "Markup",
     description:
