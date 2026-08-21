@@ -18,28 +18,18 @@ By the end of Phase 3, you will have completed **200+ cumulative LeetCode proble
 Graphs model complex networks, dependencies, maps, and relationship structures.
 
 ### Graph Fundamentals & Traversals
-- [ ] **Graph Representation** — Understand trade-offs between:
-  - **Adjacency List**: `Map<Integer, List<Integer>>` or `List<List<Integer>>` — Space $O(V + E)$, optimal for sparse graphs.
-  - **Adjacency Matrix**: `int[][]` — Space $O(V^2)$, optimal for dense graphs and $O(1)$ edge lookups.
-- [ ] **Breadth-First Search (BFS)** — Level-order traversal using a `Queue`, finding shortest path in unweighted graphs, visited tracking.
-- [ ] **Depth-First Search (DFS)** — Recursive and iterative (stack-based) path exploration, backtrack state handling.
-- [ ] **Connected Components & Grid Traversals** — Counting components, Number of Islands, Max Area of Island, Flood Fill, Pacific Atlantic Water Flow.
-- [ ] **Cycle Detection**:
-  - Undirected Graphs: DFS with parent tracking or Union-Find.
-  - Directed Graphs: DFS with 3-color state tracking (`0 = unvisited`, `1 = visiting`, `2 = visited`) or Kahn's algorithm.
+- [ ] [**Graph Representation** — Understand trade-offs between: Adjacency List: `Map<Integer, List<Integer>>` or `List<List<Integer>>` — Space $O(V + E)$, optimal for sparse graphs. Adjacency Matrix: `int[][]` — Space $O(V^2)$, optimal for dense graphs and $O(1)$ edge lookups.](https://neetcode.io/courses/advanced-algorithms/0)
+- [ ] [**Breadth-First Search (BFS)** — Level-order traversal using a `Queue`, finding shortest path in unweighted graphs, visited tracking.](https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/)
+- [ ] [**Depth-First Search (DFS)** — Recursive and iterative (stack-based) path exploration, backtrack state handling.](https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/)
+- [ ] [**Connected Components & Grid Traversals** — Counting components, Number of Islands, Max Area of Island, Flood Fill, Pacific Atlantic Water Flow.](https://leetcode.com/problems/number-of-islands/)
+- [ ] [**Cycle Detection**: Undirected Graphs: DFS with parent tracking or Union-Find. Directed Graphs: DFS with 3-color state tracking (`0 = unvisited`, `1 = visiting`, `2 = visited`) or Kahn's algorithm.](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/)
 
 ### Advanced Graph Algorithms
-- [ ] **Topological Sort** — Ordering of directed acyclic graphs (DAG):
-  - **Kahn's Algorithm (BFS)**: In-degree array + Queue of 0 in-degree nodes (Course Schedule I & II).
-  - **DFS-based**: Reverse post-order traversal using a call stack/list.
-- [ ] **Shortest Path Algorithms**:
-  - **Dijkstra's Algorithm**: Single-source shortest path on non-negative weighted graphs using a `PriorityQueue` ($O((V + E) \log V)$).
-  - **Bellman-Ford / Floyd-Warshall** (Concept): Handling negative weight edges and all-pairs shortest paths.
-- [ ] **Disjoint Set Union (DSU / Union-Find)** — `find(x)` with path compression, `union(x, y)` by rank/size ($O(\alpha(N))$ nearly constant time), Redundant Connection, Accounts Merge.
-- [ ] **Minimum Spanning Tree (MST)**:
-  - **Kruskal's Algorithm**: Sort all edges by weight + Union-Find cycle prevention ($O(E \log E)$).
-  - **Prim's Algorithm**: Greedy node expansion with PriorityQueue ($O(E \log V)$).
-- [ ] **Practice Target**: Solve **20 Graph problems** covering BFS, DFS, TopoSort, Dijkstra, and Union-Find.
+- [ ] [**Topological Sort** — Ordering of directed acyclic graphs (DAG): Kahn's Algorithm (BFS): In-degree array + Queue of 0 in-degree nodes (Course Schedule I & II). DFS-based: Reverse post-order traversal using a call stack/list.](https://www.geeksforgeeks.org/topological-sorting/)
+- [ ] [**Shortest Path Algorithms**: Dijkstra's Algorithm: Single-source shortest path on non-negative weighted graphs using a `PriorityQueue` ($O((V + E) \log V)$). Bellman-Ford / Floyd-Warshall (Concept): Handling negative weight edges and all-pairs shortest paths.](https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/)
+- [ ] [**Disjoint Set Union (DSU / Union-Find)** — `find(x)` with path compression, `union(x, y)` by rank/size ($O(\alpha(N))$ nearly constant time), Redundant Connection, Accounts Merge.](https://www.geeksforgeeks.org/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/)
+- [ ] [**Minimum Spanning Tree (MST)**: Kruskal's Algorithm: Sort all edges by weight + Union-Find cycle prevention ($O(E \log E)$). Prim's Algorithm: Greedy node expansion with PriorityQueue ($O(E \log V)$).](https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/)
+- [ ] [**Practice Target**: Solve **20 Graph problems** covering BFS, DFS, TopoSort, Dijkstra, and Union-Find.](https://neetcode.io/practice)
 
 ---
 
@@ -48,26 +38,22 @@ Graphs model complex networks, dependencies, maps, and relationship structures.
 Master identifying overlapping subproblems and optimal substructure to break exponential complexity down to polynomial time.
 
 ### Core Paradigms
-- [ ] **Top-Down (Memoization)** — Recursion + caching table (`Integer[]` / `Map`) to eliminate redundant recursive calls.
-- [ ] **Bottom-Up (Tabulation)** — Iterative table filling from base cases up to the target state.
-- [ ] **Space Optimization** — Reducing $O(N)$ or $O(N \times M)$ DP tables to $O(1)$ or $O(M)$ by keeping only previous row/state variables.
+- [ ] [**Top-Down (Memoization)** — Recursion + caching table (`Integer[]` / `Map`) to eliminate redundant recursive calls.](https://www.geeksforgeeks.org/what-is-memoization-a-complete-tutorial/)
+- [ ] [**Bottom-Up (Tabulation)** — Iterative table filling from base cases up to the target state.](https://www.geeksforgeeks.org/tabulation-vs-memoization/)
+- [ ] [**Space Optimization** — Reducing $O(N)$ or $O(N \times M)$ DP tables to $O(1)$ or $O(M)$ by keeping only previous row/state variables.](https://www.geeksforgeeks.org/space-optimized-dp-solution-for-0-1-knapsack-problem/)
 
 ### 1D Dynamic Programming
-- [ ] **Fibonacci & Step Patterns** — Climbing Stairs, Min Cost Climbing Stairs, House Robber I & II, Decode Ways.
-- [ ] **Coin Change Patterns** — Coin Change (minimum coins), Coin Change II (number of combinations).
-- [ ] **Longest Increasing Subsequence (LIS)** — $O(N^2)$ DP solution and $O(N \log N)$ Patience Sorting with Binary Search.
-- [ ] **Word Break** — Partitioning strings using DP and dictionary sets.
+- [ ] [**Fibonacci & Step Patterns** — Climbing Stairs, Min Cost Climbing Stairs, House Robber I & II, Decode Ways.](https://leetcode.com/problems/climbing-stairs/)
+- [ ] [**Coin Change Patterns** — Coin Change (minimum coins), Coin Change II (number of combinations).](https://leetcode.com/problems/coin-change/)
+- [ ] [**Longest Increasing Subsequence (LIS)** — $O(N^2)$ DP solution and $O(N \log N)$ Patience Sorting with Binary Search.](https://leetcode.com/problems/longest-increasing-subsequence/)
+- [ ] [**Word Break** — Partitioning strings using DP and dictionary sets.](https://leetcode.com/problems/word-break/)
 
 ### 2D Dynamic Programming & Classic Subproblems
-- [ ] **Grid Paths** — Unique Paths I & II, Minimum Path Sum, Triangle.
-- [ ] **0/1 Knapsack & Bounded/Unbounded Variants** — Partition Equal Subset Sum, Target Sum, Unbounded Knapsack.
-- [ ] **Strings & Subsequences**:
-  - Longest Common Subsequence (LCS)
-  - Longest Palindromic Substring & Subsequence
-  - Edit Distance (Levenshtein Distance)
-  - Distinct Subsequences
-- [ ] **Interval & Matrix DP** — Burst Balloons, Matrix Chain Multiplication (concept).
-- [ ] **Practice Target**: Solve **25 DP problems** across 1D, 2D, Knapsack, and String patterns.
+- [ ] [**Grid Paths** — Unique Paths I & II, Minimum Path Sum, Triangle.](https://leetcode.com/problems/unique-paths/)
+- [ ] [**0/1 Knapsack & Bounded/Unbounded Variants** — Partition Equal Subset Sum, Target Sum, Unbounded Knapsack.](https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/)
+- [ ] [**Strings & Subsequences**: Longest Common Subsequence (LCS), Longest Palindromic Substring & Subsequence, Edit Distance (Levenshtein Distance), Distinct Subsequences.](https://leetcode.com/problems/longest-common-subsequence/)
+- [ ] [**Interval & Matrix DP** — Burst Balloons, Matrix Chain Multiplication (concept).](https://leetcode.com/problems/burst-balloons/)
+- [ ] [**Practice Target**: Solve **25 DP problems** across 1D, 2D, Knapsack, and String patterns.](https://neetcode.io/practice)
 
 ---
 
@@ -75,11 +61,11 @@ Master identifying overlapping subproblems and optimal substructure to break exp
 
 Optimize string search, prefix matching, and word games with $O(L)$ time complexity where $L$ is word length.
 
-- [ ] **Trie Data Structure Implementation** — `TrieNode` containing children array (`TrieNode[26]`) and boolean `isEndOfWord`.
-- [ ] **Core Operations** — `insert(word)`, `search(word)`, `startsWith(prefix)`, `delete(word)`.
-- [ ] **Autocomplete & Prefix Search** — Designing search suggestion systems, dictionary lookups, and wildcard queries (`.`).
-- [ ] **Word Search II (Boggle with Trie)** — Backtracking grid traversal combined with Trie prefix pruning to avoid redundant recursive branches.
-- [ ] **Maximum XOR of Two Numbers in an Array** — Bitwise Trie for fast XOR pair matching.
+- [ ] [**Trie Data Structure Implementation** — `TrieNode` containing children array (`TrieNode[26]`) and boolean `isEndOfWord`.](https://www.geeksforgeeks.org/trie-insert-and-search/)
+- [ ] [**Core Operations** — `insert(word)`, `search(word)`, `startsWith(prefix)`, `delete(word)`.](https://leetcode.com/problems/implement-trie-prefix-tree/)
+- [ ] [**Autocomplete & Prefix Search** — Designing search suggestion systems, dictionary lookups, and wildcard queries (`.`).](https://leetcode.com/problems/design-add-and-search-words-data-structure/)
+- [ ] [**Word Search II (Boggle with Trie)** — Backtracking grid traversal combined with Trie prefix pruning to avoid redundant recursive branches.](https://leetcode.com/problems/word-search-ii/)
+- [ ] [**Maximum XOR of Two Numbers in an Array** — Bitwise Trie for fast XOR pair matching.](https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/)
 
 ---
 
@@ -87,15 +73,11 @@ Optimize string search, prefix matching, and word games with $O(L)$ time complex
 
 Make locally optimal choices at each stage to produce a global optimum.
 
-- [ ] **Greedy Choice Property vs Dynamic Programming** — When greedy works (proof of correctness) vs when DP is required due to subproblem dependencies.
-- [ ] **Interval Scheduling & Activity Selection** — Non-overlapping intervals, Merge Intervals, Meeting Rooms I & II, Minimum Number of Arrows to Burst Balloons.
-- [ ] **Classic Greedy Problems**:
-  - Jump Game I (reachability) & Jump Game II (minimum jumps)
-  - Gas Station (circular tour)
-  - Candy (two-pass distribution)
-  - Task Scheduler (frequency-based slotting)
-- [ ] **Huffman Coding** (Concept) — Greedy prefix-free compression tree with PriorityQueue.
-- [ ] **Practice Target**: Solve **10 Greedy problems** focusing on interval partitioning and scheduling.
+- [ ] [**Greedy Choice Property vs Dynamic Programming** — When greedy works (proof of correctness) vs when DP is required due to subproblem dependencies.](https://www.geeksforgeeks.org/greedy-algorithms/)
+- [ ] [**Interval Scheduling & Activity Selection** — Non-overlapping intervals, Merge Intervals, Meeting Rooms I & II, Minimum Number of Arrows to Burst Balloons.](https://leetcode.com/problems/merge-intervals/)
+- [ ] [**Classic Greedy Problems**: Jump Game I (reachability) & Jump Game II (minimum jumps), Gas Station (circular tour), Candy (two-pass distribution), Task Scheduler (frequency-based slotting).](https://leetcode.com/problems/jump-game/)
+- [ ] [**Huffman Coding** (Concept) — Greedy prefix-free compression tree with PriorityQueue.](https://www.geeksforgeeks.org/huffman-coding-greedy-algo-3/)
+- [ ] [**Practice Target**: Solve **10 Greedy problems** focusing on interval partitioning and scheduling.](https://neetcode.io/practice)
 
 ---
 

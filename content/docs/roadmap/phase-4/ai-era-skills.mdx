@@ -20,26 +20,26 @@ AI-era competency spans three dimensions:
 
 Mastering AI development tools allows you to code faster, prototype rapidly, and iterate on complex bugs without getting stuck.
 
-- [ ] **GitHub Copilot — use daily while coding**
+- [ ] [**GitHub Copilot — use daily while coding**](https://docs.github.com/en/copilot)
   - Integrate with IntelliJ IDEA, VS Code, or Neovim.
   - Learn inline autocompletions (`Tab`), multi-line suggestions (`Alt + ]` / `Option + ]`), and Copilot Chat commands (`/explain`, `/fix`, `/tests`).
   - Use Copilot for boilerplate generation (DTOs, Mappers, repetitive unit test structures).
 
-- [ ] **Prompt engineering for code — writing effective prompts**
+- [ ] [**Prompt engineering for code — writing effective prompts**](https://platform.openai.com/docs/guides/prompt-engineering)
   - Provide explicit context: framework versions (e.g., Spring Boot 3.3, Java 21, Next.js 14 App Router), type definitions, constraints, and edge cases.
   - Use system instructions and few-shot examples when defining schema outputs (JSON mode).
   - Chain complex tasks step-by-step: design interface first, define data contracts, then request implementation.
 
-- [ ] **AI-assisted debugging, refactoring, code review**
+- [ ] [**AI-assisted debugging, refactoring, code review**](https://www.freecodecamp.org/news/how-to-use-ai-for-debugging-and-code-review/)
   - Paste stack traces and error logs directly with surrounding method signatures to identify root causes.
   - Request performance optimizations (e.g., converting $O(N^2)$ loops to hash lookups or optimizing JPA queries).
   - Use AI for refactoring legacy imperative loops into clean Java Streams or modern TypeScript patterns.
 
-- [ ] **ChatGPT / Claude / Gemini — development workflow integration**
+- [ ] [**ChatGPT / Claude / Gemini — development workflow integration**](https://www.anthropic.com/news/claude-3-family)
   - Use frontier models for architectural decision-making, comparing technology trade-offs (e.g., Redis vs Kafka for specific workloads), and drafting regex / complex SQL window functions.
   - Draft API documentation, OpenAPI specifications, and markdown documentation.
 
-- [ ] **Cursor / AI-powered IDE features**
+- [ ] [**Cursor / AI-powered IDE features**](https://www.cursor.com/)
   - Leverage `@Files`, `@Codebase`, and `@Docs` context indexing in Cursor.
   - Use multi-file edits (Composer) to apply coordinated changes across controllers, services, and repositories simultaneously.
 
@@ -62,15 +62,15 @@ Modern fullstack developers should be comfortable connecting backend architectur
              └─────────────────┘               └─────────────────┘           └──────────────────┘
 ```
 
-- [ ] **OpenAI API / Gemini API — REST integration**
+- [ ] [**OpenAI API / Gemini API — REST integration**](https://platform.openai.com/docs/api-reference)
   - Understand REST endpoints for chat completions (`/v1/chat/completions`), embeddings (`/v1/embeddings`), and model parameters (`temperature`, `top_p`, `max_tokens`, `response_format: { type: "json_object" }`).
   - Implement resilient API clients in Spring Boot using `RestClient` or `WebClient` with timeouts and retry mechanisms.
 
-- [ ] **Build a chatbot / AI assistant feature in your app**
+- [ ] [**Build a chatbot / AI assistant feature in your app**](https://sdk.vercel.ai/docs)
   - Maintain conversation history using session-scoped or database-backed message arrays (`role: system | user | assistant`).
   - Add domain-specific prompt guardrails to prevent off-topic prompts or jailbreaking.
 
-- [ ] **Spring AI — integrate LLMs into Spring Boot**
+- [ ] [**Spring AI — integrate LLMs into Spring Boot**](https://docs.spring.io/spring-ai/reference/)
   - Add `spring-ai-openai-spring-boot-starter` or `spring-ai-bedrock-ai-spring-boot-starter` to your `pom.xml` / `build.gradle`.
   - Use the fluent `ChatClient` API with template prompting:
     ```java
@@ -95,20 +95,20 @@ Modern fullstack developers should be comfortable connecting backend architectur
     ```
   - Map structured responses directly to Java Records using `BeanOutputConverter`.
 
-- [ ] **RAG (Retrieval-Augmented Generation) — concept & basic implementation**
+- [ ] [**RAG (Retrieval-Augmented Generation) — concept & basic implementation**](https://aws.amazon.com/what-is/retrieval-augmented-generation/)
   - Understand the RAG pipeline: Document Ingestion → Chunking → Embedding Generation → Vector Storage → Semantic Retrieval → Prompt Augmentation → LLM Generation.
   - Implement contextual question answering by retrieving top-K relevant chunks and supplying them as context in the system prompt.
 
-- [ ] **Vector databases — pgvector / Pinecone (concept)**
+- [ ] [**Vector databases — pgvector / Pinecone (concept)**](https://www.pinecone.io/learn/vector-database/)
   - Learn how high-dimensional vector embeddings capture semantic meaning.
   - Set up `pgvector` on PostgreSQL: install extension, create `vector(1536)` columns, and execute cosine similarity searches (`<=>` operator).
   - Understand approximate nearest neighbors (HNSW and IVFFlat index types).
 
-- [ ] **Embedding-based semantic search (concept)**
+- [ ] [**Embedding-based semantic search (concept)**](https://www.cloudflare.com/learning/ai/what-is-vector-embedding/)
   - Generate embeddings using `text-embedding-3-small` or open-source HuggingFace models.
   - Search documents by meaning rather than strict keyword matching.
 
-- [ ] **Streaming responses — Server-Sent Events (SSE)**
+- [ ] [**Streaming responses — Server-Sent Events (SSE)**](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
   - Implement real-time token streaming to frontend clients using `Flux<String>` or Spring `ResponseBodyEmitter`:
     ```java
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -127,22 +127,22 @@ Modern fullstack developers should be comfortable connecting backend architectur
 
 Building reliable production software requires understanding the limitations and risks of AI-generated artifacts.
 
-- [ ] **Writing clean, AI-readable code**
+- [ ] [**Writing clean, AI-readable code**](https://martinfowler.com/books/clean.html)
   - Use descriptive variable, method, and class names so AI context windows understand domain models immediately.
   - Maintain clear module boundaries, comprehensive types, and explicit DTO contracts.
   - Keep functions focused and cohesive (Single Responsibility Principle) so AI assistants generate accurate suggestions.
 
-- [ ] **AI-powered test generation**
+- [ ] [**AI-powered test generation**](https://www.codecademy.com/article/how-to-use-ai-for-testing)
   - Generate parameterized unit tests for boundary conditions, null inputs, and unexpected exceptions with JUnit 5.
   - Use AI to generate realistic test mock data and fixtures for integration tests.
   - Always review and run generated tests to verify they actually execute meaningful assertions rather than tautologies (`assertTrue(true)`).
 
-- [ ] **Understanding limitations of AI-generated code**
+- [ ] [**Understanding limitations of AI-generated code**](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
   - **Hallucinations:** Verify that referenced library methods, annotations, and API endpoints actually exist in the target dependency version.
   - **Security Vulnerabilities:** Watch out for SQL injection, insecure deserialization, missing authorization checks, and hardcoded API keys.
   - **Performance Pitfalls:** Guard against hidden $O(N^2)$ algorithms, excessive object allocation, and unindexed database queries.
 
-- [ ] **When to use AI vs manual coding**
+- [ ] [**When to use AI vs manual coding**](https://newsletter.pragmaticengineer.com/p/ai-coding-tools)
   - **Use AI for:** Boilerplate, CRUD endpoints, regex, unit test cases, CSS animations, SQL queries, DTO transformations, exploratory documentation.
   - **Write manually:** Core business rules, financial calculations, security-critical authentication logic, complex concurrency, and high-level architectural boundaries.
 

@@ -17,31 +17,31 @@ In Phase 4, you elevate your existing projects (`budget-setu`, fullstack capston
 
 The `budget-setu` project serves as a cornerstone fullstack demonstration of your financial data tracking and management capabilities.
 
-- [ ] **Review code — apply new patterns (clean architecture, proper error handling)**
+- [ ] [**Review code — apply new patterns (clean architecture, proper error handling)**](https://refactoring.guru/design-patterns)
   - Decouple controllers, business services, and database persistence layers.
   - Implement `@ControllerAdvice` / `@RestControllerAdvice` with a standardized API error response envelope (`timestamp`, `status`, `message`, `details`).
   - Introduce custom business exceptions (e.g., `ResourceNotFoundException`, `InsufficientBalanceException`, `UnauthorizedAccessException`).
   - Validate incoming payloads using Jakarta Bean Validation (`@NotNull`, `@NotBlank`, `@Positive`, `@Valid`).
 
-- [ ] **Add any missing features**
+- [ ] [**Add any missing features**](https://www.freecodecamp.org/news/how-to-build-a-portfolio-project/)
   - Category-based budget limits with progress indicators.
   - Recurring transaction scheduler using Spring `@Scheduled` tasks.
   - Analytics and expense breakdown charts (using Recharts or Chart.js).
   - Export transactions to CSV / PDF format.
 
-- [ ] **Dockerize it**
+- [ ] [**Dockerize it**](https://docs.docker.com/get-started/)
   - Create a multi-stage `Dockerfile` for the backend (Maven/Gradle build stage → lightweight JRE runtime image).
   - Create a production `Dockerfile` for the frontend (Next.js standalone build).
   - Write a `docker-compose.yml` to orchestrate Backend, Frontend, PostgreSQL, and Redis cache with health checks.
 
-- [ ] **Write a clean README with setup instructions & screenshots**
+- [ ] [**Write a clean README with setup instructions & screenshots**](https://www.freecodecamp.org/news/how-to-write-a-good-readme-file/)
   - Header with project title, concise description, and technology badges.
   - Screenshots / animated GIFs of key workflows (Dashboard, Budget creation, Expense tracking).
   - Architecture diagram showing data flow and integration points.
   - Local setup guide (`git clone`, environment variables, `docker compose up`).
   - API documentation overview or link to Swagger UI.
 
-- [ ] **Deploy it (Vercel / Railway / AWS)**
+- [ ] [**Deploy it (Vercel / Railway / AWS)**](https://vercel.com/docs)
   - Deploy frontend to Vercel / Netlify.
   - Deploy Spring Boot backend and database to Railway, Render, or AWS (EC2 / ECS / RDS).
   - Configure production environment variables, CORS policies, and HTTPS.
@@ -52,27 +52,27 @@ The `budget-setu` project serves as a cornerstone fullstack demonstration of you
 
 Your portfolio website is your personal developer storefront.
 
-- [ ] **Upgrade to Next.js + Tailwind (if not already)**
+- [ ] [**Upgrade to Next.js + Tailwind (if not already)**](https://nextjs.org/docs)
   - Utilize Next.js 14+ App Router with React Server Components for optimal Lighthouse performance scores.
   - Style with Tailwind CSS; ensure a sleek, responsive dark/light mode UI.
   - Add smooth transitions with Framer Motion or Tailwind CSS animations.
 
-- [ ] **Add capstone project showcase with live demos**
+- [ ] [**Add capstone project showcase with live demos**](https://www.freecodecamp.org/news/build-a-developer-portfolio/)
   - Highlight 2–3 flagship projects with interactive cards.
   - Provide direct links: **Live Demo**, **GitHub Repository**, and **Case Study / Architecture Docs**.
   - List the exact tech stack used per project (e.g., *Java 21, Spring Boot 3, Next.js, PostgreSQL, Redis, Docker*).
 
-- [ ] **Add case studies for each project**
+- [ ] [**Add case studies for each project**](https://www.toptal.com/designers/portfolio/how-to-write-a-case-study)
   - Describe the problem statement and target user persona.
   - Explain architectural choices and technical challenges overcome (e.g., *How we solved race conditions in concurrent transactions*).
   - Present key metrics and outcomes (e.g., *Sub-50ms API response times with Redis caching*).
 
-- [ ] **SEO optimization**
+- [ ] [**SEO optimization**](https://developers.google.com/search/docs/fundamentals/seo-starter-guide)
   - Add dynamic Next.js `metadata` (title, description, Open Graph tags, Twitter cards).
   - Provide a `sitemap.xml` and `robots.txt` using Next.js route handlers.
   - Ensure fast Largest Contentful Paint (LCP) with optimized `next/image` and font loading.
 
-- [ ] **Deploy on Vercel with custom domain**
+- [ ] [**Deploy on Vercel with custom domain**](https://vercel.com/docs/concepts/projects/domains)
   - Connect custom domain (e.g., `yourname.dev`) via DNS records.
   - Verify SSL certificate, canonical redirects, and responsive rendering across mobile, tablet, and desktop.
 
@@ -82,19 +82,19 @@ Your portfolio website is your personal developer storefront.
 
 Your GitHub profile is your public engineering transcript.
 
-- [ ] **Clean READMEs for all projects — tech stack, screenshots, setup instructions**
+- [ ] [**Clean READMEs for all projects — tech stack, screenshots, setup instructions**](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes)
   - Standardize repo structure: Badges → Overview → Architecture → Features → Tech Stack → Local Setup → License.
   - Remove dead repositories, empty forks, or broken prototype repos from public view.
 
-- [ ] **Consistent commit history — green contribution graph**
+- [ ] [**Consistent commit history — green contribution graph**](https://www.conventionalcommits.org/en/v1.0.0/)
   - Commit small, atomic changes daily using Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`).
   - Maintain an active coding streak through continuous feature development and DSA practice.
 
-- [ ] **Pin 4–6 best repositories**
+- [ ] [**Pin 4–6 best repositories**](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/pinning-items-to-your-profile)
   - Pin your Flagship Fullstack Capstone, `budget-setu`, Portfolio, and a dedicated DSA / Algorithm repo.
   - Ensure pinned repositories have clear descriptions and relevant topic tags.
 
-- [ ] **GitHub profile README**
+- [ ] [**GitHub profile README**](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme)
   - Create the special `username/username` repository.
   - Include an elevator pitch: Fullstack Java Developer, core tech stack icons, currently building, and contact links (LinkedIn, Email, Portfolio).
   - Add live GitHub stats widgets, streak counters, or top languages card.
@@ -132,42 +132,42 @@ Entry-level fullstack engineers must demonstrate a strong conceptual foundation 
 └───────────┘          └───────────┘       └───────────┘
 ```
 
-- [ ] **Microservices vs Monolith — tradeoffs**
+- [ ] [**Microservices vs Monolith — tradeoffs**](https://aws.amazon.com/microservices/)
   - **Monolith:** Fast initial development, simple deployment, single transaction boundary; downsides: tightly coupled scaling, blast radius.
   - **Microservices:** Independent deployment, technology flexibility, isolated scaling; downsides: network latency, distributed transactions, operational complexity.
 
-- [ ] **API Gateway pattern**
+- [ ] [**API Gateway pattern**](https://microservices.io/patterns/apigateway.html)
   - Single entry point for all client requests; handles authentication, rate limiting, SSL termination, request routing, and telemetry (e.g., Spring Cloud Gateway).
 
-- [ ] **Service discovery (concept)**
+- [ ] [**Service discovery (concept)**](https://microservices.io/patterns/client-side-discovery.html)
   - Dynamic registry where service instances register their network locations (Eureka, Consul, Kubernetes DNS).
 
-- [ ] **Load balancing, horizontal vs vertical scaling**
+- [ ] [**Load balancing, horizontal vs vertical scaling**](https://www.nginx.com/resources/glossary/load-balancing/)
   - Vertical scaling (Scale Up: bigger CPU/RAM) vs Horizontal scaling (Scale Out: multiple stateless instances).
   - Load balancing algorithms: Round Robin, Least Connections, IP Hash, Weighted Round Robin.
 
-- [ ] **Database sharding & replication (concept)**
+- [ ] [**Database sharding & replication (concept)**](https://www.digitalocean.com/community/tutorials/understanding-database-sharding)
   - **Replication:** Primary-Replica (Master-Slave) setup for read scaling and high availability.
   - **Sharding:** Horizontal partitioning of database tables across nodes by shard key (e.g., `user_id % num_shards`).
 
-- [ ] **CAP theorem**
+- [ ] [**CAP theorem**](https://www.ibm.com/topics/cap-theorem)
   - In the presence of a network **Partition (P)**, a distributed system must choose between **Consistency (C)** (every read receives most recent write) or **Availability (A)** (every request receives a non-error response).
 
-- [ ] **Design patterns — Singleton, Factory, Builder, Observer, Strategy**
+- [ ] [**Design patterns — Singleton, Factory, Builder, Observer, Strategy**](https://refactoring.guru/design-patterns/catalog)
   - **Singleton:** Spring Beans default scope, thread-safe double-checked locking.
   - **Factory:** Decoupling object instantiation logic.
   - **Builder:** Immutable object construction (Lombok `@Builder`).
   - **Observer:** Event-driven pub/sub (`ApplicationEventPublisher`, Kafka).
   - **Strategy:** Swapping algorithms at runtime (e.g., `PaymentStrategy` interface with `StripePayment` and `PayPalPayment`).
 
-- [ ] **SOLID principles**
+- [ ] [**SOLID principles**](https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/)
   - **S:** Single Responsibility Principle.
   - **O:** Open/Closed Principle (open for extension, closed for modification).
   - **L:** Liskov Substitution Principle.
   - **I:** Interface Segregation Principle.
   - **D:** Dependency Inversion Principle (depend on abstractions, not concretions — Spring IoC).
 
-- [ ] **Design: URL shortener, rate limiter, notification system, chat app**
+- [ ] [**Design: URL shortener, rate limiter, notification system, chat app**](https://bytebytego.com/)
   - **URL Shortener:** Base62 encoding, distributed ID generation (Snowflake), Redis cache layer, 301 vs 302 redirects.
   - **Rate Limiter:** Token Bucket, Leaky Bucket, Sliding Window Log algorithms in Redis.
   - **Notification System:** Kafka event queue, worker consumers, third-party push integrations (FCM, SendGrid, Twilio), idempotency keys.

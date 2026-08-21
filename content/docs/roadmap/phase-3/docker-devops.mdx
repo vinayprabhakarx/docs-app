@@ -15,19 +15,13 @@ This track guides you through advanced Git branching workflows, Linux systems ad
 
 Master advanced version control patterns and collaboration workflows used in enterprise teams.
 
-- [ ] **Branching Strategies** — Compare and apply:
-  - **Feature Branching**: Short-lived branches merged into main.
-  - **Git Flow**: `develop`, `release`, `hotfix`, and `master` branches.
-  - **Trunk-Based Development**: Frequent small merges to `main` with feature flags.
-- [ ] **`git rebase` vs `git merge`** — Understand fast-forward merges, 3-way merges, interactive rebase (`git rebase -i HEAD~n` for squash/reword), and the golden rule: never rebase public shared branches.
-- [ ] **Advanced Git Operations**:
-  - `git cherry-pick <commit>`: Apply a specific commit from another branch.
-  - `git stash push / pop / list / apply`: Save uncommitted work temporarily.
-  - `git reflog`: Recover lost commits, deleted branches, and undo mistakes.
-- [ ] **Conflict Resolution** — Reading conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`), resolving with diff tools, and finishing merges/rebases.
-- [ ] **Pull Requests & Code Reviews** — Writing descriptive PR templates, atomic commits, requesting reviews, and conducting constructive code reviews.
-- [ ] **`.gitignore` Best Practices** — Excluding compiled binaries (`target/`, `.next/`, `node_modules/`), OS artifacts (`.DS_Store`), and secrets (`.env*`).
-- [ ] **Conventional Commits** — Standardizing commit messages (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`, `test:`) for automated changelogs and semantic versioning.
+- [ ] [**Branching Strategies** — Compare and apply: Feature Branching, Git Flow, Trunk-Based Development.](https://www.atlassian.com/git/tutorials/comparing-workflows)
+- [ ] [**`git rebase` vs `git merge`** — Understand fast-forward merges, 3-way merges, interactive rebase (`git rebase -i HEAD~n` for squash/reword), and the golden rule: never rebase public shared branches.](https://www.atlassian.com/git/tutorials/merging-vs-rebasing)
+- [ ] [**Advanced Git Operations**: `git cherry-pick`, `git stash`, `git reflog`.](https://www.freecodecamp.org/news/advanced-git-commands/)
+- [ ] [**Conflict Resolution** — Reading conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`), resolving with diff tools, and finishing merges/rebases.](https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts)
+- [ ] [**Pull Requests & Code Reviews** — Writing descriptive PR templates, atomic commits, requesting reviews, and conducting constructive code reviews.](https://www.atlassian.com/agile/software-development/code-reviews)
+- [ ] [**`.gitignore` Best Practices** — Excluding compiled binaries (`target/`, `.next/`, `node_modules/`), OS artifacts (`.DS_Store`), and secrets (`.env*`).](https://www.atlassian.com/git/tutorials/saving-changes/gitignore)
+- [ ] [**Conventional Commits** — Standardizing commit messages (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`, `test:`) for automated changelogs and semantic versioning.](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ---
 
@@ -35,16 +29,13 @@ Master advanced version control patterns and collaboration workflows used in ent
 
 Essential command-line proficiency for operating, configuring, and debugging remote Linux production servers and containers.
 
-- [ ] **File System Navigation** — `ls -lah`, `cd`, `pwd`, `find /path -name "*.log" -mtime -7`, `tree`.
-- [ ] **File Operations & Text Processing**:
-  - Viewing: `cat`, `head -n 20`, `tail -f app.log` (live log streaming), `less`.
-  - Searching & Parsing: `grep -rn "ERROR" /var/log/`, `awk '{print $1, $9}' access.log`, `sed 's/old/new/g' file.txt`.
-  - Archiving: `tar -czvf backup.tar.gz /data`, `tar -xzvf backup.tar.gz`.
-- [ ] **Permissions & Ownership** — `chmod` (numeric `755`, `644`, symbolic `u+x`), `chown user:group file`, `sudo`, `umask`.
-- [ ] **Process Management & System Monitoring** — `ps aux`, `top`, `htop`, `kill -9 <PID>`, `systemctl status/start/stop/restart <service>`, `journalctl -u app.service -f`.
-- [ ] **Networking Tools** — `curl -I https://api.example.com`, `wget`, `netstat -tuln`, `ss -tulpn`, `ping`, `nslookup`, `lsof -i :8080`.
-- [ ] **SSH Basics** — Generating SSH key pairs (`ssh-keygen -t ed25519`), copying keys (`ssh-copy-id user@host`), configuring `~/.ssh/config`, port forwarding (`ssh -L 5432:localhost:5432 user@remote`).
-- [ ] **Shell Scripting** — Writing bash automation scripts (`#!/usr/bin/env bash`), variables, exit codes (`set -e`), conditionals, loops, and passing arguments.
+- [ ] [**File System Navigation** — `ls -lah`, `cd`, `pwd`, `find /path -name "*.log" -mtime -7`, `tree`.](https://www.freecodecamp.org/news/the-linux-commands-handbook/)
+- [ ] [**File Operations & Text Processing**: Viewing: `cat`, `head`, `tail`, `less`. Searching & Parsing: `grep`, `awk`, `sed`. Archiving: `tar`.](https://www.freecodecamp.org/news/linux-command-line-bash-tutorial/)
+- [ ] [**Permissions & Ownership** — `chmod` (numeric `755`, `644`, symbolic `u+x`), `chown user:group file`, `sudo`, `umask`.](https://www.freecodecamp.org/news/linux-chmod-chown-change-file-permissions/)
+- [ ] [**Process Management & System Monitoring** — `ps aux`, `top`, `htop`, `kill`, `systemctl`, `journalctl`.](https://www.freecodecamp.org/news/linux-process-management-guide/)
+- [ ] [**Networking Tools** — `curl -I https://api.example.com`, `wget`, `netstat -tuln`, `ss -tulpn`, `ping`, `nslookup`, `lsof -i :8080`.](https://www.freecodecamp.org/news/linux-networking-commands/)
+- [ ] [**SSH Basics** — Generating SSH key pairs (`ssh-keygen -t ed25519`), copying keys (`ssh-copy-id user@host`), configuring `~/.ssh/config`, port forwarding (`ssh -L 5432:localhost:5432 user@remote`).](https://www.freecodecamp.org/news/ssh-and-scp-how-to-securely-transfer-files-and-access-remote-servers/)
+- [ ] [**Shell Scripting** — Writing bash automation scripts (`#!/usr/bin/env bash`), variables, exit codes (`set -e`), conditionals, loops, and passing arguments.](https://www.freecodecamp.org/news/bash-scripting-tutorial-linux-shell-script-and-command-line-for-beginners/)
 
 ---
 
@@ -52,80 +43,16 @@ Essential command-line proficiency for operating, configuring, and debugging rem
 
 Package applications into lightweight, isolated, reproducible containers.
 
-- [ ] **Containers vs Virtual Machines** — Namespaces, cgroups, shared host kernel vs hypervisor guest OS overhead, immutability, and container lifecycle.
-- [ ] **Dockerfile Instructions** — Master syntax: `FROM`, `WORKDIR`, `COPY`, `ADD`, `RUN`, `ENV`, `ARG`, `EXPOSE`, `ENTRYPOINT`, `CMD`, `USER`.
-- [ ] **`.dockerignore`** — Preventing local build artifacts (`target/`, `.git`, `node_modules`) from polluting build contexts.
-- [ ] **Docker CLI Essentials**:
-  - Build: `docker build -t myapp:1.0 -f Dockerfile .`
-  - Run: `docker run -d --name myapp -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod myapp:1.0`
-  - Inspect & Debug: `docker ps -a`, `docker logs -f myapp`, `docker exec -it myapp /bin/sh`, `docker stats`.
-  - Clean up: `docker system prune -af --volumes`.
-- [ ] **Port & Volume Mapping**:
-  - Port mapping: `-p 8080:8080` (host:container)
-  - Named volumes for persistence: `-v pgdata:/var/lib/postgresql/data`
-  - Bind mounts for local development: `-v $(pwd):/app`
-- [ ] **Multi-Stage Builds** — Drastically reduce image size by separating build tools from the runtime image:
-  ```dockerfile
-  # Stage 1: Build Java Jar
-  FROM maven:3.9-eclipse-temurin-21 AS builder
-  WORKDIR /build
-  COPY pom.xml .
-  RUN mvn dependency:go-offline
-  COPY src ./src
-  RUN mvn clean package -DskipTests
-
-  # Stage 2: Minimal Runtime
-  FROM eclipse-temurin:21-jre-alpine
-  WORKDIR /app
-  COPY --from=builder /build/target/*.jar app.jar
-  EXPOSE 8080
-  ENTRYPOINT ["java", "-jar", "app.jar"]
-  ```
-- [ ] **Dockerize Next.js App** — Multi-stage standalone output Dockerfile for Next.js 14+ (`node:20-alpine`).
-- [ ] **Docker Compose (`docker-compose.yml`)** — Multi-container local development stack:
-  ```yaml
-  version: '3.8'
-
-  services:
-    postgres:
-      image: postgres:16-alpine
-      environment:
-        POSTGRES_DB: appdb
-        POSTGRES_USER: user
-        POSTGRES_PASSWORD: password
-      ports:
-        - "5432:5432"
-      volumes:
-        - pgdata:/var/lib/postgresql/data
-      healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U user -d appdb"]
-        interval: 5s
-        timeout: 5s
-        retries: 5
-
-    redis:
-      image: redis:7-alpine
-      ports:
-        - "6379:6379"
-
-    backend:
-      build: ./backend
-      ports:
-        - "8080:8080"
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/appdb
-        SPRING_DATA_REDIS_HOST: redis
-      depends_on:
-        postgres:
-          condition: service_healthy
-        redis:
-          condition: service_started
-
-  volumes:
-    pgdata:
-  ```
-- [ ] **Complete Fullstack Stack Orchestration** — Define and run Spring Boot + Next.js + PostgreSQL + MongoDB + Redis + Kafka + Zookeeper/Kraft in a unified Compose network.
-- [ ] **Docker Hub & Registries** — Tagging images, authentication (`docker login`), and pushing/pulling images (`docker push <username>/<image>:<tag>`).
+- [ ] [**Containers vs Virtual Machines** — Namespaces, cgroups, shared host kernel vs hypervisor guest OS overhead, immutability, and container lifecycle.](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/)
+- [ ] [**Dockerfile Instructions** — Master syntax: `FROM`, `WORKDIR`, `COPY`, `ADD`, `RUN`, `ENV`, `ARG`, `EXPOSE`, `ENTRYPOINT`, `CMD`, `USER`.](https://docs.docker.com/reference/dockerfile/)
+- [ ] [**`.dockerignore`** — Preventing local build artifacts (`target/`, `.git`, `node_modules`) from polluting build contexts.](https://docs.docker.com/reference/dockerfile/#dockerignore-file)
+- [ ] [**Docker CLI Essentials**: Build, Run, Inspect & Debug, Clean up.](https://docs.docker.com/reference/cli/docker/)
+- [ ] [**Port & Volume Mapping**: Port mapping, Named volumes for persistence, Bind mounts for local development.](https://docs.docker.com/storage/volumes/)
+- [ ] [**Multi-Stage Builds** — Drastically reduce image size by separating build tools from the runtime image.](https://docs.docker.com/build/building/multi-stage/)
+- [ ] [**Dockerize Next.js App** — Multi-stage standalone output Dockerfile for Next.js 14+ (`node:20-alpine`).](https://github.com/vercel/next.js/tree/canary/examples/with-docker)
+- [ ] [**Docker Compose (`docker-compose.yml`)** — Multi-container local development stack configurations.](https://docs.docker.com/compose/)
+- [ ] [**Complete Fullstack Stack Orchestration** — Define and run Spring Boot + Next.js + PostgreSQL + MongoDB + Redis + Kafka + Zookeeper/Kraft in a unified Compose network.](https://docs.docker.com/compose/compose-file/)
+- [ ] [**Docker Hub & Registries** — Tagging images, authentication (`docker login`), and pushing/pulling images (`docker push <username>/<image>:<tag>`).](https://docs.docker.com/docker-hub/)
 
 ---
 
@@ -133,47 +60,11 @@ Package applications into lightweight, isolated, reproducible containers.
 
 Automate testing, container building, and deployment pipelines.
 
-- [ ] **GitHub Actions Workflows** — Directory structure (`.github/workflows/*.yml`), trigger events (`push`, `pull_request`, `workflow_dispatch`, branch filtering).
-- [ ] **Workflow Anatomy** — Runners (`runs-on: ubuntu-latest`), jobs, matrix strategies, dependency caching (`actions/cache`, `setup-java`, `setup-node`), and action steps (`uses: actions/checkout@v4`).
-- [ ] **Automated Testing in CI** — Running JUnit tests with Maven/Gradle and Jest/Vitest with npm/pnpm on every pull request.
-- [ ] **Secrets & Environments** — Storing sensitive tokens (`DOCKER_HUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `DATABASE_URL`) securely in GitHub Repository Secrets.
-- [ ] **Full Build-Test-Publish Pipeline**:
-  ```yaml
-  name: CI/CD Pipeline
-
-  on:
-    push:
-      branches: [ main ]
-    pull_request:
-      branches: [ main ]
-
-  jobs:
-    test-and-build:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-        - name: Set up JDK 21
-          uses: actions/setup-java@v4
-          with:
-            java-version: '21'
-            distribution: 'temurin'
-            cache: maven
-        - name: Run Tests
-          run: mvn test
-        - name: Log in to Docker Hub
-          if: github.ref == 'refs/heads/main'
-          uses: docker/login-action@v3
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
-        - name: Build and Push Docker Image
-          if: github.ref == 'refs/heads/main'
-          uses: docker/build-push-action@v5
-          with:
-            context: .
-            push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/spring-backend:latest
-  ```
+- [ ] [**GitHub Actions Workflows** — Directory structure (`.github/workflows/*.yml`), trigger events (`push`, `pull_request`, `workflow_dispatch`, branch filtering).](https://docs.github.com/en/actions)
+- [ ] [**Workflow Anatomy** — Runners (`runs-on: ubuntu-latest`), jobs, matrix strategies, dependency caching (`actions/cache`, `setup-java`, `setup-node`), and action steps (`uses: actions/checkout@v4`).](https://docs.github.com/en/actions/using-workflows/about-workflows)
+- [ ] [**Automated Testing in CI** — Running JUnit tests with Maven/Gradle and Jest/Vitest with npm/pnpm on every pull request.](https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven)
+- [ ] [**Secrets & Environments** — Storing sensitive tokens (`DOCKER_HUB_TOKEN`, `AWS_ACCESS_KEY_ID`, `DATABASE_URL`) securely in GitHub Repository Secrets.](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+- [ ] [**Full Build-Test-Publish Pipeline** — Complete YAML for testing and pushing Docker images to Docker Hub.](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)
 
 ---
 
@@ -181,13 +72,8 @@ Automate testing, container building, and deployment pipelines.
 
 Deploy your fullstack multi-tier application to modern cloud providers.
 
-- [ ] **Cloud Fundamentals** — IaaS (Infrastructure as a Service), PaaS (Platform as a Service), and SaaS (Software as a Service) models and trade-offs.
-- [ ] **AWS Core Services**:
-  - **EC2**: Provisioning Linux virtual servers, security groups (firewalls), and SSH key access.
-  - **S3**: Object storage for user uploads, static assets, and presigned upload URLs.
-  - **RDS**: Managed PostgreSQL database, automated backups, and multi-AZ failover.
-  - **IAM**: Users, roles, policies, and least-privilege security principle.
-  - **ECS / Elastic Beanstalk**: Container orchestration and app deployment without managing bare VMs.
-- [ ] **Deploying Spring Boot to Cloud** — Deploying containerized Spring Boot via AWS EC2/ECS or Render/Railway.
-- [ ] **Deploying Next.js to Vercel** — Git-integrated zero-config deployments, preview environments, and environment variable configuration.
-- [ ] **Domain & SSL/TLS Configuration** — DNS records (`A`, `CNAME`), Let's Encrypt / AWS Certificate Manager (ACM), and configuring HTTPS reverse proxy with Nginx or Cloudflare.
+- [ ] [**Cloud Fundamentals** — IaaS (Infrastructure as a Service), PaaS (Platform as a Service), and SaaS (Software as a Service) models and trade-offs.](https://www.freecodecamp.org/news/cloud-computing-explained/)
+- [ ] [**AWS Core Services**: EC2, S3, RDS, IAM, ECS / Elastic Beanstalk.](https://aws.amazon.com/getting-started/fundamentals-core-concepts/)
+- [ ] [**Deploying Spring Boot to Cloud** — Deploying containerized Spring Boot via AWS EC2/ECS or Render/Railway.](https://www.baeldung.com/spring-boot-aws-ecs)
+- [ ] [**Deploying Next.js to Vercel** — Git-integrated zero-config deployments, preview environments, and environment variable configuration.](https://vercel.com/docs/deployments)
+- [ ] [**Domain & SSL/TLS Configuration** — DNS records (`A`, `CNAME`), Let's Encrypt / AWS Certificate Manager (ACM), and configuring HTTPS reverse proxy with Nginx or Cloudflare.](https://www.freecodecamp.org/news/how-to-set-up-a-custom-domain-name/)

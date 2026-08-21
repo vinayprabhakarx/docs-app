@@ -23,22 +23,22 @@ This guide outlines your end-to-end interview preparation strategy across 6 core
 
 Your resume is your initial screening filter. It must be clear, concise, and optimized for both automated Applicant Tracking Systems (ATS) and human engineering managers.
 
-- [ ] **One-page, ATS-friendly format**
+- [ ] [**One-page, ATS-friendly format**](https://www.freecodecamp.org/news/how-to-write-a-good-software-engineering-resume/)
   - Use clean, single-column formatting without tables, columns, or graphic icons that confuse ATS parsers.
   - Standard sections: Contact & Links (GitHub, Portfolio, LinkedIn), Technical Skills, Experience / Projects, Education.
   - Export as clean text-selectable PDF.
 
-- [ ] **Quantify achievements — "Reduced API response time by 40%"**
+- [ ] [**Quantify achievements — "Reduced API response time by 40%"**](https://www.inc.com/bill-murphy-jr/google-recruiters-say-these-5-resume-tips-including-x-y-z-formula-will-improve-your-odds-of-getting-hired-at-google.html)
   - Use the Google X-Y-Z formula: *Accomplished [X] as measured by [Y], by doing [Z]*.
   - Examples:
     - *"Architected Redis caching layer, reducing database query load by 60% and API response time from 350ms to 45ms."*
     - *"Implemented Kafka event streaming pipeline handling 10,000+ transaction events/sec with zero message loss."*
     - *"Integrated Next.js Server Components and dynamic image optimization, improving Google Lighthouse score from 68 to 98."*
 
-- [ ] **List relevant tech stack keywords**
+- [ ] [**List relevant tech stack keywords**](https://www.codecademy.com/resources/blog/how-to-list-skills-on-a-resume/)
   - Group clearly: Languages (`Java 21`, `TypeScript`, `JavaScript`, `SQL`), Frameworks (`Spring Boot 3`, `Next.js 14`, `React 18`), Databases (`PostgreSQL`, `MongoDB`, `Redis`), DevOps (`Docker`, `Docker Compose`, `Git`, `GitHub Actions`, `AWS`), Messaging (`Kafka`).
 
-- [ ] **Tailor for each application**
+- [ ] [**Tailor for each application**](https://www.coursera.org/articles/how-to-tailor-a-resume)
   - Match job description keywords for the specific role (e.g., highlighting Spring Security and microservices for backend-heavy roles).
 
 ---
@@ -47,14 +47,14 @@ Your resume is your initial screening filter. It must be clear, concise, and opt
 
 Algorithmic coding interviews evaluate problem-solving speed, code correctness, and computational complexity analysis ($O(N)$ time and space).
 
-- [ ] **Total: 200–250 problems (Easy: 70, Medium: 130, Hard: 50)**
+- [ ] [**Total: 200–250 problems (Easy: 70, Medium: 130, Hard: 50)**](https://leetcode.com/)
   - Ensure balanced coverage across all fundamental data structures: Arrays, Two Pointers, Sliding Window, HashMaps, Linked Lists, Trees, Binary Search Trees, Heaps/Priority Queues, Graphs (BFS/DFS/Dijkstra), and Dynamic Programming.
 
-- [ ] **Complete NeetCode 150 or Blind 75**
+- [ ] [**Complete NeetCode 150 or Blind 75**](https://neetcode.io/practice)
   - Master standard canonical patterns rather than memorizing individual problem solutions.
   - Understand the trigger conditions for patterns (e.g., *contiguous subarray with constraint* $\rightarrow$ Sliding Window; *sorted array target search* $\rightarrow$ Binary Search; *shortest path in unweighted graph* $\rightarrow$ BFS).
 
-- [ ] **Practice explaining approach out loud**
+- [ ] [**Practice explaining approach out loud**](https://www.pramp.com/)
   - Follow the 5-step problem solving framework:
     1. **Clarify requirements & edge cases** (empty input, negatives, duplicates, scale).
     2. **State brute force approach** and explain its time/space complexity.
@@ -62,10 +62,10 @@ Algorithmic coding interviews evaluate problem-solving speed, code correctness, 
     4. **Write clean, modular code** with meaningful variable names.
     5. **Dry run with an example test case** and state final $O(N)$ complexities.
 
-- [ ] **Mock interviews — Pramp / Interviewing.io**
+- [ ] [**Mock interviews — Pramp / Interviewing.io**](https://interviewing.io/)
   - Conduct weekly peer mocks to simulate real-time pressure, unfamiliar interviewers, and live whiteboard-style coding.
 
-- [ ] **Time-boxed practice — solve within 25–30 min**
+- [ ] [**Time-boxed practice — solve within 25–30 min**](https://www.hackerrank.com/)
   - Practice coding in a timer environment without auto-complete or IDE debugging assistants.
 
 ---
@@ -74,45 +74,45 @@ Algorithmic coding interviews evaluate problem-solving speed, code correctness, 
 
 Expect deep conceptual and internal questions regarding the JVM, Spring framework, database transactions, and concurrency.
 
-- [ ] **OOP — explain with real examples, not textbook**
+- [ ] [**OOP — explain with real examples, not textbook**](https://www.freecodecamp.org/news/object-oriented-programming-concepts-21bb035f7260/)
   - Explain Polymorphism through payment processors (`PaymentProcessor` interface implemented by `StripeProcessor` and `PayPalProcessor`).
   - Explain Composition over Inheritance: why Spring favors dependency injection over deep class hierarchies.
 
-- [ ] **Java 8 — streams, lambdas, optional (write code on spot)**
+- [ ] [**Java 8 — streams, lambdas, optional (write code on spot)**](https://www.baeldung.com/java-8-streams)
   - Write Stream pipelines fluently: grouping elements (`Collectors.groupingBy`), mapping, flattening nested lists (`flatMap`), reducing, sorting with custom Comparators.
   - Correct use of `Optional`: avoid `.get()` without check, use `.map()`, `.flatMap()`, `.orElseThrow()`.
 
-- [ ] **Collections internals — HashMap bucket mechanism, ConcurrentHashMap**
+- [ ] [**Collections internals — HashMap bucket mechanism, ConcurrentHashMap**](https://www.baeldung.com/java-hashmap)
   - **HashMap:** Array of Node buckets, `hashCode()` and `equals()` contract, index calculation `(n - 1) & hash`, collision handling via linked list $\rightarrow$ Red-Black Tree (when bucket count $> 8$ and table capacity $\ge 64$), load factor ($0.75$) and rehashing.
   - **ConcurrentHashMap:** Segment locking in Java 7 $\rightarrow$ CAS (Compare-And-Swap) operations and synchronized head-node bucket locking in Java 8+.
 
-- [ ] **Multithreading — thread lifecycle, synchronized, deadlock, volatile**
+- [ ] [**Multithreading — thread lifecycle, synchronized, deadlock, volatile**](https://www.baeldung.com/java-concurrency)
   - **States:** `NEW`, `RUNNABLE`, `BLOCKED`, `WAITING`, `TIMED_WAITING`, `TERMINATED`.
   - **`volatile`:** Guarantees visibility across CPU caches (prevents instruction reordering), but does not ensure atomicity for compound operations ($i++$).
   - **Deadlock conditions:** Mutual exclusion, Hold and wait, No preemption, Circular wait. How to prevent: strict lock ordering.
   - **`ExecutorService` & Thread Pools:** `FixedThreadPool`, `CachedThreadPool`, `ForkJoinPool`, Virtual Threads (Java 21 Project Loom).
 
-- [ ] **Spring IoC, AOP, Bean lifecycle, scopes**
+- [ ] [**Spring IoC, AOP, Bean lifecycle, scopes**](https://docs.spring.io/spring-framework/reference/core/beans/basics.html)
   - **IoC Container:** `ApplicationContext` vs `BeanFactory`. Dependency injection types (Constructor injection is preferred).
   - **Bean Scopes:** `singleton` (default), `prototype`, `request`, `session`.
   - **Bean Lifecycle:** Instantiation $\rightarrow$ Populating Properties $\rightarrow$ `BeanNameAware` $\rightarrow$ `BeanFactoryAware` $\rightarrow$ `postProcessBeforeInitialization` $\rightarrow$ `@PostConstruct` / `afterPropertiesSet` $\rightarrow$ `postProcessAfterInitialization` $\rightarrow$ Ready for use $\rightarrow$ `@PreDestroy` $\rightarrow$ Destroyed.
   - **AOP (Aspect-Oriented Programming):** Cross-cutting concerns (`@Aspect`, `@Around`, `@Before`, `@AfterReturning`, Pointcuts, JoinPoints) powered by dynamic proxies (JDK dynamic proxy vs CGLIB).
 
-- [ ] **REST API best practices, idempotency**
+- [ ] [**REST API best practices, idempotency**](https://restfulapi.net/)
   - HTTP verbs: `GET` (safe & idempotent), `POST` (not idempotent), `PUT` (idempotent replacement), `PATCH` (partial update), `DELETE` (idempotent).
   - Proper status codes: `200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`, `500 Internal Server Error`.
   - Idempotency Keys for financial/payment POST requests using Redis deduplication.
 
-- [ ] **JPA — N+1 problem, lazy vs eager, entity lifecycle**
+- [ ] [**JPA — N+1 problem, lazy vs eager, entity lifecycle**](https://vladmihalcea.com/n-plus-1-query-problem/)
   - **N+1 Query Problem:** Triggered when iterating over parent entities with lazy child collections. Fixed using `JOIN FETCH`, `@EntityGraph`, or batch fetching (`@BatchSize`).
   - **Entity States:** `Transient`, `Managed` (Persistent Context), `Detached`, `Removed`.
   - First-level cache (EntityManager session) vs Second-level cache (cross-session).
 
-- [ ] **Microservices — circuit breaker, saga pattern, service mesh (concept)**
+- [ ] [**Microservices — circuit breaker, saga pattern, service mesh (concept)**](https://microservices.io/)
   - **Circuit Breaker:** Resilience4j states (`CLOSED`, `OPEN`, `HALF_OPEN`) to prevent cascading system failures.
   - **Saga Pattern:** Choreography (event-driven) vs Orchestration (central coordinator) for managing distributed transactions with compensating actions.
 
-- [ ] **Spring Security — JWT flow, OAuth2 flow**
+- [ ] [**Spring Security — JWT flow, OAuth2 flow**](https://www.baeldung.com/spring-security-oauth)
   - Authentication filter chain: `SecurityFilterChain` $\rightarrow$ `OncePerRequestFilter` parsing `Authorization: Bearer <token>` $\rightarrow$ JWT validation $\rightarrow$ populating `SecurityContextHolder`.
   - OAuth2 / OpenID Connect authorization code grant flow with PKCE.
 
@@ -122,24 +122,24 @@ Expect deep conceptual and internal questions regarding the JVM, Spring framewor
 
 Frontend and fullstack interview rounds focus on JavaScript runtime fundamentals, React internals, and modern SSR architectures.
 
-- [ ] **JavaScript — closures, event loop, promises, prototypal inheritance, `this`**
+- [ ] [**JavaScript — closures, event loop, promises, prototypal inheritance, `this`**](https://javascript.info/)
   - **Closures:** Function retaining access to its lexical scope even when executed outside that scope.
   - **Event Loop:** Call Stack $\rightarrow$ Web APIs $\rightarrow$ Microtask Queue (Promises, `queueMicrotask`) $\rightarrow$ Task/Macrotask Queue (`setTimeout`, `setInterval`, I/O). Microtasks have priority over macrotasks.
   - **`this` resolution:** Default binding (global/undefined in strict mode), Implicit binding (`obj.method()`), Explicit binding (`call`, `apply`, `bind`), `new` keyword, and Arrow functions (lexical `this`).
 
-- [ ] **React — virtual DOM, reconciliation, fiber, hooks rules, key prop**
+- [ ] [**React — virtual DOM, reconciliation, fiber, hooks rules, key prop**](https://react.dev/learn)
   - **Reconciliation & Diffing:** React's heuristic algorithm ($O(N)$) comparing component trees by element type and `key`.
   - **Fiber Architecture:** Incremental rendering engine that splits work into interruptible units.
   - **Rules of Hooks:** Call only at the top level (never inside loops, conditions, or nested functions); call only from React function components or custom hooks.
   - **Why `key` is essential:** Provides persistent identity across renders for list items, preventing unnecessary DOM recreation and preserving local state.
 
-- [ ] **React performance — `useMemo`, `useCallback`, `React.memo`, lazy loading**
+- [ ] [**React performance — `useMemo`, `useCallback`, `React.memo`, lazy loading**](https://react.dev/reference/react/useMemo)
   - `React.memo`: Skips re-rendering when props have shallow equality.
   - `useCallback`: Caches function instance definitions between renders to prevent breaking child `React.memo` optimizations.
   - `useMemo`: Caches expensive computation results.
   - Dynamic code splitting with `React.lazy()` and `Suspense`.
 
-- [ ] **TypeScript — generics, type narrowing, discriminated unions**
+- [ ] [**TypeScript — generics, type narrowing, discriminated unions**](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html)
   - Generic constraints (`<T extends Record<string, unknown>>`).
   - Discriminated Unions with common literal tag:
     ```typescript
@@ -149,12 +149,12 @@ Frontend and fullstack interview rounds focus on JavaScript runtime fundamentals
     ```
   - Type guards (`typeof`, `instanceof`, custom `is` predicates).
 
-- [ ] **CSS — flexbox vs grid, specificity, BEM, responsive design**
+- [ ] [**CSS — flexbox vs grid, specificity, BEM, responsive design**](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
   - **Flexbox (1D layout):** Row or column alignment, distributing space along main and cross axes.
   - **Grid (2D layout):** Simultaneous control over rows and columns (`grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))`).
   - **Specificity:** Inline styles ($1000$) $>$ IDs ($100$) $>$ Classes/Attributes/Pseudo-classes ($10$) $>$ Elements/Pseudo-elements ($1$).
 
-- [ ] **Next.js — SSR vs SSG vs ISR, server components, caching model**
+- [ ] [**Next.js — SSR vs SSG vs ISR, server components, caching model**](https://nextjs.org/docs/app/building-your-application/rendering)
   - **SSR (Server-Side Rendering):** HTML generated on every request (`dynamic = 'force-dynamic'`).
   - **SSG (Static Site Generation):** HTML built at compile time (`generateStaticParams`).
   - **ISR (Incremental Static Regeneration):** Static page revalidated in the background at fixed intervals (`revalidate = 60`).
@@ -166,26 +166,26 @@ Frontend and fullstack interview rounds focus on JavaScript runtime fundamentals
 
 Entry-level system design rounds test your ability to structure high-level distributed systems, balance trade-offs, and handle scale.
 
-- [ ] **Design a URL shortener**
+- [ ] [**Design a URL shortener**](https://systemdesignprimer.com/url-shortener)
   - *Capacity estimation:* 100M URLs/month, read-to-write ratio (10:1).
   - *Shortening algorithm:* Base62 encoding on a unique 64-bit auto-incrementing / Snowflake ID.
   - *Data layer:* Relational/NoSQL mapping `short_key -> original_url`.
   - *Caching:* Redis cache for frequently accessed URLs with LRU eviction.
   - *Redirects:* `301 Moved Permanently` (browser cached) vs `302 Found` (passes through analytics).
 
-- [ ] **Design a chat application**
+- [ ] [**Design a chat application**](https://bytebytego.com/courses/system-design-interview/design-a-chat-system)
   - *Protocol:* WebSockets for real-time bidirectional communication.
   - *Scale:* WebSocket connection servers behind a load balancer; Redis Pub/Sub channel for routing messages between different connection nodes.
   - *Storage:* MongoDB / Cassandra for chat history and message sequencing.
   - *Status:* Heartbeats for online presence tracking.
 
-- [ ] **Design a notification system**
+- [ ] [**Design a notification system**](https://bytebytego.com/courses/system-design-interview/design-a-notification-system)
   - *Ingestion:* REST API Gateway receiving notification trigger events.
   - *Queueing:* Apache Kafka topics partitioned by user ID or priority.
   - *Worker fleet:* Dedicated microservices consuming Kafka events and dispatching to providers (APNs, FCM, SendGrid, Twilio).
   - *Reliability:* Deduplication with idempotency keys, rate limiting, and Dead Letter Queues (DLQ) for failed retries.
 
-- [ ] **Design an e-commerce checkout flow**
+- [ ] [**Design an e-commerce checkout flow**](https://stripe.com/docs/payments/checkout)
   - *Concurrency & Inventory:* Handling race conditions when purchasing limited inventory (Pessimistic locking with `SELECT ... FOR UPDATE` vs Optimistic locking with `@Version` vs Redis distributed locks).
   - *Payment:* External payment gateway with webhooks, idempotency keys, and asynchronous status polling.
   - *Transactional Integrity:* Saga orchestrator coordinating Order creation, Payment deduction, Inventory reservation, and Shipping notification.
@@ -196,24 +196,24 @@ Entry-level system design rounds test your ability to structure high-level distr
 
 Behavioral rounds evaluate your teamwork, communication, problem resolution, adaptability, and culture alignment.
 
-- [ ] **STAR method — Situation, Task, Action, Result**
+- [ ] [**STAR method — Situation, Task, Action, Result**](https://www.themuse.com/advice/star-interview-method)
   - **Situation:** Set the scene, context, and project constraints (15% of time).
   - **Task:** Clarify your specific responsibility and the core challenge (15% of time).
   - **Action:** Detail the concrete steps **you** took, tools you used, and decisions you made (55% of time).
   - **Result:** Quantify the outcome, metrics improved, and key lessons learned (15% of time).
 
-- [ ] **"Tell me about yourself" — 60-second pitch**
+- [ ] [**"Tell me about yourself" — 60-second pitch**](https://hbr.org/2019/08/how-to-respond-to-so-tell-me-about-yourself)
   - Structure: *Present* (Current focus as a fullstack Java & React/Next.js developer) $\rightarrow$ *Past* (Strong foundations in core Java, computer science, and distributed projects) $\rightarrow$ *Future* (Why you are excited about this specific engineering role).
 
-- [ ] **"Why this company?" — research template**
+- [ ] [**"Why this company?" — research template**](https://www.themuse.com/advice/how-to-answer-why-do-you-want-to-work-here)
   - Reference specific engineering achievements: company's tech stack, product roadmap, open source contributions, or engineering blog posts. Connect their mission to your skills.
 
-- [ ] **"Describe a challenging project" — 3 prepared stories**
+- [ ] [**"Describe a challenging project" — 3 prepared stories**](https://www.freecodecamp.org/news/how-to-talk-about-your-projects-in-a-tech-interview/)
   1. *Technical Challenge:* Solving a difficult bug, concurrency issue, or performance bottleneck (e.g., database slow queries or memory leaks).
   2. *Conflict / Trade-off:* Disagreeing with a teammate on architecture or tooling, resolving through data-driven benchmarks and respectful discussion.
   3. *Deadlines / Pivot:* Overcoming shifting requirements or an impending deployment deadline through prioritization and ruthless scope management.
 
-- [ ] **Questions to ask the interviewer (prepare 5)**
+- [ ] [**Questions to ask the interviewer (prepare 5)**](https://github.com/viraptor/reverse-interview)
   1. *"What does the typical onboarding process and path to first production deployment look like for a new engineer on your team?"*
   2. *"How does the engineering team handle technical debt alongside product feature sprints?"*
   3. *"What is the most interesting technical challenge or architectural migration your team tackled recently?"*

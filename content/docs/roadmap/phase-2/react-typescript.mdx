@@ -13,67 +13,67 @@ Modern frontend engineering requires a robust type system, predictable component
 
 ## TypeScript (Learn WITH React, not separately)
 
-- [ ] Types — `string`, `number`, `boolean`, `any`, `unknown`, `void`, `never`, `null`, `undefined`
-- [ ] Arrays & tuples — `string[]`, `[string, number]`
-- [ ] Interfaces vs Types — when to use which
-- [ ] Union types `|` & intersection types `&`
-- [ ] Enums — string & numeric
-- [ ] Type assertions (`as`) & type guards (`typeof`, `in`, `instanceof`)
-- [ ] Generics — `<T>`, constrained generics `<T extends Base>`
-- [ ] Utility types — `Partial<T>`, `Required<T>`, `Pick<T, K>`, `Omit<T, K>`, `Record<K, V>`, `Readonly<T>`
-- [ ] `keyof`, `typeof`, mapped types, conditional types
-- [ ] `tsconfig.json` — `strict`, `target`, `module`, `paths`
+- [ ] [Types — `string`, `number`, `boolean`, `any`, `unknown`, `void`, `never`, `null`, `undefined`](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html)
+- [ ] [Arrays & tuples — `string[]`, `[string, number]`](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types)
+- [ ] [Interfaces vs Types — when to use which](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces)
+- [ ] [Union types `|` & intersection types `&`](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types)
+- [ ] [Enums — string & numeric](https://www.typescriptlang.org/docs/handbook/enums.html)
+- [ ] [Type assertions (`as`) & type guards (`typeof`, `in`, `instanceof`)](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)
+- [ ] [Generics — `<T>`, constrained generics `<T extends Base>`](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+- [ ] [Utility types — `Partial<T>`, `Required<T>`, `Pick<T, K>`, `Omit<T, K>`, `Record<K, V>`, `Readonly<T>`](https://www.typescriptlang.org/docs/handbook/utility-types.html)
+- [ ] [`keyof`, `typeof`, mapped types, conditional types](https://www.typescriptlang.org/docs/handbook/2/types-from-types.html)
+- [ ] [`tsconfig.json` — `strict`, `target`, `module`, `paths`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
 
 ---
 
 ## React Fundamentals
 
-- [ ] Project setup — Vite + React + TypeScript
-- [ ] JSX / TSX — syntax, expressions, fragments
-- [ ] Components — functional components, typing props (`interface Props {}`)
-- [ ] `useState<T>` — primitive & object state
-- [ ] Event handling — typing `React.ChangeEvent`, `React.FormEvent`, `React.MouseEvent`
-- [ ] Conditional rendering — `&&`, ternary, early return
-- [ ] Lists & keys — `map()`, why keys matter
-- [ ] Component composition & `children` prop
+- [ ] [Project setup — Vite + React + TypeScript](https://react.dev/learn/start-a-new-react-project)
+- [ ] [JSX / TSX — syntax, expressions, fragments](https://react.dev/learn/writing-markup-with-jsx)
+- [ ] [Components — functional components, typing props (`interface Props {}`)](https://react.dev/learn/your-first-component)
+- [ ] [`useState<T>` — primitive & object state](https://react.dev/reference/react/useState)
+- [ ] [Event handling — typing `React.ChangeEvent`, `React.FormEvent`, `React.MouseEvent`](https://react.dev/learn/responding-to-events)
+- [ ] [Conditional rendering — `&&`, ternary, early return](https://react.dev/learn/conditional-rendering)
+- [ ] [Lists & keys — `map()`, why keys matter](https://react.dev/learn/rendering-lists)
+- [ ] [Component composition & `children` prop](https://react.dev/learn/passing-props-to-a-component)
 
 ---
 
 ## React Hooks Deep Dive
 
-- [ ] `useState` — complex state, functional updates, lazy init
-- [ ] `useEffect` — dependencies array, cleanup, fetching data
-- [ ] `useRef` — DOM refs, mutable values, `forwardRef`
-- [ ] `useMemo` & `useCallback` — memoization, when to use
-- [ ] `useReducer` — complex state logic, typing dispatch
-- [ ] `useContext` — context API, Provider pattern, avoiding prop drilling
-- [ ] Custom hooks — `useFetch`, `useLocalStorage`, `useDebounce`
+- [ ] [`useState` — complex state, functional updates, lazy init](https://react.dev/reference/react/useState)
+- [ ] [`useEffect` — dependencies array, cleanup, fetching data](https://react.dev/reference/react/useEffect)
+- [ ] [`useRef` — DOM refs, mutable values, `forwardRef`](https://react.dev/reference/react/useRef)
+- [ ] [`useMemo` & `useCallback` — memoization, when to use](https://react.dev/reference/react/useMemo)
+- [ ] [`useReducer` — complex state logic, typing dispatch](https://react.dev/reference/react/useReducer)
+- [ ] [`useContext` — context API, Provider pattern, avoiding prop drilling](https://react.dev/reference/react/useContext)
+- [ ] [Custom hooks — `useFetch`, `useLocalStorage`, `useDebounce`](https://react.dev/learn/reusing-logic-with-custom-hooks)
 
 ---
 
 ## React Ecosystem (Essential Libraries)
 
-- [ ] React Router v6 — `Routes`, `Route`, `Link`, `NavLink`, `Outlet`
-- [ ] `useNavigate`, `useParams`, `useSearchParams`, `useLocation`
-- [ ] Protected routes / auth guards
-- [ ] Nested routes, layout routes
-- [ ] State management — **Zustand** (simple) or Redux Toolkit (if job requires)
-- [ ] Forms — **React Hook Form** + **Zod** validation
-- [ ] Data fetching — **TanStack Query (React Query)** — queries, mutations, caching, invalidation
-- [ ] HTTP client — **Axios** — interceptors, instances, error handling
-- [ ] Toast/notifications — `react-hot-toast` or `sonner`
-- [ ] Icons — `lucide-react` or `react-icons`
+- [ ] [React Router v6 — `Routes`, `Route`, `Link`, `NavLink`, `Outlet`](https://reactrouter.com/en/main/start/tutorial)
+- [ ] [`useNavigate`, `useParams`, `useSearchParams`, `useLocation`](https://reactrouter.com/en/main/hooks/use-navigate)
+- [ ] [Protected routes / auth guards](https://www.freecodecamp.org/news/react-router-v6-protected-routes/)
+- [ ] [Nested routes, layout routes](https://reactrouter.com/en/main/start/tutorial#nested-routes)
+- [ ] [State management — **Zustand** (simple) or Redux Toolkit (if job requires)](https://github.com/pmndrs/zustand)
+- [ ] [Forms — **React Hook Form** + **Zod** validation](https://react-hook-form.com/get-started)
+- [ ] [Data fetching — **TanStack Query (React Query)** — queries, mutations, caching, invalidation](https://tanstack.com/query/latest/docs/react/overview)
+- [ ] [HTTP client — **Axios** — interceptors, instances, error handling](https://axios-http.com/docs/intro)
+- [ ] [Toast/notifications — `react-hot-toast` or `sonner`](https://react-hot-toast.com/)
+- [ ] [Icons — `lucide-react` or `react-icons`](https://lucide.dev/guide/packages/lucide-react)
 
 ---
 
 ## Tailwind CSS (Learn as you build React)
 
-- [ ] Installation & `tailwind.config.js`
-- [ ] Utility-first approach — spacing, colors, typography
-- [ ] Responsive — `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
-- [ ] Dark mode — `dark:` variant
-- [ ] Flexbox & Grid utilities
-- [ ] Custom theme — colors, fonts, breakpoints
-- [ ] Component patterns — cards, navbars, modals, forms, tables
-- [ ] `@apply` directive, `cn()` utility (clsx + tailwind-merge)
-- [ ] **Shadcn/UI** — install components, customize, compose
+- [ ] [Installation & `tailwind.config.js`](https://tailwindcss.com/docs/installation)
+- [ ] [Utility-first approach — spacing, colors, typography](https://tailwindcss.com/docs/utility-first)
+- [ ] [Responsive — `sm:`, `md:`, `lg:`, `xl:`, `2xl:`](https://tailwindcss.com/docs/responsive-design)
+- [ ] [Dark mode — `dark:` variant](https://tailwindcss.com/docs/dark-mode)
+- [ ] [Flexbox & Grid utilities](https://tailwindcss.com/docs/flex-basis)
+- [ ] [Custom theme — colors, fonts, breakpoints](https://tailwindcss.com/docs/theme)
+- [ ] [Component patterns — cards, navbars, modals, forms, tables](https://tailwindcss.com/docs/adding-custom-styles)
+- [ ] [`@apply` directive, `cn()` utility (clsx + tailwind-merge)](https://tailwindcss.com/docs/reusing-styles)
+- [ ] [**Shadcn/UI** — install components, customize, compose](https://ui.shadcn.com/docs)

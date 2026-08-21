@@ -13,76 +13,76 @@ Spring Boot is the standard framework for building modern enterprise Java applic
 
 ## Spring Fundamentals
 
-- [ ] Spring Framework vs Spring Boot — why Boot?
-- [ ] Dependency Injection (DI) & Inversion of Control (IoC)
-- [ ] `@Component`, `@Service`, `@Repository`, `@Controller`
-- [ ] `@Autowired`, `@Qualifier`, `@Primary`
-- [ ] `@Configuration`, `@Bean`
-- [ ] `application.properties` / `application.yml`
-- [ ] Profiles — `dev`, `prod`, `test`
-- [ ] Spring Boot DevTools — hot reload
+- [ ] [Spring Framework vs Spring Boot — why Boot?](https://www.baeldung.com/spring-vs-spring-boot)
+- [ ] [Dependency Injection (DI) & Inversion of Control (IoC)](https://www.baeldung.com/inversion-control-and-dependency-injection-in-spring)
+- [ ] [`@Component`, `@Service`, `@Repository`, `@Controller`](https://www.baeldung.com/spring-component-repository-service)
+- [ ] [`@Autowired`, `@Qualifier`, `@Primary`](https://www.baeldung.com/spring-autowire)
+- [ ] [`@Configuration`, `@Bean`](https://www.baeldung.com/spring-bean)
+- [ ] [`application.properties` / `application.yml`](https://www.baeldung.com/properties-with-spring)
+- [ ] [Profiles — `dev`, `prod`, `test`](https://www.baeldung.com/spring-profiles)
+- [ ] [Spring Boot DevTools — hot reload](https://www.baeldung.com/spring-boot-devtools)
 
 ---
 
 ## REST API Development
 
-- [ ] `@RestController`, `@RequestMapping`
-- [ ] `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping`
-- [ ] `@PathVariable`, `@RequestParam`, `@RequestBody`, `@RequestHeader`
-- [ ] `ResponseEntity` & HTTP status codes
-- [ ] Request validation — `@Valid`, `@NotNull`, `@NotBlank`, `@Size`, `@Email`, `@Pattern`
-- [ ] Custom validators
-- [ ] Global exception handling — `@ControllerAdvice`, `@ExceptionHandler`
-- [ ] Pagination & sorting — `Pageable`, `Page<T>`, `Sort`
-- [ ] HATEOAS (concept)
-- [ ] API versioning strategies
-- [ ] Swagger / OpenAPI 3 — `springdoc-openapi`
+- [ ] [`@RestController`, `@RequestMapping`](https://www.baeldung.com/spring-controller-vs-restcontroller)
+- [ ] [`@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping`](https://www.baeldung.com/spring-new-requestmapping-shortcuts)
+- [ ] [`@PathVariable`, `@RequestParam`, `@RequestBody`, `@RequestHeader`](https://www.baeldung.com/spring-requestparam-vs-pathvariable)
+- [ ] [`ResponseEntity` & HTTP status codes](https://www.baeldung.com/spring-response-entity)
+- [ ] [Request validation — `@Valid`, `@NotNull`, `@NotBlank`, `@Size`, `@Email`, `@Pattern`](https://www.baeldung.com/spring-boot-bean-validation)
+- [ ] [Custom validators](https://www.baeldung.com/spring-mvc-custom-validator)
+- [ ] [Global exception handling — `@ControllerAdvice`, `@ExceptionHandler`](https://www.baeldung.com/exception-handling-for-rest-with-spring)
+- [ ] [Pagination & sorting — `Pageable`, `Page<T>`, `Sort`](https://www.baeldung.com/spring-data-jpa-pagination-sorting)
+- [ ] [HATEOAS (concept)](https://spring.io/guides/gs/rest-hateoas/)
+- [ ] [API versioning strategies](https://www.baeldung.com/rest-versioning)
+- [ ] [Swagger / OpenAPI 3 — `springdoc-openapi`](https://www.baeldung.com/spring-rest-openapi-documentation)
 
 ---
 
 ## Spring Data JPA
 
-- [ ] Entity mapping — `@Entity`, `@Table`, `@Id`, `@GeneratedValue`
-- [ ] `@Column`, `@Transient`, `@Lob`, `@Enumerated`
-- [ ] Relationships — `@OneToOne`, `@OneToMany`, `@ManyToOne`, `@ManyToMany`
-- [ ] `@JoinColumn`, `@JoinTable`, cascade types
-- [ ] `JpaRepository` — built-in CRUD + custom methods
-- [ ] Derived queries — `findByEmail`, `findByNameContainingIgnoreCase`
-- [ ] `@Query` — JPQL & native SQL
-- [ ] `@Transactional` — propagation, isolation
-- [ ] Auditing — `@CreatedDate`, `@LastModifiedDate`, `@CreatedBy`
-- [ ] Lazy vs Eager — `FetchType.LAZY`, `FetchType.EAGER`
-- [ ] N+1 problem — `@EntityGraph`, `JOIN FETCH`
-- [ ] Database migration — Flyway or Liquibase
+- [ ] [Entity mapping — `@Entity`, `@Table`, `@Id`, `@GeneratedValue`](https://www.baeldung.com/jpa-entities)
+- [ ] [`@Column`, `@Transient`, `@Lob`, `@Enumerated`](https://www.baeldung.com/jpa-mapping-annotations)
+- [ ] [Relationships — `@OneToOne`, `@OneToMany`, `@ManyToOne`, `@ManyToMany`](https://www.baeldung.com/hibernate-one-to-many)
+- [ ] [`@JoinColumn`, `@JoinTable`, cascade types](https://www.baeldung.com/jpa-cascade-types)
+- [ ] [`JpaRepository` — built-in CRUD + custom methods](https://www.baeldung.com/spring-data-repositories)
+- [ ] [Derived queries — `findByEmail`, `findByNameContainingIgnoreCase`](https://www.baeldung.com/spring-data-derived-queries)
+- [ ] [`@Query` — JPQL & native SQL](https://www.baeldung.com/spring-data-jpa-query)
+- [ ] [`@Transactional` — propagation, isolation](https://www.baeldung.com/transaction-configuration-with-jpa-and-spring)
+- [ ] [Auditing — `@CreatedDate`, `@LastModifiedDate`, `@CreatedBy`](https://www.baeldung.com/database-auditing-jpa)
+- [ ] [Lazy vs Eager — `FetchType.LAZY`, `FetchType.EAGER`](https://www.baeldung.com/hibernate-lazy-eager-loading)
+- [ ] [N+1 problem — `@EntityGraph`, `JOIN FETCH`](https://www.baeldung.com/hibernate-n-plus-one-problem)
+- [ ] [Database migration — Flyway or Liquibase](https://www.baeldung.com/database-migrations-with-flyway)
 
 ---
 
 ## Spring Security
 
-- [ ] Authentication vs Authorization
-- [ ] `SecurityFilterChain` configuration
-- [ ] JWT — generation, validation, refresh tokens
-- [ ] `BCryptPasswordEncoder`
-- [ ] Role-based access — `@PreAuthorize`, `hasRole()`, `hasAuthority()`
-- [ ] CORS configuration
-- [ ] OAuth2 / Social Login (concept-level)
-- [ ] Method-level security
+- [ ] [Authentication vs Authorization](https://www.baeldung.com/spring-security-authentication-and-authorization)
+- [ ] [`SecurityFilterChain` configuration](https://www.baeldung.com/spring-security-upgrading-securityfilterchain)
+- [ ] [JWT — generation, validation, refresh tokens](https://www.baeldung.com/spring-security-oauth-jwt)
+- [ ] [`BCryptPasswordEncoder`](https://www.baeldung.com/spring-security-registration-password-encoding-bcrypt)
+- [ ] [Role-based access — `@PreAuthorize`, `hasRole()`, `hasAuthority()`](https://www.baeldung.com/spring-security-method-security)
+- [ ] [CORS configuration](https://www.baeldung.com/spring-cors)
+- [ ] [OAuth2 / Social Login (concept-level)](https://www.baeldung.com/spring-security-5-oauth2-login)
+- [ ] [Method-level security](https://www.baeldung.com/spring-security-method-security)
 
 ---
 
 ## Testing
 
-- [ ] JUnit 5 — `@Test`, `@BeforeEach`, `@AfterEach`, `@ParameterizedTest`
-- [ ] Assertions — `assertEquals`, `assertThrows`, `assertNotNull`
-- [ ] Mockito — `@Mock`, `@InjectMocks`, `when().thenReturn()`, `verify()`
-- [ ] `@SpringBootTest`, `@WebMvcTest`, `MockMvc`
-- [ ] `@DataJpaTest` — repository testing
-- [ ] TestContainers (concept)
+- [ ] [JUnit 5 — `@Test`, `@BeforeEach`, `@AfterEach`, `@ParameterizedTest`](https://www.baeldung.com/junit-5)
+- [ ] [Assertions — `assertEquals`, `assertThrows`, `assertNotNull`](https://www.baeldung.com/junit-assertions)
+- [ ] [Mockito — `@Mock`, `@InjectMocks`, `when().thenReturn()`, `verify()`](https://www.baeldung.com/mockito-series)
+- [ ] [`@SpringBootTest`, `@WebMvcTest`, `MockMvc`](https://www.baeldung.com/integration-testing-in-spring)
+- [ ] [`@DataJpaTest` — repository testing](https://www.baeldung.com/spring-boot-testing)
+- [ ] [TestContainers (concept)](https://www.baeldung.com/docker-test-containers)
 
 ---
 
 ## Build Tools
 
-- [ ] Maven — `pom.xml`, dependencies, plugins, lifecycle (`clean`, `compile`, `test`, `package`)
-- [ ] Gradle basics — `build.gradle`, `dependencies`, tasks
-- [ ] Dependency management & version conflicts
+- [ ] [Maven — `pom.xml`, dependencies, plugins, lifecycle (`clean`, `compile`, `test`, `package`)](https://www.baeldung.com/maven)
+- [ ] [Gradle basics — `build.gradle`, `dependencies`, tasks](https://www.baeldung.com/gradle)
+- [ ] [Dependency management & version conflicts](https://www.baeldung.com/maven-dependency-resolution)
