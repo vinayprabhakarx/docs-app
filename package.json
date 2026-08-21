@@ -16,6 +16,7 @@
     "deploy:prod": "vercel --prod"
   },
   "dependencies": {
+    "@icons-pack/react-simple-icons": "^13.15.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "fumadocs-core": "16.10.5",

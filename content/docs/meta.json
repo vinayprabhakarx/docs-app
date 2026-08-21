@@ -1,12 +1,13 @@
 {
-  "roadmap": "Roadmap",
-  "index": "Index",
-  "react": "React",
-  "html": "HTML",
-  "css": "CSS",
-  "javascript": "JavaScript",
-  "Interview": "Interview",
-  "Java": "Java",
-  "springboot": "Spring Boot",
-  "NVIM": "Nvim"
+  "pages": [
+    "roadmap",
+    "html",
+    "css",
+    "javascript",
+    "react",
+    "Java",
+    "springboot",
+    "Interview",
+    "NVIM"
+  ]
 }
